@@ -1,82 +1,111 @@
+import { supabase } from '../lib/supabase';
 import { User } from '../types';
 
-const USERS_KEY = 'hpc_users';
-const SESSION_KEY = 'hpc_session';
+// NOTE: Usage of this service now requires async/await handling in the frontend components.
+// Previous synchronous methods (getCurrentUser) are now async to support Supabase.
 
 export const authService = {
-  getUsers: (): User[] => {
-    const users = localStorage.getItem(USERS_KEY);
-    return users ? JSON.parse(users) : [];
+  // Changed to async
+  getCurrentUser: async (): Promise<User | null> => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) return null;
+
+    return {
+      id: session.user.id,
+      email: session.user.email || '',
+      name: session.user.user_metadata?.name || '',
+    };
   },
 
-  getCurrentUser: (): User | null => {
-    const session = localStorage.getItem(SESSION_KEY);
-    return session ? JSON.parse(session) : null;
+  // Helper to get session synchronously if needed (wrapping basic check), 
+  // though getSession() is the source of truth.
+  // This is a "best effort" check from memory if session was already loaded, 
+  // but reliable auth should use the async method.
+  isLoggedIn: async (): Promise<boolean> => {
+    const { data } = await supabase.auth.getSession();
+    return !!data.session;
   },
 
-  register: (name: string, email: string, password: string): { success: boolean; message?: string; user?: User } => {
-    const users = authService.getUsers();
-    
-    if (users.find(u => u.email === email)) {
-      return { success: false, message: 'Este email já está cadastrado.' };
+  register: async (name: string, email: string, password: string): Promise<{ success: boolean; message?: string; user?: User }> => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          name,
+        }
+      }
+    });
+
+    if (error) {
+      return { success: false, message: error.message };
     }
 
-    const newUser: User = {
-      id: crypto.randomUUID(),
-      name,
-      email,
-      password // In a real app, verify hash. Here storing plain for simulation.
-    };
+    if (data.user) {
+      // Create profile record if trigger didn't catch it (Trigger handles it usually, but good to be safe/aware)
+      // The SQL trigger handled it.
+      return {
+        success: true,
+        user: {
+          id: data.user.id,
+          email: data.user.email || '',
+          name: data.user.user_metadata.name || name
+        }
+      };
+    }
 
-    users.push(newUser);
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
-    
-    // Auto-login after register
-    localStorage.setItem(SESSION_KEY, JSON.stringify(newUser));
-    
-    return { success: true, user: newUser };
+    return { success: false, message: 'Erro desconhecido ao registrar.' };
   },
 
-  login: (email: string, password: string): { success: boolean; message?: string; user?: User } => {
-    const users = authService.getUsers();
-    const user = users.find(u => u.email === email && u.password === password);
+  login: async (email: string, password: string): Promise<{ success: boolean; message?: string; user?: User }> => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
 
-    if (!user) {
+    if (error) {
       return { success: false, message: 'Email ou senha incorretos.' };
     }
 
-    localStorage.setItem(SESSION_KEY, JSON.stringify(user));
-    return { success: true, user };
-  },
-
-  updateUser: (updatedUser: User): { success: boolean; message?: string } => {
-    try {
-      const users = authService.getUsers();
-      const index = users.findIndex(u => u.id === updatedUser.id);
-      
-      if (index === -1) return { success: false, message: 'Usuário não encontrado.' };
-
-      // Update in users array
-      users[index] = updatedUser;
-      localStorage.setItem(USERS_KEY, JSON.stringify(users));
-
-      // Update current session
-      localStorage.setItem(SESSION_KEY, JSON.stringify(updatedUser));
-
-      return { success: true };
-    } catch (e) {
-      return { success: false, message: 'Erro ao salvar dados.' };
+    if (data.user) {
+      return {
+        success: true,
+        user: {
+          id: data.user.id,
+          email: data.user.email || '',
+          name: data.user.user_metadata.name || ''
+        }
+      };
     }
+    return { success: false, message: 'Erro ao fazer login.' };
   },
 
-  logout: () => {
-    localStorage.removeItem(SESSION_KEY);
+  updateUser: async (updatedUser: User): Promise<{ success: boolean; message?: string }> => {
+    // Updates both Auth metadata and Profiles table
+    const { error: paramError } = await supabase.auth.updateUser({
+      data: { name: updatedUser.name }
+    });
+
+    if (paramError) return { success: false, message: paramError.message };
+
+    // Explicitly update profile table if needed (though metadata is usually enough for simple names)
+    const { error: tableError } = await supabase
+      .from('profiles')
+      .update({ name: updatedUser.name, email: updatedUser.email })
+      .eq('id', updatedUser.id);
+
+    if (tableError) return { success: false, message: tableError.message };
+
+    return { success: true };
   },
 
-  // Helpers to get user-specific keys for other services
+  logout: async () => {
+    await supabase.auth.signOut();
+  },
+
+  // Deprecated: No longer needed for Supabase RLS, simply returns base key.
+  // Kept to avoid breaking existing calls before refactor.
   getUserStorageKey: (baseKey: string): string => {
-    const user = authService.getCurrentUser();
-    if (!user) return baseKey; // Fallback
-    return `${baseKey}_${user.id}`;
+    return baseKey;
   }
 };
