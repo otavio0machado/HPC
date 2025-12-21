@@ -42,8 +42,14 @@ export const authService = {
     }
 
     if (data.user) {
-      // Create profile record if trigger didn't catch it (Trigger handles it usually, but good to be safe/aware)
-      // The SQL trigger handled it.
+      // Se não houver sessão e o e-mail não estiver confirmado, impedimos o login automático.
+      if (!data.session) {
+        return {
+          success: false,
+          message: 'Cadastro realizado! Confirme seu email para entrar.'
+        };
+      }
+
       return {
         success: true,
         user: {
