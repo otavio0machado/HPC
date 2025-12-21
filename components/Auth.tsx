@@ -9,14 +9,14 @@ interface AuthProps {
 
 const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
   const [isRegister, setIsRegister] = useState(false);
-  
+
   // Form States
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
-  
-  const handleSubmit = (e: React.FormEvent) => {
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
@@ -25,22 +25,30 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
         setError("Preencha todos os campos.");
         return;
       }
-      const result = authService.register(name, email, password);
-      if (result.success) {
-        onSuccess();
-      } else {
-        setError(result.message || "Erro ao registrar.");
+      try {
+        const result = await authService.register(name, email, password);
+        if (result.success) {
+          onSuccess();
+        } else {
+          setError(result.message || "Erro ao registrar.");
+        }
+      } catch (err) {
+        setError("Erro inesperado ao registrar.");
       }
     } else {
       if (!email || !password) {
         setError("Preencha email e senha.");
         return;
       }
-      const result = authService.login(email, password);
-      if (result.success) {
-        onSuccess();
-      } else {
-        setError(result.message || "Erro ao entrar.");
+      try {
+        const result = await authService.login(email, password);
+        if (result.success) {
+          onSuccess();
+        } else {
+          setError(result.message || "Erro ao entrar.");
+        }
+      } catch (err) {
+        setError("Erro inesperado ao entrar.");
       }
     }
   };
@@ -56,7 +64,7 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
   return (
     <div className="min-h-screen pt-24 pb-12 flex items-center justify-center px-4 relative">
       <div className="absolute top-24 left-4 md:left-12">
-        <button 
+        <button
           onClick={onBack}
           className="flex items-center text-zinc-400 hover:text-white transition-colors"
         >
@@ -65,7 +73,7 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
       </div>
 
       <div className="w-full max-w-md bg-zinc-900/80 border border-zinc-800 p-8 rounded-2xl shadow-2xl backdrop-blur-xl relative overflow-hidden group">
-        
+
         {/* Decorative glow */}
         <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-600/20 rounded-full blur-[50px] group-hover:bg-blue-600/30 transition-all duration-700"></div>
 
@@ -89,11 +97,11 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
                 <label className="block text-sm font-medium text-zinc-400 mb-1">Nome Completo</label>
                 <div className="relative">
                   <UserIcon className="absolute left-3 top-3 text-zinc-500" size={18} />
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    required 
+                    required
                     className="w-full bg-zinc-950 border border-zinc-800 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-blue-500 transition-colors"
                     placeholder="Seu nome"
                   />
@@ -105,11 +113,11 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
               <label className="block text-sm font-medium text-zinc-400 mb-1">Email</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-3 text-zinc-500" size={18} />
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required 
+                  required
                   className="w-full bg-zinc-950 border border-zinc-800 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-blue-500 transition-colors"
                   placeholder="seu@email.com"
                 />
@@ -120,18 +128,18 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
               <label className="block text-sm font-medium text-zinc-400 mb-1">Senha</label>
               <div className="relative">
                 <Lock className="absolute left-3 top-3 text-zinc-500" size={18} />
-                <input 
-                  type="password" 
+                <input
+                  type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required 
+                  required
                   className="w-full bg-zinc-950 border border-zinc-800 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-blue-500 transition-colors"
                   placeholder="••••••••"
                 />
               </div>
             </div>
 
-            <button 
+            <button
               type="submit"
               className="w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-zinc-200 transition-all transform hover:scale-[1.02] mt-6 flex items-center justify-center gap-2 group-btn"
             >
@@ -141,7 +149,7 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
 
           <div className="mt-6 text-center text-sm text-zinc-500">
             {isRegister ? 'Já é membro? ' : 'Ainda não é membro? '}
-            <button 
+            <button
               onClick={toggleMode}
               className="text-blue-500 hover:text-blue-400 font-medium ml-1 underline underline-offset-4"
             >

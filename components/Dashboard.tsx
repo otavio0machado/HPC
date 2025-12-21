@@ -6,7 +6,7 @@ import Simulados from './Simulados';
 import TaskPlanner from './TaskPlanner';
 import Profile from './Profile';
 import Settings from './Settings';
-import { Trophy, Clock, Calendar, LogOut, Plus, X, AlertTriangle, Zap, ArrowRight, LayoutList, MessageSquare, Activity, CheckCircle2, Circle, User, Settings as SettingsIcon, ChevronDown, Sparkles } from 'lucide-react';
+import { Trophy, Clock, Calendar, LogOut, Plus, X, AlertTriangle, Zap, ArrowRight, LayoutList, MessageSquare, Activity, CheckCircle2, Circle, User, Settings as SettingsIcon, ChevronDown, Sparkles, Loader2 } from 'lucide-react';
 import { authService } from '../services/authService';
 import { flashcardService } from '../services/flashcardService';
 import { PlannerTask, ErrorEntry, SimuladoResult, Message, User as UserType } from '../types';
@@ -64,14 +64,28 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     return 'Boa noite';
   };
 
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
+
   // Load User Async
   useEffect(() => {
     const loadUser = async () => {
-      const user = await authService.getCurrentUser();
-      setCurrentUser(user);
+      try {
+        const user = await authService.getCurrentUser();
+        if (!user) {
+          // Se não conseguirmos o usuário (ex: refresh sem sessão), volta pro login
+          onLogout();
+          return;
+        }
+        setCurrentUser(user);
+      } catch (error) {
+        console.error("Erro ao carregar usuário", error);
+        onLogout();
+      } finally {
+        setIsLoadingUser(false);
+      }
     };
     loadUser();
-  }, []);
+  }, []); // Run once on mount
 
   // Load data logic
   useEffect(() => {
@@ -196,10 +210,11 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     setCurrentUser(updatedUser);
   };
 
-  if (!currentUser) {
+  if (isLoadingUser || !currentUser) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        {/* Loaded by App.tsx, but this handles internal state delay */}
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center text-zinc-500">
+        <Loader2 className="animate-spin text-blue-500 mb-2" size={32} />
+        <span className="ml-2">Carregando Dashboard...</span>
       </div>
     );
   }
