@@ -1,36 +1,35 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Plus, Play, RotateCcw, Check, Brain, X, Layers, Clock, Calendar, ChevronRight, MoreVertical, Trash2, Folder, FolderPlus, ArrowLeft, Home, CornerUpLeft, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { flashcardService, Flashcard } from '../services/flashcardService';
+import { Dashboard } from './flashcards/Dashboard';
+import { StudySession } from './flashcards/StudySession';
+import { CreateCardModal } from './flashcards/CreateCardModal';
 
-// SM-2 Algorithm Constants
+// --- SM-2 Constants ---
 const MIN_EASE = 1.3;
 const INITIAL_EASE = 2.5;
 
+interface DeckStats {
+  name: string;
+  total: number;
+  due: number;
+  progress: number;
+  path: string[];
+}
+
 const Flashcards: React.FC = () => {
-  // --- State ---
+  // --- Global State ---
   const [cards, setCards] = useState<Flashcard[]>([]);
-  const [currentPath, setCurrentPath] = useState<string[]>([]); // Current folder navigation
   const [isLoading, setIsLoading] = useState(true);
 
-  // Study Session State
+  // --- View State ---
+  const [view, setView] = useState<'dashboard' | 'study'>('dashboard');
   const [studyQueue, setStudyQueue] = useState<Flashcard[]>([]);
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  const [isFlipped, setIsFlipped] = useState(false);
-  const [isStudying, setIsStudying] = useState(false);
-  const [animationClass, setAnimationClass] = useState(''); // For transition effects
 
-  // Modals
+  // --- Modals ---
   const [isCardModalOpen, setIsCardModalOpen] = useState(false);
-  const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
-  const [isCreating, setIsCreating] = useState(false); // Creating/Saving state
 
-  // Forms
-  const [front, setFront] = useState('');
-  const [back, setBack] = useState('');
-  const [newFolderName, setNewFolderName] = useState('');
-
-  // --- Initialization ---
-
+  // --- Data Loading ---
   useEffect(() => {
     loadCards();
   }, []);
@@ -41,568 +40,171 @@ const Flashcards: React.FC = () => {
       const fetched = await flashcardService.fetchFlashcards();
       setCards(fetched);
     } catch (e) {
-      console.error("Error loading flashcards", e);
+      toast.error("Erro ao carregar flashcards.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  // --- Folder Logic ---
-
-  // Get items in current path
-  const { currentFolders, currentCards } = useMemo(() => {
-    const folders = new Set<string>();
-    const files: Flashcard[] = [];
-
-    cards.forEach(card => {
-      // Check if card belongs to current path hierarchy
-      const isChild = currentPath.every((folder, index) => card.folderPath[index] === folder);
-
-      if (isChild) {
-        if (card.folderPath.length > currentPath.length) {
-          // It's in a subfolder relative to current view
-          folders.add(card.folderPath[currentPath.length]);
-        } else if (card.folderPath.length === currentPath.length) {
-          // It's a file in the current view
-          files.push(card);
+  // --- Computed Data ---
+  const knownPaths = useMemo(() => {
+    const paths = new Set<string>();
+    cards.forEach(c => {
+      if (c.folderPath && c.folderPath.length > 0) {
+        paths.add(c.folderPath.join('/'));
+        // Add parent paths too
+        let currentParts: string[] = [];
+        for (const part of c.folderPath) {
+          currentParts.push(part);
+          paths.add(currentParts.join('/'));
         }
       }
     });
+    return Array.from(paths).sort();
+  }, [cards]);
 
-    return {
-      currentFolders: Array.from(folders).sort(),
-      currentCards: files.sort((a, b) => a.nextReview - b.nextReview)
-    };
-  }, [cards, currentPath]);
+  // Legacy shim for Dashboard interface
+  const decks = useMemo(() => {
+    return [];
+  }, []);
 
-  const navigateToFolder = (folderName: string) => {
-    setCurrentPath([...currentPath, folderName]);
+  const revisionQueue = useMemo(() => {
+    return cards
+      .filter(c => c.nextReview <= Date.now())
+      .sort((a, b) => a.nextReview - b.nextReview)
+      .slice(0, 5);
+  }, [cards]);
+
+  // --- Actions ---
+
+  const startStudySession = (targetPath?: string[]) => {
+    let queue = cards.filter(c => c.nextReview <= Date.now());
+
+    if (targetPath && targetPath.length > 0) {
+      queue = queue.filter(c => {
+        // Check if card path STARTS with targetPath
+        if (c.folderPath.length < targetPath.length) return false;
+        for (let i = 0; i < targetPath.length; i++) {
+          if (c.folderPath[i] !== targetPath[i]) return false;
+        }
+        return true;
+      });
+    }
+
+    if (queue.length === 0) {
+      toast.info("Tudo revisado neste local!");
+      return;
+    }
+
+    setStudyQueue(queue);
+    setView('study');
   };
 
-  const navigateUp = () => {
-    setCurrentPath(prev => prev.slice(0, -1));
-  };
-
-  const navigateHome = () => {
-    setCurrentPath([]);
-  };
-
-  // --- CRUD Operations ---
-
-  const handleCreateFolder = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newFolderName.trim()) return;
-
-    // Virtual folder creation by navigating to it
-    navigateToFolder(newFolderName);
-    setIsFolderModalOpen(false);
-    setNewFolderName('');
-  };
-
-  const handleAddCard = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!front.trim() || !back.trim()) return;
-    setIsCreating(true);
-
+  const handleCreateCard = async (newCard: Partial<Flashcard>) => {
     try {
-      const newCardData: Flashcard = {
-        id: '', // Service handles ID if new, but interface requires string. Service ignores for insert?
-        // Actually service uses 'randomUUID()' in SQL or we pass it? 
-        // Let's check service. It returns full object with ID.
-        // We can pass empty string if service generates, or generate here.
-        // The service implementation uses `supabase.from('flashcards').insert(...)` which generates ID if not provided?
-        // No, my service implementation in Step 62 ignored 'id' in insert, letting DB default `uuid_generate_v4()`. Perfect.
-        front,
-        back,
-        folderPath: [...currentPath],
-        nextReview: Date.now(),
-        interval: 0,
-        ease: INITIAL_EASE,
-        repetitions: 0
-      } as Flashcard; // Cast because 'id' is required by Type but generated by DB
-
-      // However, typescript might complain if I pass an object with missing ID to a function expecting Flashcard.
-      // My service `createFlashcard` expects `Flashcard`. 
-      // I should probably make ID optional in creation or generate a temp one.
-      // But the service returns the *real* one.
-      // I will just mock UUID here or let service handle. Service code: `insert({...})`. It doesn't use the ID from input.
-
-      const created = await flashcardService.createFlashcard(newCardData);
-      if (created) {
-        setCards(prev => [...prev, created]);
-        setFront('');
-        setBack('');
-        setIsCardModalOpen(false);
-      }
+      await flashcardService.createFlashcard(newCard as any);
+      toast.success("Card criado!");
+      // setIsCardModalOpen(false); // Valid choice to keep open for batch creation
+      loadCards();
     } catch (e) {
-      console.error("Failed to add card", e);
-    } finally {
-      setIsCreating(false);
+      toast.error("Erro ao criar card.");
+      console.error(e);
     }
   };
 
-  const handleDeleteCard = async (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (confirm('Excluir este card permanentemente?')) {
-      const success = await flashcardService.deleteFlashcard(id);
-      if (success) {
-        setCards(prev => prev.filter(c => c.id !== id));
-      }
-    }
-  };
+  const handleCardReview = (quality: number) => {
+    setStudyQueue(prevQueue => {
+      const currentCard = prevQueue[0];
+      if (!currentCard) return prevQueue;
 
-  // --- SM-2 Algorithm & Study Logic ---
-
-  const startSession = (specificDeck?: Flashcard[]) => {
-    const now = Date.now();
-    const source = specificDeck || cards;
-    const due = source.filter(c => c.nextReview <= now);
-
-    if (due.length === 0) {
-      alert("Nenhum card para revisar neste local agora!");
-      return;
-    }
-
-    setStudyQueue(due);
-    setCurrentCardIndex(0);
-    setIsFlipped(false);
-    setIsStudying(true);
-    setAnimationClass('animate-slide-in');
-  };
-
-  const startFolderSession = () => {
-    const descendants = cards.filter(card =>
-      currentPath.every((folder, index) => card.folderPath[index] === folder)
-    );
-    startSession(descendants);
-  };
-
-  const processReview = async (quality: number) => {
-    const card = studyQueue[currentCardIndex];
-    let { interval, repetitions, ease } = card;
-
-    if (quality >= 3) {
-      if (repetitions === 0) {
+      // SM-2 Logic
+      let { interval, repetitions, ease } = currentCard;
+      if (quality >= 3) {
+        if (repetitions === 0) interval = 1;
+        else if (repetitions === 1) interval = 6;
+        else interval = Math.round(interval * ease);
+        repetitions++;
+      } else {
+        repetitions = 0;
         interval = 1;
-      } else if (repetitions === 1) {
-        interval = 6;
-      } else {
-        interval = Math.round(interval * ease);
       }
-      repetitions += 1;
-    } else {
-      repetitions = 0;
-      interval = 1;
-    }
+      ease = ease + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
+      if (ease < MIN_EASE) ease = MIN_EASE;
 
-    ease = ease + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
-    if (ease < MIN_EASE) ease = MIN_EASE;
+      const nextReview = Date.now() + (interval * 24 * 60 * 60 * 1000);
+      const updated = { ...currentCard, interval, repetitions, ease, nextReview };
 
-    const nextReview = Date.now() + (interval * 24 * 60 * 60 * 1000);
+      // Update DB (async fire & forget)
+      flashcardService.updateFlashcard(updated);
 
-    const updatedCard = {
-      ...card,
-      interval,
-      repetitions,
-      ease,
-      nextReview
-    };
+      // Update Local State synchronously
+      setCards(prev => prev.map(c => c.id === updated.id ? updated : c));
 
-    // Optimistic Update
-    const oldCards = [...cards];
-    setCards(prev => prev.map(c => c.id === card.id ? updatedCard : c));
+      if (quality < 3) {
+        return [...prevQueue.slice(1), updated];
+      }
 
-    // Async Save
-    try {
-      await flashcardService.updateFlashcard(updatedCard);
-    } catch {
-      // Revert on error
-      setCards(oldCards);
-      alert("Erro ao salvar progresso. Verifique sua conexão.");
-      return;
-    }
-
-    // Animate & Next
-    handleNextCard(quality < 3 ? 'animate-shake' : 'animate-slide-out');
+      return prevQueue.slice(1);
+    });
   };
 
-  const handleNextCard = (anim: string) => {
-    setAnimationClass(anim);
-    setTimeout(() => {
-      if (currentCardIndex < studyQueue.length - 1) {
-        setCurrentCardIndex(prev => prev + 1);
-        setIsFlipped(false);
-        setAnimationClass('animate-slide-in');
-      } else {
-        setIsStudying(false); // End session
-      }
-    }, 400);
-  };
-
-  // --- Keyboard Support ---
   useEffect(() => {
-    if (!isStudying) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.code === 'Space') {
-        e.preventDefault();
-        if (!isFlipped) setIsFlipped(true);
-      }
-      if (!isFlipped) return;
-      if (e.key === '1') processReview(0); // Again
-      if (e.key === '2') processReview(3); // Hard
-      if (e.key === '3') processReview(4); // Good
-      if (e.key === '4') processReview(5); // Easy
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isStudying, isFlipped, currentCardIndex, studyQueue]);
+    if (view === 'study' && studyQueue.length === 0) {
+      toast.success("Sessão finalizada!");
+      setView('dashboard');
+    }
+  }, [studyQueue, view]);
 
 
   // --- Render ---
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center p-20 text-zinc-500">
-        <Loader2 className="animate-spin mb-2 text-blue-500" size={32} />
-        <p>Carregando flashcards...</p>
-      </div>
-    )
-  }
-
-  // --- Render Study Mode ---
-
-  if (isStudying && studyQueue.length > 0) {
-    const currentCard = studyQueue[currentCardIndex];
-    const progress = ((currentCardIndex) / studyQueue.length) * 100;
-
-    return (
-      <div className="h-[600px] flex flex-col relative bg-zinc-950 rounded-2xl overflow-hidden border border-zinc-800 shadow-2xl">
-        <style>{`
-          .perspective-1000 { perspective: 1000px; }
-          .transform-style-3d { transform-style: preserve-3d; }
-          .backface-hidden { backface-visibility: hidden; }
-          .rotate-y-180 { transform: rotateY(180deg); }
-          
-          @keyframes slideIn { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
-          @keyframes slideOut { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(-50px) rotate(-5deg); } }
-          @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
-          
-          .animate-slide-in { animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-          .animate-slide-out { animation: slideOut 0.4s ease-in forwards; }
-          .animate-shake { animation: shake 0.4s ease-in-out; }
-        `}</style>
-        {/* Top Progress */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-zinc-900 z-20">
-          <div className="h-full bg-gradient-to-r from-blue-600 to-emerald-500 transition-all duration-500" style={{ width: `${progress}%` }} />
-        </div>
-        {/* Header */}
-        <div className="flex justify-between items-center p-6 z-20">
-          <button onClick={() => setIsStudying(false)} className="text-zinc-500 hover:text-white flex items-center gap-2 text-sm font-medium transition-colors">
-            <X size={18} /> Encerrar
-          </button>
-          <div className="flex flex-col items-end">
-            <span className="text-zinc-400 font-mono text-xs uppercase tracking-widest">
-              Card {currentCardIndex + 1} / {studyQueue.length}
-            </span>
-            <div className="flex items-center gap-1 text-[10px] text-zinc-600 mt-1">
-              {currentCard.folderPath.join(' > ')}
-            </div>
-          </div>
-        </div>
-        {/* Card Stage */}
-        <div className={`flex-1 flex items-center justify-center p-4 sm:p-8 perspective-1000 overflow-hidden`}>
-          <div
-            className={`relative w-full max-w-2xl h-full max-h-[400px] transition-transform duration-500 transform-style-3d cursor-pointer ${isFlipped ? 'rotate-y-180' : ''} ${animationClass}`}
-            onClick={() => !isFlipped && setIsFlipped(true)}
-          >
-            {/* Front */}
-            <div className="absolute inset-0 backface-hidden bg-zinc-900 border border-zinc-800 rounded-2xl p-8 flex flex-col items-center justify-center text-center shadow-2xl hover:border-zinc-700 transition-colors group">
-              <span className="px-3 py-1 rounded-full bg-zinc-950 text-zinc-500 text-[10px] font-bold uppercase tracking-widest mb-6 border border-zinc-800">
-                Pergunta
-              </span>
-              <p className="text-2xl md:text-3xl font-medium text-white leading-relaxed select-none">
-                {currentCard.front}
-              </p>
-              <span className="absolute bottom-6 text-zinc-600 text-xs flex items-center gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
-                <Brain size={14} /> Toque para virar
-              </span>
-            </div>
-            {/* Back */}
-            <div className="absolute inset-0 backface-hidden rotate-y-180 bg-zinc-900 border border-blue-500/30 rounded-2xl p-8 flex flex-col items-center justify-center text-center shadow-[0_0_50px_rgba(37,99,235,0.1)]">
-              <span className="px-3 py-1 rounded-full bg-blue-900/20 text-blue-400 text-[10px] font-bold uppercase tracking-widest mb-6 border border-blue-500/20">
-                Resposta
-              </span>
-              <p className="text-xl md:text-2xl font-medium text-blue-100 leading-relaxed select-none">
-                {currentCard.back}
-              </p>
-            </div>
-          </div>
-        </div>
-        {/* Controls */}
-        <div className="h-24 border-t border-zinc-800 bg-zinc-950 p-4 z-20">
-          {!isFlipped ? (
-            <button
-              onClick={() => setIsFlipped(true)}
-              className="w-full h-full bg-white text-black hover:bg-zinc-200 rounded-xl font-bold text-lg tracking-wide transition-all shadow-lg transform active:scale-[0.99]"
-            >
-              Mostrar Resposta
-            </button>
-          ) : (
-            <div className="grid grid-cols-4 gap-3 h-full">
-              <button onClick={() => processReview(0)} className="flex flex-col items-center justify-center rounded-xl bg-zinc-900 border border-red-900/30 hover:bg-red-950/50 text-red-400 hover:border-red-500/50 transition-all group">
-                <span className="text-xs font-bold uppercase mb-1">Errei</span>
-                <span className="text-[10px] text-zinc-500 group-hover:text-red-300">Hoje</span>
-              </button>
-              <button onClick={() => processReview(3)} className="flex flex-col items-center justify-center rounded-xl bg-zinc-900 border border-orange-900/30 hover:bg-orange-950/50 text-orange-400 hover:border-orange-500/50 transition-all group">
-                <span className="text-xs font-bold uppercase mb-1">Difícil</span>
-                <span className="text-[10px] text-zinc-500 group-hover:text-orange-300">~2d</span>
-              </button>
-              <button onClick={() => processReview(4)} className="flex flex-col items-center justify-center rounded-xl bg-zinc-900 border border-blue-900/30 hover:bg-blue-950/50 text-blue-400 hover:border-blue-500/50 transition-all group">
-                <span className="text-xs font-bold uppercase mb-1">Bom</span>
-                <span className="text-[10px] text-zinc-500 group-hover:text-blue-300">~4d</span>
-              </button>
-              <button onClick={() => processReview(5)} className="flex flex-col items-center justify-center rounded-xl bg-zinc-900 border border-emerald-900/30 hover:bg-emerald-950/50 text-emerald-400 hover:border-emerald-500/50 transition-all group">
-                <span className="text-xs font-bold uppercase mb-1">Fácil</span>
-                <span className="text-[10px] text-zinc-500 group-hover:text-emerald-300">~7d</span>
-              </button>
-            </div>
-          )}
-        </div>
+      <div className="h-full flex items-center justify-center bg-zinc-950 text-zinc-500 animate-pulse">
+        Carregando Flashcards...
       </div>
     );
   }
 
-  // --- Render Dashboard Mode ---
-
-  const totalDue = cards.filter(c => c.nextReview <= Date.now()).length;
-  const currentPathStr = currentPath.length === 0 ? 'Home' : currentPath.join('/');
-  const cardsInHierarchy = cards.filter(card => currentPath.every((folder, index) => card.folderPath[index] === folder));
-  const dueInHierarchy = cardsInHierarchy.filter(c => c.nextReview <= Date.now()).length;
+  if (view === 'study') {
+    return (
+      <StudySession
+        queue={studyQueue}
+        onExit={() => setView('dashboard')}
+        onReview={handleCardReview}
+      />
+    );
+  }
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <>
+      <Dashboard
+        cards={cards}
+        decks={decks}
+        revisionQueue={revisionQueue}
+        onStartSession={(deckName) => {
+          if (typeof deckName === 'string') {
+            startStudySession(deckName ? deckName.split('/') : undefined);
+          } else {
+            startStudySession(undefined);
+          }
+        }}
+        onCreateCard={() => setIsCardModalOpen(true)}
+        onCreateFolder={() => {
+          toast.info("Crie um card para inaugurar uma nova pasta");
+          setIsCardModalOpen(true);
+        }}
+        onFilter={() => { }}
+      />
 
-      {/* Header Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="md:col-span-2 bg-gradient-to-br from-indigo-900/20 to-zinc-900 border border-indigo-500/20 p-6 rounded-2xl flex items-center justify-between relative overflow-hidden group">
-          <div className="absolute -top-10 -right-10 w-64 h-64 bg-indigo-500/10 rounded-full blur-[80px] group-hover:bg-indigo-500/20 transition-all duration-700"></div>
-          <div className="relative z-10">
-            <div className="flex items-center gap-2 mb-2">
-              <Brain className="text-indigo-400" size={20} />
-              <h2 className="text-xl font-bold text-white">Algoritmo SM-2 Ativo</h2>
-            </div>
-            <p className="text-zinc-400 text-sm mb-4 max-w-md">
-              {dueInHierarchy > 0
-                ? `Você tem ${dueInHierarchy} cards para revisar nesta pasta (Total global: ${totalDue}).`
-                : "Você zerou esta pasta! Navegue para outras áreas ou crie novos cards."}
-            </p>
-            <button
-              onClick={startFolderSession}
-              disabled={dueInHierarchy === 0}
-              className="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-lg font-bold flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-indigo-900/20"
-            >
-              <Play size={18} fill="currentColor" /> {dueInHierarchy > 0 ? 'Estudar Pasta' : 'Nada pendente aqui'}
-            </button>
-          </div>
-        </div>
-
-        <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-2xl flex flex-col justify-center">
-          <div className="flex items-center gap-2 mb-2">
-            <Layers className="text-emerald-500" size={20} />
-            <span className="text-zinc-400 text-sm font-medium">Total de Cards</span>
-          </div>
-          <span className="text-3xl font-bold text-white">{cards.length}</span>
-          <div className="flex items-center gap-2 mt-4 text-xs text-zinc-500">
-            <Clock size={12} /> Próxima revisão em média: 2 dias
-          </div>
-        </div>
-      </div>
-
-      {/* Explorer Toolbar */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 bg-zinc-950 p-2 rounded-xl border border-zinc-800">
-        {/* Breadcrumbs */}
-        <div className="flex items-center gap-1 overflow-x-auto text-sm px-2 scrollbar-hide">
-          <button
-            onClick={navigateHome}
-            className={`p-1.5 rounded-md hover:bg-zinc-800 transition-colors ${currentPath.length === 0 ? 'text-white' : 'text-zinc-500'}`}
-          >
-            <Home size={16} />
-          </button>
-
-          {currentPath.map((folder, index) => (
-            <React.Fragment key={index}>
-              <ChevronRight size={14} className="text-zinc-600 flex-shrink-0" />
-              <button
-                onClick={() => setCurrentPath(currentPath.slice(0, index + 1))}
-                className={`px-2 py-1 rounded-md whitespace-nowrap font-medium transition-colors ${index === currentPath.length - 1 ? 'text-white bg-zinc-800' : 'text-zinc-500 hover:text-zinc-300'}`}
-              >
-                {folder}
-              </button>
-            </React.Fragment>
-          ))}
-        </div>
-
-        {/* Actions */}
-        <div className="flex gap-2 w-full sm:w-auto">
-          {currentPath.length > 0 && (
-            <button
-              onClick={navigateUp}
-              className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors"
-              title="Voltar um nível"
-            >
-              <CornerUpLeft size={18} />
-            </button>
-          )}
-          <button
-            onClick={() => setIsFolderModalOpen(true)}
-            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 py-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 rounded-lg text-sm border border-zinc-700 transition-colors"
-          >
-            <FolderPlus size={16} /> Nova Pasta
-          </button>
-          <button
-            onClick={() => setIsCardModalOpen(true)}
-            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm font-bold shadow-lg shadow-blue-900/20 transition-colors"
-          >
-            <Plus size={16} /> Novo Card
-          </button>
-        </div>
-      </div>
-
-      {/* Content Grid */}
-      <div className="min-h-[300px]">
-        {currentFolders.length === 0 && currentCards.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-zinc-500 border border-dashed border-zinc-800 rounded-2xl">
-            <Folder size={48} className="mb-4 opacity-20" />
-            <p>Esta pasta está vazia.</p>
-            <button onClick={() => setIsCardModalOpen(true)} className="text-blue-500 mt-2 hover:underline text-sm">Criar primeiro card aqui</button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-
-            {/* Folders */}
-            {currentFolders.map(folder => (
-              <div
-                key={folder}
-                onClick={() => navigateToFolder(folder)}
-                className="aspect-square bg-zinc-900/50 border border-zinc-800 hover:border-zinc-600 hover:bg-zinc-800 p-4 rounded-xl cursor-pointer transition-all group flex flex-col items-center justify-center text-center"
-              >
-                <Folder size={40} className="text-yellow-600/80 group-hover:text-yellow-500 mb-3 transition-colors" fill="currentColor" fillOpacity={0.2} />
-                <span className="text-sm font-medium text-zinc-300 group-hover:text-white truncate w-full px-2">{folder}</span>
-                <span className="text-[10px] text-zinc-600 mt-1">Pasta</span>
-              </div>
-            ))}
-
-            {/* Cards */}
-            {currentCards.map(card => {
-              const isDue = card.nextReview <= Date.now();
-              return (
-                <div
-                  key={card.id}
-                  className="aspect-square bg-zinc-900 border border-zinc-800 hover:border-blue-500/50 p-4 rounded-xl relative group flex flex-col text-left transition-all"
-                >
-                  {isDue && <div className="absolute top-3 right-3 w-2 h-2 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.8)]"></div>}
-
-                  <p className="text-zinc-300 font-medium text-sm line-clamp-3 mb-auto pt-1">
-                    {card.front}
-                  </p>
-
-                  <div className="mt-4 pt-3 border-t border-zinc-800/50 flex justify-between items-end">
-                    <div className="flex flex-col">
-                      <span className="text-[10px] text-zinc-600 uppercase">Intervalo</span>
-                      <span className="text-xs text-zinc-400">{card.interval}d</span>
-                    </div>
-                    <button
-                      onClick={(e) => handleDeleteCard(card.id, e)}
-                      className="text-zinc-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity p-1"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-
-      {/* Modal: Create Folder */}
-      {isFolderModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-sm shadow-2xl relative animate-in zoom-in-95 duration-200">
-            <form onSubmit={handleCreateFolder} className="p-6">
-              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2"><FolderPlus size={20} /> Nova Pasta</h3>
-              <input
-                autoFocus
-                type="text"
-                value={newFolderName}
-                onChange={e => setNewFolderName(e.target.value)}
-                placeholder="Nome da pasta (ex: Geometria)"
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 mb-4"
-              />
-              <div className="flex gap-2">
-                <button type="button" onClick={() => setIsFolderModalOpen(false)} className="flex-1 py-2 text-zinc-400 hover:text-white">Cancelar</button>
-                <button type="submit" className="flex-1 py-2 bg-white text-black font-bold rounded-lg hover:bg-zinc-200">Criar</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Modal: Create Card */}
       {isCardModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-lg shadow-2xl relative animate-in zoom-in-95 duration-200">
-            <div className="p-6 border-b border-zinc-800 flex justify-between items-center bg-zinc-950/50 rounded-t-2xl">
-              <div className="flex flex-col">
-                <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                  <Plus size={20} className="text-blue-500" /> Novo Flashcard
-                </h3>
-                <span className="text-xs text-zinc-500 flex items-center gap-1 mt-1">
-                  <Folder size={10} /> {currentPath.length === 0 ? 'Home' : currentPath.join(' / ')}
-                </span>
-              </div>
-              <button onClick={() => setIsCardModalOpen(false)} className="text-zinc-500 hover:text-white transition-colors">
-                <X size={20} />
-              </button>
-            </div>
-
-            <form onSubmit={handleAddCard} className="p-6 space-y-5">
-              <div className="space-y-4">
-                <div className="relative">
-                  <label className="absolute -top-2 left-3 bg-zinc-900 px-1 text-xs font-medium text-blue-400">Frente (Pergunta)</label>
-                  <textarea
-                    value={front}
-                    onChange={(e) => setFront(e.target.value)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-4 text-white focus:outline-none focus:border-blue-500 transition-all min-h-[80px] resize-none"
-                    placeholder="Conceito, fórmula ou pergunta..."
-                    autoFocus
-                  />
-                </div>
-
-                <div className="relative">
-                  <label className="absolute -top-2 left-3 bg-zinc-900 px-1 text-xs font-medium text-emerald-400">Verso (Resposta)</label>
-                  <textarea
-                    value={back}
-                    onChange={(e) => setBack(e.target.value)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-4 text-white focus:outline-none focus:border-emerald-500 transition-all min-h-[80px] resize-none"
-                    placeholder="Explicação ou resposta..."
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={isCreating}
-                className="w-full bg-white text-black font-bold py-3.5 rounded-xl hover:bg-zinc-200 transition-transform hover:scale-[1.01] shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                {isCreating && <Loader2 className="animate-spin" size={16} />}
-                {isCreating ? 'Adicionando...' : 'Adicionar Card'}
-              </button>
-            </form>
-          </div>
-        </div>
+        <CreateCardModal
+          decks={knownPaths}
+          onClose={() => setIsCardModalOpen(false)}
+          onCreate={handleCreateCard}
+        />
       )}
-    </div>
+    </>
   );
 };
 

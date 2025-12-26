@@ -13,11 +13,11 @@ const Footer: React.FC = () => {
               High Performance Club &copy; {new Date().getFullYear()}
             </p>
           </div>
-          
+
           <div className="flex space-x-6">
             <a href="#" className="text-zinc-500 hover:text-white transition-colors">Instagram</a>
             <a href="#" className="text-zinc-500 hover:text-white transition-colors">Twitter</a>
-            <a href="#" className="text-zinc-500 hover:text-white transition-colors">Contato</a>
+            <a href="mailto:contato@hpc.com" className="text-zinc-500 hover:text-white transition-colors">Contato</a>
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { createTutorChat } from '../services/geminiService';
 import { MessageSquare, Send, ArrowLeft, Bot, User, Sparkles, BrainCircuit, Atom, Calculator, BookOpen, Globe, Dna, FlaskConical, Trash2, Users, Lightbulb, Languages, Feather } from 'lucide-react';
+import { toast } from 'sonner';
 import { Chat, GenerateContentResponse, Content } from "@google/genai";
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
@@ -82,10 +83,10 @@ const Tutors: React.FC = () => {
       const allHistory = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
       delete allHistory[selectedSubject];
       localStorage.setItem(STORAGE_KEY, JSON.stringify(allHistory));
-      
+
       const initialMsg: Message = { role: 'model', text: `Histórico limpo. Olá! Sou seu tutor especialista em ${selectedSubject}. Como posso te ajudar a destruir na prova hoje?` };
       setMessages([initialMsg]);
-      
+
       // Re-initialize chat with empty history
       chatInstanceRef.current = createTutorChat(selectedSubject);
       saveHistory(selectedSubject, [initialMsg]);
@@ -97,7 +98,7 @@ const Tutors: React.FC = () => {
 
   const handleSelectSubject = (subject: string) => {
     setSelectedSubject(subject);
-    
+
     // Load history
     let subjectHistory: Message[] = [];
     try {
@@ -109,19 +110,26 @@ const Tutors: React.FC = () => {
       console.error("Failed to load history", e);
     }
 
-    if (subjectHistory.length > 0) {
-      setMessages(subjectHistory);
-      // Map local messages to Gemini Content format for context to restore chat session
-      const geminiHistory: Content[] = subjectHistory.map(m => ({
-        role: m.role,
-        parts: [{ text: m.text }]
-      }));
-      chatInstanceRef.current = createTutorChat(subject, geminiHistory);
-    } else {
-      const initialMsg: Message = { role: 'model', text: `Olá! Sou seu tutor especialista em ${subject}. Como posso te ajudar a destruir na prova hoje?` };
-      setMessages([initialMsg]);
-      chatInstanceRef.current = createTutorChat(subject);
-      saveHistory(subject, [initialMsg]);
+    try {
+      if (subjectHistory.length > 0) {
+        setMessages(subjectHistory);
+        // Map local messages to Gemini Content format for context to restore chat session
+        const geminiHistory: Content[] = subjectHistory.map(m => ({
+          role: m.role,
+          parts: [{ text: m.text }]
+        }));
+        chatInstanceRef.current = createTutorChat(subject, geminiHistory);
+      } else {
+        const initialMsg: Message = { role: 'model', text: `Olá! Sou seu tutor especialista em ${subject}. Como posso te ajudar a destruir na prova hoje?` };
+        setMessages([initialMsg]);
+        chatInstanceRef.current = createTutorChat(subject);
+        saveHistory(subject, [initialMsg]);
+      }
+    } catch (e: any) {
+      console.error(e);
+      toast.error("Erro ao iniciar Tutor. Verifique sua API Key no .env");
+      setMessages([{ role: 'model', text: "Erro: API Key do Google Gemini não configurada. Adicione VITE_GEMINI_API_KEY no seu arquivo .env." }]);
+      // Allow rendering to continue so user sees the message
     }
   };
 
@@ -131,18 +139,18 @@ const Tutors: React.FC = () => {
 
     const userMsg = inputValue;
     setInputValue('');
-    
+
     // Optimistic update
     const messagesWithUser: Message[] = [...messages, { role: 'user', text: userMsg }];
     setMessages(messagesWithUser);
     saveHistory(selectedSubject, messagesWithUser);
-    
+
     setIsLoading(true);
 
     try {
       const result: GenerateContentResponse = await chatInstanceRef.current.sendMessage({ message: userMsg });
       const text = result.text || "Desculpe, tive um problema ao processar sua resposta.";
-      
+
       const messagesWithModel: Message[] = [...messagesWithUser, { role: 'model', text }];
       setMessages(messagesWithModel);
       saveHistory(selectedSubject, messagesWithModel);
@@ -202,15 +210,15 @@ const Tutors: React.FC = () => {
             );
           })}
         </div>
-        
+
         <div className="mt-12 p-6 rounded-2xl bg-gradient-to-r from-blue-900/20 to-purple-900/20 border border-zinc-800 flex items-center gap-6">
-           <div className="bg-zinc-950 p-4 rounded-full border border-zinc-800 text-blue-400">
-              <BrainCircuit size={32} />
-           </div>
-           <div>
-             <h4 className="text-white font-bold mb-1">Como usar?</h4>
-             <p className="text-zinc-400 text-sm">Nossos tutores utilizam a tecnologia Gemini 2.0. Eles foram treinados especificamente com o padrão de questões da UFRGS e do ENEM. Peça resoluções, explicações teóricas ou dicas de macetes.</p>
-           </div>
+          <div className="bg-zinc-950 p-4 rounded-full border border-zinc-800 text-blue-400">
+            <BrainCircuit size={32} />
+          </div>
+          <div>
+            <h4 className="text-white font-bold mb-1">Como usar?</h4>
+            <p className="text-zinc-400 text-sm">Nossos tutores utilizam a tecnologia Gemini 2.0. Eles foram treinados especificamente com o padrão de questões da UFRGS e do ENEM. Peça resoluções, explicações teóricas ou dicas de macetes.</p>
+          </div>
         </div>
       </div>
     );
@@ -223,8 +231,8 @@ const Tutors: React.FC = () => {
       {/* Chat Header */}
       <div className="flex items-center justify-between p-4 border-b border-zinc-800 bg-zinc-950/50 backdrop-blur">
         <div className="flex items-center gap-3">
-          <button 
-            onClick={handleBack} 
+          <button
+            onClick={handleBack}
             className="p-2 hover:bg-zinc-800 rounded-full text-zinc-400 hover:text-white transition-colors"
           >
             <ArrowLeft size={20} />
@@ -243,7 +251,7 @@ const Tutors: React.FC = () => {
             </span>
           </div>
         </div>
-        <button 
+        <button
           onClick={clearHistory}
           title="Limpar Histórico"
           className="p-2 text-zinc-500 hover:text-red-400 hover:bg-zinc-800 rounded-lg transition-colors flex items-center gap-2 text-xs"
@@ -256,14 +264,13 @@ const Tutors: React.FC = () => {
       <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-zinc-950/30 scroll-smooth">
         {messages.map((msg, idx) => (
           <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[85%] md:max-w-[70%] rounded-2xl p-4 ${
-              msg.role === 'user' 
-                ? 'bg-blue-600 text-white rounded-br-none' 
-                : 'bg-zinc-800 text-zinc-100 rounded-bl-none border border-zinc-700'
-            }`}>
+            <div className={`max-w-[85%] md:max-w-[70%] rounded-2xl p-4 ${msg.role === 'user'
+              ? 'bg-blue-600 text-white rounded-br-none'
+              : 'bg-zinc-800 text-zinc-100 rounded-bl-none border border-zinc-700'
+              }`}>
               <div className="flex items-center gap-2 mb-1 opacity-50 text-xs">
-                 {msg.role === 'user' ? <User size={12} /> : <Bot size={12} />}
-                 <span>{msg.role === 'user' ? 'Você' : 'HPC Tutor'}</span>
+                {msg.role === 'user' ? <User size={12} /> : <Bot size={12} />}
+                <span>{msg.role === 'user' ? 'Você' : 'HPC Tutor'}</span>
               </div>
               <div className="text-sm leading-relaxed">
                 {msg.role === 'model' ? (
@@ -271,16 +278,16 @@ const Tutors: React.FC = () => {
                     remarkPlugins={[remarkMath]}
                     rehypePlugins={[[rehypeKatex, { throwOnError: false }]]}
                     components={{
-                      strong: ({node, ...props}) => <strong className="font-bold text-white" {...props} />,
-                      ul: ({node, ...props}) => <ul className="list-disc pl-4 mb-2 space-y-1" {...props} />,
-                      ol: ({node, ...props}) => <ol className="list-decimal pl-4 mb-2 space-y-1" {...props} />,
-                      li: ({node, ...props}) => <li className="marker:text-zinc-500" {...props} />,
-                      p: ({node, ...props}) => <p className="mb-2 last:mb-0" {...props} />,
-                      h1: ({node, ...props}) => <h1 className="text-lg font-bold text-white mb-2" {...props} />,
-                      h2: ({node, ...props}) => <h2 className="text-base font-bold text-white mb-2" {...props} />,
-                      h3: ({node, ...props}) => <h3 className="text-sm font-bold text-white mb-1" {...props} />,
-                      code: ({node, ...props}) => <code className="bg-zinc-950 px-1.5 py-0.5 rounded text-xs font-mono text-blue-300 border border-zinc-700" {...props} />,
-                      blockquote: ({node, ...props}) => <blockquote className="border-l-2 border-zinc-600 pl-3 italic text-zinc-400 my-2" {...props} />
+                      strong: ({ node, ...props }) => <strong className="font-bold text-white" {...props} />,
+                      ul: ({ node, ...props }) => <ul className="list-disc pl-4 mb-2 space-y-1" {...props} />,
+                      ol: ({ node, ...props }) => <ol className="list-decimal pl-4 mb-2 space-y-1" {...props} />,
+                      li: ({ node, ...props }) => <li className="marker:text-zinc-500" {...props} />,
+                      p: ({ node, ...props }) => <p className="mb-2 last:mb-0" {...props} />,
+                      h1: ({ node, ...props }) => <h1 className="text-lg font-bold text-white mb-2" {...props} />,
+                      h2: ({ node, ...props }) => <h2 className="text-base font-bold text-white mb-2" {...props} />,
+                      h3: ({ node, ...props }) => <h3 className="text-sm font-bold text-white mb-1" {...props} />,
+                      code: ({ node, ...props }) => <code className="bg-zinc-950 px-1.5 py-0.5 rounded text-xs font-mono text-blue-300 border border-zinc-700" {...props} />,
+                      blockquote: ({ node, ...props }) => <blockquote className="border-l-2 border-zinc-600 pl-3 italic text-zinc-400 my-2" {...props} />
                     }}
                   >
                     {msg.text}
@@ -316,8 +323,8 @@ const Tutors: React.FC = () => {
             className="flex-1 bg-zinc-950 text-white border border-zinc-800 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-zinc-600"
             disabled={isLoading}
           />
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={!inputValue.trim() || isLoading}
             className="bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >

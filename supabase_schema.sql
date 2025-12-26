@@ -43,6 +43,8 @@ create table notes (
   name text not null,
   type text not null check (type in ('folder', 'markdown', 'pdf')),
   content text, -- Markdown content
+  tags text[] default '{}', -- Tags for filtering
+  is_favorite boolean default false, -- Favorite status
   pdf_url text, -- We will store URL instead of base64 if possible, but for now matching interface logic implies data.
   pdf_data text, -- Storing base64 here if needed, but discouraged for large files. keeping for compat.
   created_at bigint not null default extract(epoch from now())::bigint * 1000,

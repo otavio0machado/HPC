@@ -1,0 +1,413 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import NotesSidebar from './NotesSidebar';
+import NotesEditor from './NotesEditor';
+import NotesInsights from './NotesInsights';
+import NotesSettings from './NotesSettings';
+import { notesService } from '../../services/notesService';
+import { NoteFile } from '../../types';
+import { toast } from 'sonner';
+import { Loader2, Hash, Star, PanelLeft } from 'lucide-react';
+import TagInput from './TagInput';
+import { PDFReader } from './PDFReader';
+import type { IHighlight } from 'react-pdf-highlighter';
+
+const NotesModule: React.FC = () => {
+    const [notes, setNotes] = useState<NoteFile[]>([]);
+    const [selectedNote, setSelectedNote] = useState<NoteFile | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isSaving, setIsSaving] = useState(false);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+    const [selectedTag, setSelectedTag] = useState<string | null>(null);
+
+    // PDF Reader State
+    const [activePdfUrl, setActivePdfUrl] = useState<string | null>(null);
+    const [pdfAnnotations, setPdfAnnotations] = useState<IHighlight[]>([]);
+    const [showPdfReader, setShowPdfReader] = useState(false);
+
+    // Sidebar State
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+    // Calculate unique tags
+    const allTags = React.useMemo(() => {
+        const tags = new Set<string>();
+        // Safety check: ensure notes is array
+        if (Array.isArray(notes)) {
+            notes.forEach(note => {
+                if (note && Array.isArray(note.tags)) {
+                    note.tags.forEach(t => tags.add(t));
+                }
+            });
+        }
+        return Array.from(tags).sort();
+    }, [notes]);
+
+    // Filter notes
+    const filteredNotes = React.useMemo(() => {
+        if (!Array.isArray(notes)) return [];
+        if (!selectedTag) return notes;
+        return notes.filter(n => n && Array.isArray(n.tags) && n.tags.includes(selectedTag));
+    }, [notes, selectedTag]);
+
+    useEffect(() => {
+        loadNotes();
+    }, []);
+
+    const loadNotes = async () => {
+        try {
+            const data = await notesService.fetchNotes();
+            setNotes(data);
+        } catch (e) {
+            toast.error("Erro ao carregar notas.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleCreateNote = async (parentId: string | null = null, type: 'folder' | 'markdown' = 'markdown') => {
+        try {
+            const newNote = await notesService.createNote({
+                name: type === 'folder' ? 'Nova Pasta' : 'Nova Nota Sem Título',
+                type: type,
+                parentId: parentId,
+                content: ''
+            });
+
+            if (newNote) {
+                setNotes(prev => [...prev, newNote]);
+                if (type === 'markdown') {
+                    setSelectedNote(newNote);
+                }
+                toast.success(type === 'folder' ? 'Pasta criada' : 'Nota criada');
+            }
+        } catch (e) {
+            toast.error("Erro ao criar.");
+        }
+    };
+
+    const handleDeleteNote = async (id: string) => {
+        if (!confirm('Tem certeza? Isso apagará notas filhas também.')) return;
+
+        // Optimistic
+        const previousNotes = [...notes];
+        setNotes(prev => prev.filter(n => n.id !== id && n.parentId !== id));
+        if (selectedNote?.id === id) setSelectedNote(null);
+
+        try {
+            await notesService.deleteNote(id);
+            toast.success("Nota removida.");
+        } catch (e) {
+            setNotes(previousNotes);
+            toast.error("Erro ao remover.");
+        }
+    };
+
+    const handleRenameNote = async (id: string, newName: string) => {
+        // Optimistic
+        const previousNotes = [...notes];
+        setNotes(prev => prev.map(n => n.id === id ? { ...n, name: newName } : n));
+        if (selectedNote?.id === id) setSelectedNote(prev => prev ? { ...prev, name: newName } : null);
+
+        try {
+            await notesService.updateNote(id, { name: newName });
+            toast.success("Renomeado com sucesso.");
+        } catch (e) {
+            setNotes(previousNotes);
+            toast.error("Erro ao renomear.");
+        }
+    };
+
+    const handleMoveNote = async (noteId: string, newParentId: string | null) => {
+        // Optimistic update
+        const note = notes.find(n => n.id === noteId);
+        if (!note || note.parentId === newParentId) return;
+
+        const previousNotes = [...notes];
+        setNotes(prev => prev.map(n => n.id === noteId ? { ...n, parentId: newParentId } : n));
+        if (selectedNote?.id === noteId) setSelectedNote(prev => prev ? { ...prev, parentId: newParentId } : null);
+
+        try {
+            await notesService.updateNote(noteId, { parentId: newParentId });
+            toast.success("Nota movida.");
+        } catch (e) {
+            setNotes(previousNotes);
+            toast.error("Erro ao mover nota.");
+        }
+    };
+
+    // Debounced save
+    const handleUpdateContent = useCallback(async (content: string) => {
+        if (!selectedNote) return;
+
+        // Update local state immediately
+        const updatedNote = { ...selectedNote, content };
+
+        // Scan for new tags immediately to update UI without refresh
+        const extractedTags = content.match(/#[\w\u00C0-\u00FF]+/g) || [];
+        updatedNote.tags = extractedTags;
+
+        setSelectedNote(updatedNote);
+        setNotes(prev => prev.map(n => n.id === selectedNote.id ? updatedNote : n));
+
+    }, [selectedNote]);
+
+    const handleToggleFavorite = async () => {
+        if (!selectedNote) return;
+
+        const newStatus = !selectedNote.isFavorite;
+
+        // Optimistic
+        const updatedNote = { ...selectedNote, isFavorite: newStatus };
+        setSelectedNote(updatedNote);
+        setNotes(prev => prev.map(n => n.id === selectedNote.id ? updatedNote : n));
+
+        try {
+            await notesService.updateNote(selectedNote.id, { isFavorite: newStatus });
+            toast.success(newStatus ? "Adicionado aos favoritos" : "Removido dos favoritos");
+        } catch (e) {
+            // Revert
+            const revertedNote = { ...selectedNote, isFavorite: !newStatus };
+            setSelectedNote(revertedNote);
+            setNotes(prev => prev.map(n => n.id === selectedNote.id ? revertedNote : n));
+            toast.error("Erro ao atualizar favorito");
+        }
+    };
+
+    const handleAddTag = async (tag: string) => {
+        if (!selectedNote) return;
+
+        // Ensure we append safely to HTML or plain text
+        // If content is empty, just the tag. If content exists, new paragraph.
+        const tagHtml = `<p>${tag} </p>`;
+        const newContent = selectedNote.content ? selectedNote.content + tagHtml : tagHtml;
+
+        await handleUpdateContent(newContent);
+
+        // Force immediate save for better UX
+        setIsSaving(true);
+        await notesService.updateNote(selectedNote.id, {
+            content: newContent,
+            name: selectedNote.name,
+            parentId: selectedNote.parentId,
+            pdfData: selectedNote.pdfData
+        });
+        setIsSaving(false);
+        toast.success(`Tag ${tag} adicionada!`);
+    };
+
+    const handleOpenPdf = useCallback((url: string, title?: string) => {
+        setActivePdfUrl(url);
+        setShowPdfReader(true);
+        // If the note has stored annotations, load them
+        // Note: We need to make sure selectedNote matches the one with PDF or is just a workspace
+        // For now, assuming current note might have the annotations in pdfAnnotations field
+    }, []);
+
+    const handleUpdateAnnotations = useCallback(async (allHighlights: IHighlight[]) => {
+        setPdfAnnotations(allHighlights);
+        if (selectedNote) {
+            // Update local state immediately
+            const updatedNote = { ...selectedNote, pdfAnnotations: allHighlights };
+            setSelectedNote(updatedNote);
+            setNotes(prev => prev.map(n => n.id === selectedNote.id ? updatedNote : n));
+
+            // Debounce save? Or save immediately on annotation change
+            // It's better to save immediately for annotations as they are critical
+            try {
+                await notesService.updateNote(selectedNote.id, {
+                    pdfAnnotations: allHighlights
+                });
+            } catch (error) {
+                console.error("Error saving annotations", error);
+                toast.error("Erro ao salvar anotações");
+            }
+        }
+    }, [selectedNote]);
+
+    // Update pdfAnnotations state when selectedNote changes
+    useEffect(() => {
+        if (selectedNote && selectedNote.pdfAnnotations) {
+            setPdfAnnotations(selectedNote.pdfAnnotations);
+        } else {
+            setPdfAnnotations([]);
+        }
+    }, [selectedNote?.id]); // Only reset when switching notes
+
+    // Autosave Effect
+
+    // Autosave Effect
+    useEffect(() => {
+        if (!selectedNote) return;
+
+        const timer = setTimeout(async () => {
+            setIsSaving(true);
+            await notesService.updateNote(selectedNote.id, {
+                content: selectedNote.content,
+                name: selectedNote.name,
+                parentId: selectedNote.parentId,
+                pdfData: selectedNote.pdfData
+            });
+            setIsSaving(false);
+
+        }, 2000);
+
+        return () => clearTimeout(timer);
+    }, [selectedNote?.content, selectedNote?.name]);
+
+    // Search notes for WikiLinks
+    const searchNotes = useCallback(async (query: string) => {
+        const lowerQuery = query.toLowerCase();
+        return notes
+            .filter(n => n.name.toLowerCase().includes(lowerQuery) && n.id !== selectedNote?.id)
+            .slice(0, 5)
+            .map(n => ({
+                id: n.id,
+                label: n.name,
+                name: n.name
+            }));
+    }, [notes, selectedNote]);
+
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center h-full text-zinc-500">
+                <Loader2 className="animate-spin text-blue-500" size={32} />
+            </div>
+        );
+    }
+
+    return (
+        <div className="flex h-[calc(100vh-80px)] overflow-hidden bg-zinc-950">
+            {/* Sidebar with visibility control */}
+            <div className={`${isSidebarOpen ? 'w-72' : 'w-0'} transition-all duration-300 overflow-hidden flex-shrink-0 border-r border-zinc-800 bg-zinc-950 flex flex-col`}>
+                <div className="w-72 h-full flex flex-col">
+                    <NotesSidebar
+                        notes={filteredNotes}
+                        selectedNoteId={selectedNote?.id || null}
+                        onSelectNote={setSelectedNote}
+                        onCreateNote={handleCreateNote}
+                        onDeleteNote={handleDeleteNote}
+                        onMoveNote={handleMoveNote}
+                        onRenameNote={handleRenameNote}
+                        onOpenSettings={() => setIsSettingsOpen(true)}
+                        // Tag Props
+                        allTags={allTags}
+                        selectedTag={selectedTag}
+                        onSelectTag={setSelectedTag}
+                        allNotes={notes} // Pass all notes for favorites
+                    />
+                </div>
+            </div>
+
+            <div className="flex-1 flex flex-col min-w-0">
+                {selectedNote ? (
+                    <>
+                        {/* Note Header */}
+                        <div className="px-8 py-4 border-b border-zinc-800 flex items-center justify-between bg-zinc-950">
+                            <div className="flex-1">
+                                <div className="text-xs text-zinc-500 mb-2 flex items-center gap-2">
+                                    <button
+                                        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                                        className="p-1 hover:bg-zinc-800 rounded text-zinc-400 hover:text-white transition-colors"
+                                        title={isSidebarOpen ? "Fechar Sidebar" : "Abrir Sidebar"}
+                                    >
+                                        <PanelLeft size={16} />
+                                    </button>
+                                    <span className="text-zinc-700">|</span>
+                                    Cadernos <span className="text-zinc-700">/</span> {selectedNote.type === 'folder' ? 'Pasta' : 'Nota'}
+                                </div>
+                                <input
+                                    type="text"
+                                    value={selectedNote.name}
+                                    onChange={(e) => {
+                                        const newName = e.target.value;
+                                        setSelectedNote(prev => prev ? { ...prev, name: newName } : null);
+                                        setNotes(prev => prev.map(n => n.id === selectedNote.id ? { ...n, name: newName } : n));
+                                    }}
+                                    className="bg-transparent text-2xl font-bold text-white focus:outline-none w-full placeholder:text-zinc-700"
+                                    placeholder="Título da Nota"
+                                />
+                                <button
+                                    onClick={handleToggleFavorite}
+                                    className="absolute right-4 top-4 p-2 text-zinc-500 hover:text-yellow-400 transition-colors"
+                                    title={selectedNote.isFavorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+                                >
+                                    <Star size={20} className={selectedNote.isFavorite ? "fill-yellow-400 text-yellow-400" : ""} />
+                                </button>
+                                <div className="flex items-center gap-2 mt-2 flex-wrap">
+                                    {selectedNote.tags && selectedNote.tags.length > 0 ? (
+                                        selectedNote.tags.map(tag => (
+                                            <span key={tag} className="bg-emerald-900/30 text-emerald-400 border border-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 cursor-pointer hover:bg-emerald-800/50" onClick={() => setSelectedTag(tag)}>
+                                                <Hash size={10} /> {tag.replace('#', '')}
+                                            </span>
+                                        ))
+                                    ) : (
+                                        <span className="text-xs text-zinc-600 italic flex items-center gap-1">
+                                            Sem tags
+                                        </span>
+                                    )}
+                                    <TagInput allTags={allTags} onAddTag={handleAddTag} />
+                                </div>
+                            </div>
+                            <div className="text-xs text-zinc-500 flex flex-col items-end gap-1">
+                                <span>{isSaving ? 'Salvando...' : 'Salvo agora'}</span>
+                                {/* Spacer for absolute star button */}
+                                <div className="w-8"></div>
+                            </div>
+                        </div>
+
+                        {/* Editor and PDF Split View */}
+                        <div className="flex-1 overflow-hidden flex">
+                            {/* Editor Panel - Resizable or Flex */}
+                            <div className={`flex flex-col transition-all duration-300 ${showPdfReader ? 'w-1/2 border-r border-zinc-800' : 'w-full'}`}>
+                                <NotesEditor
+                                    content={selectedNote.content || ''}
+                                    onUpdate={handleUpdateContent}
+                                    searchNotes={searchNotes}
+                                    onOpenPdf={handleOpenPdf}
+                                />
+                            </div>
+
+                            {/* PDF Reader Panel */}
+                            {showPdfReader && activePdfUrl && (
+                                <div className="w-1/2 flex flex-col bg-zinc-900 border-l border-zinc-800">
+                                    <PDFReader
+                                        url={activePdfUrl}
+                                        initialAnnotations={pdfAnnotations}
+                                        onUpdateAnnotations={handleUpdateAnnotations}
+                                        onClose={() => setShowPdfReader(false)}
+                                    />
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Status Bar */}
+                        <div className="h-8 border-t border-zinc-800 flex items-center justify-between px-4 text-[10px] text-zinc-500 bg-zinc-950">
+                            <div className="flex gap-4">
+                                <span>Palavras: {selectedNote.content?.split(/\s+/).filter(w => w.length > 0).length || 0}</span>
+                                <span>Caracteres: {selectedNote.content?.length || 0}</span>
+                            </div>
+                            <div className="flex items-center gap-1.5 text-emerald-500">
+                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div> Online
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <div className="flex-1 flex flex-col items-center justify-center text-zinc-500">
+                        <Hash size={48} className="text-zinc-800 mb-4" />
+                        <p>Selecione uma nota ou crie uma nova para começar.</p>
+                    </div>
+                )}
+            </div>
+
+            {selectedNote && <NotesInsights note={selectedNote} />}
+
+            <NotesSettings
+                isOpen={isSettingsOpen}
+                onClose={() => setIsSettingsOpen(false)}
+                onImportComplete={() => loadNotes()}
+            />
+        </div>
+    );
+};
+
+export default NotesModule;

@@ -1,4 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Menu, X, Clock, Loader2, ChevronDown, User, Settings as SettingsIcon, LogOut, Lock } from 'lucide-react';
+import { toast } from 'sonner';
+
+// Components
+import DashboardWidgets from './dashboard/DashboardWidgets';
 import Tutors from './Tutors';
 import ErrorList from './ErrorList';
 import Flashcards from './Flashcards';
@@ -6,7 +12,10 @@ import Simulados from './Simulados';
 import TaskPlanner from './TaskPlanner';
 import Profile from './Profile';
 import Settings from './Settings';
-import { Trophy, Clock, Calendar, LogOut, Plus, X, AlertTriangle, Zap, ArrowRight, LayoutList, MessageSquare, Activity, CheckCircle2, Circle, User, Settings as SettingsIcon, ChevronDown, Sparkles, Loader2 } from 'lucide-react';
+import NotesModule from './notes/NotesModule';
+import UpgradeModal from './UpgradeModal';
+
+// Services & Types
 import { authService } from '../services/authService';
 import { flashcardService } from '../services/flashcardService';
 import { PlannerTask, ErrorEntry, SimuladoResult, Message, User as UserType } from '../types';
@@ -16,13 +25,41 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
-  const navItems = ["Dashboard", "Planner", "Tutores", "Lista de Erros", "Flashcards", "Simulados"];
+  // Navigation State
+  const navItems = ["Dashboard", "Planner", "Notas", "Tutores", "Lista de Erros", "Flashcards", "Simulados"];
   const [activeTab, setActiveTab] = useState("Dashboard");
-  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
 
   // User Menu State
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
+
+  // User State
+  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
+
+  // Data States
+  const [todayHours, setTodayHours] = useState<number>(0);
+  const [weekHours, setWeekHours] = useState<number>(0);
+  const [monthHours, setMonthHours] = useState<number>(0);
+  const [dailyTasks, setDailyTasks] = useState<PlannerTask[]>([]);
+
+  // Widget States
+  const [activeTutorsCount, setActiveTutorsCount] = useState(0);
+  const [simuladosCount, setSimuladosCount] = useState(0);
+  const [lastTutorMessage, setLastTutorMessage] = useState<{ subject: string, message: string } | null>(null);
+  const [recentErrors, setRecentErrors] = useState<ErrorEntry[]>([]);
+  const [dueFlashcardsCount, setDueFlashcardsCount] = useState(0);
+  const [latestSimulado, setLatestSimulado] = useState<SimuladoResult | null>(null);
+  const [globalSimuladosAvg, setGlobalSimuladosAvg] = useState(0);
+
+  // Modal States
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [inputHours, setInputHours] = useState('');
+
+  // --------------------------------------------------------------------------
+  // Effects
+  // --------------------------------------------------------------------------
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -35,64 +72,33 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // State for metrics
-  const [todayHours, setTodayHours] = useState<number>(0);
-  const [weekHours, setWeekHours] = useState<number>(0);
-  const [monthHours, setMonthHours] = useState<number>(0);
-
-  // Real-time Data States
-  const [activeTutorsCount, setActiveTutorsCount] = useState(0);
-  const [simuladosCount, setSimuladosCount] = useState(0);
-  const [dailyTasks, setDailyTasks] = useState<PlannerTask[]>([]);
-
-  // New States for Content Widgets
-  const [lastTutorMessage, setLastTutorMessage] = useState<{ subject: string, message: string } | null>(null);
-  const [recentErrors, setRecentErrors] = useState<ErrorEntry[]>([]);
-  const [dueFlashcardsCount, setDueFlashcardsCount] = useState(0);
-  const [latestSimulado, setLatestSimulado] = useState<SimuladoResult | null>(null);
-  const [globalSimuladosAvg, setGlobalSimuladosAvg] = useState(0);
-
-  // Modal state
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [inputHours, setInputHours] = useState('');
-
-  // Greeting Logic
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Bom dia';
-    if (hour < 18) return 'Boa tarde';
-    return 'Boa noite';
-  };
-
-  const [isLoadingUser, setIsLoadingUser] = useState(true);
-
-  // Load User Async
+  // Load User
   useEffect(() => {
     const loadUser = async () => {
       try {
         const user = await authService.getCurrentUser();
         if (!user) {
-          // Se não conseguirmos o usuário (ex: refresh sem sessão), volta pro login
           onLogout();
           return;
         }
         setCurrentUser(user);
       } catch (error) {
         console.error("Erro ao carregar usuário", error);
+        toast.error("Sessão expirada. Faça login novamente.");
         onLogout();
       } finally {
         setIsLoadingUser(false);
       }
     };
     loadUser();
-  }, []); // Run once on mount
+  }, []);
 
-  // Load data logic
+  // Load Data
   useEffect(() => {
     if (!currentUser) return;
 
     const loadData = async () => {
-      // 1. Metrics (LocalStorage only for now)
+      // 1. Metrics
       const metricsKey = 'hpc_metrics_' + currentUser.id;
       const savedMetrics = localStorage.getItem(metricsKey);
       if (savedMetrics) {
@@ -102,7 +108,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         setMonthHours(parsed.month || 0);
       }
 
-      // 2. Flashcards (Supabase)
+      // 2. Flashcards
       try {
         const cards = await flashcardService.fetchFlashcards();
         const due = cards.filter(c => c.nextReview <= Date.now()).length;
@@ -111,8 +117,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         console.error("Failed to load flashcards summary", e);
       }
 
-      // 3. Other LocalStorage Items (Wrapped in Try/Catch)
+      // 3. LocalStorage Data
       try {
+        // Errors
         const errorsKey = `hpc_error_list_${currentUser.id}`;
         const errorsStr = localStorage.getItem(errorsKey);
         if (errorsStr) {
@@ -120,12 +127,14 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           if (Array.isArray(parsed)) setRecentErrors(parsed.slice(0, 3));
         }
 
+        // Tutors
         const tutorsKey = `hpc_tutor_history_${currentUser.id}`;
         const tutorsStr = localStorage.getItem(tutorsKey);
         if (tutorsStr) {
           const parsed = JSON.parse(tutorsStr);
           const subjects = Object.keys(parsed);
           setActiveTutorsCount(subjects.length);
+          // Get last message
           let foundMsg = null;
           for (const sub of subjects) {
             const msgs: Message[] = parsed[sub];
@@ -137,6 +146,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           setLastTutorMessage(foundMsg);
         }
 
+        // Simulados
         const simuladosKey = `hpc_simulados_history_${currentUser.id}`;
         const simuladosStr = localStorage.getItem(simuladosKey);
         if (simuladosStr) {
@@ -154,6 +164,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           }
         }
 
+        // Planner Tasks
         const plannerKey = `hpc_planner_tasks_${currentUser.id}`;
         const tasks = localStorage.getItem(plannerKey);
         if (tasks) {
@@ -171,7 +182,21 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     loadData();
   }, [activeTab, currentUser]);
 
-  const handleAdd = (e: React.FormEvent) => {
+
+  // --------------------------------------------------------------------------
+  // Handlers
+  // --------------------------------------------------------------------------
+
+  const handleUpdateUser = (updatedUser: UserType) => {
+    setCurrentUser(updatedUser);
+  };
+
+  const reloadUser = async () => {
+    const user = await authService.getCurrentUser();
+    if (user) setCurrentUser(user);
+  };
+
+  const handleAddSession = (e: React.FormEvent) => {
     e.preventDefault();
     if (!currentUser) return;
     const val = parseFloat(inputHours);
@@ -187,6 +212,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       localStorage.setItem(metricsKey, JSON.stringify({ today: newToday, week: newWeek, month: newMonth }));
       setIsModalOpen(false);
       setInputHours('');
+      toast.success("Sessão registrada com sucesso!");
     }
   };
 
@@ -200,28 +226,41 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     setDailyTasks(updated.filter(t => t.scope === 'Daily' && t.date === todayStr));
   };
 
-  const calculateSimuladoPercentage = (result: SimuladoResult) => {
-    let correct = 0, total = 0;
-    result.areas.forEach(a => { correct += a.correct; total += a.total });
-    return total === 0 ? 0 : Math.round((correct / total) * 100);
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Bom dia';
+    if (hour < 18) return 'Boa tarde';
+    return 'Boa noite';
   };
 
-  const handleUpdateUser = (updatedUser: UserType) => {
-    setCurrentUser(updatedUser);
+  const changeTab = (tab: string) => {
+    if (!currentUser) return;
+    const restricted = ['Notas', 'Tutores', 'Lista de Erros', 'Flashcards', 'Simulados'];
+    const isPro = currentUser.subscription_tier === 'pro';
+
+    if (restricted.includes(tab) && !isPro) {
+      setShowUpgradeModal(true);
+      return;
+    }
+    setActiveTab(tab);
   };
+
+  // --------------------------------------------------------------------------
+  // Render
+  // --------------------------------------------------------------------------
 
   if (isLoadingUser || !currentUser) {
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center text-zinc-500">
         <Loader2 className="animate-spin text-blue-500 mb-2" size={32} />
-        <span className="ml-2">Carregando Dashboard...</span>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen pt-12 pb-12 px-4 sm:px-6 lg:px-8 relative bg-zinc-950 transition-colors duration-500">
-      {/* Modal - Register Session */}
+
+      {/* Session Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
           <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative animate-in zoom-in-95 duration-200">
@@ -238,7 +277,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               <h3 className="text-xl font-bold text-white">Registrar Sessão</h3>
               <p className="text-zinc-400 text-sm mt-1">Adicione as horas estudadas agora.</p>
             </div>
-            <form onSubmit={handleAdd}>
+            <form onSubmit={handleAddSession}>
               <div className="mb-4">
                 <label className="block text-xs font-medium text-zinc-500 uppercase tracking-wider mb-2">Horas</label>
                 <div className="relative">
@@ -266,8 +305,19 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         </div>
       )}
 
+      {/* Upgrade Modal */}
+      {showUpgradeModal && (
+        <UpgradeModal
+          onClose={() => setShowUpgradeModal(false)}
+          onSuccess={() => {
+            setShowUpgradeModal(false);
+            reloadUser();
+          }}
+        />
+      )}
+
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
+        {/* Header (Restored) */}
         <header className="flex flex-col md:flex-row justify-between items-center mb-8 pb-6 border-b border-zinc-800">
           <div className="flex flex-col md:flex-row items-center gap-6 mb-4 md:mb-0 w-full md:w-auto">
             <div className="text-center md:text-left">
@@ -287,7 +337,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               </div>
               <div className="text-left hidden sm:block">
                 <p className="text-sm font-bold text-white">{currentUser.name.split(' ')[0]}</p>
-                <p className="text-[10px] text-zinc-500">Membro Pro</p>
+                <div className="flex items-center gap-1">
+                  <p className="text--[10px] text-zinc-500">{currentUser.subscription_tier === 'pro' ? 'Membro Pro' : 'Membro Free'}</p>
+                  {currentUser.subscription_tier !== 'pro' && (
+                    <span onClick={(e) => { e.stopPropagation(); setShowUpgradeModal(true); }} className="text-[10px] bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-1.5 rounded-sm cursor-pointer hover:opacity-90 font-bold">UPGRADE</span>
+                  )}
+                </div>
               </div>
               <ChevronDown size={14} className="text-zinc-400" />
             </button>
@@ -298,8 +353,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                   <p className="text-xs text-zinc-500 truncate">{currentUser.email}</p>
                 </div>
                 <div className="p-2">
-                  <button onClick={() => { setActiveTab('Perfil'); setUserMenuOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors text-zinc-300 hover:bg-white/10"><User size={16} /> Meu Perfil</button>
-                  <button onClick={() => { setActiveTab('Configurações'); setUserMenuOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors text-zinc-300 hover:bg-white/10"><SettingsIcon size={16} /> Configurações</button>
+                  <button onClick={() => { changeTab('Perfil'); setUserMenuOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors text-zinc-300 hover:bg-white/10"><User size={16} /> Meu Perfil</button>
+                  <button onClick={() => { changeTab('Configurações'); setUserMenuOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors text-zinc-300 hover:bg-white/10"><SettingsIcon size={16} /> Configurações</button>
                 </div>
                 <div className="p-2 border-t border-white/10">
                   <button onClick={onLogout} className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg text-red-400 hover:bg-red-500/10 transition-colors"><LogOut size={16} /> Sair do Club</button>
@@ -309,94 +364,59 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           </div>
         </header>
 
-        {/* Navigation */}
+        {/* Top Navigation (Restored) */}
         <nav className="flex flex-wrap gap-2 mb-8 overflow-x-auto pb-2 scrollbar-hide">
           {navItems.map((item) => (
             <button
               key={item}
-              onClick={() => setActiveTab(item)}
-              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap ${activeTab === item ? "bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.15)] scale-105" : "text-zinc-400 hover:text-white hover:bg-zinc-900 border border-transparent"}`}
+              onClick={() => changeTab(item)}
+              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap flex items-center gap-2 ${activeTab === item ? "bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.15)] scale-105" : "text-zinc-400 hover:text-white hover:bg-zinc-900 border border-transparent"}`}
             >
               {item}
+              {['Notas', 'Tutores', 'Lista de Erros', 'Flashcards', 'Simulados'].includes(item) && currentUser.subscription_tier !== 'pro' && (
+                <Lock size={12} className="opacity-70" />
+              )}
             </button>
           ))}
         </nav>
 
-        {activeTab === "Dashboard" && (
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-6">
-              <div>
-                <h2 className="text-3xl font-bold tracking-tight text-white mb-2">{getGreeting()}, <span className="text-blue-500">{currentUser.name.split(' ')[0]}</span>.</h2>
-                <p className="text-zinc-400">Pronto para dominar o conteúdo hoje? Aqui está seu resumo.</p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <button onClick={() => setActiveTab('Lista de Erros')} className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 text-xs font-bold px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"><AlertTriangle size={14} className="text-red-500" /> Registrar Erro</button>
-                <button onClick={() => setActiveTab('Tutores')} className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 text-xs font-bold px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"><Sparkles size={14} className="text-purple-500" /> Perguntar ao Tutor</button>
-                <button onClick={() => setIsModalOpen(true)} className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2 rounded-lg flex items-center gap-2 transition-all shadow-lg shadow-emerald-900/20 hover:scale-105"><Plus size={14} /> Registrar Sessão</button>
-              </div>
-            </div>
+        {/* Content Area */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {activeTab === "Dashboard" && (
+              <DashboardWidgets
+                currentUser={currentUser}
+                todayHours={todayHours}
+                weekHours={weekHours}
+                monthHours={monthHours}
+                dailyTasks={dailyTasks}
+                toggleTaskWidget={toggleTaskWidget}
+                changeTab={changeTab}
+                lastTutorMessage={lastTutorMessage}
+                recentErrors={recentErrors}
+                dueFlashcardsCount={dueFlashcardsCount}
+                latestSimulado={latestSimulado}
+                setIsModalOpen={setIsModalOpen}
+                getGreeting={getGreeting}
+              />
+            )}
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-              <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6 h-fit">
-                <div className="bg-zinc-900/50 border-zinc-800 border p-6 rounded-2xl backdrop-blur-sm hover:border-zinc-700 transition-colors group relative">
-                  <div className="flex items-center gap-3 mb-4"><div className="p-2 bg-blue-500/10 rounded-lg text-blue-500 group-hover:bg-blue-500/20 transition-colors"><Clock size={20} /></div><span className="text-zinc-400 text-sm font-medium">Horas Hoje</span></div>
-                  <p className="text-4xl font-bold text-white tracking-tight">{todayHours}h <span className="text-sm font-normal text-zinc-500 ml-2 align-middle">/ 6h meta</span></p>
-                </div>
-                <div className="bg-zinc-900/50 border-zinc-800 border p-6 rounded-2xl backdrop-blur-sm hover:border-zinc-700 transition-colors group">
-                  <div className="flex items-center gap-3 mb-4"><div className="p-2 bg-purple-500/10 rounded-lg text-purple-500 group-hover:bg-purple-500/20 transition-colors"><Calendar size={20} /></div><span className="text-zinc-400 text-sm font-medium">Horas Semana</span></div>
-                  <p className="text-4xl font-bold text-white tracking-tight">{weekHours}h</p>
-                </div>
-                <div className="bg-zinc-900/50 border-zinc-800 border p-6 rounded-2xl backdrop-blur-sm hover:border-zinc-700 transition-colors group">
-                  <div className="flex items-center gap-3 mb-4"><div className="p-2 bg-yellow-500/10 rounded-lg text-yellow-500 group-hover:bg-yellow-500/20 transition-colors"><Trophy size={20} /></div><span className="text-zinc-400 text-sm font-medium">Horas Mês</span></div>
-                  <p className="text-4xl font-bold text-white tracking-tight">{monthHours}h</p>
-                </div>
-              </div>
-
-              <div className="bg-zinc-900/50 border-zinc-800 border rounded-2xl p-6 flex flex-col h-full min-h-[200px]">
-                <div className="flex justify-between items-center mb-4"><h3 className="font-bold text-white flex items-center gap-2"><LayoutList size={18} className="text-emerald-500" /> Foco do Dia</h3><button onClick={() => setActiveTab('Planner')} className="text-zinc-500 text-xs hover:text-blue-400 flex items-center gap-1 transition-colors">Ver tudo <ArrowRight size={12} /></button></div>
-                <div className="flex-1 overflow-y-auto custom-scrollbar space-y-2">
-                  {dailyTasks.length === 0 ? (
-                    <div className="h-full flex flex-col items-center justify-center text-zinc-500 text-xs text-center p-4 border border-dashed border-zinc-800 rounded-xl"><p>Nenhuma tarefa para hoje.</p><button onClick={() => setActiveTab('Planner')} className="text-blue-500 mt-1 hover:underline">Adicionar no Planner</button></div>
-                  ) : (
-                    dailyTasks.map(task => (
-                      <div key={task.id} className="flex items-start gap-3 p-2 rounded-lg hover:bg-black/5 transition-colors cursor-pointer" onClick={() => toggleTaskWidget(task.id)}>
-                        <div className={`mt-0.5 ${task.completed ? 'text-emerald-500' : 'text-zinc-500'}`}>{task.completed ? <CheckCircle2 size={16} /> : <Circle size={16} />}</div>
-                        <span className={`text-sm ${task.completed ? 'text-zinc-500 line-through' : 'text-white'}`}>{task.title}</span>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-              <div className="bg-zinc-900/50 border-zinc-800 border rounded-2xl p-6 hover:border-blue-500/30 transition-all group cursor-pointer flex flex-col justify-between" onClick={() => setActiveTab('Tutores')}>
-                <div><div className="flex items-center justify-between mb-4"><div className="p-2 bg-blue-500/10 rounded-lg text-blue-500"><MessageSquare size={18} /></div><ArrowRight size={16} className="text-zinc-600 group-hover:text-blue-500 transition-colors" /></div><h3 className="text-white font-bold mb-1">Tutor IA</h3>{lastTutorMessage ? <p className="text-xs text-zinc-400 line-clamp-2">última: "{lastTutorMessage.message}"</p> : <p className="text-xs text-zinc-500">Nenhuma conversa recente.</p>}</div>
-                <span className="text-xs text-blue-500 font-medium mt-4">Continuar conversa</span>
-              </div>
-              <div className="bg-zinc-900/50 border-zinc-800 border rounded-2xl p-6 hover:border-red-500/30 transition-all group cursor-pointer flex flex-col justify-between" onClick={() => setActiveTab('Lista de Erros')}>
-                <div><div className="flex items-center justify-between mb-4"><div className="p-2 bg-red-500/10 rounded-lg text-red-500"><AlertTriangle size={18} /></div><ArrowRight size={16} className="text-zinc-600 group-hover:text-red-500 transition-colors" /></div><h3 className="text-white font-bold mb-1">Erros Recentes</h3>{recentErrors.length > 0 ? <div className="flex flex-col gap-1">{recentErrors.slice(0, 2).map(err => <div key={err.id} className="text-xs text-zinc-400 flex items-center gap-1"><span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span> {err.subject}</div>)}</div> : <p className="text-xs text-zinc-500">Sem erros registrados.</p>}</div>
-                <span className="text-xs text-red-500 font-medium mt-4">Ver lista completa</span>
-              </div>
-              <div className="bg-zinc-900/50 border-zinc-800 border rounded-2xl p-6 hover:border-yellow-500/30 transition-all group cursor-pointer flex flex-col justify-between" onClick={() => setActiveTab('Flashcards')}>
-                <div><div className="flex items-center justify-between mb-4"><div className="p-2 bg-yellow-500/10 rounded-lg text-yellow-500"><Zap size={18} /></div><ArrowRight size={16} className="text-zinc-600 group-hover:text-yellow-500 transition-colors" /></div><h3 className="text-white font-bold mb-1">Flashcards</h3><p className="text-xs text-zinc-400">{dueFlashcardsCount > 0 ? `${dueFlashcardsCount} cards para revisar.` : "Revisão em dia!"}</p></div>
-                <span className="text-xs text-yellow-500 font-medium mt-4">Iniciar sessão</span>
-              </div>
-              <div className="bg-zinc-900/50 border-zinc-800 border rounded-2xl p-6 hover:border-emerald-500/30 transition-all group cursor-pointer flex flex-col justify-between" onClick={() => setActiveTab('Simulados')}>
-                <div><div className="flex items-center justify-between mb-4"><div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-500"><Activity size={18} /></div><ArrowRight size={16} className="text-zinc-600 group-hover:text-emerald-500 transition-colors" /></div><h3 className="text-white font-bold mb-1">Simulados</h3><div className="flex items-end gap-2"><span className="text-2xl font-bold text-white">{latestSimulado ? `${calculateSimuladoPercentage(latestSimulado)}%` : '-'}</span><span className="text-xs text-zinc-500 mb-1">último resultado</span></div></div>
-                <span className="text-xs text-emerald-500 font-medium mt-4">Analisar performance</span>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeTab === "Planner" && <TaskPlanner />}
-        {activeTab === "Tutores" && <Tutors />}
-        {activeTab === "Lista de Erros" && <ErrorList />}
-        {activeTab === "Flashcards" && <Flashcards />}
-        {activeTab === "Simulados" && <Simulados />}
-        {activeTab === "Perfil" && currentUser && <Profile currentUser={currentUser} onUpdate={handleUpdateUser} />}
-        {activeTab === "Configurações" && <Settings />}
+            {activeTab === "Planner" && <TaskPlanner />}
+            {activeTab === "Notas" && <NotesModule />}
+            {activeTab === "Tutores" && <Tutors />}
+            {activeTab === "Lista de Erros" && <ErrorList />}
+            {activeTab === "Flashcards" && <Flashcards />}
+            {activeTab === "Simulados" && <Simulados />}
+            {activeTab === "Perfil" && <Profile currentUser={currentUser} onUpdate={handleUpdateUser} />}
+            {activeTab === "Configurações" && <Settings />}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );
