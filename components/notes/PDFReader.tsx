@@ -15,8 +15,8 @@ import { toast } from 'sonner';
 import { pdfjs } from 'react-pdf';
 import { ReaderSettings } from '../../services/libraryService';
 
-// Set worker
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+// Set worker with specific version to match react-pdf dependency
+pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@4.4.168/build/pdf.worker.min.mjs`;
 
 interface PDFReaderProps {
     url: string;
@@ -174,13 +174,17 @@ export const PDFReader = React.memo<PDFReaderProps>(({
 
             <div className="flex-1 overflow-hidden relative" style={{ height: "calc(100% - 41px)" }}>
                 <div className="h-full" style={getFilterStyle()}>
-                    <PdfLoader url={url} beforeLoad={<div className="flex justify-center items-center h-full"><Loader2 className="animate-spin text-purple-500" /></div>}>
+                    <PdfLoader
+                        url={url}
+                        beforeLoad={<div className="flex justify-center items-center h-full"><Loader2 className="animate-spin text-purple-500" /></div>}
+                        errorMessage={<div className="flex justify-center items-center h-full text-red-400">Erro ao carregar PDF. Verifique se o arquivo existe.</div>}
+                    >
                         {(pdfDocument) => (
                             <PdfHighlighter
                                 pdfDocument={pdfDocument}
                                 enableAreaSelection={(event) => event.altKey}
                                 onScrollChange={resetHash}
-                                pdfScaleValue={scale}
+                                pdfScaleValue={scale.toString()}
                                 scrollRef={(scrollTo) => {
                                     scrollViewerTo.current = scrollTo;
                                 }}
