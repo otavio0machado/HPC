@@ -13,9 +13,13 @@ export interface Flashcard {
 
 export const flashcardService = {
     fetchFlashcards: async (): Promise<Flashcard[]> => {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error('User not authenticated');
+
         const { data, error } = await supabase
             .from('flashcards')
-            .select('*');
+            .select('*')
+            .eq('user_id', user.id); // Validating RLS explicitly
 
         if (error) {
             console.error('Error fetching flashcards:', error);
@@ -34,14 +38,18 @@ export const flashcardService = {
         }));
     },
 
-    createFlashcard: async (card: Flashcard): Promise<Flashcard | null> => {
+    createFlashcard: async (card: Omit<Flashcard, 'id'>): Promise<Flashcard | null> => {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error('User not authenticated');
+
         const { data, error } = await supabase
             .from('flashcards')
             .insert({
+                user_id: user.id,
                 front: card.front,
                 back: card.back,
                 folder_path: card.folderPath,
-                next_review: card.nextReview, // Stored as bigint
+                next_review: card.nextReview,
                 interval: card.interval,
                 ease: card.ease,
                 repetitions: card.repetitions

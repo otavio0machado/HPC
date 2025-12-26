@@ -14,6 +14,7 @@ export const authService = {
       id: session.user.id,
       email: session.user.email || '',
       name: session.user.user_metadata?.name || '',
+      subscription_tier: session.user.user_metadata?.subscription_tier || 'free',
     };
   },
 
@@ -63,6 +64,22 @@ export const authService = {
     return { success: false, message: 'Erro desconhecido ao registrar.' };
   },
 
+  resendVerificationEmail: async (email: string): Promise<{ success: boolean; message?: string }> => {
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email: email,
+    });
+
+    if (error) {
+      if (error.message.includes('Too many requests') || error.status === 429) {
+        return { success: false, message: 'Muitas tentativas. Aguarde 60 segundos.' };
+      }
+      return { success: false, message: error.message };
+    }
+
+    return { success: true };
+  },
+
   login: async (email: string, password: string): Promise<{ success: boolean; message?: string; user?: User }> => {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -79,11 +96,38 @@ export const authService = {
         user: {
           id: data.user.id,
           email: data.user.email || '',
-          name: data.user.user_metadata.name || ''
+          name: data.user.user_metadata.name || '',
+          subscription_tier: data.user.user_metadata?.subscription_tier || 'free'
+        }
+      };
+    }
+    if (data.user) {
+      return {
+        success: true,
+        user: {
+          id: data.user.id,
+          email: data.user.email || '',
+          name: data.user.user_metadata.name || '',
+          subscription_tier: data.user.user_metadata?.subscription_tier || 'free'
         }
       };
     }
     return { success: false, message: 'Erro ao fazer login.' };
+  },
+
+  loginWithGoogle: async (): Promise<{ success: boolean; message?: string }> => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin
+      }
+    });
+
+    if (error) {
+      return { success: false, message: error.message };
+    }
+
+    return { success: true };
   },
 
   updateUser: async (updatedUser: User): Promise<{ success: boolean; message?: string }> => {
@@ -107,6 +151,20 @@ export const authService = {
 
   logout: async () => {
     await supabase.auth.signOut();
+  },
+
+  createCheckoutSession: async (): Promise<{ success: boolean; url?: string; message?: string }> => {
+    try {
+      const { data, error } = await supabase.functions.invoke('create-checkout-session')
+
+      if (error) throw error
+      if (!data.url) throw new Error('No checkout URL returned')
+
+      return { success: true, url: data.url }
+    } catch (error: any) {
+      console.error('Checkout error:', error)
+      return { success: false, message: error.message || 'Erro ao iniciar pagamento' }
+    }
   },
 
   // Deprecated: No longer needed for Supabase RLS, simply returns base key.

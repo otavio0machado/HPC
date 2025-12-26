@@ -1,46 +1,63 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>High Performance Club | UFRGS & ENEM</title>
-    <meta name="description" content="Atingindo a excelência acadêmica. Preparação de elite para UFRGS e ENEM." />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
-    
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Inter', 'sans-serif'],
-            },
-            colors: {
-              primary: '#ffffff',
-              secondary: '#a1a1aa',
-              accent: '#2563eb', // Royal Blue for trust/performance
-              dark: '#09090b', // Zinc 950
-              card: '#18181b', // Zinc 900
-            }
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>High Performance Club | UFRGS & ENEM</title>
+  <meta name="description" content="Atingindo a excelência acadêmica. Preparação de elite para UFRGS e ENEM." />
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            primary: '#ffffff',
+            secondary: '#a1a1aa',
+            accent: '#2563eb', // Royal Blue for trust/performance
+            dark: '#09090b', // Zinc 950
+            card: '#18181b', // Zinc 900
           }
         }
       }
-    </script>
-    <style>
-      body {
-        background-color: #09090b;
-        color: #ffffff;
-      }
-      .glass-nav {
-        background: rgba(9, 9, 11, 0.7);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-      }
-      /* KaTeX overrides for dark mode contrast */
-      .katex { font-size: 1.1em; color: #e4e4e7; }
-      .katex-display { margin: 1em 0; overflow-x: auto; overflow-y: hidden; }
-    </style>
+    }
+  </script>
+  <style>
+    body {
+      background-color: #09090b;
+      color: #ffffff;
+      scroll-behavior: smooth;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .glass-nav {
+      background: rgba(9, 9, 11, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    /* KaTeX overrides for dark mode contrast */
+    .katex {
+      font-size: 1.1em;
+      color: #e4e4e7;
+    }
+
+    .katex-display {
+      margin: 1em 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+  </style>
   <script type="importmap">
 {
   "imports": {
@@ -58,8 +75,10 @@
 }
 </script>
 </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
-  </body>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+
 </html>

@@ -17,6 +17,7 @@ export interface User {
   name: string;
   email: string;
   password?: string; // Optional because we might verify separately
+  subscription_tier?: 'free' | 'pro';
 }
 
 export enum ExamType {
@@ -54,6 +55,25 @@ export interface SimuladoResult {
   aiAnalysis?: string; // Análise gerada pelo Gemini
 }
 
+export interface GeneratedQuestion {
+  id: string;
+  text: string;
+  options: string[];
+  correctOptionIndex: number;
+  explanation: string;
+  subject?: string;
+  supportText?: string; // Texto de apoio (artigo, trecho de livro)
+  imageDescription?: string; // Descrição visual para placeholder
+}
+
+export interface SimulationConfig {
+  type: ExamType;
+  area: string;
+  difficulty: 'Fácil' | 'Médio' | 'Difícil';
+  count: number;
+  mode: 'Rápido' | 'Maratona'; // Novo controle de modo
+}
+
 // Planner Types
 export type TaskScope = 'Daily' | 'Weekly' | 'Monthly';
 export type TaskPriority = 'High' | 'Medium' | 'Low';
@@ -87,6 +107,13 @@ export interface ErrorEntry {
   date: string;
 }
 
+export interface ErrorAnalysisResponse {
+  description: string;
+  subject: string;
+  cause: string;
+  flashcards: { front: string; back: string }[];
+}
+
 // Tutor Types
 export interface Message {
   role: 'user' | 'model';
@@ -100,6 +127,9 @@ export interface NoteFile {
   name: string;
   type: 'folder' | 'markdown' | 'pdf';
   content?: string;
+  tags?: string[];
+  pdfAnnotations?: any[];
+  isFavorite?: boolean;
   pdfData?: string;
   createdAt: number;
   updatedAt: number;
