@@ -117,3 +117,43 @@ alter table simulados enable row level security;
 create policy "Users can CRUD their own simulados"
 on simulados for all
 using ( auth.uid() = user_id );
+
+
+-- 6. LIBRARY & BOOKS
+create table books (
+  id uuid default uuid_generate_v4() primary key,
+  user_id uuid references auth.users(id) on delete cascade not null,
+  title text not null,
+  author text,
+  cover_url text,
+  file_url text not null,
+  file_path text not null, -- Storage path
+  format text not null check (format in ('pdf', 'epub')),
+  progress_location text, -- CFI for epub, page number for pdf
+  progress_percentage numeric default 0,
+  created_at timestamptz default now()
+);
+
+alter table books enable row level security;
+
+create policy "Users can CRUD their own books"
+on books for all
+using ( auth.uid() = user_id );
+
+-- 7. KINDLE HIGHLIGHTS
+create table kindle_highlights (
+  id uuid default uuid_generate_v4() primary key,
+  user_id uuid references auth.users(id) on delete cascade not null,
+  book_title text not null,
+  author text,
+  content text not null,
+  location text, -- "Page 123" or "Loc 1234"
+  highlighted_at text, -- Original date string from Kindle
+  created_at timestamptz default now()
+);
+
+alter table kindle_highlights enable row level security;
+
+create policy "Users can CRUD their own highlights"
+on kindle_highlights for all
+using ( auth.uid() = user_id );

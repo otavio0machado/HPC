@@ -9,9 +9,12 @@ import TaskItem from '@tiptap/extension-task-item';
 import { Bold, Italic, Underline, List, ListOrdered, CheckSquare, Quote, Code, RotateCcw, RotateCw, Wand2, PenTool, X, Paperclip, Heading1, Heading2, Heading3 } from 'lucide-react';
 import { generateNoteContent } from '../../services/geminiService';
 import { notesService } from '../../services/notesService';
+import { blockService } from '../../services/blockService';
+import UniqueID from '@tiptap/extension-unique-id';
 import { toast } from 'sonner';
 
 interface NotesEditorProps {
+    noteId: string; // [NEW] Required for block sync
     content: string;
     onUpdate: (content: string) => void;
     readOnly?: boolean;
@@ -201,10 +204,11 @@ const MenuBar = ({ editor, onOpenAI }: { editor: any, onOpenAI: () => void }) =>
 import { WikiLinkExtension } from './extensions/WikiLinkExtension';
 import DrawingExtension from './extensions/DrawingExtension';
 import PdfExtension from './extensions/PdfExtension';
+import { CollapsibleListItem } from './extensions/CollapsibleListItem';
 
 import Link from '@tiptap/extension-link';
 
-const NotesEditor: React.FC<NotesEditorProps> = ({ content, onUpdate, readOnly = false, searchNotes, onOpenPdf }) => {
+const NotesEditor: React.FC<NotesEditorProps> = ({ noteId, content, onUpdate, readOnly = false, searchNotes, onOpenPdf }) => {
     const [showAIDialog, setShowAIDialog] = React.useState(false);
     const [aiPrompt, setAiPrompt] = React.useState('');
     const [isGenerating, setIsGenerating] = React.useState(false);
@@ -241,7 +245,10 @@ const NotesEditor: React.FC<NotesEditorProps> = ({ content, onUpdate, readOnly =
     // Memoize extensions to prevent re-initialization
     // We pass a proxy function to WikiLinkExtension that calls the current ref
     const extensions = React.useMemo(() => [
-        StarterKit,
+        StarterKit.configure({
+            listItem: false, // Disable default ListItem to use our custom one
+        }),
+        CollapsibleListItem,
         Placeholder.configure({
             placeholder: 'Comece a escrever sua nota...',
         }),
@@ -262,7 +269,13 @@ const NotesEditor: React.FC<NotesEditorProps> = ({ content, onUpdate, readOnly =
         }),
         DrawingExtension,
         PdfExtension,
+        UniqueID.configure({
+            types: ['heading', 'paragraph', 'bulletList', 'orderedList', 'listItem', 'taskItem', 'blockquote', 'codeBlock'],
+        }),
     ], []); // Empty dependency array = created once
+
+    // Timeout ref for debounce
+    const syncTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
     const editor = useEditor({
         extensions: extensions,
@@ -270,6 +283,17 @@ const NotesEditor: React.FC<NotesEditorProps> = ({ content, onUpdate, readOnly =
         editable: !readOnly,
         onUpdate: ({ editor }) => {
             onUpdate(editor.getHTML());
+
+            // [NEW] Sync blocks to Supabase (Debounced)
+            // Clear existing timeout
+            if (syncTimeoutRef.current) {
+                clearTimeout(syncTimeoutRef.current);
+            }
+
+            // Set a new timeout (2s debounce)
+            syncTimeoutRef.current = setTimeout(() => {
+                blockService.syncBlocks(noteId, editor.getJSON());
+            }, 2000);
         },
         editorProps: {
             attributes: {

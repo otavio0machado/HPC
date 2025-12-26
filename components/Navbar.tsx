@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X, Sparkles } from 'lucide-react';
 
 interface NavbarProps {
   onLoginClick: () => void;
@@ -25,71 +26,126 @@ const Navbar: React.FC<NavbarProps> = ({ onLoginClick, isLoggedIn }) => {
   ];
 
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 border-b border-transparent ${isScrolled ? 'glass-nav border-zinc-800' : 'bg-transparent'}`}>
+    <nav className={`fixed top-0 w-full z-50 transition-all duration-500 border-b ${isScrolled ? 'glass-nav border-zinc-800/50 shadow-2xl' : 'bg-transparent border-transparent'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <div className="flex-shrink-0">
-            <span className="text-xl font-bold tracking-tighter text-white">
-              HPC<span className="text-blue-500">.</span>
+          {/* Enhanced Logo */}
+          <motion.div
+            className="flex-shrink-0"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <span className="text-xl md:text-2xl font-black tracking-tighter text-white hover:text-blue-400 transition-colors duration-300 cursor-pointer">
+              HPC<span className="text-blue-500 animate-pulse">.</span>
             </span>
-          </div>
-          
+          </motion.div>
+
+          {/* Desktop Navigation */}
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
-              {navLinks.map((link) => (
-                <a
+              {navLinks.map((link, idx) => (
+                <motion.a
                   key={link.name}
                   href={link.href}
-                  className="text-sm font-medium text-zinc-400 hover:text-white transition-colors duration-200"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  className="text-sm font-semibold text-zinc-400 hover:text-white transition-all duration-300 relative group"
                 >
                   {link.name}
-                </a>
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 group-hover:w-full transition-all duration-300" />
+                </motion.a>
               ))}
-              <button 
+
+              {/* Enhanced CTA Button */}
+              <motion.button
                 onClick={onLoginClick}
-                className="px-4 py-2 rounded-full bg-white text-black text-sm font-semibold hover:bg-zinc-200 transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-5 py-2 rounded-full bg-white text-black text-sm font-bold hover:bg-gradient-to-r hover:from-blue-100 hover:to-white transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 group"
               >
-                {isLoggedIn ? 'Dashboard' : 'Entrar no Club'}
-              </button>
+                <span>{isLoggedIn ? 'Dashboard' : 'Entrar no Club'}</span>
+                {!isLoggedIn && <Sparkles size={14} className="group-hover:rotate-12 transition-transform duration-300" />}
+              </motion.button>
             </div>
           </div>
 
+          {/* Mobile Menu Button */}
           <div className="-mr-2 flex md:hidden">
-            <button
+            <motion.button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-zinc-400 hover:text-white focus:outline-none"
+              whileTap={{ scale: 0.9 }}
+              className="inline-flex items-center justify-center p-2 rounded-md text-zinc-400 hover:text-white hover:bg-white/10 focus:outline-none transition-all duration-300"
             >
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+              <AnimatePresence mode="wait">
+                {mobileMenuOpen ? (
+                  <motion.div
+                    key="close"
+                    initial={{ rotate: -90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: 90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <X size={24} />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="menu"
+                    initial={{ rotate: 90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: -90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Menu size={24} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.button>
           </div>
         </div>
       </div>
 
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-zinc-950 border-b border-zinc-800">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="block px-3 py-2 rounded-md text-base font-medium text-zinc-300 hover:text-white hover:bg-zinc-900"
-                onClick={() => setMobileMenuOpen(false)}
+      {/* Enhanced Mobile Menu with Animation */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            className="md:hidden bg-zinc-950/95 backdrop-blur-xl border-b border-zinc-800"
+          >
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+              {navLinks.map((link, idx) => (
+                <motion.a
+                  key={link.name}
+                  href={link.href}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="block px-4 py-3 rounded-xl text-base font-medium text-zinc-300 hover:text-white hover:bg-white/10 transition-all duration-300"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {link.name}
+                </motion.a>
+              ))}
+              <motion.button
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: navLinks.length * 0.1 }}
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onLoginClick();
+                }}
+                className="block w-full text-left px-4 py-3 rounded-xl text-base font-bold text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 mt-4 transition-all duration-300 shadow-lg"
               >
-                {link.name}
-              </a>
-            ))}
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onLoginClick();
-              }}
-              className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-white bg-blue-600 hover:bg-blue-700 mt-4"
-            >
-              {isLoggedIn ? 'Dashboard' : 'Entrar no Club'}
-            </button>
-          </div>
-        </div>
-      )}
+                {isLoggedIn ? 'Dashboard' : 'Entrar no Club'}
+              </motion.button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };

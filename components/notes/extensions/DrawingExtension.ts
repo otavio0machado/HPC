@@ -28,6 +28,12 @@ export default Node.create({
             height: {
                 default: '300px',
             },
+            paperType: {
+                default: 'blank',
+            },
+            paperColor: {
+                default: 'white',
+            },
         };
     },
 

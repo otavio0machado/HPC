@@ -28,6 +28,10 @@ const NotesModule: React.FC = () => {
     // Sidebar State
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
+    // Zoom / Focus State
+    const [focusedBlockId, setFocusedBlockId] = useState<string | null>(null);
+    const [breadcrumbs, setBreadcrumbs] = useState<{ id: string, text: string }[]>([]);
+
     // Calculate unique tags
     const allTags = React.useMemo(() => {
         const tags = new Set<string>();
@@ -66,7 +70,7 @@ const NotesModule: React.FC = () => {
 
     const handleCreateNote = async (parentId: string | null = null, type: 'folder' | 'markdown' = 'markdown') => {
         try {
-            const newNote = await notesService.createNote({
+            const { data: newNote, error } = await notesService.createNote({
                 name: type === 'folder' ? 'Nova Pasta' : 'Nova Nota Sem Título',
                 type: type,
                 parentId: parentId,
@@ -79,9 +83,11 @@ const NotesModule: React.FC = () => {
                     setSelectedNote(newNote);
                 }
                 toast.success(type === 'folder' ? 'Pasta criada' : 'Nota criada');
+            } else if (error) {
+                toast.error(`Erro ao criar: ${error}`);
             }
         } catch (e) {
-            toast.error("Erro ao criar.");
+            toast.error("Erro inesperado ao criar.");
         }
     };
 
@@ -118,6 +124,24 @@ const NotesModule: React.FC = () => {
     };
 
     const handleMoveNote = async (noteId: string, newParentId: string | null) => {
+        // Validation: Prevent moving into self
+        if (noteId === newParentId) return;
+
+        // Validation: Prevent circular dependency (moving parent into child)
+        const isDescendant = (parentId: string, targetId: string): boolean => {
+            if (parentId === targetId) return true;
+            const children = notes.filter(n => n.parentId === parentId);
+            for (const child of children) {
+                if (isDescendant(child.id, targetId)) return true;
+            }
+            return false;
+        };
+
+        if (newParentId && isDescendant(noteId, newParentId)) {
+            toast.error("Não é possível mover uma pasta para dentro de si mesma.");
+            return;
+        }
+
         // Optimistic update
         const note = notes.find(n => n.id === noteId);
         if (!note || note.parentId === newParentId) return;
@@ -254,6 +278,21 @@ const NotesModule: React.FC = () => {
         return () => clearTimeout(timer);
     }, [selectedNote?.content, selectedNote?.name]);
 
+    // Handle Zoom Event
+    useEffect(() => {
+        const handleZoom = async (e: any) => {
+            const blockId = e.detail.blockId;
+            setFocusedBlockId(blockId);
+            // In a real implementation, we would fetch the block content and ancestors for breadcrumbs
+            // For now, let's just show a toast that we zoomed in
+            toast.info(`Zoomed in to block ${blockId}`);
+        };
+
+        window.addEventListener('zoom-block', handleZoom);
+        return () => window.removeEventListener('zoom-block', handleZoom);
+    }, []);
+
+
     // Search notes for WikiLinks
     const searchNotes = useCallback(async (query: string) => {
         const lowerQuery = query.toLowerCase();
@@ -313,6 +352,19 @@ const NotesModule: React.FC = () => {
                                         <PanelLeft size={16} />
                                     </button>
                                     <span className="text-zinc-700">|</span>
+                                    {focusedBlockId && (
+                                        <>
+                                            <button
+                                                onClick={() => setFocusedBlockId(null)}
+                                                className="hover:underline text-blue-500"
+                                            >
+                                                Zoom Out
+                                            </button>
+                                            <span className="text-zinc-700">/</span>
+                                            <span className="text-zinc-300 font-mono text-[10px]">{focusedBlockId.slice(0, 8)}...</span>
+                                            <span className="text-zinc-700">|</span>
+                                        </>
+                                    )}
                                     Cadernos <span className="text-zinc-700">/</span> {selectedNote.type === 'folder' ? 'Pasta' : 'Nota'}
                                 </div>
                                 <input
@@ -360,6 +412,7 @@ const NotesModule: React.FC = () => {
                             {/* Editor Panel - Resizable or Flex */}
                             <div className={`flex flex-col transition-all duration-300 ${showPdfReader ? 'w-1/2 border-r border-zinc-800' : 'w-full'}`}>
                                 <NotesEditor
+                                    noteId={selectedNote.id}
                                     content={selectedNote.content || ''}
                                     onUpdate={handleUpdateContent}
                                     searchNotes={searchNotes}

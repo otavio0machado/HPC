@@ -12,6 +12,7 @@ import { authService } from './services/authService';
 import { Toaster } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import LandingPage from './components/landing/LandingPage';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 type ViewState = 'landing' | 'auth' | 'dashboard';
 
@@ -72,52 +73,54 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white font-sans selection:bg-blue-500/30">
-      <AnimatePresence mode="wait">
-        {showTransition && (
-          <TransitionOverlay onAnimationComplete={handleTransitionComplete} />
-        )}
-      </AnimatePresence>
+    <ThemeProvider>
+      <div className="min-h-screen bg-zinc-950 text-white font-sans selection:bg-blue-500/30">
+        <AnimatePresence mode="wait">
+          {showTransition && (
+            <TransitionOverlay onAnimationComplete={handleTransitionComplete} />
+          )}
+        </AnimatePresence>
 
-      <AnimatePresence mode="wait">
-        {view === 'landing' && (
-          <motion.div
-            key="landing"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <LandingPage onLoginClick={handleLoginClick} />
-          </motion.div>
-        )}
+        <AnimatePresence mode="wait">
+          {view === 'landing' && (
+            <motion.div
+              key="landing"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <LandingPage onLoginClick={handleLoginClick} />
+            </motion.div>
+          )}
 
-        {view === 'auth' && (
-          <motion.div
-            key="auth"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Auth onBack={() => setView('landing')} onSuccess={handleAuthSuccess} />
-          </motion.div>
-        )}
+          {view === 'auth' && (
+            <motion.div
+              key="auth"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Auth onBack={() => setView('landing')} onSuccess={handleAuthSuccess} />
+            </motion.div>
+          )}
 
-        {view === 'dashboard' && (
-          <motion.div
-            key="dashboard"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Dashboard onLogout={handleLogout} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <Toaster theme="dark" position="top-center" richColors />
-    </div>
+          {view === 'dashboard' && (
+            <motion.div
+              key="dashboard"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Dashboard onLogout={handleLogout} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <Toaster theme="dark" position="top-center" richColors />
+      </div>
+    </ThemeProvider>
   );
 };
 
