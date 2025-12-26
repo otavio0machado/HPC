@@ -18,9 +18,12 @@ export const extractCover = async (file: File): Promise<Blob | null> => {
 };
 
 const extractPdfCover = async (file: File): Promise<Blob | null> => {
+    let objectUrl: string | null = null;
     try {
-        const arrayBuffer = await file.arrayBuffer();
-        const loadingTask = pdfjs.getDocument({ data: arrayBuffer });
+        // Use createObjectURL instead of arrayBuffer to avoid loading entire file into memory
+        objectUrl = URL.createObjectURL(file);
+
+        const loadingTask = pdfjs.getDocument(objectUrl);
         const pdf = await loadingTask.promise;
         const page = await pdf.getPage(1); // Get first page
 
@@ -36,7 +39,7 @@ const extractPdfCover = async (file: File): Promise<Blob | null> => {
         await page.render({
             canvasContext: context,
             viewport: viewport
-        }).promise;
+        } as any).promise;
 
         return new Promise((resolve) => {
             canvas.toBlob((blob) => {
@@ -46,6 +49,10 @@ const extractPdfCover = async (file: File): Promise<Blob | null> => {
     } catch (e) {
         console.error("Error extracting PDF cover:", e);
         return null;
+    } finally {
+        if (objectUrl) {
+            URL.revokeObjectURL(objectUrl);
+        }
     }
 };
 
