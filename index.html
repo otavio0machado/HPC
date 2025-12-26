@@ -67,41 +67,42 @@
     }
   </script>
   <style>
-    /* CSS Variables for Premium Theme Support */
+    /* CSS Variables for Premium Theme Support - LIQUID GLASS UPDATE */
     :root {
       /* Dark Mode (Default) - "Midnight & Aurora" Palette */
-      --bg-primary: #050507;
-      /* Deepest black-blue */
+      --bg-primary: #000000;
+      /* Deepest black */
       --bg-secondary: #0a0a0c;
-      /* Rich dark zinc */
       --bg-tertiary: #18181b;
-      /* Standard dark card */
 
       --text-primary: #ffffff;
-      --text-secondary: #a1a1aa;
-      --text-tertiary: #71717a;
+      --text-secondary: #e5e5e5;
+      /* Lighter grey for better contrast on glass */
+      --text-tertiary: #a1a1aa;
 
       --border-primary: #27272a;
       --border-secondary: #3f3f46;
-      --border-glass: rgba(255, 255, 255, 0.08);
+      --border-glass: rgba(255, 255, 255, 0.2);
+      /* Stronger glass border */
 
       /* Vibrant Accents */
       --accent-primary: #3b82f6;
       --accent-secondary: #6366f1;
-      /* Indigo shift */
       --accent-glow: rgba(59, 130, 246, 0.4);
 
-      /* Glass Effects */
-      --glass-bg: rgba(5, 5, 7, 0.7);
-      --glass-border: rgba(255, 255, 255, 0.06);
-      --glass-shine: rgba(255, 255, 255, 0.03);
+      /* Liquid Glass Effects */
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --glass-shine: rgba(255, 255, 255, 0.1);
+      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 
-      --card-bg: rgba(24, 24, 27, 0.4);
-      --card-border: rgba(255, 255, 255, 0.05);
+      --card-bg: rgba(255, 255, 255, 0.05);
+      /* Ultra thin */
+      --card-border: rgba(255, 255, 255, 0.1);
 
-      --scrollbar-track: #050507;
-      --scrollbar-thumb: #27272a;
-      --scrollbar-thumb-hover: #3f3f46;
+      --scrollbar-track: #000000;
+      --scrollbar-thumb: #3f3f46;
+      --scrollbar-thumb-hover: #52525b;
     }
 
     /* Light Mode - "Clean Slate" Palette */
@@ -122,12 +123,12 @@
       --accent-secondary: #4f46e5;
       --accent-glow: rgba(37, 99, 235, 0.2);
 
-      --glass-bg: rgba(255, 255, 255, 0.8);
-      --glass-border: rgba(0, 0, 0, 0.05);
+      --glass-bg: rgba(255, 255, 255, 0.6);
+      --glass-border: rgba(0, 0, 0, 0.1);
       --glass-shine: rgba(255, 255, 255, 0.4);
 
       --card-bg: rgba(255, 255, 255, 0.6);
-      --card-border: rgba(0, 0, 0, 0.05);
+      --card-border: rgba(0, 0, 0, 0.1);
 
       --scrollbar-track: #f8fafc;
       --scrollbar-thumb: #cbd5e1;
@@ -141,31 +142,60 @@
     }
 
     body {
-      background-color: var(--bg-primary);
+      background-color: #050505;
+      background-image: radial-gradient(ellipse 80% 80% at 50% -20%, rgba(120, 119, 198, 0.3), rgba(255, 255, 255, 0));
+      background-attachment: fixed;
+      background-repeat: no-repeat;
       color: var(--text-primary);
       scroll-behavior: smooth;
       overflow-x: hidden;
       transition: background-color 0.3s ease, color 0.3s ease;
+      min-height: 100vh;
     }
 
     html {
       scroll-behavior: smooth;
     }
 
-    /* Glass Effects */
+    /* Liquid Glass Classes */
     .glass-nav {
-      background: var(--glass-bg);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      transition: background 0.3s ease;
+      background: rgba(20, 20, 25, 0.6);
+      /* Slightly darker for legibility on nav */
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .glass-card {
       background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border);
-      transition: background 0.3s ease, border-color 0.3s ease;
+      backdrop-filter: blur(40px);
+      /* Heavy blur for material feel */
+      -webkit-backdrop-filter: blur(40px);
+      border: 1px solid var(--border-glass);
+      box-shadow: var(--glass-shadow), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+      /* Inner glow */
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    }
+
+    .glass-card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: scale(1.01);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    }
+
+    /* Typography Overrides */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: #FFFFFF;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      /* Readability lift */
     }
 
     /* Animated Gradient */
@@ -184,10 +214,6 @@
     .animate-gradient {
       background-size: 200% 200%;
       animation: gradient-shift 8s ease infinite;
-    }
-
-    .bg-300\% {
-      background-size: 300%;
     }
 
     /* Smooth Transitions */
@@ -293,11 +319,7 @@
     }
 
     .shimmer {
-      background: linear-gradient(to right,
-          #18181b 0%,
-          #27272a 20%,
-          #18181b 40%,
-          #18181b 100%);
+      background: linear-gradient(to right, #18181b 0%, #27272a 20%, #18181b 40%, #18181b 100%);
       background-size: 1000px 100%;
       animation: shimmer 2s infinite;
     }

@@ -56,9 +56,6 @@ const TaskPlanner: React.FC = () => {
         e.preventDefault();
         if (!newTaskTitle.trim()) return;
 
-        // Optimistic Update? No, let's wait for DB to be sure of ID.
-        // Or we can be optimistic if we trust connection. Let's wait for simplicity and data integrity.
-
         try {
             const newTask = await tasksService.createTask({
                 title: newTaskTitle,
@@ -216,7 +213,7 @@ const TaskPlanner: React.FC = () => {
     const getPriorityColor = (p: TaskPriority) => {
         switch (p) {
             case 'High': return 'text-red-400 bg-red-500/10 border-red-500/20';
-            case 'Medium': return 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20';
+            case 'Medium': return 'text-yellow-400 bg-amber-500/10 border-amber-500/20';
             case 'Low': return 'text-blue-400 bg-blue-500/10 border-blue-500/20';
         }
     };
@@ -239,22 +236,22 @@ const TaskPlanner: React.FC = () => {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <div className="h-6 w-1 bg-emerald-500 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
+                        <div className="h-6 w-1 bg-gradient-to-b from-emerald-400 to-teal-600 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
                         <h2 className="text-2xl font-bold text-white tracking-tight">Planner Estratégico</h2>
                     </div>
                     <p className="text-zinc-400 text-sm">Organize seu tempo e acompanhe seu progresso nas apostilas.</p>
                 </div>
 
-                <div className="flex bg-zinc-900 border border-zinc-800 p-1 rounded-xl">
+                <div className="flex bg-[var(--glass-bg)] border border-[var(--border-glass)] p-1 rounded-xl backdrop-blur-md">
                     <button
                         onClick={() => setActiveTab('calendar')}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${activeTab === 'calendar' ? 'bg-zinc-800 text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}
+                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${activeTab === 'calendar' ? 'bg-white/10 text-white shadow-lg shadow-black/20' : 'text-zinc-500 hover:text-white hover:bg-white/5'}`}
                     >
                         <CalendarIcon size={16} /> Agenda
                     </button>
                     <button
                         onClick={() => setActiveTab('materials')}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${activeTab === 'materials' ? 'bg-zinc-800 text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}
+                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${activeTab === 'materials' ? 'bg-white/10 text-white shadow-lg shadow-black/20' : 'text-zinc-500 hover:text-white hover:bg-white/5'}`}
                     >
                         <Book size={16} /> Apostilas
                     </button>
@@ -265,22 +262,22 @@ const TaskPlanner: React.FC = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
                     {/* Left: Calendar Grid */}
-                    <div className="lg:col-span-7 bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
+                    <div className="lg:col-span-7 bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-3xl p-6 backdrop-blur-xl">
                         <div className="flex justify-between items-center mb-6">
-                            <button onClick={() => changeMonth(-1)} className="p-2 hover:bg-zinc-800 rounded-full text-zinc-400 hover:text-white transition-colors"><ChevronLeft size={20} /></button>
+                            <button onClick={() => changeMonth(-1)} className="p-2 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors"><ChevronLeft size={20} /></button>
                             <h3 className="text-xl font-bold text-white capitalize">
                                 {currentDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
                             </h3>
-                            <button onClick={() => changeMonth(1)} className="p-2 hover:bg-zinc-800 rounded-full text-zinc-400 hover:text-white transition-colors"><ChevronRight size={20} /></button>
+                            <button onClick={() => changeMonth(1)} className="p-2 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors"><ChevronRight size={20} /></button>
                         </div>
 
                         <div className="grid grid-cols-7 gap-2 mb-2 text-center">
                             {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map((d, i) => (
-                                <div key={i} className="text-xs font-bold text-zinc-500 uppercase">{d}</div>
+                                <div key={i} className="text-xs font-bold text-zinc-500 uppercase tracking-widest">{d}</div>
                             ))}
                         </div>
 
-                        <div className="grid grid-cols-7 gap-2">
+                        <div className="grid grid-cols-7 gap-3">
                             {getDaysInMonth(currentDate).map((date, idx) => {
                                 if (!date) return <div key={idx} className="aspect-square"></div>;
 
@@ -294,17 +291,17 @@ const TaskPlanner: React.FC = () => {
                                     <button
                                         key={idx}
                                         onClick={() => setSelectedDate(date)}
-                                        className={`aspect-square rounded-xl flex flex-col items-center justify-center relative transition-all border
+                                        className={`aspect-square rounded-2xl flex flex-col items-center justify-center relative transition-all duration-300 border
                                     ${isSelected
-                                                ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-900/20'
+                                                ? 'bg-blue-600 border-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.4)] scale-105'
                                                 : isToday
-                                                    ? 'bg-zinc-800 border-zinc-700 text-blue-400'
-                                                    : 'bg-zinc-950/50 border-zinc-800/50 text-zinc-400 hover:bg-zinc-800 hover:border-zinc-700'
+                                                    ? 'bg-white/5 border-blue-500/50 text-blue-400'
+                                                    : 'bg-zinc-950/30 border-white/5 text-zinc-400 hover:bg-white/10 hover:border-white/20'
                                             }
                                 `}
                                     >
                                         <span className={`text-sm font-bold ${isSelected ? 'scale-110' : ''}`}>{date.getDate()}</span>
-                                        <div className="flex gap-0.5 mt-1 h-1.5">
+                                        <div className="flex gap-0.5 mt-1 h-1.5 justify-center w-full">
                                             {hasTasks && <div className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white' : 'bg-blue-500'}`}></div>}
                                             {allCompleted && !hasTasks && <div className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-emerald-300' : 'bg-emerald-500'}`}></div>}
                                         </div>
@@ -316,45 +313,49 @@ const TaskPlanner: React.FC = () => {
 
                     {/* Right: Task List for Selected Day */}
                     <div className="lg:col-span-5 flex flex-col h-full">
-                        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 flex flex-col h-full min-h-[500px]">
-                            <div className="flex justify-between items-center mb-4">
+                        <div className="bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-3xl p-6 flex flex-col h-full min-h-[500px] backdrop-blur-xl">
+                            <div className="flex justify-between items-center mb-6">
                                 <div>
-                                    <h3 className="text-white font-bold flex items-center gap-2">
-                                        <CalendarIcon size={18} className="text-blue-500" />
+                                    <h3 className="text-white font-bold flex items-center gap-2 text-lg">
+                                        <div className="p-1.5 rounded-lg bg-blue-500/20 text-blue-400">
+                                            <CalendarIcon size={18} />
+                                        </div>
                                         {selectedDate.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' })}
                                     </h3>
-                                    <p className="text-xs text-zinc-500 mt-1">
+                                    <p className="text-xs text-zinc-500 mt-1 pl-10 font-medium uppercase tracking-wider">
                                         {new Intl.DateTimeFormat('pt-BR', { weekday: 'long' }).format(selectedDate)}
                                     </p>
                                 </div>
                                 {tasksForSelectedDate.some(t => t.completed) && (
-                                    <button onClick={() => clearCompleted(selectedDateStr)} className="text-xs text-zinc-500 hover:text-white flex items-center gap-1 transition-colors">
-                                        <RefreshCcw size={12} /> Limpar
+                                    <button onClick={() => clearCompleted(selectedDateStr)} className="text-xs text-zinc-500 hover:text-red-400 flex items-center gap-1 transition-colors px-3 py-1.5 rounded-lg hover:bg-red-500/10">
+                                        <RefreshCcw size={12} /> Limpar Concluídas
                                     </button>
                                 )}
                             </div>
 
                             {/* Progress Bar */}
-                            <div className="mb-6">
-                                <div className="flex justify-between text-xs mb-1.5">
-                                    <span className="text-zinc-400">Conclusão Diária</span>
+                            <div className="mb-8 p-4 rounded-2xl bg-zinc-950/30 border border-white/5">
+                                <div className="flex justify-between text-xs mb-2">
+                                    <span className="text-zinc-400 font-bold uppercase tracking-wider">Progresso Diário</span>
                                     <span className="text-white font-bold">{progress}%</span>
                                 </div>
-                                <div className="h-1.5 bg-zinc-950 rounded-full overflow-hidden border border-zinc-800">
-                                    <div className="h-full bg-gradient-to-r from-blue-600 to-emerald-500 transition-all duration-500" style={{ width: `${progress}%` }}></div>
+                                <div className="h-2 bg-zinc-900 rounded-full overflow-hidden border border-white/5">
+                                    <div className={`h-full transition-all duration-700 ease-out ${progress === 100 ? 'bg-gradient-to-r from-emerald-500 to-teal-400' : 'bg-gradient-to-r from-blue-600 to-indigo-500'}`} style={{ width: `${progress}%` }}>
+                                        {progress === 100 && <div className="w-full h-full animate-pulse bg-white/20" />}
+                                    </div>
                                 </div>
                             </div>
 
                             {/* Add Task Form */}
-                            <form onSubmit={handleAddTask} className="mb-6 space-y-2">
-                                <div className="flex gap-2">
-                                    <div className="relative w-24 flex-shrink-0">
+                            <form onSubmit={handleAddTask} className="mb-6 space-y-3">
+                                <div className="flex gap-3">
+                                    <div className="relative w-28 flex-shrink-0">
                                         <Clock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
                                         <input
                                             type="time"
                                             value={newTaskTime}
                                             onChange={(e) => setNewTaskTime(e.target.value)}
-                                            className="w-full bg-zinc-950 border border-zinc-800 rounded-xl py-3 pl-8 pr-2 text-white text-xs focus:outline-none focus:border-blue-500"
+                                            className="w-full bg-zinc-950/50 border border-white/10 rounded-xl py-3 pl-9 pr-2 text-white text-xs focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition-all font-mono"
                                         />
                                     </div>
                                     <div className="relative flex-1">
@@ -363,10 +364,10 @@ const TaskPlanner: React.FC = () => {
                                             value={newTaskTitle}
                                             onChange={(e) => setNewTaskTitle(e.target.value)}
                                             placeholder="Nova tarefa..."
-                                            className="w-full bg-zinc-950 border border-zinc-800 rounded-xl py-3 pl-4 pr-12 text-white text-sm focus:outline-none focus:border-blue-500"
+                                            className="w-full bg-zinc-950/50 border border-white/10 rounded-xl py-3 pl-4 pr-12 text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder:text-zinc-600"
                                         />
                                     </div>
-                                    <button type="submit" className="bg-blue-600 hover:bg-blue-500 text-white px-3 rounded-xl transition-colors">
+                                    <button type="submit" className="bg-gradient-to-br from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-3.5 rounded-xl transition-all shadow-lg shadow-blue-900/20 active:scale-95">
                                         <Plus size={20} />
                                     </button>
                                 </div>
@@ -376,7 +377,7 @@ const TaskPlanner: React.FC = () => {
                                             key={p}
                                             type="button"
                                             onClick={() => setNewPriority(p)}
-                                            className={`px-2 py-1 rounded text-[10px] uppercase font-bold border transition-all ${newPriority === p ? getPriorityColor(p) : 'border-transparent text-zinc-600 hover:bg-zinc-800'}`}
+                                            className={`px-3 py-1 rounded-lg text-[10px] uppercase font-bold border transition-all ${newPriority === p ? getPriorityColor(p) + ' shadow-lg' : 'border-transparent text-zinc-600 hover:bg-white/5'}`}
                                         >
                                             {p === 'High' ? 'Alta' : p === 'Medium' ? 'Média' : 'Baixa'}
                                         </button>
@@ -385,25 +386,26 @@ const TaskPlanner: React.FC = () => {
                             </form>
 
                             {/* List */}
-                            <div className="flex-1 overflow-y-auto custom-scrollbar space-y-2 pr-1">
+                            <div className="flex-1 overflow-y-auto custom-scrollbar space-y-3 pr-2">
                                 {tasksForSelectedDate.length === 0 ? (
-                                    <div className="h-32 flex flex-col items-center justify-center text-zinc-500 border border-dashed border-zinc-800 rounded-xl">
-                                        <span className="text-sm">Dia livre.</span>
+                                    <div className="h-full flex flex-col items-center justify-center text-zinc-500 border-2 border-dashed border-white/5 rounded-2xl bg-white/5">
+                                        <Target size={32} className="mb-2 opacity-20" />
+                                        <span className="text-sm font-medium">Dia livre. Adicione metas!</span>
                                     </div>
                                 ) : (
                                     tasksForSelectedDate.map(task => (
                                         <div
                                             key={task.id}
-                                            className={`group flex items-center gap-3 p-3 rounded-xl border transition-all ${task.completed
-                                                ? 'bg-zinc-950/50 border-zinc-900 opacity-60'
-                                                : 'bg-zinc-800/50 border-zinc-700 hover:bg-zinc-800'
+                                            className={`group flex items-center gap-3 p-4 rounded-xl border transition-all duration-300 ${task.completed
+                                                ? 'bg-emerald-900/5 border-emerald-500/10 opacity-60'
+                                                : 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10 hover:shadow-lg hover:-translate-y-0.5'
                                                 }`}
                                         >
                                             <button
                                                 onClick={() => toggleTask(task.id, task.completed)}
-                                                className={`flex-shrink-0 transition-colors ${task.completed ? 'text-emerald-500' : 'text-zinc-600 hover:text-emerald-500'}`}
+                                                className={`flex-shrink-0 transition-colors ${task.completed ? 'text-emerald-500' : 'text-zinc-600 group-hover:text-emerald-400'}`}
                                             >
-                                                {task.completed ? <CheckCircle2 size={20} /> : <Circle size={20} />}
+                                                {task.completed ? <CheckCircle2 size={22} className="drop-shadow-[0_0_8px_rgba(16,185,129,0.4)]" /> : <Circle size={22} />}
                                             </button>
 
                                             <div className="flex-1 min-w-0">
@@ -411,17 +413,17 @@ const TaskPlanner: React.FC = () => {
                                                     {task.title}
                                                 </p>
                                                 {task.time && (
-                                                    <p className="text-xs text-blue-400 flex items-center gap-1 mt-0.5">
+                                                    <p className="text-xs text-blue-400 flex items-center gap-1 mt-1 font-mono">
                                                         <Clock size={10} /> {task.time}
                                                     </p>
                                                 )}
                                             </div>
 
-                                            <div className={`w-2 h-2 rounded-full ${task.priority === 'High' ? 'bg-red-500' : task.priority === 'Medium' ? 'bg-yellow-500' : 'bg-blue-500'}`}></div>
+                                            <div className={`w-2 h-2 rounded-full shadow-[0_0_8px_currentColor] ${task.priority === 'High' ? 'bg-red-500 text-red-500' : task.priority === 'Medium' ? 'bg-amber-500 text-amber-500' : 'bg-blue-500 text-blue-500'}`}></div>
 
                                             <button
                                                 onClick={() => deleteTask(task.id)}
-                                                className="text-zinc-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"
+                                                className="text-zinc-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all p-1 hover:bg-red-500/10 rounded-lg"
                                             >
                                                 <Trash2 size={16} />
                                             </button>
@@ -439,60 +441,66 @@ const TaskPlanner: React.FC = () => {
 
                     {/* Left: Add Material & Stats */}
                     <div className="space-y-6">
-                        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
-                            <h3 className="text-white font-bold mb-4 flex items-center gap-2">
-                                <Bookmark size={20} className="text-purple-500" /> Nova Apostila
+                        <div className="bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-3xl p-6 backdrop-blur-xl">
+                            <h3 className="text-white font-bold mb-6 flex items-center gap-2 text-lg">
+                                <div className="p-1.5 rounded-lg bg-purple-500/20 text-purple-400">
+                                    <Bookmark size={20} />
+                                </div>
+                                Nova Apostila
                             </h3>
                             <form onSubmit={handleAddMaterial} className="space-y-4">
                                 <div>
-                                    <label className="text-xs font-medium text-zinc-500 mb-1 block">Título do Livro/Apostila</label>
+                                    <label className="text-[10px] font-bold text-zinc-500 mb-1.5 block uppercase tracking-wider">Título do Material</label>
                                     <input
                                         type="text"
                                         value={newMaterialTitle}
                                         onChange={e => setNewMaterialTitle(e.target.value)}
-                                        className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500"
+                                        className="w-full bg-zinc-950/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 transition-all text-sm"
                                         placeholder="Ex: Matemática Vol 1"
                                     />
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="text-xs font-medium text-zinc-500 mb-1 block">Matéria</label>
+                                        <label className="text-[10px] font-bold text-zinc-500 mb-1.5 block uppercase tracking-wider">Matéria</label>
                                         <select
                                             value={newMaterialSubject}
                                             onChange={e => setNewMaterialSubject(e.target.value)}
-                                            className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-3 text-white focus:outline-none focus:border-purple-500 text-sm"
+                                            className="w-full bg-zinc-950/50 border border-white/10 rounded-xl px-3 py-3 text-white focus:outline-none focus:border-purple-500 text-sm"
                                         >
                                             {subjectsList.map(s => <option key={s} value={s}>{s}</option>)}
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="text-xs font-medium text-zinc-500 mb-1 block">Total Capítulos</label>
+                                        <label className="text-[10px] font-bold text-zinc-500 mb-1.5 block uppercase tracking-wider">Capítulos</label>
                                         <input
                                             type="number"
                                             min="1"
                                             value={newMaterialTotal}
                                             onChange={e => setNewMaterialTotal(e.target.value)}
-                                            className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-3 text-white focus:outline-none focus:border-purple-500"
-                                            placeholder="Ex: 12"
+                                            className="w-full bg-zinc-950/50 border border-white/10 rounded-xl px-3 py-3 text-white focus:outline-none focus:border-purple-500 text-sm"
+                                            placeholder="Qtd."
                                         />
                                     </div>
                                 </div>
-                                <button type="submit" className="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-purple-900/20">
-                                    Adicionar Material
+                                <button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-purple-900/20 active:scale-95 mt-2">
+                                    Adicionar ao Planner
                                 </button>
                             </form>
                         </div>
 
                         {materials.length > 0 && (
-                            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 flex flex-col items-center justify-center text-center">
-                                <div className="w-16 h-16 bg-zinc-950 rounded-full flex items-center justify-center mb-4 border border-zinc-800">
-                                    <BarChart size={32} className="text-zinc-400" />
+                            <div className="bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-3xl p-6 flex flex-col items-center justify-center text-center backdrop-blur-xl">
+                                <div className="w-20 h-20 bg-zinc-900/50 rounded-full flex items-center justify-center mb-4 border border-white/5 relative group">
+                                    <div className="absolute inset-0 bg-purple-500/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    <BarChart size={32} className="text-purple-400 relative z-10" />
                                 </div>
-                                <p className="text-zinc-500 text-sm">Total de Materiais</p>
-                                <h4 className="text-3xl font-bold text-white mb-1">{materials.length}</h4>
-                                <p className="text-xs text-zinc-600">
-                                    Progresso Geral: {Math.round(materials.reduce((acc, m) => acc + (m.currentChapter / m.totalChapters), 0) / materials.length * 100)}%
-                                </p>
+                                <p className="text-zinc-500 text-xs font-bold uppercase tracking-wider">Biblioteca Ativa</p>
+                                <h4 className="text-4xl font-black text-white mb-2 tracking-tighter mt-1">{materials.length}</h4>
+                                <div className="px-3 py-1 bg-white/5 rounded-full border border-white/5">
+                                    <p className="text-xs text-zinc-400 font-medium">
+                                        Progresso Geral: <span className="text-white">{Math.round(materials.reduce((acc, m) => acc + (m.currentChapter / m.totalChapters), 0) / materials.length * 100)}%</span>
+                                    </p>
+                                </div>
                             </div>
                         )}
                     </div>
@@ -500,58 +508,61 @@ const TaskPlanner: React.FC = () => {
                     {/* Right: Grid of Materials */}
                     <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 h-fit">
                         {materials.length === 0 ? (
-                            <div className="col-span-full py-16 flex flex-col items-center justify-center text-zinc-500 border border-dashed border-zinc-800 rounded-2xl bg-zinc-900/20">
+                            <div className="col-span-full py-20 flex flex-col items-center justify-center text-zinc-500 border-2 border-dashed border-white/5 rounded-3xl bg-[var(--glass-bg)]">
                                 <BookOpen size={48} className="mb-4 opacity-20" />
-                                <p>Nenhuma apostila cadastrada.</p>
+                                <p className="font-medium">Nenhuma apostila cadastrada.</p>
+                                <p className="text-xs opacity-50 mt-1">Adicione seus materiais para rastrear o estudo.</p>
                             </div>
                         ) : (
                             materials.map(mat => {
                                 const pct = Math.round((mat.currentChapter / mat.totalChapters) * 100);
                                 return (
-                                    <div key={mat.id} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 relative group hover:border-zinc-700 transition-all">
+                                    <div key={mat.id} className="bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-3xl p-6 relative group hover:border-white/20 transition-all backdrop-blur-xl flex flex-col justify-between h-[220px]">
                                         <button
                                             onClick={() => deleteMaterial(mat.id)}
-                                            className="absolute top-4 right-4 text-zinc-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"
+                                            className="absolute top-4 right-4 text-zinc-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all p-2 hover:bg-red-500/10 rounded-lg"
                                         >
                                             <Trash2 size={16} />
                                         </button>
 
-                                        <div className="flex items-start gap-4 mb-4">
-                                            <div className="w-12 h-16 bg-zinc-950 border border-zinc-800 rounded flex items-center justify-center shadow-lg">
-                                                <Book size={20} className="text-zinc-600" />
+                                        <div className="flex items-start gap-4">
+                                            <div className="w-14 h-20 bg-gradient-to-br from-zinc-800 to-black border border-white/10 rounded-lg flex items-center justify-center shadow-2xl group-hover:-translate-y-1 transition-transform duration-300">
+                                                <Book size={24} className="text-zinc-600" />
                                             </div>
-                                            <div>
-                                                <span className="text-xs font-bold text-purple-400 uppercase tracking-wide">{mat.subject}</span>
-                                                <h4 className="text-white font-bold leading-tight mt-0.5">{mat.title}</h4>
-                                                <p className="text-zinc-500 text-xs mt-1">
-                                                    Capítulo {mat.currentChapter} de {mat.totalChapters}
+                                            <div className="flex-1 min-w-0 pt-1">
+                                                <span className="text-[10px] font-bold text-purple-400 uppercase tracking-widest bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">{mat.subject}</span>
+                                                <h4 className="text-white font-bold leading-tight mt-2 text-lg truncate pr-6">{mat.title}</h4>
+                                                <p className="text-zinc-500 text-xs mt-1 font-medium">
+                                                    Capítulo <span className="text-white">{mat.currentChapter}</span> de {mat.totalChapters}
                                                 </p>
                                             </div>
                                         </div>
 
-                                        <div className="flex items-center gap-3 mb-2">
-                                            <div className="flex-1 h-2 bg-zinc-950 rounded-full overflow-hidden border border-zinc-800">
-                                                <div className={`h-full rounded-full transition-all duration-500 ${pct >= 100 ? 'bg-emerald-500' : 'bg-purple-500'}`} style={{ width: `${pct}%` }}></div>
+                                        <div>
+                                            <div className="flex items-center gap-3 mb-2">
+                                                <div className="flex-1 h-2 bg-zinc-950 rounded-full overflow-hidden border border-white/5">
+                                                    <div className={`h-full rounded-full transition-all duration-500 shadow-[0_0_10px_currentColor] ${pct >= 100 ? 'bg-emerald-500 text-emerald-500' : 'bg-purple-500 text-purple-500'}`} style={{ width: `${pct}%` }}></div>
+                                                </div>
+                                                <span className="text-xs font-bold text-white w-8 text-right">{pct}%</span>
                                             </div>
-                                            <span className="text-xs font-bold text-white w-8 text-right">{pct}%</span>
-                                        </div>
 
-                                        <div className="flex justify-between items-center mt-4 pt-4 border-t border-zinc-800/50">
-                                            <button
-                                                onClick={() => updateProgress(mat.id, -1)}
-                                                disabled={mat.currentChapter <= 0}
-                                                className="p-2 hover:bg-zinc-800 rounded-lg text-zinc-400 hover:text-white disabled:opacity-30 transition-colors"
-                                            >
-                                                <ChevronLeft size={18} />
-                                            </button>
-                                            <span className="text-xs text-zinc-500 font-medium">ATUALIZAR PROGRESSO</span>
-                                            <button
-                                                onClick={() => updateProgress(mat.id, 1)}
-                                                disabled={mat.currentChapter >= mat.totalChapters}
-                                                className="p-2 hover:bg-zinc-800 rounded-lg text-zinc-400 hover:text-white disabled:opacity-30 transition-colors"
-                                            >
-                                                <ChevronRight size={18} />
-                                            </button>
+                                            <div className="flex justify-between items-center mt-3 pt-3 border-t border-white/5">
+                                                <button
+                                                    onClick={() => updateProgress(mat.id, -1)}
+                                                    disabled={mat.currentChapter <= 0}
+                                                    className="p-2 hover:bg-white/10 rounded-lg text-zinc-400 hover:text-white disabled:opacity-30 transition-colors"
+                                                >
+                                                    <ChevronLeft size={20} />
+                                                </button>
+                                                <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Atualizar</span>
+                                                <button
+                                                    onClick={() => updateProgress(mat.id, 1)}
+                                                    disabled={mat.currentChapter >= mat.totalChapters}
+                                                    className="p-2 hover:bg-white/10 rounded-lg text-zinc-400 hover:text-white disabled:opacity-30 transition-colors"
+                                                >
+                                                    <ChevronRight size={20} />
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 );

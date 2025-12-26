@@ -74,7 +74,7 @@ const App: React.FC = () => {
 
   return (
     <ThemeProvider>
-      <div className="min-h-screen bg-zinc-950 text-white font-sans selection:bg-blue-500/30">
+      <div className="min-h-screen bg-transparent text-white font-sans selection:bg-blue-500/30">
         <AnimatePresence mode="wait">
           {showTransition && (
             <TransitionOverlay onAnimationComplete={handleTransitionComplete} />
