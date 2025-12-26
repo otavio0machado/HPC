@@ -31,8 +31,24 @@ const NotesModule: React.FC = () => {
 
     // Responsive Check
     const isMobile = useMediaQuery('(max-width: 768px)');
-    const isTablet = useMediaQuery('(max-width: 1024px)');
-    const [activeTab, setActiveTab] = useState<'editor' | 'pdf'>('editor'); // For tablet view
+    const isTablet = useMediaQuery('(max-width: 1280px)'); // Expanded to cover landscape iPads and small laptops
+    const isTablet = useMediaQuery('(max-width: 1280px)'); // Expanded to cover landscape iPads and small laptops
+
+    // View Mode State (Split vs Tabs)
+    // We initialize based on screen size, but allow user override
+    const [viewMode, setViewMode] = useState<'split' | 'tabs'>('split');
+    const [activeTab, setActiveTab] = useState<'editor' | 'pdf'>('editor');
+
+    // Sync viewMode with screen size changes, but only if user hasn't manually set it?
+    // actually, simpler: just default to 'tabs' if starts on tablet, 'split' if desktop. 
+    // Effect will handle resizing updates.
+    useEffect(() => {
+        if (isTablet) {
+            setViewMode('tabs');
+        } else {
+            setViewMode('split');
+        }
+    }, [isTablet]);
 
     // Auto-close sidebar on mobile first load or when switching to mobile
     useEffect(() => {
@@ -237,9 +253,16 @@ const NotesModule: React.FC = () => {
     const handleOpenPdf = useCallback((url: string, title?: string) => {
         setActivePdfUrl(url);
         setShowPdfReader(true);
-        if (isTablet) {
-            setActiveTab('pdf');
-        }
+        const handleOpenPdf = useCallback((url: string, title?: string) => {
+            setActivePdfUrl(url);
+            setShowPdfReader(true);
+            if (viewMode === 'tabs') {
+                setActiveTab('pdf');
+            }
+            // If the note has stored annotations, load them
+            // Note: We need to make sure selectedNote matches the one with PDF or is just a workspace
+            // For now, assuming current note might have the annotations in pdfAnnotations field
+        }, [viewMode]);
         // If the note has stored annotations, load them
         // Note: We need to make sure selectedNote matches the one with PDF or is just a workspace
         // For now, assuming current note might have the annotations in pdfAnnotations field
@@ -380,6 +403,26 @@ const NotesModule: React.FC = () => {
                                     >
                                         <PanelLeft size={16} />
                                     </button>
+
+                                    {/* Layout Toggle (Only visible if PDF is open) */}
+                                    {showPdfReader && (
+                                        <>
+                                            <span className="text-zinc-700">|</span>
+                                            <button
+                                                onClick={() => setViewMode(prev => prev === 'split' ? 'tabs' : 'split')}
+                                                className="p-1 hover:bg-zinc-800 rounded text-zinc-400 hover:text-white transition-colors flex items-center gap-1"
+                                                title={viewMode === 'split' ? "Mudar para modo abas (Focado)" : "Mudar para modo dividido"}
+                                            >
+                                                {viewMode === 'split' ? (
+                                                    <div className="flex gap-0.5"><div className="w-2 h-3 border border-current rounded-[1px]" /><div className="w-2 h-3 border border-current rounded-[1px] bg-current" /></div>
+                                                ) : (
+                                                    <div className="w-4 h-3 border border-current rounded-[1px] bg-current" />
+                                                )}
+                                                <span className="hidden sm:inline">{viewMode === 'split' ? 'Dividido' : 'Focado'}</span>
+                                            </button>
+                                        </>
+                                    )}
+
                                     <span className="text-zinc-700">|</span>
                                     {focusedBlockId && (
                                         <>
@@ -437,7 +480,7 @@ const NotesModule: React.FC = () => {
                         </div>
 
                         {/* Mobile/Tablet Tab Viewer for PDF */}
-                        {isTablet && showPdfReader && activePdfUrl && (
+                        {viewMode === 'tabs' && showPdfReader && activePdfUrl && (
                             <div className="flex items-center border-b border-zinc-800 bg-zinc-900">
                                 <button
                                     onClick={() => setActiveTab('editor')}
@@ -458,9 +501,9 @@ const NotesModule: React.FC = () => {
                         <div className="flex-1 overflow-hidden flex relative">
                             {/* Editor Panel - Resizable or Flex */}
                             <div className={`flex flex-col transition-all duration-300 
-                                ${isTablet && showPdfReader ? (activeTab === 'editor' ? 'w-full' : 'hidden') : ''}
-                                ${!isTablet && showPdfReader ? 'w-1/2 border-r border-zinc-800' : (!isTablet && !showPdfReader ? 'w-full' : '')}
-                                ${(isTablet && !showPdfReader) ? 'w-full' : ''}
+                                ${viewMode === 'tabs' && showPdfReader ? (activeTab === 'editor' ? 'w-full' : 'hidden') : ''}
+                                ${viewMode === 'split' && showPdfReader ? 'w-1/2 border-r border-zinc-800' : (viewMode === 'split' && !showPdfReader ? 'w-full' : '')}
+                                ${(viewMode === 'tabs' && !showPdfReader) ? 'w-full' : ''}
                             `}>
                                 <NotesEditor
                                     noteId={selectedNote.id}
@@ -474,7 +517,7 @@ const NotesModule: React.FC = () => {
                             {/* PDF Reader Panel */}
                             {showPdfReader && activePdfUrl && (
                                 <div className={`flex flex-col bg-zinc-900 border-l border-zinc-800 
-                                    ${isTablet ? (activeTab === 'pdf' ? 'w-full' : 'hidden') : 'w-1/2'}
+                                    ${viewMode === 'tabs' ? (activeTab === 'pdf' ? 'w-full' : 'hidden') : 'w-1/2'}
                                 `}>
                                     <PDFReader
                                         url={activePdfUrl}
