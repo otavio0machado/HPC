@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Settings as SettingsIcon, Bell, Moon, Sun, Database, Trash2, Check, Smartphone, Monitor, Palette } from 'lucide-react';
+import { Settings as SettingsIcon, Bell, Moon, Sun, Database, Trash2, Check, Smartphone, Monitor, Palette, Grip } from 'lucide-react';
 import { authService } from '../services/authService';
 import ThemeToggle from './ThemeToggle';
 import { useTheme } from '../contexts/ThemeContext';
@@ -39,30 +39,38 @@ const Settings: React.FC = () => {
     };
 
     return (
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-4xl mx-auto">
-            <div className="mb-8">
-                <h2 className="text-2xl font-bold text-white tracking-tight flex items-center gap-3">
-                    <SettingsIcon className="text-zinc-400" /> Configurações
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto p-4 md:p-0">
+            <div className="mb-10">
+                <h2 className="text-3xl font-bold text-white tracking-tight flex items-center gap-3">
+                    <div className="p-2 bg-zinc-800 rounded-xl border border-white/10">
+                        <SettingsIcon className="text-zinc-400" size={24} />
+                    </div>
+                    Configurações
                 </h2>
-                <p className="text-zinc-400 mt-1">Personalize sua experiência no High Performance Club.</p>
+                <p className="text-zinc-400 mt-2 text-lg">Personalize sua experiência no High Performance Club.</p>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
                 {/* Study Preferences */}
-                <section className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
-                    <h3 className="text-lg font-bold text-white mb-6">Preferências de Estudo</h3>
-
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-zinc-800">
-                        <div>
-                            <label className="text-white font-medium block">Foco Principal</label>
-                            <p className="text-sm text-zinc-500">Isso ajusta o algoritmo do Planner e as sugestões dos Tutores.</p>
+                <section className="bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-3xl p-8 backdrop-blur-xl">
+                    <div className="flex items-center gap-3 mb-8">
+                        <div className="p-2 bg-blue-500/10 rounded-lg text-blue-400">
+                            <Grip size={20} />
                         </div>
-                        <div className="flex bg-zinc-950 p-1 rounded-lg border border-zinc-800">
+                        <h3 className="text-xl font-bold text-white">Preferências de Estudo</h3>
+                    </div>
+
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div>
+                            <label className="text-white font-bold block mb-1">Foco Principal</label>
+                            <p className="text-sm text-zinc-400 leading-relaxed max-w-md">O algoritmo do Planner e as sugestões dos Tutores serão otimizados para o exame selecionado.</p>
+                        </div>
+                        <div className="flex bg-zinc-950/50 p-1.5 rounded-xl border border-white/10">
                             {['ENEM', 'UFRGS', 'AMBOS'].map(opt => (
                                 <button
                                     key={opt}
                                     onClick={() => handleFocusChange(opt)}
-                                    className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${examFocus === opt ? 'bg-zinc-800 text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}
+                                    className={`px-6 py-2.5 rounded-lg text-xs font-bold transition-all uppercase tracking-wider ${examFocus === opt ? 'bg-zinc-800 text-white shadow-lg border border-white/10' : 'text-zinc-500 hover:text-zinc-300 hover:bg-white/5'}`}
                                 >
                                     {opt}
                                 </button>
@@ -72,86 +80,100 @@ const Settings: React.FC = () => {
                 </section>
 
                 {/* Interface - Enhanced with working ThemeToggle */}
-                <section className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
-                    <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                        <Palette size={20} className="text-blue-400" />
-                        Interface & Aparência
-                    </h3>
-
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-zinc-800">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-blue-500/10 rounded-lg text-blue-400">
-                                {theme === 'dark' ? <Moon size={20} /> : <Sun size={20} />}
-                            </div>
-                            <div>
-                                <span className="text-white font-medium block">Tema do Sistema</span>
-                                <span className="text-sm text-zinc-500">Escolha entre Dark e Light mode.</span>
-                            </div>
+                <section className="bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-3xl p-8 backdrop-blur-xl">
+                    <div className="flex items-center gap-3 mb-8">
+                        <div className="p-2 bg-purple-500/10 rounded-lg text-purple-400">
+                            <Palette size={20} />
                         </div>
-                        <ThemeToggle showLabel={true} />
+                        <h3 className="text-xl font-bold text-white">Interface & Aparência</h3>
                     </div>
 
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-purple-500/10 rounded-lg text-purple-400">
-                                <Monitor size={20} />
+                    <div className="space-y-8 divide-y divide-white/5">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-2">
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center border border-white/10 text-zinc-400">
+                                    {theme === 'dark' ? <Moon size={18} /> : <Sun size={18} />}
+                                </div>
+                                <div>
+                                    <span className="text-white font-bold block">Tema do Sistema</span>
+                                    <span className="text-sm text-zinc-400">Escolha entre Dark e Light mode.</span>
+                                </div>
                             </div>
-                            <div>
-                                <span className="text-white font-medium block">Densidade de Informação</span>
-                                <span className="text-sm text-zinc-500">Ajustar tamanho de fontes e espaçamentos.</span>
+                            <ThemeToggle showLabel={true} />
+                        </div>
+
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-8">
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center border border-white/10 text-zinc-400">
+                                    <Monitor size={18} />
+                                </div>
+                                <div>
+                                    <span className="text-white font-bold block">Densidade de Informação</span>
+                                    <span className="text-sm text-zinc-400">Ajustar tamanho de fontes e espaçamentos.</span>
+                                </div>
+                            </div>
+                            <div className="relative">
+                                <select className="bg-zinc-950 border border-white/10 text-zinc-300 text-sm font-medium rounded-xl px-4 py-2.5 pr-10 outline-none focus:border-blue-500 active:bg-zinc-900 appearance-none min-w-[150px]">
+                                    <option>Confortável</option>
+                                    <option>Compacto</option>
+                                </select>
+                                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none">
+                                    <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                </div>
                             </div>
                         </div>
-                        <select className="bg-zinc-950 border border-zinc-800 text-zinc-300 text-sm rounded-lg px-3 py-2 outline-none focus:border-blue-500">
-                            <option>Confortável</option>
-                            <option>Compacto</option>
-                        </select>
                     </div>
                 </section>
 
                 {/* Data Management */}
-                <section className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
-                    <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                        <Database size={18} className="text-emerald-500" /> Gestão de Dados
-                    </h3>
+                <section className="bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-3xl p-8 backdrop-blur-xl">
+                    <div className="flex items-center gap-3 mb-8">
+                        <div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-400">
+                            <Database size={20} />
+                        </div>
+                        <h3 className="text-xl font-bold text-white">Gestão de Dados</h3>
+                    </div>
 
                     <div className="space-y-4">
-                        <div className="flex items-center justify-between p-4 bg-zinc-950/50 rounded-xl border border-zinc-800">
+                        <div className="flex items-center justify-between p-5 bg-zinc-950/30 hover:bg-zinc-950/50 rounded-2xl border border-white/5 transition-colors group">
                             <div>
-                                <span className="text-white font-medium block text-sm">Cache de Tutores</span>
+                                <span className="text-white font-bold block text-sm mb-1 group-hover:text-blue-200 transition-colors">Cache de Tutores</span>
                                 <span className="text-xs text-zinc-500">Limpar histórico de conversas com IAs.</span>
                             </div>
                             <button
                                 onClick={() => handleClearData('hpc_tutor_history')}
-                                className="text-zinc-500 hover:text-red-400 p-2 transition-colors"
-                                title="Limpar"
+                                className="text-zinc-500 hover:text-red-400 p-3 hover:bg-red-500/10 rounded-xl transition-all"
+                                title="Limpar Cache"
                             >
                                 <Trash2 size={18} />
                             </button>
                         </div>
 
-                        <div className="flex items-center justify-between p-4 bg-zinc-950/50 rounded-xl border border-zinc-800">
+                        <div className="flex items-center justify-between p-5 bg-zinc-950/30 hover:bg-zinc-950/50 rounded-2xl border border-white/5 transition-colors group">
                             <div>
-                                <span className="text-white font-medium block text-sm">Histórico de Simulados</span>
+                                <span className="text-white font-bold block text-sm mb-1 group-hover:text-blue-200 transition-colors">Histórico de Simulados</span>
                                 <span className="text-xs text-zinc-500">Resetar estatísticas de performance.</span>
                             </div>
                             <button
                                 onClick={() => handleClearData('hpc_simulados_history')}
-                                className="text-zinc-500 hover:text-red-400 p-2 transition-colors"
-                                title="Limpar"
+                                className="text-zinc-500 hover:text-red-400 p-3 hover:bg-red-500/10 rounded-xl transition-all"
+                                title="Limpar Histórico"
                             >
                                 <Trash2 size={18} />
                             </button>
                         </div>
 
-                        <div className="flex items-center justify-between p-4 bg-zinc-950/50 rounded-xl border border-zinc-800">
+                        <div className="flex items-center justify-between p-5 bg-zinc-950/30 hover:bg-zinc-950/50 rounded-2xl border border-white/5 transition-colors group">
                             <div>
-                                <span className="text-white font-medium block text-sm">Flashcards e Repetições</span>
+                                <span className="text-white font-bold block text-sm mb-1 group-hover:text-blue-200 transition-colors">Flashcards e Repetições</span>
                                 <span className="text-xs text-zinc-500">Reiniciar progresso do algoritmo SM-2.</span>
                             </div>
                             <button
                                 onClick={() => handleClearData('hpc_flashcards')}
-                                className="text-zinc-500 hover:text-red-400 p-2 transition-colors"
-                                title="Limpar"
+                                className="text-zinc-500 hover:text-red-400 p-3 hover:bg-red-500/10 rounded-xl transition-all"
+                                title="Limpar Progresso"
                             >
                                 <Trash2 size={18} />
                             </button>

@@ -48,13 +48,17 @@ const pricingTiers = [
 
 const Pricing: React.FC = () => {
     return (
-        <section id="pricing" className="py-24 bg-zinc-950">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section id="pricing" className="py-24 relative overflow-hidden">
+            {/* Background blobs */}
+            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-purple-900/10 rounded-full blur-[120px] -z-10 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-900/10 rounded-full blur-[120px] -z-10 pointer-events-none" />
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl font-bold text-white tracking-tight sm:text-4xl mb-4">
-                        Invista no seu <span className="text-blue-500">Futuro</span>
+                    <h2 className="text-3xl font-bold text-white tracking-tight sm:text-4xl mb-4 drop-shadow-lg">
+                        Invista no seu <span className="text-blue-400">Futuro</span>
                     </h2>
-                    <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
+                    <p className="text-lg text-zinc-300 max-w-2xl mx-auto">
                         Escolha o plano ideal para sua jornada de aprovação. Sem compromisso, cancele quando quiser.
                     </p>
                 </div>
@@ -63,25 +67,27 @@ const Pricing: React.FC = () => {
                     {pricingTiers.map((tier) => (
                         <div
                             key={tier.name}
-                            className={`rounded-2xl p-8 border flex flex-col ${tier.highlight
-                                    ? 'bg-zinc-900 border-blue-500/50 shadow-2xl shadow-blue-500/10 scale-105 z-10'
-                                    : 'bg-zinc-900/50 border-zinc-800 hover:border-zinc-700 transition-colors'
+                            className={`rounded-[32px] p-8 flex flex-col transition-all duration-300 ${tier.highlight
+                                ? 'glass-card border-blue-500/30 scale-105 z-10 shadow-[0_20px_60px_rgba(59,130,246,0.15)] ring-1 ring-blue-400/20'
+                                : 'glass-card hover:bg-white/5 opacity-90 hover:opacity-100 ring-1 ring-white/5'
                                 }`}
                         >
                             <div className="mb-6">
-                                <h3 className="text-lg font-semibold text-white mb-2">{tier.name}</h3>
+                                <h3 className={`text-lg font-bold mb-2 ${tier.highlight ? 'text-blue-400' : 'text-white'}`}>{tier.name}</h3>
                                 <div className="flex items-baseline gap-1">
-                                    <span className="text-4xl font-bold text-white">{tier.price}</span>
-                                    {tier.period && <span className="text-sm text-zinc-500">{tier.period}</span>}
+                                    <span className="text-5xl font-black text-white tracking-tight">{tier.price}</span>
+                                    {tier.period && <span className="text-sm text-zinc-400 font-medium">{tier.period}</span>}
                                 </div>
-                                <p className="text-sm text-zinc-400 mt-2">{tier.description}</p>
+                                <p className="text-sm text-zinc-400 mt-3 leading-relaxed">{tier.description}</p>
                             </div>
 
                             <div className="flex-grow">
                                 <ul className="space-y-4 mb-8">
                                     {tier.features.map((feature, idx) => (
                                         <li key={idx} className="flex items-start gap-3 text-sm text-zinc-300">
-                                            <Check className="w-5 h-5 text-blue-500 shrink-0" />
+                                            <div className={`p-0.5 rounded-full ${tier.highlight ? 'bg-blue-500/20' : 'bg-white/10'} shrink-0 mt-0.5`}>
+                                                <Check className={`w-3.5 h-3.5 ${tier.highlight ? 'text-blue-400' : 'text-white/70'}`} />
+                                            </div>
                                             {feature}
                                         </li>
                                     ))}
@@ -89,9 +95,9 @@ const Pricing: React.FC = () => {
                             </div>
 
                             <button
-                                className={`w-full py-3 px-4 rounded-lg font-semibold transition-all ${tier.highlight
-                                        ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/25'
-                                        : 'bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700'
+                                className={`w-full py-4 px-6 rounded-2xl font-bold text-sm tracking-wide transition-all duration-300 ${tier.highlight
+                                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-lg shadow-blue-900/30 hover:scale-[1.02] hover:shadow-blue-900/50'
+                                    : 'bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:border-white/20 hover:scale-[1.02]'
                                     }`}
                             >
                                 {tier.cta}

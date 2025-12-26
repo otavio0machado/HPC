@@ -111,7 +111,7 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
                         onClick={onCtaClick}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="group relative px-8 py-4 rounded-full bg-white text-black font-bold text-lg overflow-hidden shadow-2xl shadow-white/20"
+                        className="group relative px-8 py-4 rounded-full bg-white text-black font-bold text-lg overflow-hidden shadow-[0_8px_40px_rgba(255,255,255,0.3)] hover:scale-[1.02] transition-all duration-300 ease-out"
                     >
                         <div className="absolute inset-0 bg-gradient-to-r from-blue-100 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         <span className="relative flex items-center gap-2">
@@ -121,10 +121,10 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
                     </motion.button>
 
                     <motion.a
-                        href="#features"
+                        href="#metodologia"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="px-8 py-4 rounded-full border-2 border-zinc-700 text-zinc-300 font-semibold hover:bg-white/5 hover:border-zinc-600 transition-all group flex items-center gap-2"
+                        className="px-8 py-4 rounded-full bg-white/[0.03] backdrop-blur-xl border border-white/[0.1] text-white font-semibold hover:bg-white/[0.08] hover:scale-[1.02] hover:shadow-[0_8px_40px_rgba(255,255,255,0.1)] transition-all duration-300 ease-out group flex items-center gap-2 ring-1 ring-white/[0.05] inset"
                     >
                         Conhecer Método
                         <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
@@ -136,7 +136,7 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.8 }}
-                    className="flex flex-wrap justify-center gap-8 md:gap-12"
+                    className="flex flex-wrap justify-center gap-8 md:gap-12 mb-20"
                 >
                     {[
                         { value: '98%', label: 'Taxa de Aprovação' },
@@ -154,6 +154,36 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
                             <div className="text-sm text-zinc-500 font-medium">{stat.label}</div>
                         </motion.div>
                     ))}
+                </motion.div>
+
+                {/* MAIN CARD PREVIEW - Liquid Glass */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9, rotateX: 20 }}
+                    animate={{ opacity: 1, scale: 1, rotateX: 0 }}
+                    transition={{ duration: 1, delay: 1, ease: "circOut" }}
+                    style={{ perspective: 1000 }}
+                    className="relative max-w-5xl mx-auto mt-12 transform hover:scale-[1.01] transition-transform duration-700"
+                >
+                    <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-[32px] blur opacity-20 animate-pulse"></div>
+                    <div className="relative bg-white/[0.03] backdrop-blur-xl border border-white/[0.1] shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] rounded-[30px] ring-1 ring-white/[0.05] inset bg-gradient-to-br from-white/[0.1] to-white/[0.02] p-6 lg:p-8 overflow-hidden aspect-video flex items-center justify-center">
+                        {/* Mock UI Content inside Glass Card */}
+                        <div className="absolute top-0 left-0 right-0 h-12 border-b border-white/[0.05] flex items-center px-6 gap-2">
+                            <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
+                            <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                            <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
+                        </div>
+                        <div className="text-center mt-8">
+                            <p className="text-sm font-medium text-blue-400 mb-2 uppercase tracking-widest">Plataforma HPC</p>
+                            <h3 className="text-3xl font-bold text-white drop-shadow-md tracking-tight">Dashboard de Elite</h3>
+                            <p className="text-zinc-400 mt-2 max-w-md mx-auto">Experiência imersiva inspirada no visionOS para foco total.</p>
+
+                            <div className="mt-8 grid grid-cols-3 gap-4 max-w-lg mx-auto opacity-80">
+                                <div className="h-24 rounded-xl bg-white/5 border border-white/10 animate-pulse delay-75"></div>
+                                <div className="h-24 rounded-xl bg-white/5 border border-white/10 animate-pulse delay-150"></div>
+                                <div className="h-24 rounded-xl bg-white/5 border border-white/10 animate-pulse delay-200"></div>
+                            </div>
+                        </div>
+                    </div>
                 </motion.div>
             </motion.div>
         </section>

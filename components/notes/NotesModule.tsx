@@ -6,7 +6,7 @@ import NotesSettings from './NotesSettings';
 import { notesService } from '../../services/notesService';
 import { NoteFile } from '../../types';
 import { toast } from 'sonner';
-import { Loader2, Hash, Star, PanelLeft } from 'lucide-react';
+import { Loader2, Hash, Star, Layout, Maximize2, Minimize2, PanelRight, Calendar, Info, FileText } from 'lucide-react';
 import TagInput from './TagInput';
 import { PDFReader } from './PDFReader';
 import type { IHighlight } from 'react-pdf-highlighter';
@@ -25,17 +25,17 @@ const NotesModule: React.FC = () => {
     const [pdfAnnotations, setPdfAnnotations] = useState<IHighlight[]>([]);
     const [showPdfReader, setShowPdfReader] = useState(false);
 
-    // Sidebar State
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    // Layout States
+    const [showLeftSidebar, setShowLeftSidebar] = useState(true);
+    const [showRightSidebar, setShowRightSidebar] = useState(true);
+    const [isExpandedMode, setIsExpandedMode] = useState(false);
 
     // Zoom / Focus State
     const [focusedBlockId, setFocusedBlockId] = useState<string | null>(null);
-    const [breadcrumbs, setBreadcrumbs] = useState<{ id: string, text: string }[]>([]);
 
     // Calculate unique tags
     const allTags = React.useMemo(() => {
         const tags = new Set<string>();
-        // Safety check: ensure notes is array
         if (Array.isArray(notes)) {
             notes.forEach(note => {
                 if (note && Array.isArray(note.tags)) {
@@ -94,7 +94,6 @@ const NotesModule: React.FC = () => {
     const handleDeleteNote = async (id: string) => {
         if (!confirm('Tem certeza? Isso apagará notas filhas também.')) return;
 
-        // Optimistic
         const previousNotes = [...notes];
         setNotes(prev => prev.filter(n => n.id !== id && n.parentId !== id));
         if (selectedNote?.id === id) setSelectedNote(null);
@@ -109,7 +108,6 @@ const NotesModule: React.FC = () => {
     };
 
     const handleRenameNote = async (id: string, newName: string) => {
-        // Optimistic
         const previousNotes = [...notes];
         setNotes(prev => prev.map(n => n.id === id ? { ...n, name: newName } : n));
         if (selectedNote?.id === id) setSelectedNote(prev => prev ? { ...prev, name: newName } : null);
@@ -124,10 +122,8 @@ const NotesModule: React.FC = () => {
     };
 
     const handleMoveNote = async (noteId: string, newParentId: string | null) => {
-        // Validation: Prevent moving into self
         if (noteId === newParentId) return;
 
-        // Validation: Prevent circular dependency (moving parent into child)
         const isDescendant = (parentId: string, targetId: string): boolean => {
             if (parentId === targetId) return true;
             const children = notes.filter(n => n.parentId === parentId);
@@ -142,7 +138,6 @@ const NotesModule: React.FC = () => {
             return;
         }
 
-        // Optimistic update
         const note = notes.find(n => n.id === noteId);
         if (!note || note.parentId === newParentId) return;
 
@@ -159,28 +154,20 @@ const NotesModule: React.FC = () => {
         }
     };
 
-    // Debounced save
     const handleUpdateContent = useCallback(async (content: string) => {
         if (!selectedNote) return;
 
-        // Update local state immediately
         const updatedNote = { ...selectedNote, content };
-
-        // Scan for new tags immediately to update UI without refresh
         const extractedTags = content.match(/#[\w\u00C0-\u00FF]+/g) || [];
         updatedNote.tags = extractedTags;
 
         setSelectedNote(updatedNote);
         setNotes(prev => prev.map(n => n.id === selectedNote.id ? updatedNote : n));
-
     }, [selectedNote]);
 
     const handleToggleFavorite = async () => {
         if (!selectedNote) return;
-
         const newStatus = !selectedNote.isFavorite;
-
-        // Optimistic
         const updatedNote = { ...selectedNote, isFavorite: newStatus };
         setSelectedNote(updatedNote);
         setNotes(prev => prev.map(n => n.id === selectedNote.id ? updatedNote : n));
@@ -189,7 +176,6 @@ const NotesModule: React.FC = () => {
             await notesService.updateNote(selectedNote.id, { isFavorite: newStatus });
             toast.success(newStatus ? "Adicionado aos favoritos" : "Removido dos favoritos");
         } catch (e) {
-            // Revert
             const revertedNote = { ...selectedNote, isFavorite: !newStatus };
             setSelectedNote(revertedNote);
             setNotes(prev => prev.map(n => n.id === selectedNote.id ? revertedNote : n));
@@ -199,15 +185,9 @@ const NotesModule: React.FC = () => {
 
     const handleAddTag = async (tag: string) => {
         if (!selectedNote) return;
-
-        // Ensure we append safely to HTML or plain text
-        // If content is empty, just the tag. If content exists, new paragraph.
         const tagHtml = `<p>${tag} </p>`;
         const newContent = selectedNote.content ? selectedNote.content + tagHtml : tagHtml;
-
         await handleUpdateContent(newContent);
-
-        // Force immediate save for better UX
         setIsSaving(true);
         await notesService.updateNote(selectedNote.id, {
             content: newContent,
@@ -222,47 +202,32 @@ const NotesModule: React.FC = () => {
     const handleOpenPdf = useCallback((url: string, title?: string) => {
         setActivePdfUrl(url);
         setShowPdfReader(true);
-        // If the note has stored annotations, load them
-        // Note: We need to make sure selectedNote matches the one with PDF or is just a workspace
-        // For now, assuming current note might have the annotations in pdfAnnotations field
     }, []);
 
     const handleUpdateAnnotations = useCallback(async (allHighlights: IHighlight[]) => {
         setPdfAnnotations(allHighlights);
         if (selectedNote) {
-            // Update local state immediately
             const updatedNote = { ...selectedNote, pdfAnnotations: allHighlights };
             setSelectedNote(updatedNote);
             setNotes(prev => prev.map(n => n.id === selectedNote.id ? updatedNote : n));
-
-            // Debounce save? Or save immediately on annotation change
-            // It's better to save immediately for annotations as they are critical
             try {
-                await notesService.updateNote(selectedNote.id, {
-                    pdfAnnotations: allHighlights
-                });
+                await notesService.updateNote(selectedNote.id, { pdfAnnotations: allHighlights });
             } catch (error) {
                 console.error("Error saving annotations", error);
-                toast.error("Erro ao salvar anotações");
             }
         }
     }, [selectedNote]);
 
-    // Update pdfAnnotations state when selectedNote changes
     useEffect(() => {
         if (selectedNote && selectedNote.pdfAnnotations) {
             setPdfAnnotations(selectedNote.pdfAnnotations);
         } else {
             setPdfAnnotations([]);
         }
-    }, [selectedNote?.id]); // Only reset when switching notes
+    }, [selectedNote?.id]);
 
-    // Autosave Effect
-
-    // Autosave Effect
     useEffect(() => {
         if (!selectedNote) return;
-
         const timer = setTimeout(async () => {
             setIsSaving(true);
             await notesService.updateNote(selectedNote.id, {
@@ -272,28 +237,20 @@ const NotesModule: React.FC = () => {
                 pdfData: selectedNote.pdfData
             });
             setIsSaving(false);
-
         }, 2000);
-
         return () => clearTimeout(timer);
     }, [selectedNote?.content, selectedNote?.name]);
 
-    // Handle Zoom Event
     useEffect(() => {
         const handleZoom = async (e: any) => {
             const blockId = e.detail.blockId;
             setFocusedBlockId(blockId);
-            // In a real implementation, we would fetch the block content and ancestors for breadcrumbs
-            // For now, let's just show a toast that we zoomed in
-            toast.info(`Zoomed in to block ${blockId}`);
+            toast.info(`Foco no bloco ${blockId}`);
         };
-
         window.addEventListener('zoom-block', handleZoom);
         return () => window.removeEventListener('zoom-block', handleZoom);
     }, []);
 
-
-    // Search notes for WikiLinks
     const searchNotes = useCallback(async (query: string) => {
         const lowerQuery = query.toLowerCase();
         return notes
@@ -315,10 +272,13 @@ const NotesModule: React.FC = () => {
     }
 
     return (
-        <div className="flex h-[calc(100vh-80px)] overflow-hidden bg-zinc-950">
-            {/* Sidebar with visibility control */}
-            <div className={`${isSidebarOpen ? 'w-72' : 'w-0'} transition-all duration-300 overflow-hidden flex-shrink-0 border-r border-zinc-800 bg-zinc-950 flex flex-col`}>
-                <div className="w-72 h-full flex flex-col">
+        <div className={`
+            flex overflow-hidden bg-[var(--glass-bg)] border border-[var(--border-glass)] shadow-2xl backdrop-blur-xl animate-in fade-in duration-300
+            ${isExpandedMode ? 'fixed inset-4 z-50 rounded-3xl' : 'h-[calc(100vh-80px)] rounded-3xl relative'}
+        `}>
+            {/* --- LEFT SIDEBAR: File Tree --- */}
+            <div className={`${showLeftSidebar ? 'w-72' : 'w-0'} bg-zinc-950/20 transition-all duration-300 ease-in-out border-r border-white/5 flex flex-col overflow-hidden`}>
+                <div className="w-72 h-full">
                     <NotesSidebar
                         notes={filteredNotes}
                         selectedNoteId={selectedNote?.id || null}
@@ -328,45 +288,25 @@ const NotesModule: React.FC = () => {
                         onMoveNote={handleMoveNote}
                         onRenameNote={handleRenameNote}
                         onOpenSettings={() => setIsSettingsOpen(true)}
-                        // Tag Props
                         allTags={allTags}
                         selectedTag={selectedTag}
                         onSelectTag={setSelectedTag}
-                        allNotes={notes} // Pass all notes for favorites
+                        allNotes={notes}
                     />
                 </div>
             </div>
 
-            <div className="flex-1 flex flex-col min-w-0">
+            {/* --- MAIN CONTENT: Editor --- */}
+            <div className="flex-1 flex flex-col min-w-0 bg-white/5 relative">
                 {selectedNote ? (
                     <>
-                        {/* Note Header */}
-                        <div className="px-8 py-4 border-b border-zinc-800 flex items-center justify-between bg-zinc-950">
-                            <div className="flex-1">
-                                <div className="text-xs text-zinc-500 mb-2 flex items-center gap-2">
-                                    <button
-                                        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                                        className="p-1 hover:bg-zinc-800 rounded text-zinc-400 hover:text-white transition-colors"
-                                        title={isSidebarOpen ? "Fechar Sidebar" : "Abrir Sidebar"}
-                                    >
-                                        <PanelLeft size={16} />
-                                    </button>
-                                    <span className="text-zinc-700">|</span>
-                                    {focusedBlockId && (
-                                        <>
-                                            <button
-                                                onClick={() => setFocusedBlockId(null)}
-                                                className="hover:underline text-blue-500"
-                                            >
-                                                Zoom Out
-                                            </button>
-                                            <span className="text-zinc-700">/</span>
-                                            <span className="text-zinc-300 font-mono text-[10px]">{focusedBlockId.slice(0, 8)}...</span>
-                                            <span className="text-zinc-700">|</span>
-                                        </>
-                                    )}
-                                    Cadernos <span className="text-zinc-700">/</span> {selectedNote.type === 'folder' ? 'Pasta' : 'Nota'}
-                                </div>
+                        {/* Editor Toolbar / Header */}
+                        <div className="h-14 flex items-center justify-between px-6 border-b border-white/5 bg-zinc-950/30 backdrop-blur-md">
+                            <div className="flex items-center gap-4">
+                                <button onClick={() => setShowLeftSidebar(!showLeftSidebar)} className="p-2 hover:bg-white/10 rounded-lg text-zinc-400 hover:text-white transition-colors">
+                                    <Layout size={18} className={showLeftSidebar ? "text-blue-400" : ""} />
+                                </button>
+                                <span className="text-zinc-500 text-sm">/</span>
                                 <input
                                     type="text"
                                     value={selectedNote.name}
@@ -375,42 +315,27 @@ const NotesModule: React.FC = () => {
                                         setSelectedNote(prev => prev ? { ...prev, name: newName } : null);
                                         setNotes(prev => prev.map(n => n.id === selectedNote.id ? { ...n, name: newName } : n));
                                     }}
-                                    className="bg-transparent text-2xl font-bold text-white focus:outline-none w-full placeholder:text-zinc-700"
-                                    placeholder="Título da Nota"
+                                    className="bg-transparent text-white font-bold text-lg focus:outline-none placeholder:text-zinc-600 min-w-[200px]"
+                                    placeholder="Sem Título"
                                 />
-                                <button
-                                    onClick={handleToggleFavorite}
-                                    className="absolute right-4 top-4 p-2 text-zinc-500 hover:text-yellow-400 transition-colors"
-                                    title={selectedNote.isFavorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}
-                                >
-                                    <Star size={20} className={selectedNote.isFavorite ? "fill-yellow-400 text-yellow-400" : ""} />
-                                </button>
-                                <div className="flex items-center gap-2 mt-2 flex-wrap">
-                                    {selectedNote.tags && selectedNote.tags.length > 0 ? (
-                                        selectedNote.tags.map(tag => (
-                                            <span key={tag} className="bg-emerald-900/30 text-emerald-400 border border-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 cursor-pointer hover:bg-emerald-800/50" onClick={() => setSelectedTag(tag)}>
-                                                <Hash size={10} /> {tag.replace('#', '')}
-                                            </span>
-                                        ))
-                                    ) : (
-                                        <span className="text-xs text-zinc-600 italic flex items-center gap-1">
-                                            Sem tags
-                                        </span>
-                                    )}
-                                    <TagInput allTags={allTags} onAddTag={handleAddTag} />
-                                </div>
                             </div>
-                            <div className="text-xs text-zinc-500 flex flex-col items-end gap-1">
-                                <span>{isSaving ? 'Salvando...' : 'Salvo agora'}</span>
-                                {/* Spacer for absolute star button */}
-                                <div className="w-8"></div>
+
+                            <div className="flex items-center gap-2">
+                                <div className="hidden md:flex items-center gap-3 mr-4">
+                                    <span className="text-xs font-mono text-zinc-500 uppercase tracking-widest">{isSaving ? 'Salvando...' : 'Salvo'}</span>
+                                    <button onClick={() => setIsExpandedMode(!isExpandedMode)} className="p-2 hover:bg-white/10 rounded-lg text-zinc-400 hover:text-white transition-colors" title={isExpandedMode ? "Sair do modo foco" : "Modo foco"}>
+                                        {isExpandedMode ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+                                    </button>
+                                </div>
+                                <button onClick={() => setShowRightSidebar(!showRightSidebar)} className={`p-2 hover:bg-white/10 rounded-lg transition-colors ${showRightSidebar ? 'text-blue-400 bg-blue-500/10' : 'text-zinc-400'}`}>
+                                    <PanelRight size={18} />
+                                </button>
                             </div>
                         </div>
 
-                        {/* Editor and PDF Split View */}
-                        <div className="flex-1 overflow-hidden flex">
-                            {/* Editor Panel - Resizable or Flex */}
-                            <div className={`flex flex-col transition-all duration-300 ${showPdfReader ? 'w-1/2 border-r border-zinc-800' : 'w-full'}`}>
+                        {/* Editor & PDF Split */}
+                        <div className="flex-1 overflow-hidden flex bg-transparent">
+                            <div className={`flex flex-col transition-all duration-300 ${showPdfReader ? 'w-1/2 border-r border-white/5' : 'w-full'}`}>
                                 <NotesEditor
                                     noteId={selectedNote.id}
                                     content={selectedNote.content || ''}
@@ -420,9 +345,15 @@ const NotesModule: React.FC = () => {
                                 />
                             </div>
 
-                            {/* PDF Reader Panel */}
+                            {/* PDF Reader */}
                             {showPdfReader && activePdfUrl && (
-                                <div className="w-1/2 flex flex-col bg-zinc-900 border-l border-zinc-800">
+                                <div className="w-1/2 flex flex-col bg-zinc-900 border-l border-white/5 shadow-inner">
+                                    <div className="flex justify-between items-center bg-zinc-950 p-2 border-b border-white/5">
+                                        <span className="text-xs font-bold text-zinc-400 px-2 uppercase tracking-wider">Leitor PDF</span>
+                                        <button onClick={() => setShowPdfReader(false)} className="text-zinc-500 hover:text-white p-1 hover:bg-white/10 rounded">
+                                            <Minimize2 size={16} />
+                                        </button>
+                                    </div>
                                     <PDFReader
                                         url={activePdfUrl}
                                         initialAnnotations={pdfAnnotations}
@@ -432,27 +363,95 @@ const NotesModule: React.FC = () => {
                                 </div>
                             )}
                         </div>
-
-                        {/* Status Bar */}
-                        <div className="h-8 border-t border-zinc-800 flex items-center justify-between px-4 text-[10px] text-zinc-500 bg-zinc-950">
-                            <div className="flex gap-4">
-                                <span>Palavras: {selectedNote.content?.split(/\s+/).filter(w => w.length > 0).length || 0}</span>
-                                <span>Caracteres: {selectedNote.content?.length || 0}</span>
-                            </div>
-                            <div className="flex items-center gap-1.5 text-emerald-500">
-                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div> Online
-                            </div>
-                        </div>
                     </>
                 ) : (
                     <div className="flex-1 flex flex-col items-center justify-center text-zinc-500">
-                        <Hash size={48} className="text-zinc-800 mb-4" />
-                        <p>Selecione uma nota ou crie uma nova para começar.</p>
+                        <div className="w-24 h-24 rounded-full bg-white/5 flex items-center justify-center mb-6 shadow-inner border border-white/5">
+                            <FileText size={48} className="text-zinc-700" />
+                        </div>
+                        <p className="font-bold text-zinc-400">Nenhuma nota selecionada</p>
                     </div>
                 )}
             </div>
 
-            {selectedNote && <NotesInsights note={selectedNote} />}
+            {/* --- RIGHT SIDEBAR: Meta & Details --- */}
+            <div className={`${showRightSidebar && selectedNote ? 'w-72' : 'w-0'} bg-zinc-950/30 transition-all duration-300 ease-in-out border-l border-white/5 flex flex-col overflow-hidden`}>
+                <div className="w-72 h-full overflow-y-auto custom-scrollbar p-5 space-y-6">
+                    {selectedNote && (
+                        <>
+                            {/* Meta Header */}
+                            <div>
+                                <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">Metadados</h3>
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-sm text-zinc-400">Favorito</span>
+                                        <button
+                                            onClick={handleToggleFavorite}
+                                            className={`p-1.5 rounded-lg transition-all ${selectedNote.isFavorite ? 'bg-yellow-500/10 text-yellow-500' : 'bg-white/5 text-zinc-500 hover:text-yellow-500'}`}
+                                        >
+                                            <Star size={16} className={selectedNote.isFavorite ? 'fill-yellow-500' : ''} />
+                                        </button>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-sm text-zinc-400">Criado em</span>
+                                        <div className="flex items-center gap-2 text-xs text-zinc-500">
+                                            <Calendar size={12} /> 2024
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr className="border-white/5" />
+
+                            {/* Tags */}
+                            <div>
+                                <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-3">Tags & Assuntos</h3>
+                                <div className="flex flex-wrap gap-2 mb-3">
+                                    {selectedNote.tags && selectedNote.tags.length > 0 ? (
+                                        selectedNote.tags.map(tag => (
+                                            <span key={tag} className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-medium px-2.5 py-1 rounded-lg flex items-center gap-1 cursor-pointer hover:bg-emerald-500/20 transition-colors" onClick={() => setSelectedTag(tag)}>
+                                                <Hash size={12} /> {tag.replace('#', '')}
+                                            </span>
+                                        ))
+                                    ) : (
+                                        <span className="text-xs text-zinc-600 italic">Sem tags adicionadas.</span>
+                                    )}
+                                </div>
+                                <TagInput allTags={allTags} onAddTag={handleAddTag} />
+                            </div>
+
+                            <hr className="border-white/5" />
+
+                            {/* Stats */}
+                            <div>
+                                <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-3">Estatísticas</h3>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <div className="bg-white/5 rounded-xl p-3 border border-white/5 relative overflow-hidden group">
+                                        <div className="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                        <span className="text-2xl font-bold text-white block mb-1">{selectedNote.content?.split(/\s+/).filter(w => w.length > 0).length || 0}</span>
+                                        <span className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider">Palavras</span>
+                                    </div>
+                                    <div className="bg-white/5 rounded-xl p-3 border border-white/5 relative overflow-hidden group">
+                                        <div className="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                        <span className="text-2xl font-bold text-white block mb-1">{selectedNote.content?.length || 0}</span>
+                                        <span className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider">Caracteres</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr className="border-white/5" />
+
+                            {/* AI Insights Stub */}
+                            <div>
+                                <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                    <Info size={14} /> Insights
+                                </h3>
+                                <NotesInsights note={selectedNote} />
+                            </div>
+                        </>
+                    )}
+                </div>
+            </div>
 
             <NotesSettings
                 isOpen={isSettingsOpen}

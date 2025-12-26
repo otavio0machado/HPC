@@ -26,21 +26,21 @@ const Features: React.FC = () => {
   ];
 
   return (
-    <section id="metodologia" className="py-24 bg-zinc-950">
+    <section id="features" className="py-24 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-16">
-          <h2 className="text-3xl font-bold text-white mb-4">A Metodologia HPC</h2>
-          <div className="w-20 h-1 bg-blue-600 rounded-full"></div>
+          <h2 className="text-3xl font-bold text-white mb-4 drop-shadow-md">A Metodologia HPC</h2>
+          <div className="w-20 h-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full shadow-[0_0_10px_rgba(37,99,235,0.5)]"></div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature, idx) => (
-            <div key={idx} className="p-6 rounded-2xl bg-zinc-900/50 border border-zinc-800 hover:border-zinc-700 transition-all hover:-translate-y-1">
-              <div className="mb-4 bg-zinc-950 w-14 h-14 rounded-xl flex items-center justify-center border border-zinc-800">
-                {feature.icon}
+            <div key={idx} className="glass-card p-6 rounded-[24px] hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:-translate-y-2 group">
+              <div className="mb-6 w-14 h-14 rounded-2xl flex items-center justify-center bg-white/5 border border-white/10 group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                {React.cloneElement(feature.icon as React.ReactElement, { size: 28 })}
               </div>
-              <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
-              <p className="text-zinc-400 leading-relaxed text-sm">{feature.description}</p>
+              <h3 className="text-xl font-bold text-white mb-3 group-hover:text-blue-200 transition-colors">{feature.title}</h3>
+              <p className="text-zinc-300 leading-relaxed text-sm font-medium">{feature.description}</p>
             </div>
           ))}
         </div>
