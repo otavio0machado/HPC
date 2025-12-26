@@ -26,7 +26,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLoginClick, isLoggedIn }) => {
   ];
 
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-500 border-b ${isScrolled ? 'glass-nav border-zinc-800/50 shadow-2xl' : 'bg-transparent border-transparent'}`}>
+    <nav className={`fixed top-0 w-full z-50 transition-all duration-500 border-b ${isScrolled ? 'bg-[var(--glass-bg)] backdrop-blur-xl border-[var(--border-glass)] shadow-2xl' : 'bg-transparent border-transparent'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Enhanced Logo */}
@@ -35,7 +35,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLoginClick, isLoggedIn }) => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <span className="text-xl md:text-2xl font-black tracking-tighter text-white hover:text-blue-400 transition-colors duration-300 cursor-pointer">
+            <span className="text-xl md:text-2xl font-black tracking-tighter text-white hover:text-blue-400 transition-colors duration-300 cursor-pointer flex items-center gap-1">
               HPC<span className="text-blue-500 animate-pulse">.</span>
             </span>
           </motion.div>
@@ -54,7 +54,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLoginClick, isLoggedIn }) => {
                   className="text-sm font-semibold text-zinc-400 hover:text-white transition-all duration-300 relative group"
                 >
                   {link.name}
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 group-hover:w-full transition-all duration-300" />
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 group-hover:w-full transition-all duration-300" />
                 </motion.a>
               ))}
 
@@ -63,10 +63,10 @@ const Navbar: React.FC<NavbarProps> = ({ onLoginClick, isLoggedIn }) => {
                 onClick={onLoginClick}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-5 py-2 rounded-full bg-white text-black text-sm font-bold hover:bg-gradient-to-r hover:from-blue-100 hover:to-white transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 group"
+                className="px-5 py-2 rounded-full bg-white text-black text-sm font-bold hover:bg-gradient-to-r hover:from-blue-100 hover:to-white transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] flex items-center gap-2 group border border-transparent hover:border-blue-200"
               >
                 <span>{isLoggedIn ? 'Dashboard' : 'Entrar no Club'}</span>
-                {!isLoggedIn && <Sparkles size={14} className="group-hover:rotate-12 transition-transform duration-300" />}
+                {!isLoggedIn && <Sparkles size={14} className="text-yellow-500 group-hover:rotate-12 transition-transform duration-300" />}
               </motion.button>
             </div>
           </div>
@@ -114,7 +114,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLoginClick, isLoggedIn }) => {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden bg-zinc-950/95 backdrop-blur-xl border-b border-zinc-800"
+            className="md:hidden bg-[var(--glass-bg)] backdrop-blur-xl border-b border-[var(--border-glass)]"
           >
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
               {navLinks.map((link, idx) => (
@@ -124,7 +124,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLoginClick, isLoggedIn }) => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: idx * 0.1 }}
-                  className="block px-4 py-3 rounded-xl text-base font-medium text-zinc-300 hover:text-white hover:bg-white/10 transition-all duration-300"
+                  className="block px-4 py-3 rounded-xl text-base font-medium text-zinc-300 hover:text-white hover:bg-white/5 transition-all duration-300"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {link.name}
@@ -138,7 +138,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLoginClick, isLoggedIn }) => {
                   setMobileMenuOpen(false);
                   onLoginClick();
                 }}
-                className="block w-full text-left px-4 py-3 rounded-xl text-base font-bold text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 mt-4 transition-all duration-300 shadow-lg"
+                className="block w-full text-left px-4 py-3 rounded-xl text-base font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 mt-4 transition-all duration-300 shadow-lg shadow-blue-900/20"
               >
                 {isLoggedIn ? 'Dashboard' : 'Entrar no Club'}
               </motion.button>
