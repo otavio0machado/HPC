@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 import NotesSidebar from './NotesSidebar';
 import NotesEditor from './NotesEditor';
 import NotesInsights from './NotesInsights';
@@ -27,6 +28,20 @@ const NotesModule: React.FC = () => {
 
     // Sidebar State
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+    // Responsive Check
+    const isMobile = useMediaQuery('(max-width: 768px)');
+    const isTablet = useMediaQuery('(max-width: 1024px)');
+    const [activeTab, setActiveTab] = useState<'editor' | 'pdf'>('editor'); // For tablet view
+
+    // Auto-close sidebar on mobile first load or when switching to mobile
+    useEffect(() => {
+        if (isMobile) {
+            setIsSidebarOpen(false);
+        } else {
+            setIsSidebarOpen(true);
+        }
+    }, [isMobile]);
 
     // Zoom / Focus State
     const [focusedBlockId, setFocusedBlockId] = useState<string | null>(null);
@@ -222,10 +237,13 @@ const NotesModule: React.FC = () => {
     const handleOpenPdf = useCallback((url: string, title?: string) => {
         setActivePdfUrl(url);
         setShowPdfReader(true);
+        if (isTablet) {
+            setActiveTab('pdf');
+        }
         // If the note has stored annotations, load them
         // Note: We need to make sure selectedNote matches the one with PDF or is just a workspace
         // For now, assuming current note might have the annotations in pdfAnnotations field
-    }, []);
+    }, [isTablet]);
 
     const handleUpdateAnnotations = useCallback(async (allHighlights: IHighlight[]) => {
         setPdfAnnotations(allHighlights);
@@ -316,13 +334,24 @@ const NotesModule: React.FC = () => {
 
     return (
         <div className="flex h-[calc(100vh-80px)] overflow-hidden bg-zinc-950">
+            {/* Mobile Sidebar Backdrop */}
+            {isMobile && isSidebarOpen && (
+                <div
+                    className="absolute inset-0 bg-black/50 z-40 backdrop-blur-sm"
+                    onClick={() => setIsSidebarOpen(false)}
+                />
+            )}
+
             {/* Sidebar with visibility control */}
-            <div className={`${isSidebarOpen ? 'w-72' : 'w-0'} transition-all duration-300 overflow-hidden flex-shrink-0 border-r border-zinc-800 bg-zinc-950 flex flex-col`}>
+            <div className={`${isSidebarOpen ? 'w-72 translate-x-0' : (isMobile ? '-translate-x-full w-72 absolute' : 'w-0')} ${isMobile ? 'absolute z-50 h-full shadow-2xl border-r border-zinc-800' : 'relative border-r border-zinc-800'} transition-all duration-300 overflow-hidden flex-shrink-0 bg-zinc-950 flex flex-col`}>
                 <div className="w-72 h-full flex flex-col">
                     <NotesSidebar
                         notes={filteredNotes}
                         selectedNoteId={selectedNote?.id || null}
-                        onSelectNote={setSelectedNote}
+                        onSelectNote={(n) => {
+                            setSelectedNote(n);
+                            if (isMobile) setIsSidebarOpen(false);
+                        }}
                         onCreateNote={handleCreateNote}
                         onDeleteNote={handleDeleteNote}
                         onMoveNote={handleMoveNote}
@@ -337,7 +366,7 @@ const NotesModule: React.FC = () => {
                 </div>
             </div>
 
-            <div className="flex-1 flex flex-col min-w-0">
+            <div className="flex-1 flex flex-col min-w-0 bg-zinc-950 relative">
                 {selectedNote ? (
                     <>
                         {/* Note Header */}
@@ -407,10 +436,32 @@ const NotesModule: React.FC = () => {
                             </div>
                         </div>
 
+                        {/* Mobile/Tablet Tab Viewer for PDF */}
+                        {isTablet && showPdfReader && activePdfUrl && (
+                            <div className="flex items-center border-b border-zinc-800 bg-zinc-900">
+                                <button
+                                    onClick={() => setActiveTab('editor')}
+                                    className={`flex-1 py-2 text-sm font-medium transition-colors ${activeTab === 'editor' ? 'text-white border-b-2 border-blue-500 bg-zinc-800/50' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
+                                >
+                                    Anotações
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab('pdf')}
+                                    className={`flex-1 py-2 text-sm font-medium transition-colors ${activeTab === 'pdf' ? 'text-white border-b-2 border-blue-500 bg-zinc-800/50' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
+                                >
+                                    PDF
+                                </button>
+                            </div>
+                        )}
+
                         {/* Editor and PDF Split View */}
-                        <div className="flex-1 overflow-hidden flex">
+                        <div className="flex-1 overflow-hidden flex relative">
                             {/* Editor Panel - Resizable or Flex */}
-                            <div className={`flex flex-col transition-all duration-300 ${showPdfReader ? 'w-1/2 border-r border-zinc-800' : 'w-full'}`}>
+                            <div className={`flex flex-col transition-all duration-300 
+                                ${isTablet && showPdfReader ? (activeTab === 'editor' ? 'w-full' : 'hidden') : ''}
+                                ${!isTablet && showPdfReader ? 'w-1/2 border-r border-zinc-800' : (!isTablet && !showPdfReader ? 'w-full' : '')}
+                                ${(isTablet && !showPdfReader) ? 'w-full' : ''}
+                            `}>
                                 <NotesEditor
                                     noteId={selectedNote.id}
                                     content={selectedNote.content || ''}
@@ -422,7 +473,9 @@ const NotesModule: React.FC = () => {
 
                             {/* PDF Reader Panel */}
                             {showPdfReader && activePdfUrl && (
-                                <div className="w-1/2 flex flex-col bg-zinc-900 border-l border-zinc-800">
+                                <div className={`flex flex-col bg-zinc-900 border-l border-zinc-800 
+                                    ${isTablet ? (activeTab === 'pdf' ? 'w-full' : 'hidden') : 'w-1/2'}
+                                `}>
                                     <PDFReader
                                         url={activePdfUrl}
                                         initialAnnotations={pdfAnnotations}
