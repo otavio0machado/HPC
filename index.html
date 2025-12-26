@@ -4,12 +4,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>High Performance Club | UFRGS & ENEM</title>
-  <meta name="description" content="Atingindo a excelência acadêmica. Preparação de elite para UFRGS e ENEM." />
-  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Primary Meta Tags -->
+  <title>High Performance Club | Preparação de Elite para UFRGS & ENEM</title>
+  <meta name="title" content="High Performance Club | Preparação de Elite para UFRGS & ENEM" />
+  <meta name="description"
+    content="Atingindo a excelência acadêmica com inteligência artificial e neurociência. O sistema definitivo para quem não aceita menos que a vaga dos sonhos." />
+  <meta name="keywords"
+    content="UFRGS, ENEM, vestibular, preparação, estudo, alta performance, inteligência artificial, flashcards, simulados" />
+  <meta name="author" content="High Performance Club" />
+  <meta name="theme-color" content="#09090b" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://highperformanceclub.com/" />
+  <meta property="og:title" content="High Performance Club | Preparação de Elite para UFRGS & ENEM" />
+  <meta property="og:description"
+    content="Atingindo a excelência acadêmica com inteligência artificial e neurociência." />
+  <meta property="og:image" content="/og-image.jpg" />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://highperformanceclub.com/" />
+  <meta property="twitter:title" content="High Performance Club | Preparação de Elite para UFRGS & ENEM" />
+  <meta property="twitter:description"
+    content="Atingindo a excelência acadêmica com inteligência artificial e neurociência." />
+  <meta property="twitter:image" content="/og-image.jpg" />
+
+  <!-- Preconnect for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+
+  <!-- Fonts with display swap for better performance -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+
+  <!-- KaTeX -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
-    integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+    integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous" />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
 
   <script>
     tailwind.config = {
@@ -30,20 +67,180 @@
     }
   </script>
   <style>
+    /* CSS Variables for Theme Support */
+    :root {
+      /* Dark Mode (Default) */
+      --bg-primary: #09090b;
+      --bg-secondary: #18181b;
+      --bg-tertiary: #27272a;
+      --text-primary: #ffffff;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --border-primary: #3f3f46;
+      --border-secondary: #27272a;
+      --accent-primary: #3b82f6;
+      --accent-secondary: #2563eb;
+      --glass-bg: rgba(9, 9, 11, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.05);
+      --card-bg: rgba(24, 24, 27, 0.6);
+      --scrollbar-track: #18181b;
+      --scrollbar-thumb: #3f3f46;
+      --scrollbar-thumb-hover: #52525b;
+    }
+
+    /* Light Mode */
+    .light {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f4f4f5;
+      --bg-tertiary: #e4e4e7;
+      --text-primary: #09090b;
+      --text-secondary: #52525b;
+      --text-tertiary: #71717a;
+      --border-primary: #d4d4d8;
+      --border-secondary: #e4e4e7;
+      --accent-primary: #3b82f6;
+      --accent-secondary: #2563eb;
+      --glass-bg: rgba(255, 255, 255, 0.7);
+      --glass-border: rgba(0, 0, 0, 0.05);
+      --card-bg: rgba(244, 244, 245, 0.6);
+      --scrollbar-track: #f4f4f5;
+      --scrollbar-thumb: #d4d4d8;
+      --scrollbar-thumb-hover: #a1a1aa;
+    }
+
+    /* Base Styles */
+    * {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
     body {
-      background-color: #09090b;
-      color: #ffffff;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
       scroll-behavior: smooth;
+      overflow-x: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     html {
       scroll-behavior: smooth;
     }
 
+    /* Glass Effects */
     .glass-nav {
-      background: rgba(9, 9, 11, 0.7);
+      background: var(--glass-bg);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
+      transition: background 0.3s ease;
+    }
+
+    .glass-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+
+    /* Animated Gradient */
+    @keyframes gradient-shift {
+
+      0%,
+      100% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+    }
+
+    .animate-gradient {
+      background-size: 200% 200%;
+      animation: gradient-shift 8s ease infinite;
+    }
+
+    .bg-300\% {
+      background-size: 300%;
+    }
+
+    /* Smooth Transitions */
+    .transition-smooth {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Hover Lift Effect */
+    .hover-lift {
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Fade In Animation */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in-up {
+      animation: fadeInUp 0.6s ease-out forwards;
+    }
+
+    /* Pulse Animation */
+    @keyframes pulse-glow {
+
+      0%,
+      100% {
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+      }
+
+      50% {
+        box-shadow: 0 0 40px rgba(59, 130, 246, 0.5);
+      }
+    }
+
+    .pulse-glow {
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    /* Custom Scrollbar with Theme Support */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border-radius: 4px;
+      transition: background 0.3s ease;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--scrollbar-thumb-hover);
+    }
+
+    /* Hide scrollbar for certain elements */
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
     }
 
     /* KaTeX overrides for dark mode contrast */
@@ -56,6 +253,34 @@
       margin: 1em 0;
       overflow-x: auto;
       overflow-y: hidden;
+    }
+
+    /* Shimmer Loading Effect */
+    @keyframes shimmer {
+      0% {
+        background-position: -1000px 0;
+      }
+
+      100% {
+        background-position: 1000px 0;
+      }
+    }
+
+    .shimmer {
+      background: linear-gradient(to right,
+          #18181b 0%,
+          #27272a 20%,
+          #18181b 40%,
+          #18181b 100%);
+      background-size: 1000px 100%;
+      animation: shimmer 2s infinite;
+    }
+
+    /* Focus Visible for Accessibility */
+    *:focus-visible {
+      outline: 2px solid #3b82f6;
+      outline-offset: 2px;
+      border-radius: 4px;
     }
   </style>
   <script type="importmap">

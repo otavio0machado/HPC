@@ -13,7 +13,9 @@ import TaskPlanner from './TaskPlanner';
 import Profile from './Profile';
 import Settings from './Settings';
 import NotesModule from './notes/NotesModule';
+import Library from './library/Library';
 import UpgradeModal from './UpgradeModal';
+import { DashboardSkeleton } from './SkeletonLoader';
 
 // Services & Types
 import { authService } from '../services/authService';
@@ -26,7 +28,7 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   // Navigation State
-  const navItems = ["Dashboard", "Planner", "Notas", "Tutores", "Lista de Erros", "Flashcards", "Simulados"];
+  const navItems = ["Dashboard", "Planner", "Notas", "Biblioteca", "Tutores", "Lista de Erros", "Flashcards", "Simulados"];
   const [activeTab, setActiveTab] = useState("Dashboard");
 
   // User Menu State
@@ -235,7 +237,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
   const changeTab = (tab: string) => {
     if (!currentUser) return;
-    const restricted = ['Notas', 'Tutores', 'Lista de Erros', 'Flashcards', 'Simulados'];
+    const restricted = ['Notas', 'Biblioteca', 'Tutores', 'Lista de Erros', 'Flashcards', 'Simulados'];
     const isPro = currentUser.subscription_tier === 'pro';
 
     if (restricted.includes(tab) && !isPro) {
@@ -251,8 +253,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
   if (isLoadingUser || !currentUser) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center text-zinc-500">
-        <Loader2 className="animate-spin text-blue-500 mb-2" size={32} />
+      <div className="min-h-screen bg-zinc-950">
+        <DashboardSkeleton />
       </div>
     );
   }
@@ -317,67 +319,108 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       )}
 
       <div className="max-w-7xl mx-auto">
-        {/* Header (Restored) */}
-        <header className="flex flex-col md:flex-row justify-between items-center mb-8 pb-6 border-b border-zinc-800">
+        {/* Enhanced Header with Glassmorphism */}
+        <header className="flex flex-col md:flex-row justify-between items-center mb-8 pb-6 border-b border-zinc-800/50 backdrop-blur-sm">
           <div className="flex flex-col md:flex-row items-center gap-6 mb-4 md:mb-0 w-full md:w-auto">
             <div className="text-center md:text-left">
-              <h1 className="text-3xl font-bold tracking-tighter text-white">
-                High Performance Club<span className="text-blue-500">.</span>
+              <h1 className="text-3xl md:text-4xl font-black tracking-tighter text-white hover:text-blue-400 transition-colors duration-300 cursor-default">
+                High Performance Club<span className="text-blue-500 animate-pulse">.</span>
               </h1>
-              <p className="text-zinc-400 text-sm mt-0.5">Dashboard de Elite</p>
+              <p className="text-zinc-500 text-sm mt-1 font-medium">Dashboard de Elite</p>
             </div>
           </div>
+
+          {/* Enhanced User Menu */}
           <div className="relative" ref={userMenuRef}>
             <button
               onClick={() => setUserMenuOpen(!userMenuOpen)}
-              className="flex items-center gap-3 pl-2 pr-4 py-1.5 rounded-full border transition-all bg-white/5 border-white/10 hover:bg-white/10"
+              className="flex items-center gap-3 pl-2 pr-4 py-2 rounded-full border transition-all duration-300 bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 hover:shadow-lg hover:shadow-blue-500/10 group"
             >
-              <div className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm bg-blue-600 text-white">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm bg-gradient-to-br from-blue-600 to-blue-500 text-white group-hover:scale-110 transition-transform duration-300 shadow-lg">
                 {currentUser.name.substring(0, 2).toUpperCase()}
               </div>
               <div className="text-left hidden sm:block">
-                <p className="text-sm font-bold text-white">{currentUser.name.split(' ')[0]}</p>
-                <div className="flex items-center gap-1">
-                  <p className="text--[10px] text-zinc-500">{currentUser.subscription_tier === 'pro' ? 'Membro Pro' : 'Membro Free'}</p>
+                <p className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">{currentUser.name.split(' ')[0]}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-[10px] text-zinc-500">{currentUser.subscription_tier === 'pro' ? 'Membro Pro' : 'Membro Free'}</p>
                   {currentUser.subscription_tier !== 'pro' && (
-                    <span onClick={(e) => { e.stopPropagation(); setShowUpgradeModal(true); }} className="text-[10px] bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-1.5 rounded-sm cursor-pointer hover:opacity-90 font-bold">UPGRADE</span>
+                    <span onClick={(e) => { e.stopPropagation(); setShowUpgradeModal(true); }} className="text-[10px] bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-2 py-0.5 rounded-full cursor-pointer hover:opacity-90 font-bold hover:scale-110 transition-transform">UPGRADE</span>
                   )}
                 </div>
               </div>
-              <ChevronDown size={14} className="text-zinc-400" />
+              <ChevronDown size={16} className={`text-zinc-400 transition-transform duration-300 ${userMenuOpen ? 'rotate-180' : ''}`} />
             </button>
-            {userMenuOpen && (
-              <div className="absolute right-0 mt-2 w-56 rounded-xl shadow-2xl border overflow-hidden z-20 animate-in fade-in zoom-in-95 duration-200 bg-zinc-900 border-zinc-800">
-                <div className="p-4 border-b border-white/10">
-                  <p className="text-sm font-bold text-white">{currentUser.name}</p>
-                  <p className="text-xs text-zinc-500 truncate">{currentUser.email}</p>
-                </div>
-                <div className="p-2">
-                  <button onClick={() => { changeTab('Perfil'); setUserMenuOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors text-zinc-300 hover:bg-white/10"><User size={16} /> Meu Perfil</button>
-                  <button onClick={() => { changeTab('Configurações'); setUserMenuOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors text-zinc-300 hover:bg-white/10"><SettingsIcon size={16} /> Configurações</button>
-                </div>
-                <div className="p-2 border-t border-white/10">
-                  <button onClick={onLogout} className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg text-red-400 hover:bg-red-500/10 transition-colors"><LogOut size={16} /> Sair do Club</button>
-                </div>
-              </div>
-            )}
+
+            {/* Enhanced Dropdown Menu with Animation */}
+            <AnimatePresence>
+              {userMenuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute right-0 mt-2 w-64 rounded-2xl shadow-2xl border overflow-hidden z-20 bg-zinc-900/95 backdrop-blur-xl border-zinc-800"
+                >
+                  <div className="p-4 border-b border-white/10 bg-gradient-to-br from-zinc-900 to-zinc-800/50">
+                    <p className="text-sm font-bold text-white">{currentUser.name}</p>
+                    <p className="text-xs text-zinc-400 truncate mt-0.5">{currentUser.email}</p>
+                  </div>
+                  <div className="p-2">
+                    <button onClick={() => { changeTab('Perfil'); setUserMenuOpen(false); }} className="w-full flex items-center gap-3 px-4 py-3 text-sm rounded-xl transition-all text-zinc-300 hover:bg-blue-600/10 hover:text-blue-400 group">
+                      <User size={18} className="group-hover:scale-110 transition-transform" />
+                      <span className="font-medium">Meu Perfil</span>
+                    </button>
+                    <button onClick={() => { changeTab('Configurações'); setUserMenuOpen(false); }} className="w-full flex items-center gap-3 px-4 py-3 text-sm rounded-xl transition-all text-zinc-300 hover:bg-blue-600/10 hover:text-blue-400 group">
+                      <SettingsIcon size={18} className="group-hover:rotate-90 transition-transform duration-300" />
+                      <span className="font-medium">Configurações</span>
+                    </button>
+                  </div>
+                  <div className="p-2 border-t border-white/10">
+                    <button onClick={onLogout} className="w-full flex items-center gap-3 px-4 py-3 text-sm rounded-xl text-red-400 hover:bg-red-500/10 transition-all font-medium group">
+                      <LogOut size={18} className="group-hover:translate-x-1 transition-transform" />
+                      <span>Sair do Club</span>
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </header>
 
-        {/* Top Navigation (Restored) */}
+        {/* Enhanced Top Navigation with Better Feedback */}
         <nav className="flex flex-wrap gap-2 mb-8 overflow-x-auto pb-2 scrollbar-hide">
-          {navItems.map((item) => (
-            <button
-              key={item}
-              onClick={() => changeTab(item)}
-              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap flex items-center gap-2 ${activeTab === item ? "bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.15)] scale-105" : "text-zinc-400 hover:text-white hover:bg-zinc-900 border border-transparent"}`}
-            >
-              {item}
-              {['Notas', 'Tutores', 'Lista de Erros', 'Flashcards', 'Simulados'].includes(item) && currentUser.subscription_tier !== 'pro' && (
-                <Lock size={12} className="opacity-70" />
-              )}
-            </button>
-          ))}
+          {navItems.map((item) => {
+            const isActive = activeTab === item;
+            const isLocked = ['Notas', 'Biblioteca', 'Tutores', 'Lista de Erros', 'Flashcards', 'Simulados'].includes(item) && currentUser.subscription_tier !== 'pro';
+
+            return (
+              <motion.button
+                key={item}
+                onClick={() => changeTab(item)}
+                whileHover={{ scale: isActive ? 1 : 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`
+                  px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 whitespace-nowrap flex items-center gap-2 relative overflow-hidden
+                  ${isActive
+                    ? "bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.2)] scale-105"
+                    : "text-zinc-400 hover:text-white hover:bg-zinc-900 border border-transparent hover:border-zinc-800"
+                  }
+                `}
+              >
+                {isActive && (
+                  <motion.div
+                    layoutId="activeTab"
+                    className="absolute inset-0 bg-white -z-10 rounded-full"
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">{item}</span>
+                {isLocked && (
+                  <Lock size={12} className="opacity-70 animate-pulse" />
+                )}
+              </motion.button>
+            );
+          })}
         </nav>
 
         {/* Content Area */}
@@ -409,6 +452,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
             {activeTab === "Planner" && <TaskPlanner />}
             {activeTab === "Notas" && <NotesModule />}
+            {activeTab === "Biblioteca" && <Library userId={currentUser.id} />}
             {activeTab === "Tutores" && <Tutors />}
             {activeTab === "Lista de Erros" && <ErrorList />}
             {activeTab === "Flashcards" && <Flashcards />}

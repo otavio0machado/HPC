@@ -134,3 +134,15 @@ export interface NoteFile {
   createdAt: number;
   updatedAt: number;
 }
+
+export interface Block {
+  id: string;
+  noteId: string;
+  content: string; // Text content or stringified JSON for complex nodes
+  type: string;
+  properties: any;
+  parentBlockId: string | null;
+  rank?: string;
+  createdAt: string;
+  updatedAt: string;
+}

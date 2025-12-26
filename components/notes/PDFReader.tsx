@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import "react-pdf-highlighter/dist/style.css";
 import {
     PdfLoader,
@@ -14,7 +13,9 @@ import type { IHighlight, NewHighlight } from 'react-pdf-highlighter';
 
 import { toast } from 'sonner';
 import { pdfjs } from 'react-pdf';
+import { ReaderSettings } from '../../services/libraryService';
 
+// Set worker
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     'pdfjs-dist/build/pdf.worker.min.mjs',
     import.meta.url,
@@ -26,6 +27,7 @@ interface PDFReaderProps {
     onUpdateAnnotations: (annotations: IHighlight[]) => void;
     onClose?: () => void;
     scrollRef?: (scrollTo: (highlight: IHighlight) => void) => void;
+    settings?: ReaderSettings;
 }
 
 const parseIdFromHash = () => {
@@ -52,13 +54,27 @@ export const PDFReader = React.memo<PDFReaderProps>(({
     initialAnnotations = [],
     onUpdateAnnotations,
     onClose,
-    scrollRef
+    scrollRef,
+    settings
 }) => {
     const [highlights, setHighlights] = useState<IHighlight[]>(initialAnnotations);
     const scrollViewerTo = useRef<(highlight: IHighlight) => void>(null!);
 
     const [scale, setScale] = useState(1);
     const [rotation, setRotation] = useState(0);
+
+    // Calculate filters based on settings
+    const getFilterStyle = () => {
+        if (!settings) return {};
+        switch (settings.theme) {
+            case 'dark':
+                return { filter: 'invert(1) hue-rotate(180deg) contrast(0.8)' };
+            case 'sepia':
+                return { filter: 'sepia(0.5) contrast(0.9) brightness(0.9)' };
+            default:
+                return {};
+        }
+    };
 
     // Provide scroll handler to parent
     useEffect(() => {
@@ -160,103 +176,98 @@ export const PDFReader = React.memo<PDFReaderProps>(({
             </div>
 
             <div className="flex-1 overflow-hidden relative" style={{ height: "calc(100% - 41px)" }}>
-                <PdfLoader url={url} beforeLoad={<div className="flex justify-center items-center h-full"><Loader2 className="animate-spin text-purple-500" /></div>}>
-                    {(pdfDocument) => (
-                        <PdfHighlighter
-                            pdfDocument={pdfDocument}
-                            enableAreaSelection={(event) => event.altKey}
-                            onScrollChange={resetHash}
-                            pdfScaleValue={scale}
-                            scrollRef={(scrollTo) => {
-                                scrollViewerTo.current = scrollTo;
-                            }}
-                            onSelectionFinished={(
-                                position,
-                                content,
-                                hideTipAndSelection,
-                                transformSelection
-                            ) => (
-                                <div className="bg-zinc-800 text-zinc-200 border border-zinc-700 rounded-lg shadow-xl p-2 flex flex-col gap-2">
-                                    <div className="flex gap-2">
-                                        <button
-                                            onClick={() => {
-                                                const id = crypto.randomUUID();
-                                                const highlight = { content, position, comment: { text: '', emoji: '' }, id };
-                                                // Add temporary highlight to get ID
-                                                // Actually, for deep link we need the ID.
-                                                // If we don't save the highlight, deep link won't work on refresh?
-                                                // Yes, we MUST save highlight to have a persistent ID.
-
-                                                addHighlight(highlight);
-                                                hideTipAndSelection();
-
-                                                // Create deep link
-                                                const quote = `> "${content.text}"\n[Ver no PDF](${url}#highlight-${id})`;
-                                                navigator.clipboard.writeText(quote);
-                                                toast.success("Citação copiada para a área de transferência!");
-                                            }}
-                                            className="px-3 py-1.5 text-xs font-medium bg-zinc-700 hover:bg-zinc-600 rounded text-zinc-200 transition-colors flex items-center gap-1"
-                                        >
-                                            <Download size={12} className="rotate-180" /> Copiar Citação
-                                        </button>
-                                        <button
-                                            onClick={transformSelection}
-                                            className="px-3 py-1.5 text-xs font-bold bg-blue-600 hover:bg-blue-500 rounded text-white transition-colors"
-                                        >
-                                            Adicionar Nota
-                                        </button>
+                <div className="h-full" style={getFilterStyle()}>
+                    <PdfLoader url={url} beforeLoad={<div className="flex justify-center items-center h-full"><Loader2 className="animate-spin text-purple-500" /></div>}>
+                        {(pdfDocument) => (
+                            <PdfHighlighter
+                                pdfDocument={pdfDocument}
+                                enableAreaSelection={(event) => event.altKey}
+                                onScrollChange={resetHash}
+                                pdfScaleValue={scale}
+                                scrollRef={(scrollTo) => {
+                                    scrollViewerTo.current = scrollTo;
+                                }}
+                                onSelectionFinished={(
+                                    position,
+                                    content,
+                                    hideTipAndSelection,
+                                    transformSelection
+                                ) => (
+                                    <div className="bg-zinc-800 text-zinc-200 border border-zinc-700 rounded-lg shadow-xl p-2 flex flex-col gap-2">
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => {
+                                                    const id: string = crypto.randomUUID();
+                                                    const highlight = { content, position, comment: { text: '', emoji: '' }, id };
+                                                    addHighlight(highlight);
+                                                    hideTipAndSelection();
+                                                    const quote = `> "${content.text}"\n[Ver no PDF](${url}#highlight-${id})`;
+                                                    navigator.clipboard.writeText(quote);
+                                                    toast.success("Citação copiada para a área de transferência!");
+                                                }}
+                                                className="px-3 py-1.5 text-xs font-medium bg-zinc-700 hover:bg-zinc-600 rounded text-zinc-200 transition-colors flex items-center gap-1"
+                                            >
+                                                <Download size={12} className="rotate-180" /> Copiar Citação
+                                            </button>
+                                            <button
+                                                onClick={transformSelection}
+                                                className="px-3 py-1.5 text-xs font-bold bg-blue-600 hover:bg-blue-500 rounded text-white transition-colors"
+                                            >
+                                                Adicionar Nota
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            )}
-                            highlightTransform={(
-                                highlight,
-                                index,
-                                setTip,
-                                hideTip,
-                                viewportToScaled,
-                                screenshot,
-                                isScrolledTo
-                            ) => {
-                                const isTextHighlight = !Boolean(
-                                    highlight.content && highlight.content.image
-                                );
+                                )}
+                                highlightTransform={(
+                                    highlight,
+                                    index,
+                                    setTip,
+                                    hideTip,
+                                    viewportToScaled,
+                                    screenshot,
+                                    isScrolledTo
+                                ) => {
+                                    const isTextHighlight = !Boolean(
+                                        highlight.content && highlight.content.image
+                                    );
 
-                                const component = isTextHighlight ? (
-                                    <Highlight
-                                        isScrolledTo={isScrolledTo}
-                                        position={highlight.position}
-                                        comment={highlight.comment}
-                                    />
-                                ) : (
-                                    <AreaHighlight
-                                        isScrolledTo={isScrolledTo}
-                                        highlight={highlight}
-                                        onChange={(boundingRect) => {
-                                            updateHighlight(
-                                                highlight.id,
-                                                { boundingRect: viewportToScaled(boundingRect) },
-                                                { image: screenshot(boundingRect) }
-                                            );
-                                        }}
-                                    />
-                                );
+                                    const component = isTextHighlight ? (
+                                        <Highlight
+                                            isScrolledTo={isScrolledTo}
+                                            position={highlight.position}
+                                            comment={highlight.comment}
+                                        />
+                                    ) : (
+                                        <AreaHighlight
+                                            isScrolledTo={isScrolledTo}
+                                            highlight={highlight}
+                                            onChange={(boundingRect) => {
+                                                updateHighlight(
+                                                    highlight.id,
+                                                    { boundingRect: viewportToScaled(boundingRect) },
+                                                    { image: screenshot(boundingRect) }
+                                                );
+                                            }}
+                                        />
+                                    );
 
-                                return (
-                                    <Popup
-                                        popupContent={<HighlightPopup {...highlight} />}
-                                        onMouseOver={(popupContent) =>
-                                            setTip(highlight, (highlight) => popupContent)
-                                        }
-                                        onMouseOut={hideTip}
-                                        key={index}
-                                        children={component}
-                                    />
-                                );
-                            }}
-                            highlights={highlights}
-                        />
-                    )}
-                </PdfLoader>
+                                    return (
+                                        <Popup
+                                            popupContent={<HighlightPopup {...highlight} />}
+                                            onMouseOver={(popupContent) =>
+                                                setTip(highlight, (highlight) => popupContent)
+                                            }
+                                            onMouseOut={hideTip}
+                                            key={index}
+                                            children={component}
+                                        />
+                                    );
+                                }}
+                                highlights={highlights}
+                            />
+                        )}
+                    </PdfLoader>
+                </div>
             </div>
 
             <style>{`

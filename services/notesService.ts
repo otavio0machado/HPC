@@ -42,9 +42,9 @@ export const notesService = {
         });
     },
 
-    async createNote(note: Partial<NoteFile>): Promise<NoteFile | null> {
+    async createNote(note: Partial<NoteFile>): Promise<{ data: NoteFile | null, error: string | null }> {
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user) throw new Error('User not authenticated');
+        if (!user) return { data: null, error: 'User not authenticated' };
 
         // Extract tags
         const tags = note.content ? (note.content.match(/#[\w\u00C0-\u00FF]+/g) || []) : [];
@@ -59,6 +59,7 @@ export const notesService = {
                 parent_id: note.parentId,
                 name: note.name || 'Nova Nota',
                 content: note.content || '',
+                type: type,
                 tags: tags,
                 pdf_data: note.pdfData,
                 pdf_annotations: note.pdfAnnotations || [],
@@ -69,20 +70,23 @@ export const notesService = {
 
         if (error) {
             console.error('Error creating note:', error);
-            return null;
+            return { data: null, error: error.message };
         }
 
         return {
-            id: data.id,
-            parentId: data.parent_id,
-            name: data.name,
-            type: data.type,
-            content: data.content,
-            tags: data.tags,
-            updatedAt: new Date(data.updated_at).getTime(),
-            isFavorite: data.is_favorite,
-            pdfAnnotations: data.pdf_annotations
-        } as NoteFile;
+            data: {
+                id: data.id,
+                parentId: data.parent_id,
+                name: data.name,
+                type: data.type,
+                content: data.content,
+                tags: data.tags,
+                updatedAt: new Date(data.updated_at).getTime(),
+                isFavorite: data.is_favorite,
+                pdfAnnotations: data.pdf_annotations
+            } as NoteFile,
+            error: null
+        };
     },
 
     async updateNote(id: string, updates: Partial<NoteFile>): Promise<boolean> {
