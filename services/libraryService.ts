@@ -56,31 +56,49 @@ export const libraryService = {
         const timestamp = Date.now();
         const filePath = `${userId}/${timestamp}_${sanitizedName}`;
 
+        // Prepare Upload Promises
+        const uploadPromises: Promise<any>[] = [];
+
         // 1. Upload Book File
-        const { error: uploadError } = await supabase.storage
-            .from('library')
-            .upload(filePath, file);
+        const uploadBookPromise = (async () => {
+            const { error: uploadError } = await supabase.storage
+                .from('library')
+                .upload(filePath, file);
 
-        if (uploadError) throw uploadError;
+            if (uploadError) throw uploadError;
 
-        const { data: { publicUrl: fileUrl } } = supabase.storage
-            .from('library')
-            .getPublicUrl(filePath);
+            const { data: { publicUrl } } = supabase.storage
+                .from('library')
+                .getPublicUrl(filePath);
+            return publicUrl;
+        })();
+        uploadPromises.push(uploadBookPromise);
 
         // 2. Upload Cover (Optional)
         let coverUrl = null;
         if (coverBlob) {
             const coverPath = `covers/${userId}/${timestamp}_cover.jpg`;
-            const { error: coverError } = await supabase.storage
-                .from('library')
-                .upload(coverPath, coverBlob);
-
-            if (!coverError) {
-                const { data: { publicUrl } } = supabase.storage
+            const uploadCoverPromise = (async () => {
+                const { error: coverError } = await supabase.storage
                     .from('library')
-                    .getPublicUrl(coverPath);
-                coverUrl = publicUrl;
-            }
+                    .upload(coverPath, coverBlob);
+
+                if (!coverError) {
+                    const { data: { publicUrl } } = supabase.storage
+                        .from('library')
+                        .getPublicUrl(coverPath);
+                    return publicUrl;
+                }
+                return null;
+            })();
+            uploadPromises.push(uploadCoverPromise);
+        }
+
+        // Execute uploads in parallel
+        const results = await Promise.all(uploadPromises);
+        const fileUrl = results[0];
+        if (coverBlob) {
+            coverUrl = results[1];
         }
 
         // 3. Create Record
