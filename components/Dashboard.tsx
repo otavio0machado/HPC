@@ -320,13 +320,13 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
       <div className="max-w-7xl mx-auto">
         {/* Enhanced Header with Glassmorphism */}
-        <header className="flex flex-col md:flex-row justify-between items-center mb-8 pb-6 border-b border-zinc-800/50 backdrop-blur-sm">
+        <header className="flex flex-col md:flex-row justify-between items-center mb-8 pb-6 border-b border-[var(--border-glass)] backdrop-blur-sm">
           <div className="flex flex-col md:flex-row items-center gap-6 mb-4 md:mb-0 w-full md:w-auto">
             <div className="text-center md:text-left">
               <h1 className="text-3xl md:text-4xl font-black tracking-tighter text-white hover:text-blue-400 transition-colors duration-300 cursor-default">
                 High Performance Club<span className="text-blue-500 animate-pulse">.</span>
               </h1>
-              <p className="text-zinc-500 text-sm mt-1 font-medium">Dashboard de Elite</p>
+              <p className="text-zinc-500 text-sm mt-1 font-medium tracking-wide">Dashboard de Elite</p>
             </div>
           </div>
 
@@ -334,17 +334,17 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           <div className="relative" ref={userMenuRef}>
             <button
               onClick={() => setUserMenuOpen(!userMenuOpen)}
-              className="flex items-center gap-3 pl-2 pr-4 py-2 rounded-full border transition-all duration-300 bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 hover:shadow-lg hover:shadow-blue-500/10 group"
+              className="flex items-center gap-3 pl-2 pr-4 py-2 rounded-full border transition-all duration-300 bg-[var(--glass-bg)] border-[var(--border-glass)] hover:bg-white/10 hover:border-white/20 hover:shadow-lg hover:shadow-blue-500/10 group"
             >
-              <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm bg-gradient-to-br from-blue-600 to-blue-500 text-white group-hover:scale-110 transition-transform duration-300 shadow-lg">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm bg-gradient-to-br from-blue-600 to-indigo-600 text-white group-hover:scale-110 transition-transform duration-300 shadow-lg ring-2 ring-transparent group-hover:ring-blue-500/30">
                 {currentUser.name.substring(0, 2).toUpperCase()}
               </div>
               <div className="text-left hidden sm:block">
                 <p className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">{currentUser.name.split(' ')[0]}</p>
                 <div className="flex items-center gap-2">
-                  <p className="text-[10px] text-zinc-500">{currentUser.subscription_tier === 'pro' ? 'Membro Pro' : 'Membro Free'}</p>
+                  <p className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider">{currentUser.subscription_tier === 'pro' ? 'Membro Pro' : 'Membro Free'}</p>
                   {currentUser.subscription_tier !== 'pro' && (
-                    <span onClick={(e) => { e.stopPropagation(); setShowUpgradeModal(true); }} className="text-[10px] bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-2 py-0.5 rounded-full cursor-pointer hover:opacity-90 font-bold hover:scale-110 transition-transform">UPGRADE</span>
+                    <span onClick={(e) => { e.stopPropagation(); setShowUpgradeModal(true); }} className="text-[10px] bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-2 py-0.5 rounded-full cursor-pointer hover:opacity-90 font-bold hover:scale-110 transition-transform shadow-sm">UPGRADE</span>
                   )}
                 </div>
               </div>
@@ -359,23 +359,23 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -10, scale: 0.95 }}
                   transition={{ duration: 0.2 }}
-                  className="absolute right-0 mt-2 w-64 rounded-2xl shadow-2xl border overflow-hidden z-20 bg-zinc-900/95 backdrop-blur-xl border-zinc-800"
+                  className="absolute right-0 mt-2 w-64 rounded-2xl shadow-2xl border overflow-hidden z-20 bg-[var(--bg-secondary)]/95 backdrop-blur-xl border-[var(--border-glass)]"
                 >
-                  <div className="p-4 border-b border-white/10 bg-gradient-to-br from-zinc-900 to-zinc-800/50">
+                  <div className="p-4 border-b border-white/5 bg-gradient-to-br from-white/5 to-transparent">
                     <p className="text-sm font-bold text-white">{currentUser.name}</p>
                     <p className="text-xs text-zinc-400 truncate mt-0.5">{currentUser.email}</p>
                   </div>
                   <div className="p-2">
-                    <button onClick={() => { changeTab('Perfil'); setUserMenuOpen(false); }} className="w-full flex items-center gap-3 px-4 py-3 text-sm rounded-xl transition-all text-zinc-300 hover:bg-blue-600/10 hover:text-blue-400 group">
+                    <button onClick={() => { changeTab('Perfil'); setUserMenuOpen(false); }} className="w-full flex items-center gap-3 px-4 py-3 text-sm rounded-xl transition-all text-zinc-300 hover:bg-blue-500/10 hover:text-blue-400 group">
                       <User size={18} className="group-hover:scale-110 transition-transform" />
                       <span className="font-medium">Meu Perfil</span>
                     </button>
-                    <button onClick={() => { changeTab('Configurações'); setUserMenuOpen(false); }} className="w-full flex items-center gap-3 px-4 py-3 text-sm rounded-xl transition-all text-zinc-300 hover:bg-blue-600/10 hover:text-blue-400 group">
+                    <button onClick={() => { changeTab('Configurações'); setUserMenuOpen(false); }} className="w-full flex items-center gap-3 px-4 py-3 text-sm rounded-xl transition-all text-zinc-300 hover:bg-blue-500/10 hover:text-blue-400 group">
                       <SettingsIcon size={18} className="group-hover:rotate-90 transition-transform duration-300" />
                       <span className="font-medium">Configurações</span>
                     </button>
                   </div>
-                  <div className="p-2 border-t border-white/10">
+                  <div className="p-2 border-t border-white/5">
                     <button onClick={onLogout} className="w-full flex items-center gap-3 px-4 py-3 text-sm rounded-xl text-red-400 hover:bg-red-500/10 transition-all font-medium group">
                       <LogOut size={18} className="group-hover:translate-x-1 transition-transform" />
                       <span>Sair do Club</span>
@@ -402,21 +402,21 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                 className={`
                   px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 whitespace-nowrap flex items-center gap-2 relative overflow-hidden
                   ${isActive
-                    ? "bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.2)] scale-105"
-                    : "text-zinc-400 hover:text-white hover:bg-zinc-900 border border-transparent hover:border-zinc-800"
+                    ? "bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.2)] scale-105 font-bold"
+                    : "text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10"
                   }
                 `}
               >
                 {isActive && (
                   <motion.div
                     layoutId="activeTab"
-                    className="absolute inset-0 bg-white -z-10 rounded-full"
+                    className="absolute inset-0 bg-white -z-10 rounded-full mix-blend-screen"
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   />
                 )}
-                <span className="relative z-10">{item}</span>
+                <span className="relative z-10 text-sm tracking-tight">{item}</span>
                 {isLocked && (
-                  <Lock size={12} className="opacity-70 animate-pulse" />
+                  <Lock size={12} className="opacity-70 animate-pulse text-yellow-500" />
                 )}
               </motion.button>
             );
