@@ -297,7 +297,7 @@ const NotesEditor: React.FC<NotesEditorProps> = ({ noteId, content, onUpdate, re
         },
         editorProps: {
             attributes: {
-                class: 'prose prose-invert max-w-none focus:outline-none min-h-[500px] p-6 text-zinc-300',
+                class: 'prose prose-invert max-w-none focus:outline-none min-h-[500px] p-4 md:p-6 text-zinc-300',
             },
             handleClick: (view, pos, event) => {
                 const target = event.target as HTMLElement;
