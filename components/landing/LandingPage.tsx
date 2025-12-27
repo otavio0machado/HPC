@@ -15,7 +15,7 @@ interface LandingPageProps {
 
 const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
     return (
-        <div className="min-h-screen bg-zinc-950 flex flex-col">
+        <div className="min-h-screen bg-zinc-950 flex flex-col selection:bg-blue-500/30">
             <Navbar onLoginClick={onLoginClick} isLoggedIn={false} />
 
             <main className="flex-grow">
@@ -23,7 +23,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                 <SocialProof />
                 <Methodology />
                 <Features />
-                <Planner />
+                {/* <Planner /> */}
                 <Pricing />
                 <CTA onCtaClick={onLoginClick} />
             </main>

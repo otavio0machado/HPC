@@ -44,13 +44,13 @@ const Profile: React.FC<ProfileProps> = ({ currentUser, onUpdate }) => {
    return (
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto p-4 md:p-0">
          <div className="mb-10">
-            <h2 className="text-3xl font-bold text-white tracking-tight flex items-center gap-3">
+            <h2 className="text-3xl font-bold text-zinc-900 dark:text-white tracking-tight flex items-center gap-3">
                <div className="p-2 bg-blue-500/10 rounded-xl border border-blue-500/20">
-                  <UserIcon className="text-blue-500" size={24} />
+                  <UserIcon className="text-blue-600 dark:text-blue-500" size={24} />
                </div>
                Meu Perfil
             </h2>
-            <p className="text-zinc-400 mt-2 text-lg">Gerencie suas informações pessoais e sua jornada de aprendizado.</p>
+            <p className="text-zinc-600 dark:text-zinc-400 mt-2 text-lg">Gerencie suas informações pessoais e sua jornada de aprendizado.</p>
          </div>
 
          {showUpgradeModal && (
@@ -66,40 +66,40 @@ const Profile: React.FC<ProfileProps> = ({ currentUser, onUpdate }) => {
          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Left Column: Avatar & Summary */}
             <div className="md:col-span-1 space-y-6">
-               <div className="bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-3xl p-8 flex flex-col items-center text-center relative overflow-hidden backdrop-blur-xl group">
+               <div className="bg-white/60 dark:bg-[var(--glass-bg)] border border-black/5 dark:border-[var(--border-glass)] rounded-3xl p-8 flex flex-col items-center text-center relative overflow-hidden backdrop-blur-xl group">
                   <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-blue-600/20 to-transparent"></div>
 
                   {/* Decorative blur */}
                   <div className="absolute top-10 inset-0 bg-blue-500/30 blur-[60px] opacity-20 group-hover:opacity-30 transition-opacity rounded-full pointer-events-none"></div>
 
                   <div className="relative mb-6 group cursor-pointer">
-                     <div className="w-32 h-32 rounded-full bg-zinc-950 border-4 border-zinc-900 flex items-center justify-center text-4xl font-bold text-white shadow-2xl relative z-10 overflow-hidden">
+                     <div className="w-32 h-32 rounded-full bg-zinc-100 dark:bg-zinc-950 border-4 border-white dark:border-zinc-900 flex items-center justify-center text-4xl font-bold text-zinc-900 dark:text-white shadow-2xl relative z-10 overflow-hidden">
                         {currentUser.photo_url ? (
                            <img src={currentUser.photo_url} alt={name} className="w-full h-full object-cover" />
                         ) : (
-                           <div className="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-950 flex items-center justify-center">
+                           <div className="w-full h-full bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-800 dark:to-zinc-950 flex items-center justify-center">
                               {name.substring(0, 2).toUpperCase()}
                            </div>
                         )}
                      </div>
-                     <div className="absolute bottom-1 right-1 p-2 bg-blue-600 hover:bg-blue-500 rounded-full text-white shadow-lg border-4 border-zinc-900 transition-transform hover:scale-110 z-20">
+                     <div className="absolute bottom-1 right-1 p-2 bg-blue-600 hover:bg-blue-500 rounded-full text-white shadow-lg border-4 border-white dark:border-zinc-900 transition-transform hover:scale-110 z-20">
                         <Camera size={16} />
                      </div>
                   </div>
 
-                  <h3 className="text-2xl font-bold text-white tracking-tight mb-1">{name}</h3>
-                  <p className="text-sm text-zinc-400 mb-6">{email}</p>
+                  <h3 className="text-2xl font-bold text-zinc-900 dark:text-white tracking-tight mb-1">{name}</h3>
+                  <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">{email}</p>
 
-                  <div className="w-full grid grid-cols-2 divide-x divide-white/10 border-t border-white/5 pt-6 mt-2">
+                  <div className="w-full grid grid-cols-2 divide-x divide-zinc-200 dark:divide-white/10 border-t border-zinc-200 dark:border-white/5 pt-6 mt-2">
                      <div className="flex flex-col items-center px-4">
                         <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-1">Membro</span>
-                        <span className={`text-sm font-bold flex items-center gap-1.5 ${isPro ? 'text-blue-400' : 'text-zinc-400'}`}>
+                        <span className={`text-sm font-bold flex items-center gap-1.5 ${isPro ? 'text-blue-600 dark:text-blue-400' : 'text-zinc-600 dark:text-zinc-400'}`}>
                            {isPro ? <><Award size={14} className="fill-blue-500/20" /> Elite Pro</> : <><User size={14} /> Free</>}
                         </span>
                      </div>
                      <div className="flex flex-col items-center px-4">
                         <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-1">Entrou</span>
-                        <span className="text-sm font-bold text-zinc-300 flex items-center gap-1.5">
+                        <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
                            <Calendar size={14} /> 2024
                         </span>
                      </div>
@@ -107,18 +107,18 @@ const Profile: React.FC<ProfileProps> = ({ currentUser, onUpdate }) => {
                </div>
 
                {/* Subscription Management Card */}
-               <div className="bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-3xl p-6 backdrop-blur-xl relative overflow-hidden">
+               <div className="bg-white/60 dark:bg-[var(--glass-bg)] border border-black/5 dark:border-[var(--border-glass)] rounded-3xl p-6 backdrop-blur-xl relative overflow-hidden">
                   {isPro && <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 blur-[50px] rounded-full pointer-events-none"></div>}
 
-                  <h3 className="text-white font-bold mb-6 flex items-center gap-2">
-                     {isPro ? <CreditCard size={18} className="text-amber-400" /> : <CreditCard size={18} className="text-zinc-400" />}
+                  <h3 className="text-zinc-900 dark:text-white font-bold mb-6 flex items-center gap-2">
+                     {isPro ? <CreditCard size={18} className="text-amber-500 dark:text-amber-400" /> : <CreditCard size={18} className="text-zinc-500 dark:text-zinc-400" />}
                      Assinatura
                   </h3>
 
-                  <div className={`rounded-2xl p-5 border mb-6 ${isPro ? 'bg-gradient-to-br from-amber-500/10 to-transparent border-amber-500/20' : 'bg-zinc-950/50 border-white/5'}`}>
+                  <div className={`rounded-2xl p-5 border mb-6 ${isPro ? 'bg-gradient-to-br from-amber-500/10 to-transparent border-amber-500/20' : 'bg-zinc-50 dark:bg-zinc-950/50 border-black/5 dark:border-white/5'}`}>
                      <div className="flex justify-between items-center mb-3">
-                        <span className="text-sm text-zinc-400 font-medium">Plano Atual</span>
-                        <span className={`text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider ${isPro ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>
+                        <span className="text-sm text-zinc-600 dark:text-zinc-400 font-medium">Plano Atual</span>
+                        <span className={`text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider ${isPro ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20' : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-300 dark:border-zinc-700'}`}>
                            {isPro ? 'ELITE PRO' : 'GRATUITO'}
                         </span>
                      </div>
@@ -153,9 +153,9 @@ const Profile: React.FC<ProfileProps> = ({ currentUser, onUpdate }) => {
 
             {/* Right Column: Edit Form */}
             <div className="md:col-span-2 space-y-6">
-               <div className="bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-3xl p-8 backdrop-blur-xl">
+               <div className="bg-white/60 dark:bg-[var(--glass-bg)] border border-black/5 dark:border-[var(--border-glass)] rounded-3xl p-8 backdrop-blur-xl">
                   <div className="flex justify-between items-center mb-8">
-                     <h3 className="text-xl font-bold text-white tracking-tight">Dados da Conta</h3>
+                     <h3 className="text-xl font-bold text-zinc-900 dark:text-white tracking-tight">Dados da Conta</h3>
                      {!isEditing && (
                         <button
                            onClick={() => setIsEditing(true)}
@@ -167,7 +167,7 @@ const Profile: React.FC<ProfileProps> = ({ currentUser, onUpdate }) => {
                   </div>
 
                   {message && (
-                     <div className={`mb-8 p-4 rounded-2xl border flex items-center gap-3 animate-in slide-in-from-top-2 ${message.type === 'success' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-400'}`}>
+                     <div className={`mb-8 p-4 rounded-2xl border flex items-center gap-3 animate-in slide-in-from-top-2 ${message.type === 'success' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-600 dark:text-red-400'}`}>
                         {message.type === 'success' ? <Check size={18} className="bg-emerald-500/20 p-0.5 rounded-full box-content" /> : <AlertTriangle size={18} />}
                         <span className="text-sm font-medium">{message.text}</span>
                      </div>
@@ -184,7 +184,7 @@ const Profile: React.FC<ProfileProps> = ({ currentUser, onUpdate }) => {
                                  value={name}
                                  onChange={(e) => setName(e.target.value)}
                                  disabled={!isEditing}
-                                 className="w-full bg-zinc-950/50 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-blue-500 focus:bg-zinc-950 transition-all disabled:opacity-50 disabled:cursor-not-allowed placeholder:text-zinc-700"
+                                 className="w-full bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-white/10 rounded-xl py-3 pl-12 pr-4 text-zinc-900 dark:text-white focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-zinc-950 transition-all disabled:opacity-50 disabled:cursor-not-allowed placeholder:text-zinc-400 dark:placeholder:text-zinc-700"
                               />
                            </div>
                         </div>
@@ -198,7 +198,7 @@ const Profile: React.FC<ProfileProps> = ({ currentUser, onUpdate }) => {
                                  value={email}
                                  onChange={(e) => setEmail(e.target.value)}
                                  disabled={!isEditing}
-                                 className="w-full bg-zinc-950/50 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-blue-500 focus:bg-zinc-950 transition-all disabled:opacity-50 disabled:cursor-not-allowed placeholder:text-zinc-700"
+                                 className="w-full bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-white/10 rounded-xl py-3 pl-12 pr-4 text-zinc-900 dark:text-white focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-zinc-950 transition-all disabled:opacity-50 disabled:cursor-not-allowed placeholder:text-zinc-400 dark:placeholder:text-zinc-700"
                               />
                            </div>
                         </div>

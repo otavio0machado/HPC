@@ -66,7 +66,7 @@ const App: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center text-white">
+      <div className="min-h-screen bg-white dark:bg-zinc-950 flex items-center justify-center text-zinc-900 dark:text-white">
         <Loader2 className="animate-spin text-blue-500" size={48} />
       </div>
     );
@@ -74,7 +74,7 @@ const App: React.FC = () => {
 
   return (
     <ThemeProvider>
-      <div className="min-h-screen bg-transparent text-white font-sans selection:bg-blue-500/30">
+      <div className="min-h-screen bg-transparent text-zinc-900 dark:text-white font-sans selection:bg-blue-500/30">
         <AnimatePresence mode="wait">
           {showTransition && (
             <TransitionOverlay onAnimationComplete={handleTransitionComplete} />

@@ -31,15 +31,15 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ onClose, onSuccess }) => {
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-md shadow-2xl relative animate-in zoom-in-95 duration-200 overflow-hidden">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 dark:bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl w-full max-w-md shadow-2xl relative animate-in zoom-in-95 duration-200 overflow-hidden">
 
                 {/* Header Background */}
-                <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-blue-600/20 to-transparent pointer-events-none" />
+                <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-blue-600/10 to-transparent pointer-events-none" />
 
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 text-zinc-500 hover:text-white transition-colors z-10"
+                    className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-white transition-colors z-10"
                 >
                     <X size={20} />
                 </button>
@@ -49,26 +49,26 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ onClose, onSuccess }) => {
                         <Zap size={32} className="text-white fill-white" />
                     </div>
 
-                    <h3 className="text-2xl font-bold text-white mb-2">Desbloqueie o Poder Total</h3>
-                    <p className="text-zinc-400 mb-8">
+                    <h3 className="text-2xl font-bold text-zinc-900 dark:text-white mb-2">Desbloqueie o Poder Total</h3>
+                    <p className="text-zinc-600 dark:text-zinc-400 mb-8">
                         O plano Gratuito dá acesso apenas ao Planner. Para acessar Notas, Tutores, Flashcards e Simulados, faça o upgrade.
                     </p>
 
                     <div className="space-y-3 mb-8 text-left">
-                        <div className="flex items-center gap-3 text-zinc-300">
-                            <div className="p-1 rounded-full bg-green-500/20 text-green-500"><Check size={12} /></div>
+                        <div className="flex items-center gap-3 text-zinc-700 dark:text-zinc-300">
+                            <div className="p-1 rounded-full bg-green-500/10 dark:bg-green-500/20 text-green-600 dark:text-green-500"><Check size={12} /></div>
                             <span>Acesso ilimitado a Tutores IA</span>
                         </div>
-                        <div className="flex items-center gap-3 text-zinc-300">
-                            <div className="p-1 rounded-full bg-green-500/20 text-green-500"><Check size={12} /></div>
+                        <div className="flex items-center gap-3 text-zinc-700 dark:text-zinc-300">
+                            <div className="p-1 rounded-full bg-green-500/10 dark:bg-green-500/20 text-green-600 dark:text-green-500"><Check size={12} /></div>
                             <span>Flashcards Inteligentes</span>
                         </div>
-                        <div className="flex items-center gap-3 text-zinc-300">
-                            <div className="p-1 rounded-full bg-green-500/20 text-green-500"><Check size={12} /></div>
+                        <div className="flex items-center gap-3 text-zinc-700 dark:text-zinc-300">
+                            <div className="p-1 rounded-full bg-green-500/10 dark:bg-green-500/20 text-green-600 dark:text-green-500"><Check size={12} /></div>
                             <span>Simulados com Correção IA</span>
                         </div>
-                        <div className="flex items-center gap-3 text-zinc-300">
-                            <div className="p-1 rounded-full bg-green-500/20 text-green-500"><Check size={12} /></div>
+                        <div className="flex items-center gap-3 text-zinc-700 dark:text-zinc-300">
+                            <div className="p-1 rounded-full bg-green-500/10 dark:bg-green-500/20 text-green-600 dark:text-green-500"><Check size={12} /></div>
                             <span>Sistema de Notas Avançado</span>
                         </div>
                     </div>

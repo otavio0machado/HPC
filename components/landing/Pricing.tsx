@@ -1,110 +1,113 @@
 import React from 'react';
-import { Check } from 'lucide-react';
-
-const pricingTiers = [
-    {
-        name: 'Básico',
-        price: 'R$ 0',
-        description: 'Para quem está começando a organizar os estudos.',
-        features: [
-            'Planejador Semanal Básico',
-            'Acesso a materiais gratuitos',
-            'Comunidade no Discord'
-        ],
-        highlight: false,
-        cta: 'Começar Grátis',
-    },
-    {
-        name: 'Pro',
-        price: 'R$ 29,90',
-        period: '/mês',
-        description: 'Otimize seu tempo e maximize sua performance.',
-        features: [
-            'Planejador AI Personalizado',
-            'Banco de Questões Ilimitado',
-            'Análise de Desempenho Avançada',
-            'Flashcards Inteligentes',
-            'Suporte Prioritário'
-        ],
-        highlight: true,
-        cta: 'Assinar Pro',
-    },
-    {
-        name: 'Extensivo',
-        price: 'R$ 499',
-        period: '/ano',
-        description: 'Preparação completa para garantir sua aprovação.',
-        features: [
-            'Tudo do plano Pro',
-            'Mentorias Mensais ao Vivo',
-            'Correção de Redação',
-            'Simulados Exclusivos',
-            'Acesso Vitalício aos Conteúdos'
-        ],
-        highlight: false,
-        cta: 'Garantir Vaga',
-    }
-];
+import { motion } from 'framer-motion';
+import { Check, Sparkles, Zap, Star, ShieldCheck, Flame } from 'lucide-react';
 
 const Pricing: React.FC = () => {
     return (
-        <section id="pricing" className="py-24 relative overflow-hidden">
-            {/* Background blobs */}
-            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-purple-900/10 rounded-full blur-[120px] -z-10 pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-900/10 rounded-full blur-[120px] -z-10 pointer-events-none" />
+        <section id="pricing" className="py-24 relative overflow-hidden bg-zinc-950">
+            {/* Hypnotic Background Elements */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-blue-600/10 rounded-full blur-[180px] -z-10 animate-pulse" />
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div className="text-center mb-16">
-                    <h2 className="text-3xl font-bold text-white tracking-tight sm:text-4xl mb-4 drop-shadow-lg">
-                        Invista no seu <span className="text-blue-400">Futuro</span>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="mb-16"
+                >
+                    <h2 className="text-4xl md:text-6xl font-black text-white tracking-tight mb-4 drop-shadow-2xl">
+                        O INVESTIMENTO QUE VAI <span className="text-blue-500">MUDAR SUA VIDA</span>
                     </h2>
-                    <p className="text-lg text-zinc-300 max-w-2xl mx-auto">
-                        Escolha o plano ideal para sua jornada de aprovação. Sem compromisso, cancele quando quiser.
+                    <p className="text-xl text-zinc-400 max-w-3xl mx-auto font-medium">
+                        Acesso total à plataforma número 1 em aprovação por um valor simbólico.
                     </p>
-                </div>
+                </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {pricingTiers.map((tier) => (
-                        <div
-                            key={tier.name}
-                            className={`rounded-[32px] p-8 flex flex-col transition-all duration-300 ${tier.highlight
-                                ? 'glass-card border-blue-500/30 scale-105 z-10 shadow-[0_20px_60px_rgba(59,130,246,0.15)] ring-1 ring-blue-400/20'
-                                : 'glass-card hover:bg-white/5 opacity-90 hover:opacity-100 ring-1 ring-white/5'
-                                }`}
-                        >
-                            <div className="mb-6">
-                                <h3 className={`text-lg font-bold mb-2 ${tier.highlight ? 'text-blue-400' : 'text-white'}`}>{tier.name}</h3>
-                                <div className="flex items-baseline gap-1">
-                                    <span className="text-5xl font-black text-white tracking-tight">{tier.price}</span>
-                                    {tier.period && <span className="text-sm text-zinc-400 font-medium">{tier.period}</span>}
-                                </div>
-                                <p className="text-sm text-zinc-400 mt-3 leading-relaxed">{tier.description}</p>
-                            </div>
+                {/* Single Plan "The Beast" Card */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ type: "spring", damping: 20, stiffness: 100 }}
+                    className="relative max-w-2xl mx-auto group"
+                >
+                    {/* Animated Outer Glow */}
+                    <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 rounded-[40px] blur-md opacity-75 group-hover:opacity-100 animate-gradient bg-300% transition-opacity duration-500" />
 
-                            <div className="flex-grow">
-                                <ul className="space-y-4 mb-8">
-                                    {tier.features.map((feature, idx) => (
-                                        <li key={idx} className="flex items-start gap-3 text-sm text-zinc-300">
-                                            <div className={`p-0.5 rounded-full ${tier.highlight ? 'bg-blue-500/20' : 'bg-white/10'} shrink-0 mt-0.5`}>
-                                                <Check className={`w-3.5 h-3.5 ${tier.highlight ? 'text-blue-400' : 'text-white/70'}`} />
-                                            </div>
-                                            {feature}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-
-                            <button
-                                className={`w-full py-4 px-6 rounded-2xl font-bold text-sm tracking-wide transition-all duration-300 ${tier.highlight
-                                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-lg shadow-blue-900/30 hover:scale-[1.02] hover:shadow-blue-900/50'
-                                    : 'bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:border-white/20 hover:scale-[1.02]'
-                                    }`}
-                            >
-                                {tier.cta}
-                            </button>
+                    <div className="relative bg-zinc-900 border border-white/20 rounded-[38px] p-8 md:p-12 overflow-hidden">
+                        {/* Top Badge */}
+                        <div className="absolute top-0 right-0 bg-blue-600 text-white text-[10px] font-black uppercase tracking-[0.2em] px-6 py-2 rounded-bl-2xl shadow-xl">
+                            Oferta Exclusiva de Lançamento
                         </div>
-                    ))}
-                </div>
+
+                        <div className="flex flex-col items-center mb-10">
+                            <div className="w-16 h-16 rounded-2xl bg-blue-500/20 flex items-center justify-center mb-6 border border-blue-500/30">
+                                <Zap className="w-8 h-8 text-blue-400 fill-blue-400" />
+                            </div>
+                            <h3 className="text-3xl font-black text-white mb-2 uppercase tracking-wide">PLANO HPC PRO</h3>
+                            <div className="flex items-center gap-4 mb-2">
+                                <span className="text-zinc-500 line-through text-2xl font-bold">R$ 59,90</span>
+                                <span className="bg-emerald-500/10 text-emerald-400 text-xs font-black px-2 py-1 rounded">ECONOMIZE 50%</span>
+                            </div>
+                            <div className="flex items-baseline gap-1">
+                                <span className="text-sm font-bold text-zinc-400 uppercase">Apenas</span>
+                                <span className="text-7xl font-black text-white tracking-tighter">R$ 29,90</span>
+                                <span className="text-xl font-bold text-zinc-400">/mês</span>
+                            </div>
+                            <p className="text-zinc-400 mt-4 text-center font-medium">
+                                Cancele quando quiser. Sem letras miúdas.
+                            </p>
+                        </div>
+
+                        {/* Features Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10 text-left">
+                            {[
+                                { icon: Sparkles, text: "Brain-Mapping AI" },
+                                { icon: Flame, text: "Modo Estudo Ultra-Focado" },
+                                { icon: Star, text: "Banco com +100k Questões" },
+                                { icon: ShieldCheck, text: "Análise de Neuro-Desempenho" },
+                                { icon: Check, text: "Acesso Mobile & Desktop" },
+                                { icon: Check, text: "Cronograma Dinâmico" },
+                            ].map((item, idx) => (
+                                <div key={idx} className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 transition-all duration-300">
+                                    <item.icon className="w-5 h-5 text-blue-400 shrink-0" />
+                                    <span className="text-sm font-bold text-zinc-200">{item.text}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* HIGH DOPAMINE CTA */}
+                        <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="w-full py-6 px-8 rounded-2xl bg-white text-black font-black text-xl flex items-center justify-center gap-3 shadow-[0_20px_40px_rgba(255,255,255,0.2)] hover:shadow-[0_25px_50px_rgba(255,255,255,0.3)] transition-all duration-300"
+                        >
+                            <Zap className="fill-blue-600 text-blue-600" />
+                            GARANTIR MINHA VAGA AGORA
+                        </motion.button>
+
+                        <div className="mt-8 flex items-center justify-center gap-6 text-zinc-500">
+                            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest">
+                                <Check className="w-4 h-4 text-emerald-500" />
+                                Transação Segura
+                            </div>
+                            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest">
+                                <Check className="w-4 h-4 text-emerald-500" />
+                                Acesso Imediato
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
+
+                {/* Scarcity Trigger */}
+                <motion.p
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    className="mt-12 text-zinc-500 text-sm font-bold uppercase tracking-[0.3em] flex items-center justify-center gap-3"
+                >
+                    <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+                    Apenas 12 vagas restantes com este desconto
+                </motion.p>
             </div>
         </section>
     );

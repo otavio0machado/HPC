@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { Rocket, Shield } from 'lucide-react';
 
 interface CTAProps {
     onCtaClick: () => void;
@@ -8,49 +8,59 @@ interface CTAProps {
 
 const CTA: React.FC<CTAProps> = ({ onCtaClick }) => {
     return (
-        <section className="py-32 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 to-zinc-950 -z-10" />
+        <section className="py-40 relative overflow-hidden bg-black">
+            {/* Energy Fields */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-b from-blue-600/10 to-transparent -z-10" />
 
-            <div className="max-w-4xl mx-auto px-4 text-center">
-                <motion.h2
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
+            <div className="max-w-5xl mx-auto px-4 text-center relative z-10">
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
-                    className="text-4xl md:text-5xl font-bold text-white mb-8"
                 >
-                    Sua Aprovação Começa Agora
-                </motion.h2>
+                    <h2 className="text-5xl md:text-8xl font-black text-white mb-10 tracking-tighter uppercase leading-[0.85]">
+                        O PROTOCOLO ESTÁ <br />
+                        <span className="text-blue-500">PRONTO PARA VOCÊ</span>
+                    </h2>
+                </motion.div>
 
                 <motion.p
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.1 }}
-                    className="text-xl text-zinc-400 mb-12 max-w-2xl mx-auto"
+                    className="text-xl md:text-3xl text-zinc-400 mb-16 max-w-3xl mx-auto font-medium"
                 >
-                    Junte-se à comunidade que está redefinindo o padrão de preparação para vestibulares de alta concorrência.
+                    Não deixe sua vaga nas mãos do acaso. Ative o sistema HPC e tome o controle do seu futuro hoje mesmo.
                 </motion.p>
 
-                <motion.button
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.2 }}
-                    onClick={onCtaClick}
-                    className="px-10 py-5 rounded-full bg-blue-600 text-white font-bold text-lg hover:bg-blue-500 transition-all hover:scale-105 shadow-xl shadow-blue-900/20 flex items-center gap-2 mx-auto"
+                    className="relative inline-block"
                 >
-                    Quero ser Membro HPC <ArrowRight className="w-5 h-5" />
-                </motion.button>
+                    <div className="absolute -inset-4 bg-blue-600 rounded-2xl blur-2xl opacity-40 animate-pulse" />
+                    <button
+                        onClick={onCtaClick}
+                        className="relative px-12 py-6 rounded-2xl bg-white text-black font-black text-2xl hover:scale-105 active:scale-95 transition-all shadow-2xl flex items-center gap-4 group"
+                    >
+                        ATIVAR PROTOCOLO PRO
+                        <Rocket className="w-8 h-8 group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform duration-500 text-blue-600 fill-blue-600/10" />
+                    </button>
+                </motion.div>
 
-                <motion.p
+                <motion.div
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.4 }}
-                    className="mt-6 text-sm text-zinc-500"
+                    className="mt-12 flex items-center justify-center gap-4 text-zinc-500 font-bold uppercase tracking-[0.2em] text-xs"
                 >
-                    Garantia incondicional de 7 dias.
-                </motion.p>
+                    <Shield size={16} className="text-blue-500" />
+                    Acesso imediato e 100% seguro
+                </motion.div>
             </div>
         </section>
     );

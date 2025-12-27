@@ -104,8 +104,8 @@ const FileTreeItem = ({
                     else onSelect(note);
                 }}
                 className={`flex items-center gap-2 py-2 px-3 mx-2 rounded-xl cursor-pointer transition-all group relative overflow-hidden border border-transparent ${selectedNoteId === note.id
-                        ? 'bg-blue-600/10 text-blue-400 font-bold border-blue-500/20 shadow-[0_0_15px_rgba(37,99,235,0.1)]'
-                        : 'text-zinc-400 hover:text-white hover:bg-white/5'
+                    ? 'bg-blue-600/10 text-blue-600 dark:text-blue-400 font-bold border-blue-500/20 shadow-[0_0_15px_rgba(37,99,235,0.1)]'
+                    : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/5'
                     } ${isDragOver ? 'bg-blue-500/20 ring-1 ring-blue-500 scale-[1.02]' : ''}`}
                 style={{ paddingLeft: `${level * 12 + 12}px` }}
             >
@@ -124,7 +124,7 @@ const FileTreeItem = ({
                             >
                                 {hasChildren ? <ChevronRight size={14} /> : <div className="w-3.5" />}
                             </motion.div>
-                            <Folder size={16} className={selectedNoteId === note.id ? 'text-blue-500 fill-blue-500/20' : 'fill-zinc-800'} />
+                            <Folder size={16} className={selectedNoteId === note.id ? 'text-blue-600 dark:text-blue-500 fill-blue-500/20' : 'fill-zinc-300 dark:fill-zinc-800 text-zinc-400 dark:text-zinc-500'} />
                         </div>
                     ) : (
                         <div className="flex items-center text-zinc-600 group-hover:text-zinc-400 transition-colors ml-4">
@@ -142,7 +142,7 @@ const FileTreeItem = ({
                         onKeyDown={handleKeyDown}
                         autoFocus
                         onClick={(e) => e.stopPropagation()}
-                        className="flex-1 bg-zinc-950 text-white text-sm border border-blue-500 rounded px-1.5 py-0.5 outline-none relative z-20 min-w-0"
+                        className="flex-1 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white text-sm border border-blue-500 rounded px-1.5 py-0.5 outline-none relative z-20 min-w-0"
                     />
                 ) : (
                     <span className="truncate text-sm relative z-10 flex-1 font-medium">{note.name}</span>
@@ -215,17 +215,17 @@ const NotesSidebar: React.FC<NotesSidebarProps> = ({ notes, selectedNoteId, onSe
 
     return (
         <div
-            className="w-full bg-zinc-950/30 flex flex-col h-full flex-shrink-0 backdrop-blur-sm"
+            className="w-full bg-zinc-50/50 dark:bg-zinc-950/30 flex flex-col h-full flex-shrink-0 backdrop-blur-sm border-r border-zinc-200 dark:border-white/5"
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleDropRoot}
         >
             {/* Header */}
-            <div className="p-4 border-b border-white/5 space-y-4 bg-white/5 backdrop-blur-md">
+            <div className="p-4 border-b border-zinc-200 dark:border-white/5 space-y-4 bg-white/50 dark:bg-white/5 backdrop-blur-md">
                 <div className="flex items-center justify-between">
-                    <h2 className="font-bold text-white flex items-center gap-2 text-sm tracking-wide">
-                        <Folder className="text-blue-500" size={16} /> BIBLIOTECA
+                    <h2 className="font-bold text-zinc-800 dark:text-white flex items-center gap-2 text-sm tracking-wide">
+                        <Folder className="text-blue-600 dark:text-blue-500" size={16} /> BIBLIOTECA
                     </h2>
-                    <button onClick={onOpenSettings} className="p-1.5 rounded-lg text-zinc-500 hover:text-white hover:bg-white/10 transition-colors">
+                    <button onClick={onOpenSettings} className="p-1.5 rounded-lg text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-white/10 transition-colors">
                         <Settings size={16} />
                     </button>
                 </div>
@@ -237,7 +237,7 @@ const NotesSidebar: React.FC<NotesSidebarProps> = ({ notes, selectedNoteId, onSe
                         placeholder="Buscar arquivos..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full bg-zinc-950/50 border border-white/10 rounded-xl py-2.5 pl-9 pr-3 text-sm text-white focus:outline-none focus:border-blue-500/50 focus:bg-zinc-950 transition-all placeholder:text-zinc-600 shadow-inner"
+                        className="w-full bg-white dark:bg-zinc-950/50 border border-zinc-200 dark:border-white/10 rounded-xl py-2.5 pl-9 pr-3 text-sm text-zinc-900 dark:text-white focus:outline-none focus:border-blue-500/50 focus:bg-white dark:focus:bg-zinc-950 transition-all placeholder:text-zinc-500 dark:placeholder:text-zinc-600 shadow-sm dark:shadow-inner"
                     />
                 </div>
 
@@ -250,7 +250,7 @@ const NotesSidebar: React.FC<NotesSidebarProps> = ({ notes, selectedNoteId, onSe
                     </button>
                     <button
                         onClick={() => onCreateNote(null, 'folder')}
-                        className="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white text-xs font-bold py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 transition-all border border-white/10 active:scale-95"
+                        className="flex-1 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white text-xs font-bold py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 transition-all border border-zinc-200 dark:border-white/10 active:scale-95"
                     >
                         <FolderPlus size={14} /> Pasta
                     </button>
@@ -278,7 +278,7 @@ const NotesSidebar: React.FC<NotesSidebarProps> = ({ notes, selectedNoteId, onSe
                     ))}
 
                     {rootNotes.length === 0 && (
-                        <div className="text-zinc-600 text-xs text-center py-12 border-2 border-dashed border-white/5 rounded-2xl mx-4 mt-4">
+                        <div className="text-zinc-400 dark:text-zinc-600 text-xs text-center py-12 border-2 border-dashed border-zinc-200 dark:border-white/5 rounded-2xl mx-4 mt-4">
                             Sua biblioteca está vazia.
                             <br />Crie uma nota para começar.
                         </div>

@@ -54,22 +54,24 @@ const SuggestionList = forwardRef((props: SuggestionListProps, ref) => {
 
     if (props.items.length === 0) {
         return (
-            <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-500 shadow-xl">
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-2 text-xs text-zinc-500 dark:text-zinc-500 shadow-xl">
                 Nenhuma nota encontrada.
             </div>
         )
     }
 
     return (
-        <div className="bg-zinc-900 border border-zinc-800 rounded-lg shadow-xl overflow-hidden min-w-[200px] max-h-[300px] overflow-y-auto custom-scrollbar flex flex-col p-1">
+        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-xl overflow-hidden min-w-[200px] max-h-[300px] overflow-y-auto custom-scrollbar flex flex-col p-1">
             {props.items.map((item, index) => (
                 <button
-                    className={`flex items-center gap-2 text-left text-sm p-2 rounded transition-colors ${index === selectedIndex ? 'bg-blue-500/20 text-blue-400' : 'text-zinc-300 hover:bg-zinc-800'
+                    className={`flex items-center gap-2 text-left text-sm p-2 rounded transition-colors ${index === selectedIndex
+                        ? 'bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 font-medium'
+                        : 'text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'
                         }`}
                     key={index}
                     onClick={() => selectItem(index)}
                 >
-                    <FileText size={14} className={index === selectedIndex ? "text-blue-500" : "text-zinc-500"} />
+                    <FileText size={14} className={index === selectedIndex ? "text-blue-600 dark:text-blue-500" : "text-zinc-400 dark:text-zinc-500"} />
                     <span className="truncate">{item.label}</span>
                 </button>
             ))}
