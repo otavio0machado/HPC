@@ -234,7 +234,11 @@ const Tutors: React.FC = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={handleBack}
-            className="p-2.5 hover:bg-white/10 rounded-xl text-zinc-400 hover:text-white transition-all group"
+            className="p-2.5 rounded-xl transition-all group
+                bg-white/[0.05] hover:bg-white/[0.1]
+                border border-white/[0.1] hover:border-white/[0.2]
+                backdrop-blur-md shadow-lg shadow-black/5
+                text-zinc-400 hover:text-white"
           >
             <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
           </button>
@@ -255,7 +259,11 @@ const Tutors: React.FC = () => {
         <button
           onClick={clearHistory}
           title="Limpar Histórico"
-          className="p-2.5 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider border border-transparent hover:border-red-500/20"
+          className="p-2.5 rounded-xl transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider
+            bg-white/[0.05] hover:bg-red-500/10
+            border border-white/[0.1] hover:border-red-500/20
+            backdrop-blur-md
+            text-zinc-500 hover:text-red-400"
         >
           <Trash2 size={16} /> <span className="hidden sm:inline">Limpar</span>
         </button>
@@ -320,7 +328,7 @@ const Tutors: React.FC = () => {
           <button
             type="submit"
             disabled={!inputValue.trim() || isLoading}
-            className="bg-blue-600 hover:bg-blue-500 text-white p-4 rounded-2xl disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-blue-900/20 active:scale-95 hover:rotate-3"
+            className="bg-blue-600 hover:bg-blue-500 text-white p-4 rounded-2xl disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-blue-900/20 active:scale-95 hover:rotate-3 backdrop-blur-md border border-white/10"
           >
             <Send size={20} />
           </button>

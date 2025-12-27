@@ -151,14 +151,18 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-6 w-full max-w-2xl">
                         <motion.button
                             onClick={onCtaClick}
-                            whileHover={{ scale: 1.05, boxShadow: "0 0 50px rgba(59, 130, 246, 0.4)" }}
-                            whileTap={{ scale: 0.98 }}
-                            className="group relative w-full sm:w-auto px-12 py-5 rounded-2xl bg-white text-black font-extrabold text-xl overflow-hidden transition-all duration-300 shadow-[0_20px_40px_rgba(0,0,0,0.4)]"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="group relative w-full sm:w-auto px-12 py-5 rounded-2xl font-extrabold text-xl overflow-hidden transition-all duration-300
+                                bg-gradient-to-r from-blue-600 to-indigo-600 text-white
+                                backdrop-blur-md border border-white/20
+                                shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50
+                                ring-1 ring-white/10"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-r from-blue-100 via-white to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                             <span className="relative flex items-center justify-center gap-3">
                                 ATIVAR ACESSO PRO
-                                <Zap className="w-6 h-6 fill-blue-600 text-blue-600 group-hover:animate-bounce" />
+                                <Zap className="w-6 h-6 fill-white text-white group-hover:animate-bounce" />
                             </span>
                         </motion.button>
 

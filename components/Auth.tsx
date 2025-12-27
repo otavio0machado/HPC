@@ -153,9 +153,13 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
         <div className="absolute top-24 left-4 md:left-12">
           <button
             onClick={onBack}
-            className="flex items-center text-zinc-400 hover:text-white transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-full
+              bg-white/[0.05] hover:bg-white/[0.1] dark:bg-white/[0.05] dark:hover:bg-white/[0.1]
+              border border-white/[0.1] hover:border-white/[0.2]
+              backdrop-blur-md shadow-lg shadow-black/20
+              text-zinc-400 hover:text-white transition-all duration-300"
           >
-            <ArrowLeft size={20} className="mr-2" /> Voltar
+            <ArrowLeft size={20} /> Voltar
           </button>
         </div>
 
@@ -173,8 +177,12 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
 
           <div className="space-y-3">
             <button
-              onClick={() => onSuccess()} // Or allow them to try logging in again
-              className="w-full bg-white text-black font-bold py-2.5 rounded-lg hover:bg-zinc-200 transition-colors"
+              onClick={() => onSuccess()}
+              className="w-full font-bold py-3 rounded-xl transition-all duration-300
+                bg-gradient-to-r from-blue-600 to-indigo-600 text-white
+                backdrop-blur-md border border-white/20
+                shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50
+                ring-1 ring-white/10 hover:scale-[1.02] active:scale-95"
             >
               Já confirmei, fazer login
             </button>
@@ -182,7 +190,12 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
             <button
               onClick={handleResendEmail}
               disabled={resendTimer > 0 || isLoading}
-              className="w-full bg-zinc-800 text-white font-medium py-2.5 rounded-lg hover:bg-zinc-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full font-medium py-3 rounded-xl transition-all duration-300
+                bg-white/[0.05] hover:bg-white/[0.1]
+                border border-white/[0.1] hover:border-white/[0.2]
+                backdrop-blur-md shadow-lg
+                text-white hover:scale-[1.02] active:scale-95
+                disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
               {resendTimer > 0 ? `Aguarde ${resendTimer}s` : 'Reenviar Email'}
             </button>
@@ -204,9 +217,13 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
       <div className="absolute top-24 left-4 md:left-12">
         <button
           onClick={onBack}
-          className="flex items-center text-zinc-400 hover:text-white transition-colors"
+          className="flex items-center gap-2 px-4 py-2 rounded-full
+            bg-white/[0.05] hover:bg-white/[0.1] dark:bg-white/[0.05] dark:hover:bg-white/[0.1]
+            border border-white/[0.1] hover:border-white/[0.2]
+            backdrop-blur-md shadow-lg shadow-black/20
+            text-zinc-400 hover:text-white transition-all duration-300"
         >
-          <ArrowLeft size={20} className="mr-2" /> Voltar
+          <ArrowLeft size={20} /> Voltar
         </button>
       </div>
 
@@ -236,7 +253,12 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
                   toast.error("Erro inesperado com Google.");
                 }
               }}
-              className="w-full bg-white text-black font-medium py-3 rounded-lg hover:bg-zinc-200 transition-all flex items-center justify-center gap-2 mb-4"
+              className="w-full font-medium py-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 mb-4
+                bg-white dark:bg-white/90 text-black
+                backdrop-blur-md border border-black/[0.08] hover:border-black/[0.12]
+                shadow-lg shadow-black/5 hover:shadow-black/10
+                ring-1 ring-black/[0.03]
+                hover:scale-[1.02] active:scale-95"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
@@ -335,7 +357,13 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-zinc-900 dark:bg-white text-white dark:text-black font-bold py-3 rounded-lg hover:bg-zinc-800 dark:hover:bg-zinc-200 disabled:opacity-70 disabled:cursor-not-allowed transition-all transform hover:scale-[1.02] active:scale-[0.98] mt-6 flex items-center justify-center gap-2 group-btn"
+              className="w-full font-bold py-3 rounded-xl mt-6 flex items-center justify-center gap-2 transition-all duration-300
+                bg-gradient-to-r from-blue-600 to-indigo-600 text-white
+                backdrop-blur-md border border-white/20
+                shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50
+                ring-1 ring-white/10
+                hover:scale-[1.02] active:scale-95
+                disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
               {isLoading ? (
                 <Loader2 size={20} className="animate-spin" />

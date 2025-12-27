@@ -39,7 +39,12 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ onClose, onSuccess }) => {
 
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-white transition-colors z-10"
+                    className="absolute top-4 right-4 p-2 rounded-full
+                        bg-white/[0.05] hover:bg-white/[0.1] dark:bg-white/[0.05] dark:hover:bg-white/[0.1]
+                        border border-white/[0.1] hover:border-white/[0.2]
+                        backdrop-blur-md shadow-lg shadow-black/5
+                        text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-white 
+                        transition-all duration-300 z-10"
                 >
                     <X size={20} />
                 </button>
@@ -76,7 +81,13 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ onClose, onSuccess }) => {
                     <button
                         onClick={handleUpgrade}
                         disabled={loading}
-                        className="w-full font-bold py-4 rounded-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        className="w-full font-bold py-4 rounded-xl transition-all duration-300
+                            bg-gradient-to-r from-blue-600 to-indigo-600 text-white
+                            backdrop-blur-md border border-white/20
+                            shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50
+                            ring-1 ring-white/10
+                            hover:scale-[1.02] active:scale-[0.98]
+                            disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                         {loading ? (
                             <>

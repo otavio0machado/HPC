@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Sparkles } from 'lucide-react';
-import ThemeToggle from './ThemeToggle';
 
 interface NavbarProps {
   onLoginClick: () => void;
@@ -61,9 +60,6 @@ const Navbar: React.FC<NavbarProps> = ({ onLoginClick, isLoggedIn }) => {
                 <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-blue-600 dark:bg-blue-500 rounded-full group-hover:w-full transition-all duration-300 ease-out opacity-0 group-hover:opacity-100" />
               </motion.a>
             ))}
-
-            {/* Theme Toggle */}
-            <ThemeToggle />
 
             {/* Enhanced CTA Button */}
             <motion.button

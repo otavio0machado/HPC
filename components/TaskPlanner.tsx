@@ -245,13 +245,13 @@ const TaskPlanner: React.FC = () => {
                 <div className="flex bg-[var(--glass-bg)] border border-[var(--border-glass)] p-1 rounded-xl backdrop-blur-md">
                     <button
                         onClick={() => setActiveTab('calendar')}
-                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${activeTab === 'calendar' ? 'bg-white/10 text-white shadow-lg shadow-black/20' : 'text-zinc-500 hover:text-white hover:bg-white/5'}`}
+                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${activeTab === 'calendar' ? 'bg-white/10 text-white shadow-lg shadow-black/20 backdrop-blur-md border border-white/10' : 'text-zinc-500 hover:text-white hover:bg-white/5 border border-transparent'}`}
                     >
                         <CalendarIcon size={16} /> Agenda
                     </button>
                     <button
                         onClick={() => setActiveTab('materials')}
-                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${activeTab === 'materials' ? 'bg-white/10 text-white shadow-lg shadow-black/20' : 'text-zinc-500 hover:text-white hover:bg-white/5'}`}
+                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${activeTab === 'materials' ? 'bg-white/10 text-white shadow-lg shadow-black/20 backdrop-blur-md border border-white/10' : 'text-zinc-500 hover:text-white hover:bg-white/5 border border-transparent'}`}
                     >
                         <Book size={16} /> Apostilas
                     </button>
@@ -264,11 +264,11 @@ const TaskPlanner: React.FC = () => {
                     {/* Left: Calendar Grid */}
                     <div className="lg:col-span-7 bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-3xl p-6 backdrop-blur-xl">
                         <div className="flex justify-between items-center mb-6">
-                            <button onClick={() => changeMonth(-1)} className="p-2 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors"><ChevronLeft size={20} /></button>
+                            <button onClick={() => changeMonth(-1)} className="p-2 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors border border-transparent hover:border-white/10 hover:shadow-lg"><ChevronLeft size={20} /></button>
                             <h3 className="text-xl font-bold text-white capitalize">
                                 {currentDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
                             </h3>
-                            <button onClick={() => changeMonth(1)} className="p-2 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors"><ChevronRight size={20} /></button>
+                            <button onClick={() => changeMonth(1)} className="p-2 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors border border-transparent hover:border-white/10 hover:shadow-lg"><ChevronRight size={20} /></button>
                         </div>
 
                         <div className="grid grid-cols-7 gap-2 mb-2 text-center">
@@ -327,7 +327,7 @@ const TaskPlanner: React.FC = () => {
                                     </p>
                                 </div>
                                 {tasksForSelectedDate.some(t => t.completed) && (
-                                    <button onClick={() => clearCompleted(selectedDateStr)} className="text-xs text-zinc-500 hover:text-red-400 flex items-center gap-1 transition-colors px-3 py-1.5 rounded-lg hover:bg-red-500/10">
+                                    <button onClick={() => clearCompleted(selectedDateStr)} className="text-xs text-zinc-500 hover:text-red-400 flex items-center gap-1 transition-colors px-3 py-1.5 rounded-lg hover:bg-red-500/10 border border-transparent hover:border-red-500/20">
                                         <RefreshCcw size={12} /> Limpar Concluídas
                                     </button>
                                 )}
@@ -367,7 +367,7 @@ const TaskPlanner: React.FC = () => {
                                             className="w-full bg-zinc-950/50 border border-white/10 rounded-xl py-3 pl-4 pr-12 text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder:text-zinc-600"
                                         />
                                     </div>
-                                    <button type="submit" className="bg-gradient-to-br from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-3.5 rounded-xl transition-all shadow-lg shadow-blue-900/20 active:scale-95">
+                                    <button type="submit" className="bg-gradient-to-br from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-3.5 rounded-xl transition-all shadow-lg shadow-blue-900/20 active:scale-95 border border-white/20 backdrop-blur-md">
                                         <Plus size={20} />
                                     </button>
                                 </div>
@@ -482,7 +482,7 @@ const TaskPlanner: React.FC = () => {
                                         />
                                     </div>
                                 </div>
-                                <button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-purple-900/20 active:scale-95 mt-2">
+                                <button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-purple-900/20 active:scale-95 mt-2 border border-white/20 backdrop-blur-md">
                                     Adicionar ao Planner
                                 </button>
                             </form>

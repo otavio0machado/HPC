@@ -241,7 +241,7 @@ const Simulados: React.FC = () => {
   if (viewMode === 'config') {
     return (
       <div className="max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <button onClick={() => setViewMode('list')} className="mb-6 flex items-center gap-2 text-zinc-400 hover:text-white transition-colors">
+        <button onClick={() => setViewMode('list')} className="mb-6 flex items-center gap-2 text-zinc-400 hover:text-white transition-colors px-4 py-2 rounded-xl border border-transparent hover:border-white/10 hover:bg-white/5 backdrop-blur-md">
           <ChevronDown className="rotate-90" size={20} /> Voltar para lista
         </button>
 
@@ -339,7 +339,7 @@ const Simulados: React.FC = () => {
             <button
               onClick={handleStartGeneration}
               disabled={isGenerating}
-              className="w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-zinc-200 transition-all hover:scale-[1.01] shadow-xl flex items-center justify-center gap-2 mt-4"
+              className="w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-zinc-200 transition-all hover:scale-[1.01] shadow-xl flex items-center justify-center gap-2 mt-4 backdrop-blur-md border border-white/20"
             >
               {isGenerating ? (
                 <>
@@ -413,8 +413,8 @@ const Simulados: React.FC = () => {
                       key={optIndex}
                       onClick={() => handleAnswerSelect(q.id, optIndex)}
                       className={`w-full text-left p-4 rounded-xl border transition-all flex items-start gap-4 ${userAnswers[q.id] === optIndex
-                          ? 'bg-blue-900/20 border-blue-500/50 text-blue-100'
-                          : 'bg-zinc-950 border-zinc-800/50 text-zinc-400 hover:bg-zinc-800'
+                        ? 'bg-blue-900/20 border-blue-500/50 text-blue-100'
+                        : 'bg-zinc-950 border-zinc-800/50 text-zinc-400 hover:bg-zinc-800'
                         }`}
                     >
                       <span className={`w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold border ${userAnswers[q.id] === optIndex ? 'bg-blue-500 border-blue-500 text-white' : 'border-zinc-700 text-zinc-600'}`}>
@@ -432,7 +432,7 @@ const Simulados: React.FC = () => {
         <div className="mt-8 flex justify-end pb-20">
           <button
             onClick={handleSubmitExam}
-            className="bg-green-600 hover:bg-green-500 text-white font-bold py-4 px-12 rounded-xl text-lg shadow-lg shadow-green-900/20 transition-all hover:scale-105"
+            className="bg-green-600 hover:bg-green-500 text-white font-bold py-4 px-12 rounded-xl text-lg shadow-lg shadow-green-900/20 transition-all hover:scale-105 backdrop-blur-md border border-white/20"
           >
             Finalizar Prova
           </button>
@@ -498,10 +498,10 @@ const Simulados: React.FC = () => {
           </div>
 
           <div className="p-6 bg-zinc-900 border-t border-zinc-800 flex justify-between items-center">
-            <button onClick={() => setViewMode('list')} className="text-zinc-500 hover:text-white text-sm">Descartar Resultado</button>
+            <button onClick={() => setViewMode('list')} className="text-zinc-500 hover:text-white text-sm px-4 py-2 hover:bg-white/5 rounded-lg transition-all">Descartar Resultado</button>
             <button
               onClick={handleSaveAIResult}
-              className="bg-white text-black font-bold py-3 px-8 rounded-xl hover:bg-zinc-200 transition-transform hover:scale-[1.02] shadow-lg flex items-center gap-2"
+              className="bg-white text-black font-bold py-3 px-8 rounded-xl hover:bg-zinc-200 transition-transform hover:scale-[1.02] shadow-lg flex items-center gap-2 backdrop-blur-md border border-white/20"
             >
               <CheckCircle2 size={18} /> Salvar no Histórico
             </button>
@@ -529,14 +529,14 @@ const Simulados: React.FC = () => {
         <div className="flex gap-3">
           <button
             onClick={() => { setViewMode('manual_entry') }}
-            className="bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white font-bold px-5 py-3 rounded-xl flex items-center justify-center gap-2 transition-all border border-zinc-700"
+            className="bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white font-bold px-5 py-3 rounded-xl flex items-center justify-center gap-2 transition-all border border-zinc-700 backdrop-blur-md hover:border-zinc-600"
           >
             <Calculator size={18} /> Lançar Manual
           </button>
 
           <button
             onClick={() => setViewMode('config')}
-            className="bg-white text-black hover:bg-zinc-200 font-bold px-6 py-3 rounded-xl flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-xl"
+            className="bg-white text-black hover:bg-zinc-200 font-bold px-6 py-3 rounded-xl flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-xl backdrop-blur-md border border-white/20"
           >
             <BrainCircuit size={20} /> Gerar com IA
           </button>
@@ -771,7 +771,7 @@ const Simulados: React.FC = () => {
 
                 <button
                   type="submit"
-                  className="w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-zinc-200 transition-transform hover:scale-[1.01] shadow-xl"
+                  className="w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-zinc-200 transition-transform hover:scale-[1.01] shadow-xl backdrop-blur-md border border-white/20"
                 >
                   Processar Resultados
                 </button>

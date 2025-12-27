@@ -69,8 +69,8 @@ const KnowledgePill: React.FC<KnowledgePillProps> = ({ pill, index }) => {
 
     // Shared "Liquid Glass" Card Styles
     const liquidGlassStyles = `
-        backdrop-blur-xl bg-white/5 dark:bg-black/40 
-        border border-white/20 dark:border-white/5
+        backdrop-blur-xl bg-white/60 dark:bg-black/40 
+        border border-black/5 dark:border-white/5
         shadow-[0_8px_16px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2)]
     `;
 
@@ -78,7 +78,7 @@ const KnowledgePill: React.FC<KnowledgePillProps> = ({ pill, index }) => {
     const renderImageTop = () => (
         <div className="flex flex-col h-full">
             {pill.imageUrl && (
-                <div className="w-full h-40 overflow-hidden relative border-b border-white/5">
+                <div className="w-full h-40 overflow-hidden relative border-b border-zinc-200 dark:border-white/5">
                     <img src={pill.imageUrl} alt={pill.title} className="w-full h-full object-cover transition-transform duration-700 group-hover/pill:scale-105" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                     <div className="absolute bottom-3 left-4 right-4 z-10">
@@ -109,7 +109,7 @@ const KnowledgePill: React.FC<KnowledgePillProps> = ({ pill, index }) => {
                     {pill.description}
                 </p>
                 <div className="mt-auto pt-4 flex justify-end">
-                    <div className={`p-2 rounded-full bg-white/5 border border-white/10 text-zinc-400 transition-all duration-300 ${isOpen ? 'rotate-180 bg-white/10 text-white' : 'hover:bg-white/10 hover:text-white'}`}>
+                    <div className={`p-2 rounded-full bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-400 transition-all duration-300 ${isOpen ? 'rotate-180 bg-zinc-200 dark:bg-white/10 text-zinc-900 dark:text-white' : 'hover:bg-zinc-200 dark:hover:bg-white/10 hover:text-zinc-900 dark:hover:text-white'}`}>
                         <ChevronDown size={18} />
                     </div>
                 </div>
@@ -142,7 +142,7 @@ const KnowledgePill: React.FC<KnowledgePillProps> = ({ pill, index }) => {
             </div>
             <div className="mt-6 flex items-center justify-between relative z-10">
                 <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest bg-zinc-500/5 px-2 py-1 rounded border border-zinc-500/10">Citação</span>
-                <div className={`p-2 rounded-full bg-white/5 border border-white/10 text-zinc-400 transition-all duration-300 ${isOpen ? 'rotate-180 bg-white/10 text-white' : 'hover:bg-white/10 hover:text-white'}`}>
+                <div className={`p-2 rounded-full bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-400 transition-all duration-300 ${isOpen ? 'rotate-180 bg-zinc-200 dark:bg-white/10 text-zinc-900 dark:text-white' : 'hover:bg-zinc-200 dark:hover:bg-white/10 hover:text-zinc-900 dark:hover:text-white'}`}>
                     <ChevronDown size={18} />
                 </div>
             </div>
@@ -160,7 +160,7 @@ const KnowledgePill: React.FC<KnowledgePillProps> = ({ pill, index }) => {
                         {pill.title}
                     </h3>
                 </div>
-                <div className={`p-1.5 rounded-full bg-white/5 border border-white/10 text-zinc-400 transition-all duration-300 ${isOpen ? 'rotate-180 bg-white/10 text-white' : 'hover:bg-white/10 hover:text-white'}`}>
+                <div className={`p-1.5 rounded-full bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-400 transition-all duration-300 ${isOpen ? 'rotate-180 bg-zinc-200 dark:bg-white/10 text-zinc-900 dark:text-white' : 'hover:bg-zinc-200 dark:hover:bg-white/10 hover:text-zinc-900 dark:hover:text-white'}`}>
                     <ChevronDown size={16} />
                 </div>
             </div>
@@ -174,7 +174,7 @@ const KnowledgePill: React.FC<KnowledgePillProps> = ({ pill, index }) => {
                     </div>
                 ))}
             </div>
-            <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
+            <div className="mt-4 pt-4 border-t border-zinc-200 dark:border-white/5 flex items-center justify-between">
                 <span className="text-[10px] font-bold text-green-600 dark:text-green-400 uppercase tracking-widest">Resumo Estruturado</span>
             </div>
         </div>
@@ -191,7 +191,7 @@ const KnowledgePill: React.FC<KnowledgePillProps> = ({ pill, index }) => {
                 </div>
                 <div className="flex items-center gap-2">
                     {pill.readTime && <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400">{pill.readTime}</span>}
-                    <div className={`p-1.5 rounded-full bg-white/5 border border-white/10 text-zinc-400 transition-all duration-300 ${isOpen ? 'rotate-180 bg-white/10 text-white' : 'hover:bg-white/10 hover:text-white'}`}>
+                    <div className={`p-1.5 rounded-full bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-400 transition-all duration-300 ${isOpen ? 'rotate-180 bg-zinc-200 dark:bg-white/10 text-zinc-900 dark:text-white' : 'hover:bg-zinc-200 dark:hover:bg-white/10 hover:text-zinc-900 dark:hover:text-white'}`}>
                         <ChevronDown size={16} />
                     </div>
                 </div>
@@ -220,7 +220,7 @@ const KnowledgePill: React.FC<KnowledgePillProps> = ({ pill, index }) => {
                     h-full relative flex flex-col overflow-hidden rounded-3xl
                     ${liquidGlassStyles}
                     hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)] 
-                    hover:border-white/20
+                    hover:border-black/10 dark:hover:border-white/20
                     transition-all duration-300 cursor-pointer
                     ${isOpen ? 'ring-1 ring-blue-500/30 shadow-[0_0_30px_rgba(59,130,246,0.15)] scale-[1.02]' : ''}
                 `}

@@ -70,7 +70,7 @@ const Settings: React.FC = () => {
                                 <button
                                     key={opt}
                                     onClick={() => handleFocusChange(opt)}
-                                    className={`px-6 py-2.5 rounded-lg text-xs font-bold transition-all uppercase tracking-wider ${examFocus === opt ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm dark:shadow-lg border border-zinc-200 dark:border-white/10' : 'text-zinc-500 dark:text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 hover:bg-black/5 dark:hover:bg-white/5'}`}
+                                    className={`px-6 py-2.5 rounded-lg text-xs font-bold transition-all uppercase tracking-wider ${examFocus === opt ? 'bg-white dark:bg-white/[0.1] text-zinc-900 dark:text-white shadow-lg backdrop-blur-md border border-zinc-200 dark:border-white/20' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 border border-transparent'}`}
                                 >
                                     {opt}
                                 </button>
@@ -144,7 +144,7 @@ const Settings: React.FC = () => {
                             </div>
                             <button
                                 onClick={() => handleClearData('hpc_tutor_history')}
-                                className="text-zinc-500 hover:text-red-400 p-3 hover:bg-red-500/10 rounded-xl transition-all"
+                                className="text-zinc-500 hover:text-red-400 p-3 hover:bg-red-500/10 rounded-xl transition-all bg-white/[0.02] border border-transparent hover:border-red-500/20 backdrop-blur-sm"
                                 title="Limpar Cache"
                             >
                                 <Trash2 size={18} />
@@ -158,7 +158,7 @@ const Settings: React.FC = () => {
                             </div>
                             <button
                                 onClick={() => handleClearData('hpc_simulados_history')}
-                                className="text-zinc-500 hover:text-red-400 p-3 hover:bg-red-500/10 rounded-xl transition-all"
+                                className="text-zinc-500 hover:text-red-400 p-3 hover:bg-red-500/10 rounded-xl transition-all bg-white/[0.02] border border-transparent hover:border-red-500/20 backdrop-blur-sm"
                                 title="Limpar Histórico"
                             >
                                 <Trash2 size={18} />
@@ -172,7 +172,7 @@ const Settings: React.FC = () => {
                             </div>
                             <button
                                 onClick={() => handleClearData('hpc_flashcards')}
-                                className="text-zinc-500 hover:text-red-400 p-3 hover:bg-red-500/10 rounded-xl transition-all"
+                                className="text-zinc-500 hover:text-red-400 p-3 hover:bg-red-500/10 rounded-xl transition-all bg-white/[0.02] border border-transparent hover:border-red-500/20 backdrop-blur-sm"
                                 title="Limpar Progresso"
                             >
                                 <Trash2 size={18} />

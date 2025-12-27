@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { PlannerTask, ErrorEntry, SimuladoResult } from '../../types';
 import { motion } from 'framer-motion';
+import ThemeToggle from '../ThemeToggle';
 
 interface DashboardWidgetsProps {
     currentUser: any;
@@ -66,7 +67,8 @@ const DashboardWidgets: React.FC<DashboardWidgetsProps> = ({
                     </h2>
                     <p className="text-zinc-500 dark:text-zinc-400">Pronto para superar seus limites hoje?</p>
                 </div>
-                <div>
+                <div className="flex items-center gap-3">
+                    <ThemeToggle showLabel={false} />
                     <button
                         onClick={() => setIsModalOpen(true)}
                         className="group relative inline-flex items-center justify-center px-6 py-2.5 font-bold text-white transition-all duration-200 bg-emerald-600 font-pj rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-600 hover:bg-emerald-500 active:scale-95 shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)]"

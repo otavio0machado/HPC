@@ -5,11 +5,12 @@ import { ArrowLeft, Sparkles, Search, Upload, RefreshCw, Loader2, Plus } from 'l
 import { Subject, KnowledgePill as KnowledgePillType } from '../../data/contentData';
 import { contentService } from '../../services/contentService';
 import { extractTextFromPDF } from '../../utils/pdfUtils';
-import { generatePillsFromContent } from '../../services/geminiService';
+import { generatePillsFromContent, generatePillsFromPromptAndContent } from '../../services/geminiService';
 import SubjectCard from './SubjectCard';
 import KnowledgePill from './KnowledgePill';
 import { toast } from 'sonner';
 import { supabase } from '../../lib/supabase';
+import { Trash2, X } from 'lucide-react';
 import {
     DndContext,
     DragOverlay,
@@ -21,6 +22,24 @@ import {
     useDroppable
 } from '@dnd-kit/core';
 import { FilePlus } from 'lucide-react';
+
+const SUBJECT_TABS = [
+    'Todas',
+    'Matemática',
+    'Física',
+    'Química',
+    'Biologia',
+    'História',
+    'Geografia',
+    'Sociologia',
+    'Filosofia',
+    'Português',
+    'Redação',
+    'História da Arte',
+    'Inglês',
+    'Espanhol',
+    'Literatura'
+];
 
 const ContentModule: React.FC = () => {
     const [subjects, setSubjects] = useState<Subject[]>([]);
@@ -34,6 +53,7 @@ const ContentModule: React.FC = () => {
     // Restored State
     const [selectedSubject, setSelectedSubject] = useState<Subject | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
+    const [selectedSubjectTab, setSelectedSubjectTab] = useState('Todas');
     const [isLoading, setIsLoading] = useState(true);
     const [isGenerating, setIsGenerating] = useState(false);
 
@@ -57,7 +77,18 @@ const ContentModule: React.FC = () => {
 
     // Selected Folder for upload (Optional)
     // Selected Folder for upload (Optional)
+    // Selected Folder for upload (Optional)
     const [selectedUploadFolder, setSelectedUploadFolder] = useState<string>('');
+
+    // VIEW STATE: Selected Folder (null = Root View)
+    const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
+
+    // Custom Generation State
+    const [isCustomGenModalOpen, setIsCustomGenModalOpen] = useState(false);
+    const [customPrompt, setCustomPrompt] = useState('');
+    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+    const [extractionProgress, setExtractionProgress] = useState<string>('');
+    const customFileInputRef = useRef<HTMLInputElement>(null);
 
     // Manual Creation State
     const [isManualModalOpen, setIsManualModalOpen] = useState(false);
@@ -86,6 +117,24 @@ const ContentModule: React.FC = () => {
         loadSubjects();
     }, []);
 
+    // Auto-scroll to top when Custom Gen Modal opens
+    useEffect(() => {
+        if (isCustomGenModalOpen) {
+            // Scroll to top of page
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Lock body scroll to prevent scrolling behind modal
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Restore body scroll when modal closes
+            document.body.style.overflow = 'unset';
+        }
+
+        // Cleanup on unmount
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isCustomGenModalOpen]);
+
     const loadSubjects = async () => {
         setIsLoading(true);
         try {
@@ -96,6 +145,10 @@ const ContentModule: React.FC = () => {
             if (selectedSubject) {
                 const refreshed = data.find(s => s.id === selectedSubject.id);
                 if (refreshed) setSelectedSubject(refreshed);
+                // Also validate if selectedFolder still exists (simple check)
+                if (selectedFolder && refreshed && !refreshed.folders?.find(f => f.name === selectedFolder) && selectedFolder !== 'Sem Pasta') {
+                    setSelectedFolder(null);
+                }
             }
         } catch (error) {
             console.error("Failed to load subjects", error);
@@ -207,9 +260,11 @@ const ContentModule: React.FC = () => {
         }
     };
 
-    const filteredSubjects = subjects.filter(s =>
-        s.title.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredSubjects = subjects.filter(s => {
+        const matchesSearch = s.title.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesTab = selectedSubjectTab === 'Todas' || s.title === selectedSubjectTab;
+        return matchesSearch && matchesTab;
+    });
 
     const togglePillSelection = (pillId: string) => {
         const newSelected = new Set(selectedPills);
@@ -317,6 +372,110 @@ const ContentModule: React.FC = () => {
             toast.error("Erro ao criar conteúdo.");
         } finally {
             setIsCreating(false);
+        }
+    };
+
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            const newFiles = Array.from(e.target.files);
+            // Optional: Check size limit per file just to warn, process limit in generation
+            const oversized = newFiles.filter(f => f.size > 200 * 1024 * 1024);
+            if (oversized.length > 0) {
+                toast.error(`Alguns arquivos excedem 200MB e foram ignorados: ${oversized.map(f => f.name).join(', ')}`);
+            }
+            const validFiles = newFiles.filter(f => f.size <= 200 * 1024 * 1024);
+            setSelectedFiles(prev => [...prev, ...validFiles]);
+
+            // Allow re-selecting same file
+            if (customFileInputRef.current) customFileInputRef.current.value = '';
+        }
+    };
+
+    const removeFile = (index: number) => {
+        setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+    };
+
+    const handleCustomGeneration = async () => {
+        if (!selectedSubject || selectedFiles.length === 0) {
+            toast.error("Selecione pelo menos um arquivo PDF.");
+            return;
+        }
+
+        setIsGenerating(true);
+        const toastId = toast.loading("Iniciando geração personalizada...");
+
+        try {
+            let fullText = '';
+            let totalPages = 0;
+            const allImages: string[] = [];
+
+            // 1. Sequential Extraction
+            for (let i = 0; i < selectedFiles.length; i++) {
+                const file = selectedFiles[i];
+                setExtractionProgress(`Lendo arquivo ${i + 1} de ${selectedFiles.length}: ${file.name}...`);
+                toast.loading(`Lendo arquivo ${i + 1}/${selectedFiles.length}: ${file.name}...`, { id: toastId });
+
+                try {
+                    const { text, pageCount, images } = await extractTextFromPDF(file);
+                    fullText += `\n\n--- Início do Arquivo: ${file.name} ---\n\n${text}`;
+                    totalPages += pageCount;
+                    allImages.push(...images);
+
+                    // Small delay to let UI breathe
+                    await new Promise(r => setTimeout(r, 100));
+                } catch (err) {
+                    console.error(`Error reading ${file.name}`, err);
+                    toast.error(`Erro ao ler ${file.name}, pulando...`, { id: toastId });
+                }
+            }
+
+            setExtractionProgress(''); // Clear progress
+
+            if (!fullText || fullText.length < 50) {
+                toast.error("Não foi possível extrair texto suficiente dos arquivos.", { id: toastId });
+                setIsGenerating(false);
+                return;
+            }
+
+            // 2. Generate Content
+            toast.loading("IA analisando e gerando pílulas...", { id: toastId });
+
+            const newPills = await generatePillsFromPromptAndContent(
+                customPrompt || "Gere pílulas de conhecimento relevantes.",
+                fullText,
+                totalPages,
+                allImages
+            );
+
+            if (newPills.length === 0) {
+                toast.error("A IA não gerou conteúdo. Tente simplificar o prompt ou usar outros arquivos.", { id: toastId });
+                return;
+            }
+
+            // 3. Save
+            const pillsWithFolder = newPills.map(p => ({
+                ...p,
+                folder: selectedUploadFolder || p.folder // Use selection from main screen if needed, or modal specific
+            }));
+
+            const success = await contentService.savePills(selectedSubject.id, pillsWithFolder);
+
+            if (success) {
+                toast.success(`${newPills.length} pílulas criadas com sucesso!`, { id: toastId });
+                setIsCustomGenModalOpen(false);
+                setCustomPrompt('');
+                setSelectedFiles([]);
+                await loadSubjects();
+            } else {
+                toast.error("Erro ao salvar pílulas.", { id: toastId });
+            }
+
+        } catch (error) {
+            console.error("Custom generation failed", error);
+            toast.error("Falha na geração personalizada.", { id: toastId });
+        } finally {
+            setIsGenerating(false);
+            setExtractionProgress('');
         }
     };
 
@@ -435,11 +594,12 @@ const ContentModule: React.FC = () => {
             return a.localeCompare(b);
         });
 
-        // Draggable Component Wrapper
+        // Draggable Component Wrapper for Pills
         const DraggablePillWrapper = ({ pill, index }: { pill: any, index: number }) => {
             const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
                 id: pill.id,
-                data: pill
+                data: pill,
+                disabled: !!selectedFolder // Disable drag if inside a folder view (optional, but requested behavior implies dragging TO folders, usually from root)
             });
             const style = transform ? {
                 transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
@@ -451,7 +611,6 @@ const ContentModule: React.FC = () => {
                     <div className="relative group">
                         {isSelectionMode && (
                             <div className="absolute top-4 right-4 z-20" onPointerDown={(e) => e.stopPropagation()}>
-                                {/* Stop propagation to prevent drag start on checkbox click */}
                                 <input
                                     type="checkbox"
                                     checked={selectedPills.has(pill.id)}
@@ -466,20 +625,41 @@ const ContentModule: React.FC = () => {
             );
         };
 
-        // Droppable Component Wrapper
-        const DroppableFolderHeader = ({ name, count }: { name: string, count: number }) => {
+        // Folder Card Component (Droppable + Clickable)
+        const FolderCard = ({ name, count, onClick }: { name: string, count: number, onClick: () => void }) => {
             const { setNodeRef, isOver } = useDroppable({
                 id: name,
+                data: { type: 'folder', name }
             });
 
             return (
-                <div ref={setNodeRef} className={`flex items-center justify-between mb-4 p-2 rounded-xl transition-colors ${isOver ? 'bg-blue-500/20 border border-blue-500/30' : ''}`}>
-                    <h3 className="text-xl font-bold text-zinc-900 dark:text-white flex items-center gap-2">
-                        <span className="w-2 h-8 bg-blue-500 rounded-full" />
-                        {name}
-                        <span className="text-sm font-medium text-zinc-400 ml-2">({count})</span>
-                    </h3>
-                </div>
+                <motion.div
+                    ref={setNodeRef}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={onClick}
+                    className={`cursor-pointer group relative overflow-hidden rounded-3xl p-6 border transition-all duration-300
+                        ${isOver
+                            ? 'bg-blue-500/20 border-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.2)]'
+                            : 'bg-white/50 dark:bg-black/40 border-white/20 dark:border-white/5 hover:bg-white/80 dark:hover:bg-black/60 shadow-[0_8px_16px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2)]'
+                        } backdrop-blur-md`}
+                >
+                    <div className="flex flex-col h-full justify-between relative z-10">
+                        <div className="flex items-start justify-between">
+                            <div className={`p-3 rounded-2xl ${isOver ? 'bg-blue-500 text-white' : 'bg-blue-100 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400'} transition-colors`}>
+                                <Sparkles size={24} strokeWidth={1.5} />
+                            </div>
+                            <span className="text-2xl font-black text-zinc-200 dark:text-white/5 group-hover:text-zinc-300 dark:group-hover:text-white/10 transition-colors">
+                                {String(count).padStart(2, '0')}
+                            </span>
+                        </div>
+
+                        <div>
+                            <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-1 line-clamp-1">{name}</h3>
+                            <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">{count} itens</p>
+                        </div>
+                    </div>
+                </motion.div>
             );
         };
 
@@ -498,37 +678,87 @@ const ContentModule: React.FC = () => {
                         />
                     )}
 
-                    {folders.map(folderName => {
-                        const pills = groupedPills[folderName];
+                    {/* View Switch */}
+                    {!selectedFolder ? (
+                        // ROOT VIEW: Folders Grid + Loose Pills
+                        <div className="space-y-10">
+                            {/* Folders Grid */}
+                            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                                {(selectedSubject.folders || []).map(f => (
+                                    <FolderCard
+                                        key={f.id}
+                                        name={f.name}
+                                        count={groupedPills[f.name]?.length || 0}
+                                        onClick={() => setSelectedFolder(f.name)}
+                                    />
+                                ))}
+                            </div>
 
-                        return (
-                            <div key={folderName} className="mb-10">
-                                {folderName !== 'Sem Pasta' ? (
-                                    <DroppableFolderHeader name={folderName} count={pills.length} />
-                                ) : (
-                                    <DroppableFolderHeader name={folderName} count={pills.length} />
-                                )}
-
-                                {pills.length === 0 ? (
-                                    <div className="py-10 border-2 border-dashed border-zinc-100 dark:border-white/5 rounded-3xl flex flex-col items-center justify-center text-zinc-400">
-                                        <Upload size={24} className="mb-2 opacity-20" />
-                                        <p className="text-sm font-medium italic">Pasta vazia (Arraste itens para cá)</p>
+                            {/* Separator if we have loose pills */}
+                            {groupedPills['Sem Pasta']?.length > 0 && (
+                                <div className="space-y-6">
+                                    <div className="flex items-center gap-4">
+                                        <div className="h-[1px] flex-1 bg-zinc-200 dark:bg-white/10" />
+                                        <span className="text-sm font-bold text-zinc-400 uppercase tracking-wider">Itens Soltos</span>
+                                        <div className="h-[1px] flex-1 bg-zinc-200 dark:bg-white/10" />
                                     </div>
-                                ) : (
                                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                                        {pills.map((pill, index) => (
+                                        {groupedPills['Sem Pasta'].map((pill, index) => (
                                             <DraggablePillWrapper key={pill.id} pill={pill} index={index} />
                                         ))}
                                     </div>
+                                </div>
+                            )}
+
+                            {/* Empty State if no folders and no pills */}
+                            {(!selectedSubject.folders || selectedSubject.folders.length === 0) && groupedPills['Sem Pasta']?.length === 0 && (
+                                <div className="py-20 flex flex-col items-center justify-center text-zinc-400">
+                                    <Sparkles size={48} className="mb-4 opacity-20" />
+                                    <p className="font-medium">Nenhum conteúdo encontrado.</p>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        // FOLDER VIEW: Header + Pills Grid
+                        <div className="space-y-6">
+                            <div className="flex items-center gap-4 pb-4 border-b border-zinc-200 dark:border-white/5">
+                                <button
+                                    onClick={() => setSelectedFolder(null)}
+                                    className="p-2 -ml-2 rounded-xl text-zinc-400 hover:text-white transition-colors bg-white/[0.05] hover:bg-white/[0.1] border border-transparent hover:border-white/10 backdrop-blur-md"
+                                >
+                                    <ArrowLeft size={20} />
+                                </button>
+                                <div>
+                                    <h2 className="text-2xl font-black text-zinc-900 dark:text-white tracking-tight">{selectedFolder}</h2>
+                                    <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">
+                                        {groupedPills[selectedFolder]?.length || 0} pílulas nesta pasta
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                                {(groupedPills[selectedFolder] || []).map((pill, index) => (
+                                    <DraggablePillWrapper key={pill.id} pill={pill} index={index} />
+                                ))}
+                                {(groupedPills[selectedFolder] || []).length === 0 && (
+                                    <div className="col-span-full py-20 flex flex-col items-center justify-center text-zinc-400">
+                                        <p className="font-medium italic">Pasta vazia.</p>
+                                    </div>
                                 )}
                             </div>
-                        )
-                    })}
+                        </div>
+                    )}
+
                 </div>
                 <DragOverlay>
                     {activeDragId ? (
-                        <div className="w-[300px] h-[100px] bg-white dark:bg-zinc-800 rounded-3xl shadow-2xl opacity-80 flex items-center justify-center border border-blue-500">
-                            <span className="font-bold text-zinc-900 dark:text-white">Movendo item...</span>
+                        <div className="w-[300px] h-[100px] bg-white dark:bg-zinc-800 rounded-3xl shadow-2xl opacity-90 flex items-center justify-center border-2 border-blue-500 scale-105 rotate-2">
+                            <div className="flex items-center gap-3">
+                                <span className="p-2 bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-lg">
+                                    <Sparkles size={20} />
+                                </span>
+                                <span className="font-bold text-zinc-900 dark:text-white">Movendo item...</span>
+                            </div>
                         </div>
                     ) : null}
                 </DragOverlay>
@@ -647,6 +877,24 @@ const ContentModule: React.FC = () => {
                             </div>
                         ) : (
                             <>
+                                {/* Subject Tabs */}
+                                <div className="mb-8 -mx-4 px-4 overflow-x-auto scrollbar-hide">
+                                    <div className="flex gap-3 min-w-max pb-2 px-1">
+                                        {SUBJECT_TABS.map((tab) => (
+                                            <button
+                                                key={tab}
+                                                onClick={() => setSelectedSubjectTab(tab)}
+                                                className={`px-5 py-2.5 rounded-full font-bold text-sm whitespace-nowrap transition-all duration-300 ${selectedSubjectTab === tab
+                                                        ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-lg scale-105'
+                                                        : 'bg-zinc-100/50 dark:bg-white/5 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-white/10 hover:scale-105 backdrop-blur-sm'
+                                                    }`}
+                                            >
+                                                {tab}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
                                 {/* Search Bar */}
                                 <div className="relative mb-8 group">
                                     <div className="absolute inset-0 bg-blue-500/5 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -700,7 +948,7 @@ const ContentModule: React.FC = () => {
                         <div className='flex items-center justify-between mb-6'>
                             <button
                                 onClick={() => setSelectedSubject(null)}
-                                className="flex items-center gap-2 text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors font-medium px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 w-fit"
+                                className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors font-medium px-4 py-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-transparent hover:border-white/10 backdrop-blur-md w-fit"
                             >
                                 <ArrowLeft size={18} />
                                 Voltar para Matérias
@@ -709,17 +957,24 @@ const ContentModule: React.FC = () => {
                             <div className='flex gap-2 items-center'>
                                 <button
                                     onClick={() => setIsCreateFolderModalOpen(true)}
-                                    className="px-4 py-2 rounded-xl font-bold text-sm text-zinc-500 hover:bg-zinc-100 dark:hover:bg-white/5 transition-all flex items-center gap-2"
+                                    className="px-4 py-2 rounded-xl font-bold text-sm text-zinc-400 hover:text-white bg-white/[0.05] hover:bg-white/10 border border-transparent hover:border-white/10 backdrop-blur-md transition-all flex items-center gap-2"
                                 >
                                     <Plus size={16} />
                                     Nova Pasta
                                 </button>
                                 <button
                                     onClick={() => setIsManualModalOpen(true)}
-                                    className="px-4 py-2 rounded-xl font-bold text-sm text-zinc-500 hover:bg-zinc-100 dark:hover:bg-white/5 transition-all flex items-center gap-2"
+                                    className="px-4 py-2 rounded-xl font-bold text-sm text-zinc-400 hover:text-white bg-white/[0.05] hover:bg-white/10 border border-transparent hover:border-white/10 backdrop-blur-md transition-all flex items-center gap-2"
                                 >
                                     <FilePlus size={16} />
                                     Novo Conteúdo
+                                </button>
+                                <button
+                                    onClick={() => setIsCustomGenModalOpen(true)}
+                                    className="px-4 py-2 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:scale-105 transition-all flex items-center gap-2 shadow-lg shadow-indigo-500/20 backdrop-blur-md border border-white/20"
+                                >
+                                    <Sparkles size={16} />
+                                    Geração IA
                                 </button>
                                 <button
                                     onClick={() => setIsSelectionMode(!isSelectionMode)}
@@ -749,7 +1004,7 @@ const ContentModule: React.FC = () => {
                                     <button
                                         disabled={isGenerating}
                                         onClick={() => fileInputRef.current?.click()}
-                                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/20"
+                                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-500 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/20 backdrop-blur-md border border-white/20"
                                     >
                                         {isGenerating ? <Loader2 className="animate-spin" size={18} /> : <Upload size={18} />}
                                         {isGenerating ? "Processando..." : "Carregar PDF"}
@@ -787,6 +1042,127 @@ const ContentModule: React.FC = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Custom Gen Modal */}
+            {isCustomGenModalOpen && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-2xl w-full max-w-2xl p-6 shadow-2xl flex flex-col max-h-[90vh]"
+                    >
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-xl font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+                                <Sparkles className="text-purple-500" />
+                                Geração Personalizada com IA
+                            </h2>
+                            <button
+                                onClick={() => setIsCustomGenModalOpen(false)}
+                                className="p-2 hover:bg-zinc-100 dark:hover:bg-white/5 rounded-full"
+                            >
+                                <X size={20} className="text-zinc-500" />
+                            </button>
+                        </div>
+
+                        <div className="overflow-y-auto flex-1 pr-2">
+                            <div className="mb-6">
+                                <label className="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-2">
+                                    Prompt / Instruções para a IA
+                                </label>
+                                <textarea
+                                    className="w-full bg-zinc-50 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-xl px-4 py-3 min-h-[100px] outline-none focus:ring-2 focus:ring-purple-500/50 resize-y"
+                                    placeholder="Ex: Foque apenas nas datas históricas e seus eventos. Ignore introduções longas. Crie perguntas de revisão difíceis."
+                                    value={customPrompt}
+                                    onChange={e => setCustomPrompt(e.target.value)}
+                                />
+                                <p className="text-xs text-zinc-400 mt-2">
+                                    Dê instruções específicas sobre o que você quer extrair ou como quer formatar o conteúdo.
+                                </p>
+                            </div>
+
+                            <div className="mb-6">
+                                <label className="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-2">
+                                    Selecionar PDFs (Máx 200MB por arquivo)
+                                </label>
+
+                                <div
+                                    onClick={() => customFileInputRef.current?.click()}
+                                    className="border-2 border-dashed border-zinc-200 dark:border-white/10 rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer hover:bg-zinc-50 dark:hover:bg-white/5 transition-colors group"
+                                >
+                                    <Upload size={32} className="text-zinc-300 dark:text-zinc-600 group-hover:text-purple-500 transition-colors mb-3" />
+                                    <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400 text-center">
+                                        Clique para adicionar arquivos PDF
+                                    </p>
+                                    <p className="text-xs text-zinc-400 mt-1">
+                                        Suporta múltiplos arquivos
+                                    </p>
+                                </div>
+                                <input
+                                    type="file"
+                                    ref={customFileInputRef}
+                                    multiple
+                                    accept=".pdf"
+                                    className="hidden"
+                                    onChange={handleFileSelect}
+                                />
+                            </div>
+
+                            {selectedFiles.length > 0 && (
+                                <div className="space-y-2 mb-6">
+                                    <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Arquivos Selecionados ({selectedFiles.length})</h4>
+                                    {selectedFiles.map((file, index) => (
+                                        <div key={index} className="flex items-center justify-between bg-zinc-50 dark:bg-white/5 px-4 py-3 rounded-xl border border-zinc-100 dark:border-white/5">
+                                            <div className="flex items-center gap-3 truncate">
+                                                <div className="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-500/20 text-red-500 flex items-center justify-center shrink-0">
+                                                    <span className="text-[10px] font-bold">PDF</span>
+                                                </div>
+                                                <div className="truncate">
+                                                    <p className="text-sm font-medium text-zinc-700 dark:text-zinc-200 truncate max-w-[200px] sm:max-w-xs">
+                                                        {file.name}
+                                                    </p>
+                                                    <p className="text-xs text-zinc-400">
+                                                        {(file.size / 1024 / 1024).toFixed(2)} MB
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <button
+                                                onClick={() => removeFile(index)}
+                                                className="p-2 text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {extractionProgress && (
+                                <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-500/10 rounded-xl border border-blue-100 dark:border-blue-500/20 flex items-center gap-3">
+                                    <Loader2 className="animate-spin text-blue-500" size={20} />
+                                    <p className="text-sm font-bold text-blue-600 dark:text-blue-400">
+                                        {extractionProgress}
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="pt-4 border-t border-zinc-100 dark:border-white/5 flex justify-end gap-3 mt-4">
+                            <button
+                                onClick={() => setIsCustomGenModalOpen(false)}
+                                className="px-5 py-2.5 text-sm font-bold text-zinc-500 hover:text-white transition-colors"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-bold text-sm hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-purple-500/25 flex items-center gap-2 backdrop-blur-md border border-white/20"
+                            >
+                                {isGenerating ? <Loader2 className="animate-spin" size={16} /> : <Sparkles size={16} />}
+                                {isGenerating ? "Processando..." : "Gerar Conteúdo"}
+                            </button>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
 
             {/* Create Subject Modal */}
             {isCreateModalOpen && (

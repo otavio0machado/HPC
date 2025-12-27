@@ -82,13 +82,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <div className="flex gap-3">
                     <button
                         onClick={onCreateFolder}
-                        className="bg-[var(--glass-bg)] hover:bg-white/10 text-zinc-300 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider border border-[var(--border-glass)] flex items-center gap-2 transition-colors active:scale-95"
+                        className="bg-white/[0.05] hover:bg-white/10 text-zinc-300 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider border border-white/10 backdrop-blur-md flex items-center gap-2 transition-colors active:scale-95"
                     >
                         <FolderPlus size={16} /> Nova Pasta
                     </button>
                     <button
                         onClick={onCreateCard}
-                        className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider shadow-lg shadow-blue-900/20 flex items-center gap-2 transition-colors active:scale-95"
+                        className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider shadow-lg shadow-blue-900/20 flex items-center gap-2 transition-colors active:scale-95 backdrop-blur-md border border-white/20"
                     >
                         <Plus size={16} /> Novo Card
                     </button>
@@ -108,7 +108,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                             <button
                                 onClick={() => onStartSession()}
                                 disabled={totalDue === 0}
-                                className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3.5 rounded-xl font-bold text-sm shadow-lg shadow-blue-900/20 flex items-center justify-center gap-2 transition-all active:scale-95"
+                                className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3.5 rounded-xl font-bold text-sm shadow-lg shadow-blue-900/20 flex items-center justify-center gap-2 transition-all active:scale-95 backdrop-blur-md border border-white/20"
                             >
                                 <Play fill="currentColor" size={14} /> Iniciar Revisão Global
                             </button>
@@ -223,7 +223,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     <div className="bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-t-3xl p-4 border-b-0 flex items-center gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide backdrop-blur-xl">
                         <button
                             onClick={() => setCurrentPath([])}
-                            className={`p-2 rounded-lg text-zinc-400 hover:bg-white/10 hover:text-white transition-colors ${currentPath.length === 0 ? 'text-white bg-white/10 shadow-sm' : ''}`}
+                            className={`p-2 rounded-lg text-zinc-400 hover:bg-white/10 hover:text-white transition-colors border border-transparent hover:border-white/10 ${currentPath.length === 0 ? 'text-white bg-white/10 shadow-sm backdrop-blur-sm border-white/10' : ''}`}
                         >
                             <Folder size={14} />
                         </button>
@@ -321,7 +321,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                                 onClick={() => {
                                     onStartSession(currentPath[0]);
                                 }}
-                                className="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 hover:text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 border border-white/5 hover:border-white/10 shadow-lg"
+                                className="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 hover:text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 border border-white/5 hover:border-white/10 shadow-lg backdrop-blur-md"
                             >
                                 <Play size={12} fill="currentColor" /> Estudar "{currentPath.length > 0 ? currentPath[currentPath.length - 1] : 'Tudo'}"
                             </button>
