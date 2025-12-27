@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Sparkles } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
 
 interface NavbarProps {
   onLoginClick: () => void;
@@ -28,7 +29,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLoginClick, isLoggedIn }) => {
   return (
     <nav className={`fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-6xl z-50 transition-all duration-500 rounded-full px-6 
       ${isScrolled
-        ? 'py-3 bg-white/[0.03] backdrop-blur-xl border border-white/[0.1] shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] ring-1 ring-white/[0.05] inset bg-gradient-to-br from-white/[0.1] to-white/[0.02]'
+        ? 'py-3 bg-white/80 dark:bg-white/[0.03] backdrop-blur-xl border border-black/5 dark:border-white/[0.1] shadow-[0_8px_32px_0_rgba(0,0,0,0.1)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] ring-1 ring-black/5 dark:ring-white/[0.05] inset bg-gradient-to-br from-white/90 to-white/80 dark:from-white/[0.1] dark:to-white/[0.02]'
         : 'py-4 bg-transparent border-transparent'
       }`}>
       <div className="flex items-center justify-between">
@@ -38,11 +39,11 @@ const Navbar: React.FC<NavbarProps> = ({ onLoginClick, isLoggedIn }) => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-900/40">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/30 dark:shadow-blue-900/40">
             <span className="font-black italic text-white text-sm">H</span>
           </div>
-          <span className="text-xl font-bold tracking-tight text-white hover:text-blue-400 transition-colors duration-300 cursor-pointer">
-            HPC<span className="text-blue-500 text-2xl leading-none">.</span>
+          <span className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 cursor-pointer">
+            HPC<span className="text-blue-600 dark:text-blue-500 text-2xl leading-none">.</span>
           </span>
         </motion.div>
 
@@ -54,22 +55,25 @@ const Navbar: React.FC<NavbarProps> = ({ onLoginClick, isLoggedIn }) => {
                 key={link.name}
                 href={link.href}
                 whileHover={{ scale: 1.05, y: -2 }}
-                className="text-sm font-medium text-zinc-300 hover:text-white transition-all duration-300 relative group"
+                className="text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:text-blue-600 dark:hover:text-white transition-all duration-300 relative group"
               >
                 {link.name}
-                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-blue-500 rounded-full group-hover:w-full transition-all duration-300 ease-out opacity-0 group-hover:opacity-100" />
+                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-blue-600 dark:bg-blue-500 rounded-full group-hover:w-full transition-all duration-300 ease-out opacity-0 group-hover:opacity-100" />
               </motion.a>
             ))}
+
+            {/* Theme Toggle */}
+            <ThemeToggle />
 
             {/* Enhanced CTA Button */}
             <motion.button
               onClick={onLoginClick}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-6 py-2.5 rounded-full bg-white/[0.05] hover:bg-white/[0.1] text-white border border-white/[0.1] backdrop-blur-md text-sm font-bold shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:scale-[1.02] hover:shadow-[0_8px_40px_rgba(255,255,255,0.1)] transition-all duration-300 ease-out flex items-center gap-2 group ring-1 ring-white/[0.05] inset"
+              className="px-6 py-2.5 rounded-full bg-zinc-900/5 dark:bg-white/[0.05] hover:bg-zinc-900/10 dark:hover:bg-white/[0.1] text-zinc-900 dark:text-white border border-black/5 dark:border-white/[0.1] backdrop-blur-md text-sm font-bold shadow-[0_4px_20px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:scale-[1.02] hover:shadow-[0_8px_40px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_8px_40px_rgba(255,255,255,0.1)] transition-all duration-300 ease-out flex items-center gap-2 group ring-1 ring-black/5 dark:ring-white/[0.05] inset"
             >
               <span>{isLoggedIn ? 'Dashboard' : 'Entrar'}</span>
-              <div className="w-5 h-5 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center group-hover:rotate-45 transition-transform duration-500">
+              <div className="w-5 h-5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 flex items-center justify-center group-hover:rotate-45 transition-transform duration-500">
                 <Sparkles size={10} className="text-white" />
               </div>
             </motion.button>

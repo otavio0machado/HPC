@@ -61,10 +61,10 @@ const DashboardWidgets: React.FC<DashboardWidgetsProps> = ({
             {/* Welcome Section & Quick Action */}
             <div className="flex flex-col md:flex-row justify-between items-end gap-6 pb-2">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight text-white mb-2">
-                        {getGreeting()}, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">{currentUser.name.split(' ')[0]}</span>.
+                    <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white mb-2">
+                        {getGreeting()}, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-500">{currentUser.name.split(' ')[0]}</span>.
                     </h2>
-                    <p className="text-zinc-400">Pronto para superar seus limites hoje?</p>
+                    <p className="text-zinc-500 dark:text-zinc-400">Pronto para superar seus limites hoje?</p>
                 </div>
                 <div>
                     <button
@@ -113,27 +113,27 @@ const DashboardWidgets: React.FC<DashboardWidgetsProps> = ({
                 </div>
 
                 {/* Focus of the Day / Tasks */}
-                <div className="md:col-span-3 lg:col-span-1 row-span-2 bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--border-glass)] rounded-3xl p-6 flex flex-col relative overflow-hidden group hover:border-white/20 transition-all duration-500">
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="md:col-span-3 lg:col-span-1 row-span-2 bg-white/60 dark:bg-zinc-900/30 backdrop-blur-xl border border-black/5 dark:border-white/5 rounded-3xl p-6 flex flex-col relative overflow-hidden group hover:border-black/10 dark:hover:border-white/10 transition-all duration-500">
+                    <div className="absolute inset-0 bg-gradient-to-br from-black/5 to-transparent dark:from-white/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                     <div className="flex justify-between items-center mb-6 relative z-10">
                         <div className="flex items-center gap-3">
-                            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400">
+                            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
                                 <LayoutList size={20} />
                             </div>
-                            <h3 className="font-bold text-white text-lg">Daily Targets</h3>
+                            <h3 className="font-bold text-zinc-800 dark:text-white text-lg">Daily Targets</h3>
                         </div>
-                        <button onClick={() => changeTab('Planner')} className="text-zinc-500 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-full">
+                        <button onClick={() => changeTab('Planner')} className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors p-2 hover:bg-black/5 dark:hover:bg-white/10 rounded-full">
                             <ArrowRight size={16} />
                         </button>
                     </div>
 
                     <div className="flex-1 overflow-y-auto custom-scrollbar space-y-3 relative z-10 pr-2">
                         {dailyTasks.length === 0 ? (
-                            <div className="h-full flex flex-col items-center justify-center text-zinc-500 text-sm text-center p-4 border-2 border-dashed border-white/5 rounded-2xl">
+                            <div className="h-full flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 text-sm text-center p-4 border-2 border-dashed border-zinc-200 dark:border-white/5 rounded-2xl">
                                 <Target size={24} className="mb-2 opacity-50" />
                                 <p>Sem tarefas prioritárias.</p>
-                                <button onClick={() => changeTab('Planner')} className="text-emerald-400 mt-2 hover:underline font-medium text-xs">Definir Metas</button>
+                                <button onClick={() => changeTab('Planner')} className="text-emerald-500 dark:text-emerald-400 mt-2 hover:underline font-medium text-xs">Definir Metas</button>
                             </div>
                         ) : (
                             dailyTasks.map(task => (
@@ -143,17 +143,17 @@ const DashboardWidgets: React.FC<DashboardWidgetsProps> = ({
                                     whileTap={{ scale: 0.98 }}
                                     onClick={() => toggleTaskWidget(task.id)}
                                     className={`
-                                        flex items-start gap-4 p-4 rounded-xl cursor-pointer border transition-all duration-300
+                                        flex items-start gap-4 p-4 rounded-xl cursor-pointer transition-all duration-300
                                         ${task.completed
                                             ? 'bg-emerald-500/5 border-emerald-500/20'
-                                            : 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10'
+                                            : 'bg-zinc-50 dark:bg-white/5 border-black/5 dark:border-white/5 hover:bg-zinc-100 dark:hover:bg-white/10 hover:border-black/10 dark:hover:border-white/10'
                                         }
                                     `}
                                 >
-                                    <div className={`mt-0.5 transition-colors ${task.completed ? 'text-emerald-500' : 'text-zinc-500'}`}>
+                                    <div className={`mt-0.5 transition-colors ${task.completed ? 'text-emerald-500' : 'text-zinc-400 dark:text-zinc-500'}`}>
                                         {task.completed ? <CheckCircle2 size={18} className="drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]" /> : <Circle size={18} />}
                                     </div>
-                                    <span className={`text-sm font-medium transition-all ${task.completed ? 'text-zinc-500 line-through' : 'text-zinc-200'}`}>
+                                    <span className={`text-sm font-medium transition-all ${task.completed ? 'text-zinc-400 dark:text-zinc-500 line-through' : 'text-zinc-700 dark:text-zinc-200'}`}>
                                         {task.title}
                                     </span>
                                 </motion.div>
@@ -173,14 +173,14 @@ const DashboardWidgets: React.FC<DashboardWidgetsProps> = ({
                         bgImage="radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.15), transparent 70%)"
                     >
                         {lastTutorMessage ? (
-                            <div className="mt-auto bg-white/5 rounded-xl p-4 border border-white/5 backdrop-blur-sm relative overflow-hidden">
+                            <div className="mt-auto bg-white/40 dark:bg-white/5 rounded-xl p-4 border border-black/5 dark:border-white/5 backdrop-blur-sm relative overflow-hidden">
                                 <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500" />
-                                <p className="text-zinc-400 text-sm line-clamp-2 italic relative z-10">"{lastTutorMessage.message}"</p>
+                                <p className="text-zinc-600 dark:text-zinc-400 text-sm line-clamp-2 italic relative z-10">"{lastTutorMessage.message}"</p>
                             </div>
                         ) : (
                             <div className="mt-auto">
                                 <p className="text-zinc-500 text-sm">Nenhuma conversa ativa.</p>
-                                <p className="text-blue-400 text-xs mt-1">Inicie uma sessão para tirar dúvidas.</p>
+                                <p className="text-blue-600 dark:text-blue-400 text-xs mt-1">Inicie uma sessão para tirar dúvidas.</p>
                             </div>
                         )}
                     </BentoCard>
@@ -198,11 +198,11 @@ const DashboardWidgets: React.FC<DashboardWidgetsProps> = ({
                         <div className="mt-auto flex items-end gap-2">
                             {dueFlashcardsCount > 0 ? (
                                 <>
-                                    <span className="text-4xl font-black text-white tracking-tighter">{dueFlashcardsCount}</span>
-                                    <span className="text-amber-500 font-bold text-sm mb-1.5 animate-pulse">pendentes</span>
+                                    <span className="text-4xl font-black text-zinc-900 dark:text-white tracking-tighter">{dueFlashcardsCount}</span>
+                                    <span className="text-amber-600 dark:text-amber-500 font-bold text-sm mb-1.5 animate-pulse">pendentes</span>
                                 </>
                             ) : (
-                                <span className="text-zinc-400 font-medium text-sm">Tudo revisado! 🎉</span>
+                                <span className="text-zinc-500 dark:text-zinc-400 font-medium text-sm">Tudo revisado! 🎉</span>
                             )}
                         </div>
                     </BentoCard>
@@ -219,7 +219,7 @@ const DashboardWidgets: React.FC<DashboardWidgetsProps> = ({
                         actionText="Novo Simulado"
                     >
                         <div className="mt-auto">
-                            <span className="text-3xl font-black text-white tracking-tighter">
+                            <span className="text-3xl font-black text-zinc-900 dark:text-white tracking-tighter">
                                 {latestSimulado ? `${calculateSimuladoPercentage(latestSimulado)}%` : '-'}
                             </span>
                             <span className="text-zinc-500 text-xs block mt-1">Média Global: 78%</span>
@@ -275,7 +275,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ icon: Icon, gradient, label, va
     return (
         <div className={`
             relative overflow-hidden rounded-3xl p-6 h-full flex flex-col justify-between group
-            bg-[var(--glass-bg)] border border-[var(--border-glass)] hover:border-white/10 transition-all duration-500
+            bg-white/60 dark:bg-zinc-900/30 border border-black/5 dark:border-white/5 hover:border-black/10 dark:hover:border-white/10 transition-all duration-500
         `}>
             {/* Background Gradient Blob */}
             <div className={`absolute -right-10 -top-10 w-32 h-32 bg-gradient-to-br ${gradient} rounded-full blur-[60px] opacity-20 group-hover:opacity-30 transition-opacity duration-500`} />
@@ -285,19 +285,19 @@ const MetricCard: React.FC<MetricCardProps> = ({ icon: Icon, gradient, label, va
                     <Icon size={variant === 'default' ? 24 : 20} />
                 </div>
                 {trend && (
-                    <span className="text-xs font-bold text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full border border-emerald-400/20">
+                    <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-400/10 px-2 py-1 rounded-full border border-emerald-200 dark:border-emerald-400/20">
                         {trend}
                     </span>
                 )}
             </div>
 
             <div className="relative z-10 mt-4">
-                <h3 className="text-zinc-400 text-xs font-bold uppercase tracking-widest mb-1">{label}</h3>
+                <h3 className="text-zinc-500 dark:text-zinc-400 text-xs font-bold uppercase tracking-widest mb-1">{label}</h3>
                 <div className="flex items-baseline gap-2">
-                    <span className={`${variant === 'default' ? 'text-4xl' : 'text-3xl'} font-black text-white tracking-tighter`}>
+                    <span className={`${variant === 'default' ? 'text-4xl' : 'text-3xl'} font-black text-zinc-900 dark:text-white tracking-tighter`}>
                         {value}
                     </span>
-                    {subValue && <span className="text-zinc-500 text-sm font-medium">{subValue}</span>}
+                    {subValue && <span className="text-zinc-400 dark:text-zinc-500 text-sm font-medium">{subValue}</span>}
                 </div>
             </div>
         </div>
@@ -321,7 +321,7 @@ const BentoCard: React.FC<BentoCardProps> = ({ title, icon: Icon, gradient, onCl
             onClick={onClick}
             className={`
                 relative overflow-hidden rounded-3xl p-6 h-full group cursor-pointer
-                bg-[var(--glass-bg)] border border-[var(--border-glass)] hover:border-white/20 transition-all duration-500
+                bg-white/60 dark:bg-zinc-900/30 border border-black/5 dark:border-white/5 hover:border-black/10 dark:hover:border-white/10 transition-all duration-500
                 flex flex-col
             `}
             style={{ backgroundImage: bgImage }}
@@ -331,13 +331,13 @@ const BentoCard: React.FC<BentoCardProps> = ({ title, icon: Icon, gradient, onCl
 
             <div className="flex items-center justify-between mb-4 relative z-10">
                 <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-xl bg-white/5 text-zinc-300 group-hover:text-white group-hover:bg-gradient-to-br ${gradient} transition-all duration-300`}>
+                    <div className={`p-2 rounded-xl bg-black/5 dark:bg-white/5 text-zinc-600 dark:text-zinc-300 group-hover:text-white group-hover:bg-gradient-to-br ${gradient} transition-all duration-300`}>
                         <Icon size={20} />
                     </div>
-                    <h3 className="font-bold text-zinc-200 group-hover:text-white transition-colors">{title}</h3>
+                    <h3 className="font-bold text-zinc-800 dark:text-zinc-200 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">{title}</h3>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center -mr-2 opacity-0 group-hover:opacity-100 group-hover:mr-0 transition-all duration-300">
-                    <ArrowRight size={14} className="text-white" />
+                <div className="w-8 h-8 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center -mr-2 opacity-0 group-hover:opacity-100 group-hover:mr-0 transition-all duration-300">
+                    <ArrowRight size={14} className="text-zinc-600 dark:text-white" />
                 </div>
             </div>
 

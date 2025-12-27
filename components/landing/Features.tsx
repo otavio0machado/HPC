@@ -1,70 +1,79 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Target, Zap, Users, BarChart3, Brain, Layers } from 'lucide-react';
+import { Target, Zap, Users, BarChart3, Brain, Layers, Cpu, Fingerprint, Activity } from 'lucide-react';
 
 const params = {
     features: [
         {
-            icon: <Target className="w-6 h-6" />,
-            title: "Direcionamento Estratégico",
-            description: "Análise de dados de mais de 10 anos de provas para focar apenas no que realmente cai."
+            icon: <Fingerprint className="w-6 h-6" />,
+            title: "DNA da Aprovação",
+            description: "Algoritmos de IA que identificam seus furos de conhecimento em tempo real e criam o caminho mais curto até a vaga."
         },
         {
             icon: <Brain className="w-6 h-6" />,
-            title: "Retenção Ativa",
-            description: "Flashcards e repetição espaçada integrados para garantir que você não esqueça o que estudou."
+            title: "Deep Memory (SRS 2.0)",
+            description: "Sistema de repetição espaçada de nível militar que garante a retenção de 95% do conteúdo para o dia da prova."
         },
         {
-            icon: <BarChart3 className="w-6 h-6" />,
-            title: "Métricas de Evolução",
-            description: "Dashboards detalhados com sua performance por matéria, assunto e competência."
+            icon: <Activity className="w-6 h-6" />,
+            title: "Performance Monitor",
+            description: "Visualize sua evolução cerebral com gráficos de precisão e tempo de resposta, como um atleta de elite."
         },
         {
             icon: <Zap className="w-6 h-6" />,
-            title: "Velocidade de Resolução",
-            description: "Treine para resolver questões mais rápido com nosso cronômetro inteligente e simulados."
+            title: "Modo Flow Instantâneo",
+            description: "Interface desenhada sob princípios de neurodesign para eliminar distrações e dobrar seu foco em segundos."
         },
         {
-            icon: <Users className="w-6 h-6" />,
-            title: "Comunidade de Elite",
-            description: "Networking com outros estudantes de alta performance para troca de experiências."
+            icon: <Cpu className="w-6 h-6" />,
+            title: "Banco Cognitivo",
+            description: "Milhares de questões categorizadas por carga cognitiva, facilitando a subida de nível degrau por degrau."
         },
         {
             icon: <Layers className="w-6 h-6" />,
-            title: "Material Organizado",
-            description: "Tudo que você precisa em um só lugar, sem perder tempo procurando conteúdo."
+            title: "HPC Connect",
+            description: "Sincronização total. Seus estudos, notas e progresso disponíveis em qualquer dispositivo, instantaneamente."
         }
     ]
 };
 
 const Features: React.FC = () => {
     return (
-        <section id="features" className="py-24 bg-zinc-950 relative overflow-hidden">
-            <div className="absolute inset-0 bg-blue-900/5 -z-10" />
+        <section id="features" className="py-32 bg-zinc-950 relative overflow-hidden">
+            {/* Background elements */}
+            <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-600/5 rounded-full blur-[100px] -z-10" />
+            <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-emerald-600/5 rounded-full blur-[100px] -z-10" />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center mb-20">
+                <div className="text-center mb-24">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        className="inline-block px-4 py-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-xs font-black uppercase tracking-widest mb-6"
+                    >
+                        Módulos de Alta Performance
+                    </motion.div>
                     <motion.h2
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="text-3xl md:text-5xl font-bold text-white mb-6"
+                        className="text-4xl md:text-6xl font-black text-white mb-8 tracking-tighter"
                     >
-                        Tecnologia a favor da sua <br />
-                        <span className="text-blue-500">Aprovação</span>
+                        SUA MENTE EM <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">OUTRO NÍVEL</span>
                     </motion.h2>
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: 0.2 }}
-                        className="text-zinc-400 max-w-2xl mx-auto"
+                        className="text-zinc-400 max-w-2xl mx-auto text-lg md:text-xl font-medium"
                     >
-                        Substituímos o "estudar muito" pelo "estudar certo". Conheça as ferramentas que vão acelerar seus resultados.
+                        Ferramentas projetadas com biohacking e engenharia de dados para transformar seu aprendizado em uma vantagem competitiva desleal.
                     </motion.p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                     {params.features.map((feature, idx) => (
                         <motion.div
                             key={idx}
@@ -72,15 +81,23 @@ const Features: React.FC = () => {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: idx * 0.1 }}
-                            className="group p-8 rounded-3xl bg-zinc-900/50 border border-zinc-800 hover:border-blue-500/50 hover:bg-zinc-900 transition-all hover:-translate-y-1"
+                            className="group relative p-8 rounded-[32px] bg-zinc-900/50 border border-white/5 hover:border-blue-500/30 transition-all duration-500 hover:-translate-y-2 overflow-hidden"
                         >
-                            <div className="w-12 h-12 rounded-2xl bg-zinc-800 flex items-center justify-center text-zinc-300 mb-6 group-hover:bg-blue-500 group-hover:text-white transition-colors shadow-lg shadow-black/20">
-                                {feature.icon}
+                            {/* Card Glow */}
+                            <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                            <div className="relative z-10">
+                                <div className="w-14 h-14 rounded-2xl bg-zinc-800 border border-white/5 flex items-center justify-center text-blue-400 mb-8 group-hover:bg-blue-600 group-hover:text-white group-hover:scale-110 transition-all duration-500 shadow-xl shadow-black/40">
+                                    {feature.icon}
+                                </div>
+                                <h3 className="text-2xl font-black text-white mb-4 tracking-tight group-hover:text-blue-400 transition-colors">{feature.title}</h3>
+                                <p className="text-zinc-400 leading-relaxed font-medium text-sm md:text-base group-hover:text-zinc-300 transition-colors">
+                                    {feature.description}
+                                </p>
                             </div>
-                            <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
-                            <p className="text-zinc-400 leading-relaxed text-sm">
-                                {feature.description}
-                            </p>
+
+                            {/* Decorative Corner */}
+                            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                         </motion.div>
                     ))}
                 </div>

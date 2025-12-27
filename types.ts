@@ -18,6 +18,7 @@ export interface User {
   email: string;
   password?: string; // Optional because we might verify separately
   subscription_tier?: 'free' | 'pro';
+  photo_url?: string;
 }
 
 export enum ExamType {

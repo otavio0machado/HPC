@@ -54,8 +54,9 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
         const zodError = err as z.ZodError<any>;
         const fieldErrors: { [key: string]: string } = {};
         zodError.errors.forEach((error: any) => {
-          if (error.path[0]) {
-            fieldErrors[error.path[0] as string] = error.message;
+          const fieldName = error.path[0];
+          if (typeof fieldName === 'string') {
+            fieldErrors[fieldName] = error.message;
           }
         });
         setErrors(fieldErrors);
@@ -209,16 +210,16 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
         </button>
       </div>
 
-      <div className="w-full max-w-md bg-zinc-900/80 border border-zinc-800 p-8 rounded-2xl shadow-2xl backdrop-blur-xl relative overflow-hidden group">
+      <div className="w-full max-w-md bg-white/80 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 p-8 rounded-2xl shadow-2xl backdrop-blur-xl relative overflow-hidden group">
 
         {/* Decorative glow */}
-        <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-600/20 rounded-full blur-[50px] group-hover:bg-blue-600/30 transition-all duration-700"></div>
+        <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-500/20 dark:bg-blue-600/20 rounded-full blur-[50px] group-hover:bg-blue-500/30 dark:group-hover:bg-blue-600/30 transition-all duration-700"></div>
 
         <div className="relative z-10">
-          <h2 className="text-3xl font-bold text-white mb-2">
+          <h2 className="text-3xl font-bold text-zinc-900 dark:text-white mb-2">
             {isRegister ? 'Junte-se ao Club' : 'Bem-vindo de volta'}
           </h2>
-          <p className="text-zinc-400 mb-8">
+          <p className="text-zinc-600 dark:text-zinc-400 mb-8">
             {isRegister ? 'Inicie sua jornada para a aprovação.' : 'Acesse seu painel de alta performance.'}
           </p>
 
@@ -280,7 +281,7 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
                       setName(e.target.value);
                       if (errors.name) setErrors({ ...errors, name: '' });
                     }}
-                    className={`w-full bg-zinc-950 border ${errors.name ? 'border-red-500' : 'border-zinc-800'} rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-blue-500 transition-colors`}
+                    className={`w-full bg-zinc-50 dark:bg-zinc-950 border ${errors.name ? 'border-red-500' : 'border-zinc-200 dark:border-zinc-800'} rounded-lg py-2.5 pl-10 pr-4 text-zinc-900 dark:text-white focus:outline-none focus:border-blue-500 transition-colors`}
                     placeholder="Seu nome"
                   />
                 </div>
@@ -299,7 +300,7 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
                     setEmail(e.target.value);
                     if (errors.email) setErrors({ ...errors, email: '' });
                   }}
-                  className={`w-full bg-zinc-950 border ${errors.email ? 'border-red-500' : 'border-zinc-800'} rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-blue-500 transition-colors`}
+                  className={`w-full bg-zinc-50 dark:bg-zinc-950 border ${errors.email ? 'border-red-500' : 'border-zinc-200 dark:border-zinc-800'} rounded-lg py-2.5 pl-10 pr-4 text-zinc-900 dark:text-white focus:outline-none focus:border-blue-500 transition-colors`}
                   placeholder="seu@email.com"
                 />
               </div>
@@ -317,7 +318,7 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
                     setPassword(e.target.value);
                     if (errors.password) setErrors({ ...errors, password: '' });
                   }}
-                  className={`w-full bg-zinc-950 border ${errors.password ? 'border-red-500' : 'border-zinc-800'} rounded-lg py-2.5 pl-10 pr-12 text-white focus:outline-none focus:border-blue-500 transition-colors`}
+                  className={`w-full bg-zinc-50 dark:bg-zinc-950 border ${errors.password ? 'border-red-500' : 'border-zinc-200 dark:border-zinc-800'} rounded-lg py-2.5 pl-10 pr-12 text-zinc-900 dark:text-white focus:outline-none focus:border-blue-500 transition-colors`}
                   placeholder="••••••••"
                 />
                 <button
@@ -334,7 +335,7 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-zinc-200 disabled:opacity-70 disabled:cursor-not-allowed transition-all transform hover:scale-[1.02] active:scale-[0.98] mt-6 flex items-center justify-center gap-2 group-btn"
+              className="w-full bg-zinc-900 dark:bg-white text-white dark:text-black font-bold py-3 rounded-lg hover:bg-zinc-800 dark:hover:bg-zinc-200 disabled:opacity-70 disabled:cursor-not-allowed transition-all transform hover:scale-[1.02] active:scale-[0.98] mt-6 flex items-center justify-center gap-2 group-btn"
             >
               {isLoading ? (
                 <Loader2 size={20} className="animate-spin" />

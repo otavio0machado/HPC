@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion, Reorder } from 'framer-motion';
-import { Menu, X, Clock, Loader2, ChevronRight, User, Settings as SettingsIcon, LogOut, Lock, LayoutDashboard, Calendar, BookOpen, GraduationCap, AlertOctagon, Zap, FileText, ChevronDown, Search, GripVertical } from 'lucide-react';
+import { Menu, X, Clock, Loader2, ChevronRight, User, Settings as SettingsIcon, LogOut, Lock, LayoutDashboard, Calendar, BookOpen, GraduationCap, AlertOctagon, Zap, FileText, ChevronDown, Search, GripVertical, Sparkles } from 'lucide-react';
 import { useDragControls } from 'framer-motion';
 import { toast } from 'sonner';
 
@@ -15,7 +15,9 @@ import Profile from './Profile';
 import Settings from './Settings';
 import NotesModule from './notes/NotesModule';
 import Library from './library/Library';
+
 import UpgradeModal from './UpgradeModal';
+import ContentModule from './content/ContentModule';
 import { DashboardSkeleton } from './SkeletonLoader';
 
 // Services & Types
@@ -33,6 +35,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         { id: "Dashboard", label: "Início", icon: <LayoutDashboard size={20} /> },
         { id: "Planner", label: "Planner", icon: <Calendar size={20} /> },
         { id: "Notas", label: "Notas", icon: <FileText size={20} /> },
+        { id: "Conteúdos", label: "Conteúdos", icon: <Sparkles size={20} /> },
         { id: "Biblioteca", label: "Biblioteca", icon: <BookOpen size={20} /> },
         { id: "Tutores", label: "Tutores", icon: <GraduationCap size={20} /> },
         { id: "Lista de Erros", label: "Erros", icon: <AlertOctagon size={20} /> },
@@ -247,7 +250,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
     const changeTab = (tab: string) => {
         if (!currentUser) return;
-        const restricted = ['Notas', 'Biblioteca', 'Tutores', 'Lista de Erros', 'Flashcards', 'Simulados'];
+        const restricted = ['Notas', 'Biblioteca', 'Tutores', 'Lista de Erros', 'Flashcards', 'Simulados', 'Conteúdos'];
         const isPro = currentUser.subscription_tier === 'pro';
 
         if (restricted.includes(tab) && !isPro) {
@@ -265,7 +268,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                 type: "spring",
                 stiffness: 400,
                 damping: 10
-            }
+            } as any
         },
         tap: { scale: 0.95 }
     };
@@ -278,14 +281,14 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                 <div className={`
                     relative w-full flex items-center gap-2 px-4 py-3.5 rounded-2xl text-sm font-medium transition-all duration-300 group
                     ${isActive
-                        ? 'text-white font-bold shadow-[0_4px_20px_rgba(0,0,0,0.2)]'
-                        : 'text-zinc-400 hover:text-white'
+                        ? 'text-blue-600 dark:text-white font-bold shadow-[0_4px_20px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.2)]'
+                        : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
                     }
                 `}>
                     {/* Drag Handle */}
                     <div
                         onPointerDown={(e) => controls.start(e)}
-                        className="cursor-grab active:cursor-grabbing p-1 text-zinc-600 hover:text-zinc-400 opacity-0 group-hover:opacity-100 transition-opacity z-20"
+                        className="cursor-grab active:cursor-grabbing p-1 text-zinc-400 dark:text-zinc-600 hover:text-zinc-600 dark:hover:text-zinc-400 opacity-0 group-hover:opacity-100 transition-opacity z-20"
                     >
                         <GripVertical size={14} />
                     </div>
@@ -299,20 +302,20 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                         <div className={`
                             absolute inset-0 rounded-2xl transition-all duration-300 pointer-events-none
                             ${isActive
-                                ? 'bg-gradient-to-r from-blue-600/90 to-indigo-600/90 backdrop-blur-md border border-white/10'
-                                : 'bg-transparent hover:bg-white/5'
+                                ? 'bg-white dark:bg-gradient-to-r dark:from-blue-600/90 dark:to-indigo-600/90 backdrop-blur-md border border-black/5 dark:border-white/10'
+                                : 'bg-transparent hover:bg-black/5 dark:hover:bg-white/5'
                             }
                         `} />
 
                         {/* Active Glow */}
                         {isActive && (
-                            <div className="absolute inset-0 bg-blue-500/20 rounded-2xl blur-xl pointer-events-none" />
+                            <div className="absolute inset-0 bg-blue-500/10 dark:bg-blue-500/20 rounded-2xl blur-xl pointer-events-none" />
                         )}
 
                         <span className="relative z-10">{item.icon}</span>
                         <span className="relative z-10 flex-1">{item.label}</span>
 
-                        {isLocked && <Lock size={12} className="relative z-10 text-white/30" />}
+                        {isLocked && <Lock size={12} className="relative z-10 text-zinc-400 dark:text-white/30" />}
                     </button>
                 </div>
             </Reorder.Item>
@@ -332,12 +335,13 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     }
 
     return (
-        <div className="flex h-screen overflow-hidden bg-transparent text-white font-sans selection:bg-blue-500/30">
+        <div className="flex h-screen overflow-hidden bg-transparent text-zinc-900 dark:text-white font-sans selection:bg-blue-500/30">
 
             {/* --- MACOS TAHOE LIQUID GLASS SIDEBAR --- */}
             {/* Floating, decoupled sidebar with deep blur */}
-            <aside className="fixed left-4 top-4 bottom-4 w-72 rounded-[32px] bg-white/5 backdrop-blur-3xl border border-white/10 z-50 flex flex-col justify-between p-6 shadow-[0_0_40px_rgba(0,0,0,0.5)]">
+            <aside className="fixed left-4 top-4 bottom-4 w-72 rounded-[32px] bg-white/80 dark:bg-white/5 backdrop-blur-3xl border border-black/5 dark:border-white/10 z-50 flex flex-col justify-between p-6 shadow-[0_4px_30px_rgba(0,0,0,0.1)] dark:shadow-[0_0_40px_rgba(0,0,0,0.5)]">
 
+                {/* Logo & Gradient Orb */}
                 {/* Logo & Gradient Orb */}
                 <div className="flex items-center gap-3 mb-10 px-2 group">
                     <div className="relative">
@@ -347,18 +351,18 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                         <div className="absolute inset-0 bg-white/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     </div>
                     <div>
-                        <h1 className="text-xl font-bold tracking-tight text-white/90">HPC<span className="text-blue-400">.</span></h1>
-                        <p className="text-[10px] text-white/40 uppercase tracking-widest font-medium">Club Member</p>
+                        <h1 className="text-xl font-bold tracking-tight text-zinc-800 dark:text-white/90">HPC<span className="text-blue-500 dark:text-blue-400">.</span></h1>
+                        <p className="text-[10px] text-zinc-500 dark:text-white/40 uppercase tracking-widest font-medium">Club Member</p>
                     </div>
                 </div>
 
                 {/* Global Search - Floating Bubble */}
                 <div className="mb-6 relative group px-2">
-                    <div className="absolute inset-0 bg-white/5 rounded-2xl blur-md shadow-inner opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <div className="relative flex items-center gap-3 bg-black/20 hover:bg-black/40 border border-white/5 hover:border-white/10 rounded-2xl px-4 py-3 transition-all cursor-pointer group-active:scale-95">
-                        <Search size={18} className="text-white/40 group-hover:text-white/80 transition-colors" />
-                        <span className="text-sm text-white/40 font-medium group-hover:text-white/70">Buscar...</span>
-                        <span className="ml-auto text-xs bg-white/10 text-white/30 px-1.5 py-0.5 rounded border border-white/5 font-mono">⌘K</span>
+                    <div className="absolute inset-0 bg-black/5 dark:bg-white/5 rounded-2xl blur-md shadow-inner opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="relative flex items-center gap-3 bg-zinc-100 dark:bg-black/20 hover:bg-zinc-200 dark:hover:bg-black/40 border border-black/5 dark:border-white/5 hover:border-black/10 dark:hover:border-white/10 rounded-2xl px-4 py-3 transition-all cursor-pointer group-active:scale-95">
+                        <Search size={18} className="text-zinc-500 dark:text-white/40 group-hover:text-zinc-800 dark:group-hover:text-white/80 transition-colors" />
+                        <span className="text-sm text-zinc-500 dark:text-white/40 font-medium group-hover:text-zinc-800 dark:group-hover:text-white/70">Buscar...</span>
+                        <span className="ml-auto text-xs bg-black/5 dark:bg-white/10 text-zinc-500 dark:text-white/30 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5 font-mono">⌘K</span>
                     </div>
                 </div>
 
@@ -366,7 +370,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                 <Reorder.Group axis="y" values={tabs} onReorder={setTabs} className="flex-1 space-y-2 overflow-y-auto custom-scrollbar px-2 -mx-2 list-none">
                     {tabs.map((item) => {
                         const isActive = activeTab === item.id;
-                        const isLocked = ['Notas', 'Biblioteca', 'Tutores', 'Lista de Erros', 'Flashcards', 'Simulados'].includes(item.id) && currentUser.subscription_tier !== 'pro';
+                        const isLocked = ['Notas', 'Biblioteca', 'Tutores', 'Lista de Erros', 'Flashcards', 'Simulados', 'Conteúdos'].includes(item.id) && currentUser.subscription_tier !== 'pro';
 
                         return (
                             <DraggableNavItem
@@ -380,64 +384,117 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                     })}
                 </Reorder.Group>
 
-                {/* User Bubble - Floating Glass */}
-                <div className="pt-4 mt-2 px-2">
-                    <motion.button
-                        onClick={() => setUserMenuOpen(!userMenuOpen)}
-                        variants={jellyVariant}
-                        whileHover="hover"
-                        whileTap="tap"
-                        className="w-full relative group"
+                {/* User Profile Section */}
+                <div className="pt-4 mt-auto px-2 relative" ref={userMenuRef}>
+                    <AnimatePresence>
+                        {userMenuOpen && (
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.95, y: 10, filter: 'blur(10px)' }}
+                                animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
+                                exit={{ opacity: 0, scale: 0.95, y: 10, filter: 'blur(10px)' }}
+                                onClick={(e) => e.stopPropagation()}
+                                className="absolute bottom-full left-0 right-0 mb-4 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-3xl border border-black/10 dark:border-white/10 rounded-[28px] shadow-[0_20px_50px_rgba(0,0,0,0.3)] dark:shadow-[0_0_50px_rgba(0,0,0,0.7)] p-2 z-[100] origin-bottom overflow-hidden"
+                            >
+                                <div className="px-4 py-2 border-b border-black/5 dark:border-white/5 mb-1">
+                                    <p className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">Sua Conta</p>
+                                </div>
+
+                                <button
+                                    onClick={() => { changeTab('Perfil'); setUserMenuOpen(false); }}
+                                    className="w-full flex items-center gap-3 px-3 py-3 text-sm text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/10 rounded-2xl transition-all duration-200 font-semibold group/item"
+                                >
+                                    <div className="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center group-hover/item:scale-110 group-hover/item:bg-blue-500 group-hover/item:text-white transition-all shadow-sm">
+                                        <User size={18} />
+                                    </div>
+                                    <div className="text-left">
+                                        <p className="font-bold">Meu Perfil</p>
+                                        <p className="text-[10px] opacity-50 font-medium">Ver detalhes da conta</p>
+                                    </div>
+                                </button>
+
+                                <button
+                                    onClick={() => { changeTab('Configurações'); setUserMenuOpen(false); }}
+                                    className="w-full flex items-center gap-3 px-3 py-3 text-sm text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/10 rounded-2xl transition-all duration-200 font-semibold group/item"
+                                >
+                                    <div className="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center group-hover/item:scale-110 group-hover/item:bg-indigo-500 group-hover/item:text-white transition-all shadow-sm">
+                                        <SettingsIcon size={18} />
+                                    </div>
+                                    <div className="text-left">
+                                        <p className="font-bold">Configurações</p>
+                                        <p className="text-[10px] opacity-50 font-medium">Preferências do sistema</p>
+                                    </div>
+                                </button>
+
+                                <div className="h-px bg-zinc-200 dark:bg-white/5 my-1.5 mx-2" />
+
+                                <button
+                                    onClick={(e) => { e.stopPropagation(); onLogout(); }}
+                                    className="w-full flex items-center gap-3 px-3 py-3 text-sm text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-200 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-2xl transition-all duration-200 font-semibold group/item"
+                                >
+                                    <div className="w-9 h-9 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center group-hover/item:scale-110 group-hover/item:bg-red-500 group-hover/item:text-white transition-all shadow-sm">
+                                        <LogOut size={18} />
+                                    </div>
+                                    <span className="font-bold">Sair do App</span>
+                                </button>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    <div
+                        className={`
+                            relative w-full flex items-center gap-3 p-2 rounded-[28px] border transition-all duration-500 backdrop-blur-md z-[60] overflow-hidden
+                            ${userMenuOpen
+                                ? 'bg-zinc-200/50 dark:bg-zinc-800/80 border-black/10 dark:border-white/20 shadow-lg scale-[0.98]'
+                                : 'bg-white/40 dark:bg-white/5 border-black/5 dark:border-white/10 hover:bg-white/60 dark:hover:bg-white/10 hover:border-black/10 dark:hover:border-white/20 hover:shadow-xl'}
+                        `}
                     >
-                        <div className={`
-                    flex items-center gap-3 p-3 rounded-[20px] border transition-all duration-300
-                    ${userMenuOpen ? 'bg-zinc-800/80 border-white/20' : 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10'}
-                `}>
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-zinc-700 to-zinc-600 flex items-center justify-center overflow-hidden border border-white/10 shadow-inner">
+                        {/* Interactive Zone: Profile */}
+                        <button
+                            onClick={() => changeTab('Perfil')}
+                            className="flex-1 flex items-center gap-3 p-1 rounded-2xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors group/profile"
+                        >
+                            {/* Avatar Squircle */}
+                            <div className="w-11 h-11 rounded-[16px] bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-800 dark:to-zinc-900 flex items-center justify-center overflow-hidden border border-black/5 dark:border-white/10 shadow-inner relative group-hover/profile:scale-105 transition-transform duration-300">
                                 {currentUser.photo_url ? (
                                     <img src={currentUser.photo_url} alt={currentUser.name} className="w-full h-full object-cover" />
                                 ) : (
-                                    <span className="font-bold text-sm text-white">{currentUser.name.substring(0, 2).toUpperCase()}</span>
+                                    <span className="font-bold text-sm text-zinc-700 dark:text-zinc-200">{currentUser.name.substring(0, 2).toUpperCase()}</span>
                                 )}
+                                <div className="absolute inset-0 bg-white/10 opacity-0 group-hover/profile:opacity-100 transition-opacity" />
                             </div>
+
+                            {/* Info */}
                             <div className="text-left flex-1 min-w-0">
-                                <p className="text-sm font-bold text-white truncate">{currentUser.name}</p>
-                                <div className="flex items-center gap-1.5">
-                                    <div className={`w-1.5 h-1.5 rounded-full ${currentUser.subscription_tier === 'pro' ? 'bg-gradient-to-r from-amber-400 to-orange-500 shadow-[0_0_5px_rgba(251,191,36,0.5)]' : 'bg-zinc-500'}`} />
-                                    <p className="text-[10px] text-white/40 truncate font-medium">
-                                        {currentUser.subscription_tier === 'pro' ? 'Pro Account' : 'Free Plan'}
+                                <p className="text-sm font-bold text-zinc-800 dark:text-zinc-100 truncate tracking-tight">{currentUser.name}</p>
+                                <div className="flex items-center gap-1.5 mt-0.5">
+                                    <div className={`w-1.5 h-1.5 rounded-full ${currentUser.subscription_tier === 'pro' ? 'bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.6)] animate-pulse' : 'bg-zinc-400 dark:bg-zinc-600'}`} />
+                                    <p className="text-[10px] text-zinc-500 dark:text-white/40 truncate font-bold uppercase tracking-widest">
+                                        {currentUser.subscription_tier === 'pro' ? 'PRO ACCOUNT' : 'FREE PLAN'}
                                     </p>
                                 </div>
                             </div>
-                            <div className="bg-white/10 p-1.5 rounded-lg text-white/40 group-hover:text-white transition-colors">
-                                <SettingsIcon size={14} />
-                            </div>
-                        </div>
+                        </button>
 
-                        {/* Dropdown Popover */}
-                        <AnimatePresence>
-                            {userMenuOpen && (
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.9, y: 10, x: 20 }}
-                                    animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
-                                    exit={{ opacity: 0, scale: 0.9, y: 10 }}
-                                    className="absolute bottom-full left-0 right-0 mb-4 bg-[#1e1e20]/90 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] p-2 z-50 origin-bottom"
-                                >
-                                    <button onClick={() => { setActiveTab('Perfil'); setUserMenuOpen(false); }} className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-white/10 rounded-xl transition-colors font-medium">
-                                        <User size={16} /> Perfil
-                                    </button>
-                                    <button onClick={() => { setActiveTab('Configurações'); setUserMenuOpen(false); }} className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-white/10 rounded-xl transition-colors font-medium">
-                                        <SettingsIcon size={16} /> Configurações
-                                    </button>
-                                    <div className="h-px bg-white/5 my-1 mx-2" />
-                                    <button onClick={onLogout} className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-xl transition-colors font-medium">
-                                        <LogOut size={16} /> Sair
-                                    </button>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </motion.button>
+                        {/* Interactive Zone: Menu Trigger */}
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setUserMenuOpen(!userMenuOpen);
+                            }}
+                            className={`
+                                w-10 h-10 flex items-center justify-center rounded-[18px] transition-all duration-300
+                                ${userMenuOpen
+                                    ? 'bg-blue-500 text-white shadow-lg rotate-90'
+                                    : 'bg-black/5 dark:bg-white/5 text-zinc-400 dark:text-white/40 hover:bg-black/10 dark:hover:bg-white/10 hover:text-zinc-800 dark:hover:text-white hover:scale-105'}
+                                border border-black/5 dark:border-white/5
+                            `}
+                        >
+                            <SettingsIcon size={18} className={userMenuOpen ? 'animate-spin-slow' : ''} />
+                        </button>
+                    </div>
                 </div>
+
             </aside>
 
             {/* --- BACKGROUND AMBIENCE --- */}
@@ -452,17 +509,17 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
                 {/* Modals Layer */}
                 {isModalOpen && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in duration-300">
-                        <div className="bg-zinc-900 border border-white/10 rounded-3xl p-8 w-full max-w-sm shadow-2xl relative animate-in zoom-in-95 duration-300">
-                            <button onClick={() => setIsModalOpen(false)} className="absolute top-6 right-6 text-zinc-500 hover:text-white transition-colors">
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 dark:bg-black/80 backdrop-blur-md p-4 animate-in fade-in duration-300">
+                        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-3xl p-8 w-full max-w-sm shadow-2xl relative animate-in zoom-in-95 duration-300">
+                            <button onClick={() => setIsModalOpen(false)} className="absolute top-6 right-6 text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors">
                                 <X size={20} />
                             </button>
                             <div className="mb-8 text-center">
-                                <div className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-gradient-to-tr from-blue-600 to-indigo-600 shadow-lg shadow-blue-900/30">
+                                <div className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-gradient-to-tr from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/30 dark:shadow-blue-900/30">
                                     <Clock size={32} className="text-white" />
                                 </div>
-                                <h3 className="text-2xl font-black text-white tracking-tight">Focus Session</h3>
-                                <p className="text-zinc-400 text-sm mt-2">Registre seu tempo de foco.</p>
+                                <h3 className="text-2xl font-black text-zinc-900 dark:text-white tracking-tight">Focus Session</h3>
+                                <p className="text-zinc-500 dark:text-zinc-400 text-sm mt-2">Registre seu tempo de foco.</p>
                             </div>
                             <form onSubmit={handleAddSession}>
                                 <div className="mb-6">
@@ -474,13 +531,13 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                                             autoFocus
                                             value={inputHours}
                                             onChange={(e) => setInputHours(e.target.value)}
-                                            className="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-6 text-center text-3xl font-bold text-white focus:outline-none focus:border-blue-500/50 focus:bg-black/60 transition-all placeholder:text-zinc-800"
+                                            className="w-full bg-zinc-100 dark:bg-black/40 border border-zinc-200 dark:border-white/10 rounded-2xl py-4 px-6 text-center text-3xl font-bold text-zinc-900 dark:text-white focus:outline-none focus:border-blue-500/50 focus:bg-white dark:focus:bg-black/60 transition-all placeholder:text-zinc-400 dark:placeholder:text-zinc-800"
                                             placeholder="0.0"
                                         />
-                                        <span className="absolute right-6 top-1/2 -translate-y-1/2 font-medium text-zinc-600 text-lg">h</span>
+                                        <span className="absolute right-6 top-1/2 -translate-y-1/2 font-medium text-zinc-400 dark:text-zinc-600 text-lg">h</span>
                                     </div>
                                 </div>
-                                <button type="submit" className="w-full font-bold py-4 rounded-xl transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg bg-white text-black hover:bg-zinc-200">
+                                <button type="submit" className="w-full font-bold py-4 rounded-xl transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg bg-zinc-900 dark:bg-white text-white dark:text-black hover:bg-zinc-800 dark:hover:bg-zinc-200">
                                     Confirmar Sessão
                                 </button>
                             </form>
@@ -509,7 +566,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                                     dailyTasks={dailyTasks}
                                     toggleTaskWidget={toggleTaskWidget}
                                     changeTab={(tab) => {
-                                        const isLocked = ['Notas', 'Biblioteca', 'Tutores', 'Lista de Erros', 'Flashcards', 'Simulados'].includes(tab) && currentUser.subscription_tier !== 'pro';
+                                        const isLocked = ['Notas', 'Biblioteca', 'Tutores', 'Lista de Erros', 'Flashcards', 'Simulados', 'Conteúdos'].includes(tab) && currentUser.subscription_tier !== 'pro';
                                         if (isLocked) { setShowUpgradeModal(true); return; }
                                         setActiveTab(tab);
                                     }}
@@ -524,6 +581,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
                             {activeTab === "Planner" && <TaskPlanner />}
                             {activeTab === "Notas" && <NotesModule />}
+                            {activeTab === "Conteúdos" && <ContentModule />}
                             {activeTab === "Biblioteca" && <Library userId={currentUser.id} />}
                             {activeTab === "Tutores" && <Tutors />}
                             {activeTab === "Lista de Erros" && <ErrorList />}
@@ -535,7 +593,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                     </AnimatePresence>
                 </div>
             </main>
-        </div>
+        </div >
     );
 };
 
