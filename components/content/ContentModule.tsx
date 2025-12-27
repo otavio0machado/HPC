@@ -783,19 +783,33 @@ const ContentModule: React.FC = () => {
                         <div className="h-4 w-[1px] bg-white/20 dark:bg-black/20" />
                         <button
                             onClick={() => setIsMoveModalOpen(true)}
-                            className="flex items-center gap-2 text-sm font-bold hover:text-blue-400 dark:hover:text-blue-600 transition-colors"
+                            className="px-4 py-2 rounded-xl backdrop-blur-md transition-all duration-300
+                                bg-white/[0.1] dark:bg-white/[0.05] hover:bg-white/[0.15] dark:hover:bg-white/[0.1]
+                                border border-white/[0.2] dark:border-white/[0.1] hover:border-white/[0.3] dark:hover:border-white/[0.2]
+                                shadow-lg hover:shadow-xl
+                                ring-1 ring-white/[0.1]
+                                text-sm font-bold hover:scale-[1.02] active:scale-95"
                         >
                             Mover para Pasta
                         </button>
                         <button
                             onClick={handleBulkDelete}
-                            className="flex items-center gap-2 text-sm font-bold text-red-400 dark:text-red-600 hover:text-red-300 transition-colors"
+                            className="px-4 py-2 rounded-xl backdrop-blur-md transition-all duration-300
+                                bg-red-500/10 hover:bg-red-500/20
+                                border border-red-500/20 hover:border-red-500/40
+                                text-red-400 hover:text-red-300
+                                shadow-lg shadow-red-500/10 hover:shadow-red-500/20
+                                ring-1 ring-red-500/10
+                                text-sm font-bold hover:scale-[1.02] active:scale-95"
                         >
                             Apagar
                         </button>
                         <button
                             onClick={() => { setIsSelectionMode(false); setSelectedPills(new Set()); }}
-                            className="ml-2 p-1 hover:bg-white/10 dark:hover:bg-black/10 rounded-full"
+                            className="ml-2 p-2 rounded-xl backdrop-blur-sm transition-all duration-200
+                                bg-transparent hover:bg-white/[0.1] dark:hover:bg-white/[0.1]
+                                border border-transparent hover:border-white/[0.2]
+                                hover:scale-110 active:scale-90"
                         >
                             X
                         </button>
@@ -823,13 +837,21 @@ const ContentModule: React.FC = () => {
                         <div className="flex justify-end gap-2">
                             <button
                                 onClick={() => setIsMoveModalOpen(false)}
-                                className="px-4 py-2 text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
+                                className="px-4 py-2 rounded-xl backdrop-blur-sm transition-all duration-300
+                                    bg-transparent hover:bg-black/5 dark:hover:bg-white/5
+                                    border border-transparent hover:border-black/10 dark:hover:border-white/10
+                                    text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
                             >
                                 Cancelar
                             </button>
                             <button
                                 onClick={handleBulkMove}
-                                className="px-4 py-2 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-700"
+                                className="px-4 py-2 rounded-xl backdrop-blur-md transition-all duration-300
+                                    bg-gradient-to-r from-blue-600 to-indigo-600 text-white
+                                    border border-white/20 shadow-lg shadow-blue-500/30
+                                    hover:shadow-blue-500/50
+                                    ring-1 ring-white/10
+                                    font-bold text-sm hover:scale-[1.02] active:scale-95"
                             >
                                 Mover
                             </button>
@@ -854,7 +876,12 @@ const ContentModule: React.FC = () => {
                 {!selectedSubject && (
                     <button
                         onClick={() => setIsCreateModalOpen(true)}
-                        className="hidden sm:flex items-center gap-2 px-4 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-xl font-bold hover:scale-105 transition-transform"
+                        className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl backdrop-blur-md transition-all duration-300
+                            bg-gradient-to-r from-blue-600 to-indigo-600 text-white
+                            border border-white/20 shadow-lg shadow-blue-500/30
+                            hover:shadow-blue-500/50
+                            ring-1 ring-white/10
+                            font-bold hover:scale-105 active:scale-95"
                     >
                         <Plus size={18} />
                         Nova Matéria
@@ -884,9 +911,10 @@ const ContentModule: React.FC = () => {
                                             <button
                                                 key={tab}
                                                 onClick={() => setSelectedSubjectTab(tab)}
-                                                className={`px-5 py-2.5 rounded-full font-bold text-sm whitespace-nowrap transition-all duration-300 ${selectedSubjectTab === tab
-                                                        ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-lg scale-105'
-                                                        : 'bg-zinc-100/50 dark:bg-white/5 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-white/10 hover:scale-105 backdrop-blur-sm'
+                                                className={`px-5 py-2.5 rounded-full font-bold text-sm whitespace-nowrap transition-all duration-300
+                                                    ${selectedSubjectTab === tab
+                                                        ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30 scale-105 backdrop-blur-md border border-white/20 ring-1 ring-white/10'
+                                                        : 'bg-zinc-100/50 dark:bg-white/5 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-white/10 hover:scale-105 backdrop-blur-sm border border-transparent hover:border-black/10 dark:hover:border-white/10'
                                                     }`}
                                             >
                                                 {tab}
@@ -1318,14 +1346,23 @@ const ContentModule: React.FC = () => {
                                 <button
                                     type="button"
                                     onClick={() => setIsManualModalOpen(false)}
-                                    className="px-4 py-2 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
+                                    className="px-4 py-2 rounded-xl backdrop-blur-sm transition-all duration-300
+                                        bg-transparent hover:bg-black/5 dark:hover:bg-white/5
+                                        border border-transparent hover:border-black/10 dark:hover:border-white/10
+                                        text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
                                 >
                                     Cancelar
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={!manualTitle.trim() || !manualContent.trim() || isCreating}
-                                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl disabled:opacity-50 flex items-center gap-2"
+                                    className="px-4 py-2 rounded-xl backdrop-blur-md transition-all duration-300
+                                        bg-gradient-to-r from-blue-600 to-indigo-600 text-white
+                                        border border-white/20 shadow-lg shadow-blue-500/30
+                                        hover:shadow-blue-500/50 hover:scale-[1.02] active:scale-95
+                                        ring-1 ring-white/10
+                                        text-sm font-bold disabled:opacity-50 disabled:hover:scale-100
+                                        flex items-center gap-2"
                                 >
                                     {isCreating && <Loader2 className="animate-spin" size={14} />}
                                     Criar Conteúdo
