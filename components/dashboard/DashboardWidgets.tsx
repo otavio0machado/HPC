@@ -192,99 +192,99 @@ const DashboardWidgets: React.FC<DashboardWidgetsProps> = ({
                             ))
                         )}
                     </div>
-            </div>
+                </motion.div>
 
-            {/* Tutor IA - Large Card */}
-            <div className="md:col-span-2 lg:col-span-2 row-span-1">
-                <BentoCard
-                    title="Tutor IA"
-                    icon={MessageSquare}
-                    gradient="from-blue-600 to-cyan-500"
-                    onClick={() => changeTab('Tutores')}
-                    actionText="Continuar Estudo"
-                    bgImage="radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.15), transparent 70%)"
-                >
-                    {lastTutorMessage ? (
-                        <div className="mt-auto bg-white/[0.05] dark:bg-white/[0.03] backdrop-blur-md rounded-xl p-4 border border-white/[0.08] relative overflow-hidden shadow-lg ring-1 ring-white/[0.03]">
-                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
-                            <p className="text-zinc-600 dark:text-zinc-400 text-sm line-clamp-2 italic relative z-10">"{lastTutorMessage.message}"</p>
-                        </div>
-                    ) : (
-                        <div className="mt-auto">
-                            <p className="text-zinc-500 text-sm">Nenhuma conversa ativa.</p>
-                            <p className="text-blue-600 dark:text-blue-400 text-xs mt-1">Inicie uma sessão para tirar dúvidas.</p>
-                        </div>
-                    )}
-                </BentoCard>
-            </div>
-
-            {/* Stats Grid - Remaining Space */}
-            <div className="md:col-span-1 lg:col-span-1 row-span-1">
-                <BentoCard
-                    title="Flashcards"
-                    icon={Zap}
-                    gradient="from-yellow-400 to-amber-600"
-                    onClick={() => changeTab('Flashcards')}
-                    actionText={dueFlashcardsCount > 0 ? "Revisar Agora" : "Ver Baralhos"}
-                >
-                    <div className="mt-auto flex items-end gap-2">
-                        {dueFlashcardsCount > 0 ? (
-                            <>
-                                <span className="text-4xl font-black text-zinc-900 dark:text-white tracking-tighter">{dueFlashcardsCount}</span>
-                                <span className="text-amber-600 dark:text-amber-500 font-bold text-sm mb-1.5 animate-pulse">pendentes</span>
-                            </>
+                {/* Tutor IA - Large Card */}
+                <div className="md:col-span-2 lg:col-span-2 row-span-1">
+                    <BentoCard
+                        title="Tutor IA"
+                        icon={MessageSquare}
+                        gradient="from-blue-600 to-cyan-500"
+                        onClick={() => changeTab('Tutores')}
+                        actionText="Continuar Estudo"
+                        bgImage="radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.15), transparent 70%)"
+                    >
+                        {lastTutorMessage ? (
+                            <div className="mt-auto bg-white/[0.05] dark:bg-white/[0.03] backdrop-blur-md rounded-xl p-4 border border-white/[0.08] relative overflow-hidden shadow-lg ring-1 ring-white/[0.03]">
+                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
+                                <p className="text-zinc-600 dark:text-zinc-400 text-sm line-clamp-2 italic relative z-10">"{lastTutorMessage.message}"</p>
+                            </div>
                         ) : (
-                            <span className="text-zinc-500 dark:text-zinc-400 font-medium text-sm">Tudo revisado! 🎉</span>
+                            <div className="mt-auto">
+                                <p className="text-zinc-500 text-sm">Nenhuma conversa ativa.</p>
+                                <p className="text-blue-600 dark:text-blue-400 text-xs mt-1">Inicie uma sessão para tirar dúvidas.</p>
+                            </div>
                         )}
-                    </div>
-                </BentoCard>
-            </div>
+                    </BentoCard>
+                </div>
 
-
-            {/* Simulados & Errors */}
-            <div className="md:col-span-1 lg:col-span-1 row-span-1">
-                <BentoCard
-                    title="Simulados"
-                    icon={Activity}
-                    gradient="from-emerald-500 to-teal-500"
-                    onClick={() => changeTab('Simulados')}
-                    actionText="Novo Simulado"
-                >
-                    <div className="mt-auto">
-                        <span className="text-3xl font-black text-zinc-900 dark:text-white tracking-tighter">
-                            {latestSimulado ? `${calculateSimuladoPercentage(latestSimulado)}%` : '-'}
-                        </span>
-                        <span className="text-zinc-500 text-xs block mt-1">Média Global: 78%</span>
-                    </div>
-                </BentoCard>
-            </div>
-
-            {/* Compact Error List */}
-            <div className="md:col-span-2 lg:col-span-2 row-span-1">
-                <BentoCard
-                    title="Central de Erros"
-                    icon={AlertTriangle}
-                    gradient="from-red-500 to-rose-600"
-                    onClick={() => changeTab('Lista de Erros')}
-                    actionText="Analisar Falhas"
-                    horizontal={true}
-                >
-                    {recentErrors.length > 0 ? (
-                        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide mt-2">
-                            {recentErrors.slice(0, 3).map(err => (
-                                <div key={err.id} className="flex-shrink-0 bg-white/5 border border-white/5 rounded-lg px-3 py-2 text-xs text-zinc-300 flex items-center gap-2 hover:bg-white/10 transition-colors">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
-                                    <span className="max-w-[120px] truncate">{err.subject}</span>
-                                </div>
-                            ))}
+                {/* Stats Grid - Remaining Space */}
+                <div className="md:col-span-1 lg:col-span-1 row-span-1">
+                    <BentoCard
+                        title="Flashcards"
+                        icon={Zap}
+                        gradient="from-yellow-400 to-amber-600"
+                        onClick={() => changeTab('Flashcards')}
+                        actionText={dueFlashcardsCount > 0 ? "Revisar Agora" : "Ver Baralhos"}
+                    >
+                        <div className="mt-auto flex items-end gap-2">
+                            {dueFlashcardsCount > 0 ? (
+                                <>
+                                    <span className="text-4xl font-black text-zinc-900 dark:text-white tracking-tighter">{dueFlashcardsCount}</span>
+                                    <span className="text-amber-600 dark:text-amber-500 font-bold text-sm mb-1.5 animate-pulse">pendentes</span>
+                                </>
+                            ) : (
+                                <span className="text-zinc-500 dark:text-zinc-400 font-medium text-sm">Tudo revisado! 🎉</span>
+                            )}
                         </div>
-                    ) : (
-                        <p className="text-zinc-500 text-xs mt-2">Nenhum erro recente registrado.</p>
-                    )}
-                </BentoCard>
-            </div>
+                    </BentoCard>
+                </div>
 
-        </div>
+
+                {/* Simulados & Errors */}
+                <div className="md:col-span-1 lg:col-span-1 row-span-1">
+                    <BentoCard
+                        title="Simulados"
+                        icon={Activity}
+                        gradient="from-emerald-500 to-teal-500"
+                        onClick={() => changeTab('Simulados')}
+                        actionText="Novo Simulado"
+                    >
+                        <div className="mt-auto">
+                            <span className="text-3xl font-black text-zinc-900 dark:text-white tracking-tighter">
+                                {latestSimulado ? `${calculateSimuladoPercentage(latestSimulado)}%` : '-'}
+                            </span>
+                            <span className="text-zinc-500 text-xs block mt-1">Média Global: 78%</span>
+                        </div>
+                    </BentoCard>
+                </div>
+
+                {/* Compact Error List */}
+                <div className="md:col-span-2 lg:col-span-2 row-span-1">
+                    <BentoCard
+                        title="Central de Erros"
+                        icon={AlertTriangle}
+                        gradient="from-red-500 to-rose-600"
+                        onClick={() => changeTab('Lista de Erros')}
+                        actionText="Analisar Falhas"
+                        horizontal={true}
+                    >
+                        {recentErrors.length > 0 ? (
+                            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide mt-2">
+                                {recentErrors.slice(0, 3).map(err => (
+                                    <div key={err.id} className="flex-shrink-0 bg-white/5 border border-white/5 rounded-lg px-3 py-2 text-xs text-zinc-300 flex items-center gap-2 hover:bg-white/10 transition-colors">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                                        <span className="max-w-[120px] truncate">{err.subject}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="text-zinc-500 text-xs mt-2">Nenhum erro recente registrado.</p>
+                        )}
+                    </BentoCard>
+                </div>
+
+            </div>
         </div >
     );
 };
@@ -352,7 +352,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ icon: Icon, gradient, label, va
                     {subValue && <span className="text-zinc-400 dark:text-zinc-500 text-sm font-medium">{subValue}</span>}
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 };
 
