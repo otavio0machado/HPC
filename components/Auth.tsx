@@ -253,14 +253,17 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
                   toast.error("Erro inesperado com Google.");
                 }
               }}
-              className="w-full font-medium py-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 mb-4
-                bg-white dark:bg-white/90 text-black
-                backdrop-blur-md border border-black/[0.08] hover:border-black/[0.12]
+              className="w-full font-medium py-3 rounded-xl transition-all duration-300 
+                flex items-center justify-center gap-2 mb-4
+                bg-white/95 dark:bg-white/90 backdrop-blur-md text-black
+                border border-black/[0.08] hover:border-black/[0.12]
                 shadow-lg shadow-black/5 hover:shadow-black/10
                 ring-1 ring-black/[0.03]
-                hover:scale-[1.02] active:scale-95"
+                hover:scale-[1.02] active:scale-95
+                relative overflow-hidden group"
             >
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <div className="absolute inset-0 bg-gradient-to-r from-black/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <svg className="w-5 h-5 relative z-10" viewBox="0 0 24 24">
                 <path
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                   fill="#4285F4"
@@ -278,7 +281,7 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
                   fill="#EA4335"
                 />
               </svg>
-              Continuar com Google
+              <span className="relative z-10">Continuar com Google</span>
             </button>
 
             <div className="relative flex items-center justify-center mb-6">

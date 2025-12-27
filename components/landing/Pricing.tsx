@@ -80,10 +80,19 @@ const Pricing: React.FC = () => {
                         <motion.button
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
-                            className="w-full py-6 px-8 rounded-2xl bg-white text-black font-black text-xl flex items-center justify-center gap-3 shadow-[0_20px_40px_rgba(255,255,255,0.2)] hover:shadow-[0_25px_50px_rgba(255,255,255,0.3)] transition-all duration-300"
+                            className="w-full py-6 px-8 rounded-2xl font-black text-xl 
+                                flex items-center justify-center gap-3 
+                                bg-white/95 backdrop-blur-md text-black
+                                border border-white/30 
+                                shadow-[0_20px_40px_rgba(255,255,255,0.2)] 
+                                hover:shadow-[0_25px_50px_rgba(255,255,255,0.3)]
+                                ring-1 ring-white/20
+                                transition-all duration-300
+                                relative overflow-hidden group"
                         >
-                            <Zap className="fill-blue-600 text-blue-600" />
-                            GARANTIR MINHA VAGA AGORA
+                            <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            <Zap className="fill-blue-600 text-blue-600 relative z-10" />
+                            <span className="relative z-10">GARANTIR MINHA VAGA AGORA</span>
                         </motion.button>
 
                         <div className="mt-8 flex items-center justify-center gap-6 text-zinc-500">

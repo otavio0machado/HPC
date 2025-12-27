@@ -511,7 +511,14 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                 {isModalOpen && (
                     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 dark:bg-black/80 backdrop-blur-md p-4 animate-in fade-in duration-300">
                         <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-3xl p-8 w-full max-w-sm shadow-2xl relative animate-in zoom-in-95 duration-300">
-                            <button onClick={() => setIsModalOpen(false)} className="absolute top-6 right-6 text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors">
+                            <button
+                                onClick={() => setIsModalOpen(false)}
+                                className="absolute top-6 right-6 p-2 rounded-xl backdrop-blur-sm
+                                    bg-transparent hover:bg-black/5 dark:hover:bg-white/10
+                                    border border-transparent hover:border-black/10 dark:hover:border-white/10
+                                    text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white
+                                    transition-all duration-200"
+                            >
                                 <X size={20} />
                             </button>
                             <div className="mb-8 text-center">
@@ -537,7 +544,15 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                                         <span className="absolute right-6 top-1/2 -translate-y-1/2 font-medium text-zinc-400 dark:text-zinc-600 text-lg">h</span>
                                     </div>
                                 </div>
-                                <button type="submit" className="w-full font-bold py-4 rounded-xl transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg bg-zinc-900 dark:bg-white text-white dark:text-black hover:bg-zinc-800 dark:hover:bg-zinc-200">
+                                <button
+                                    type="submit"
+                                    className="w-full font-bold py-4 rounded-xl backdrop-blur-md
+                                        bg-gradient-to-r from-blue-600 to-indigo-600 text-white
+                                        border border-white/20 shadow-lg shadow-blue-500/30
+                                        hover:shadow-blue-500/50 hover:scale-[1.02] active:scale-95
+                                        ring-1 ring-white/10
+                                        transition-all duration-300"
+                                >
                                     Confirmar Sessão
                                 </button>
                             </form>

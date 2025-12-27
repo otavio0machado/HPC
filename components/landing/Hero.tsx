@@ -168,7 +168,16 @@ const Hero: React.FC<HeroProps> = ({ onCtaClick }) => {
 
                         <motion.a
                             href="#pricing"
-                            className="text-zinc-500 hover:text-white font-bold text-lg transition-colors flex items-center gap-2 group"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="px-6 py-3 rounded-xl backdrop-blur-md
+                                bg-white/[0.05] hover:bg-white/[0.1]
+                                border border-white/[0.1] hover:border-white/[0.2]
+                                shadow-lg shadow-black/20 hover:shadow-white/[0.1]
+                                ring-1 ring-white/[0.05]
+                                text-zinc-400 hover:text-white font-bold text-lg
+                                transition-all duration-300
+                                flex items-center gap-2 group"
                         >
                             Ver detalhes do plano
                             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
