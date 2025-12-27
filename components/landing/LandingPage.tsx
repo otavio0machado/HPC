@@ -11,12 +11,14 @@ import Planner from '../Planner';
 
 interface LandingPageProps {
     onLoginClick: () => void;
+    isLoggedIn: boolean;
+    onLogout: () => void;
 }
 
-const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
+const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick, isLoggedIn, onLogout }) => {
     return (
         <div className="min-h-screen bg-zinc-950 flex flex-col selection:bg-blue-500/30">
-            <Navbar onLoginClick={onLoginClick} isLoggedIn={false} />
+            <Navbar onLoginClick={onLoginClick} isLoggedIn={isLoggedIn} onLogout={onLogout} />
 
             <main className="flex-grow">
                 <Hero onCtaClick={onLoginClick} />

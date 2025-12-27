@@ -5,9 +5,10 @@ import { Menu, X, Sparkles } from 'lucide-react';
 interface NavbarProps {
   onLoginClick: () => void;
   isLoggedIn: boolean;
+  onLogout: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ onLoginClick, isLoggedIn }) => {
+const Navbar: React.FC<NavbarProps> = ({ onLoginClick, isLoggedIn, onLogout }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -62,17 +63,28 @@ const Navbar: React.FC<NavbarProps> = ({ onLoginClick, isLoggedIn }) => {
             ))}
 
             {/* Enhanced CTA Button */}
-            <motion.button
-              onClick={onLoginClick}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-6 py-2.5 rounded-full bg-zinc-900/5 dark:bg-white/[0.05] hover:bg-zinc-900/10 dark:hover:bg-white/[0.1] text-zinc-900 dark:text-white border border-black/5 dark:border-white/[0.1] backdrop-blur-md text-sm font-bold shadow-[0_4px_20px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:scale-[1.02] hover:shadow-[0_8px_40px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_8px_40px_rgba(255,255,255,0.1)] transition-all duration-300 ease-out flex items-center gap-2 group ring-1 ring-black/5 dark:ring-white/[0.05] inset"
-            >
-              <span>{isLoggedIn ? 'Dashboard' : 'Entrar'}</span>
-              <div className="w-5 h-5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 flex items-center justify-center group-hover:rotate-45 transition-transform duration-500">
-                <Sparkles size={10} className="text-white" />
-              </div>
-            </motion.button>
+            {isLoggedIn ? (
+              <motion.button
+                onClick={onLogout}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-6 py-2.5 rounded-full bg-zinc-900/5 dark:bg-white/[0.05] hover:bg-zinc-900/10 dark:hover:bg-white/[0.1] text-zinc-900 dark:text-white border border-black/5 dark:border-white/[0.1] backdrop-blur-md text-sm font-bold shadow-[0_4px_20px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:scale-[1.02] hover:shadow-[0_8px_40px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_8px_40px_rgba(255,255,255,0.1)] transition-all duration-300 ease-out flex items-center gap-2 group ring-1 ring-black/5 dark:ring-white/[0.05] inset"
+              >
+                <span>Sair</span>
+              </motion.button>
+            ) : (
+              <motion.button
+                onClick={onLoginClick}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-6 py-2.5 rounded-full bg-zinc-900/5 dark:bg-white/[0.05] hover:bg-zinc-900/10 dark:hover:bg-white/[0.1] text-zinc-900 dark:text-white border border-black/5 dark:border-white/[0.1] backdrop-blur-md text-sm font-bold shadow-[0_4px_20px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:scale-[1.02] hover:shadow-[0_8px_40px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_8px_40px_rgba(255,255,255,0.1)] transition-all duration-300 ease-out flex items-center gap-2 group ring-1 ring-black/5 dark:ring-white/[0.05] inset"
+              >
+                <span>Entrar</span>
+                <div className="w-5 h-5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 flex items-center justify-center group-hover:rotate-45 transition-transform duration-500">
+                  <Sparkles size={10} className="text-white" />
+                </div>
+              </motion.button>
+            )}
           </div>
         </div>
 
@@ -140,11 +152,11 @@ const Navbar: React.FC<NavbarProps> = ({ onLoginClick, isLoggedIn }) => {
                 transition={{ delay: 0.2 }}
                 onClick={() => {
                   setMobileMenuOpen(false);
-                  onLoginClick();
+                  isLoggedIn ? onLogout() : onLoginClick();
                 }}
                 className="w-full mt-4 py-4 rounded-2xl text-base font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 transition-all duration-300 shadow-lg shadow-blue-900/30 flex items-center justify-center gap-2"
               >
-                {isLoggedIn ? 'Ir para Dashboard' : 'Começar Agora'}
+                {isLoggedIn ? 'Sair' : 'Começar Agora'}
                 <Sparkles size={16} className="text-white/70" />
               </motion.button>
             </div>

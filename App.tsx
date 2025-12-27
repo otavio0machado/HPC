@@ -20,6 +20,7 @@ const App: React.FC = () => {
   const [view, setView] = useState<ViewState>('landing');
   const [showTransition, setShowTransition] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // Check for active session on mount
   useEffect(() => {
@@ -27,6 +28,7 @@ const App: React.FC = () => {
       try {
         const user = await authService.getCurrentUser();
         if (user) {
+          setIsLoggedIn(true);
           setView('dashboard');
         }
       } catch (error) {
@@ -42,6 +44,7 @@ const App: React.FC = () => {
     // Check if valid session exists
     const user = await authService.getCurrentUser();
     if (user) {
+      setIsLoggedIn(true);
       setView('dashboard');
     } else {
       setView('auth');
@@ -53,6 +56,7 @@ const App: React.FC = () => {
   };
 
   const handleTransitionComplete = () => {
+    setIsLoggedIn(true);
     setView('dashboard');
     setTimeout(() => {
       setShowTransition(false);
@@ -61,6 +65,7 @@ const App: React.FC = () => {
 
   const handleLogout = async () => {
     await authService.logout();
+    setIsLoggedIn(false);
     setView('landing');
   };
 
@@ -90,7 +95,7 @@ const App: React.FC = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <LandingPage onLoginClick={handleLoginClick} />
+              <LandingPage onLoginClick={handleLoginClick} isLoggedIn={isLoggedIn} onLogout={handleLogout} />
             </motion.div>
           )}
 
