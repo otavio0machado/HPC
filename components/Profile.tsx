@@ -72,7 +72,7 @@ const Profile: React.FC<ProfileProps> = ({ currentUser, onUpdate }) => {
          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Left Column: Avatar & Summary */}
             <div className="md:col-span-1 space-y-6">
-               <div className="bg-white/60 dark:bg-[var(--glass-bg)] border border-black/5 dark:border-[var(--border-glass)] rounded-3xl p-8 flex flex-col items-center text-center relative overflow-hidden backdrop-blur-xl group">
+               <div className="glass-hydro rounded-3xl p-8 flex flex-col items-center text-center relative overflow-hidden group">
                   <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-blue-600/20 to-transparent"></div>
 
                   {/* Decorative blur */}
@@ -113,7 +113,7 @@ const Profile: React.FC<ProfileProps> = ({ currentUser, onUpdate }) => {
                </div>
 
                {/* Subscription Management Card */}
-               <div className="bg-white/60 dark:bg-[var(--glass-bg)] border border-black/5 dark:border-[var(--border-glass)] rounded-3xl p-6 backdrop-blur-xl relative overflow-hidden">
+               <div className="glass-hydro rounded-3xl p-6 relative overflow-hidden">
                   {isPro && <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 blur-[50px] rounded-full pointer-events-none"></div>}
 
                   <h3 className="text-zinc-900 dark:text-white font-bold mb-6 flex items-center gap-2">
@@ -159,7 +159,7 @@ const Profile: React.FC<ProfileProps> = ({ currentUser, onUpdate }) => {
 
             {/* Right Column: Edit Form */}
             <div className="md:col-span-2 space-y-6">
-               <div className="bg-white/60 dark:bg-[var(--glass-bg)] border border-black/5 dark:border-[var(--border-glass)] rounded-3xl p-8 backdrop-blur-xl">
+               <div className="glass-hydro rounded-3xl p-8">
                   <div className="flex justify-between items-center mb-8">
                      <h3 className="text-xl font-bold text-zinc-900 dark:text-white tracking-tight">Dados da Conta</h3>
                      {!isEditing && (

@@ -81,23 +81,23 @@ const Features: React.FC = () => {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: idx * 0.1 }}
-                            className="group relative p-8 rounded-[32px] bg-zinc-900/50 border border-white/5 hover:border-blue-500/30 transition-all duration-500 hover:-translate-y-2 overflow-hidden"
+                            className="group relative p-8 rounded-[32px] glass-hydro overflow-hidden flex flex-col justify-between"
                         >
                             {/* Card Glow */}
                             <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                             <div className="relative z-10">
-                                <div className="w-14 h-14 rounded-2xl bg-zinc-800 border border-white/5 flex items-center justify-center text-blue-400 mb-8 group-hover:bg-blue-600 group-hover:text-white group-hover:scale-110 transition-all duration-500 shadow-xl shadow-black/40">
+                                <div className="w-14 h-14 rounded-2xl bg-zinc-800/50 border border-white/10 flex items-center justify-center text-blue-400 mb-8 group-hover:bg-blue-600 group-hover:text-white group-hover:scale-110 transition-all duration-500 shadow-xl shadow-black/20 backdrop-blur-sm">
                                     {feature.icon}
                                 </div>
-                                <h3 className="text-2xl font-black text-white mb-4 tracking-tight group-hover:text-blue-400 transition-colors">{feature.title}</h3>
+                                <h3 className="text-2xl font-black text-white mb-4 tracking-tight group-hover:text-blue-400 transition-colors drop-shadow-md">{feature.title}</h3>
                                 <p className="text-zinc-400 leading-relaxed font-medium text-sm md:text-base group-hover:text-zinc-300 transition-colors">
                                     {feature.description}
                                 </p>
                             </div>
 
                             {/* Decorative Corner */}
-                            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-transparent blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                         </motion.div>
                     ))}
                 </div>

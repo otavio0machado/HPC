@@ -8,7 +8,7 @@ import rehypeKatex from 'rehype-katex';
 import { Document, Page, pdfjs } from 'react-pdf';
 
 // Configurar o Worker do PDF.js
-pdfjs.GlobalWorkerOptions.workerSrc = `https://esm.sh/pdfjs-dist@4.4.168/build/pdf.worker.min.mjs`;
+pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@4.8.69/build/pdf.worker.min.mjs`;
 
 const Notes: React.FC = () => {
   // --- Global Data ---
@@ -336,12 +336,12 @@ const Notes: React.FC = () => {
   const activePdf = files.find(f => f.id === activePdfId);
 
   return (
-    <div className="relative h-[calc(100vh-140px)] flex border border-zinc-800 rounded-xl overflow-hidden bg-[#1e1e1e] animate-in fade-in zoom-in-95 duration-300 shadow-2xl">
+    <div className="relative h-[calc(100vh-140px)] flex glass-hydro rounded-[32px] overflow-hidden animate-in fade-in zoom-in-95 duration-300 shadow-2xl">
       <input type="file" accept="application/pdf" className="hidden" ref={fileInputRef} onChange={handleUploadPDF} />
 
       {/* --- SIDEBAR --- */}
       {!zenMode && (
-        <div className="w-64 flex flex-col border-r border-zinc-800 bg-[#18181b] z-10 flex-shrink-0">
+        <div className="w-64 flex flex-col border-r border-white/10 bg-black/20 z-10 flex-shrink-0 backdrop-blur-md">
           <div className="p-3 border-b border-zinc-800 flex justify-between items-center">
             <span className="font-bold text-zinc-300 text-sm flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-purple-500"></div> Cofre HPC</span>
             <div className="flex gap-1">
@@ -365,9 +365,9 @@ const Notes: React.FC = () => {
 
         {/* LEFT: MARKDOWN EDITOR */}
         {activeNote ? (
-          <div className={`flex-1 flex flex-col min-w-0 transition-all ${showPdfPane ? 'border-r border-zinc-800' : ''}`}>
+          <div className={`flex-1 flex flex-col min-w-0 transition-all ${showPdfPane ? 'border-r border-white/10' : ''}`}>
             {/* Editor Toolbar */}
-            <div className="h-12 border-b border-zinc-800 flex items-center justify-between px-3 bg-[#1e1e1e] select-none">
+            <div className="h-12 border-b border-white/10 flex items-center justify-between px-3 bg-white/5 select-none">
               <div className="flex items-center gap-3 min-w-0">
                 <button onClick={() => setZenMode(!zenMode)} className="text-zinc-500 hover:text-white flex-shrink-0">{zenMode ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}</button>
                 <span className="text-sm font-medium text-white truncate max-w-[120px] md:max-w-xs">{activeNote.name}</span>
@@ -376,27 +376,27 @@ const Notes: React.FC = () => {
 
               <div className="flex items-center gap-1">
                 {/* Formatting Tools */}
-                <div className="hidden md:flex items-center gap-0.5 bg-zinc-900 rounded p-0.5 border border-zinc-800 mr-2">
-                  <button onClick={() => insertMarkdown('**', '**')} className="p-1.5 hover:bg-zinc-700 rounded text-zinc-400 hover:text-white" title="Negrito (Ctrl+B)"><Bold size={14} /></button>
-                  <button onClick={() => insertMarkdown('*', '*')} className="p-1.5 hover:bg-zinc-700 rounded text-zinc-400 hover:text-white" title="Itálico (Ctrl+I)"><Italic size={14} /></button>
-                  <button onClick={() => insertMarkdown('~~', '~~')} className="p-1.5 hover:bg-zinc-700 rounded text-zinc-400 hover:text-white" title="Taxado"><Strikethrough size={14} /></button>
-                  <div className="w-[1px] h-4 bg-zinc-700 mx-1"></div>
-                  <button onClick={() => insertMarkdown('# ')} className="p-1.5 hover:bg-zinc-700 rounded text-zinc-400 hover:text-white" title="Título 1"><Heading1 size={14} /></button>
-                  <button onClick={() => insertMarkdown('## ')} className="p-1.5 hover:bg-zinc-700 rounded text-zinc-400 hover:text-white" title="Título 2"><Heading2 size={14} /></button>
-                  <div className="w-[1px] h-4 bg-zinc-700 mx-1"></div>
-                  <button onClick={() => insertMarkdown('- ')} className="p-1.5 hover:bg-zinc-700 rounded text-zinc-400 hover:text-white" title="Lista"><List size={14} /></button>
-                  <button onClick={() => insertMarkdown('1. ')} className="p-1.5 hover:bg-zinc-700 rounded text-zinc-400 hover:text-white" title="Lista Numérica"><ListOrdered size={14} /></button>
-                  <button onClick={() => insertMarkdown('- [ ] ')} className="p-1.5 hover:bg-zinc-700 rounded text-zinc-400 hover:text-white" title="Checklist"><CheckSquare size={14} /></button>
-                  <div className="w-[1px] h-4 bg-zinc-700 mx-1"></div>
-                  <button onClick={() => insertMarkdown('> ')} className="p-1.5 hover:bg-zinc-700 rounded text-zinc-400 hover:text-white" title="Citação"><Quote size={14} /></button>
-                  <button onClick={() => insertMarkdown('```\n', '\n```')} className="p-1.5 hover:bg-zinc-700 rounded text-zinc-400 hover:text-white" title="Código"><Code size={14} /></button>
+                <div className="hidden md:flex items-center gap-0.5 bg-black/20 rounded p-0.5 border border-white/5 mr-2">
+                  <button onClick={() => insertMarkdown('**', '**')} className="p-1.5 hover:bg-white/10 rounded text-zinc-400 hover:text-white" title="Negrito (Ctrl+B)"><Bold size={14} /></button>
+                  <button onClick={() => insertMarkdown('*', '*')} className="p-1.5 hover:bg-white/10 rounded text-zinc-400 hover:text-white" title="Itálico (Ctrl+I)"><Italic size={14} /></button>
+                  <button onClick={() => insertMarkdown('~~', '~~')} className="p-1.5 hover:bg-white/10 rounded text-zinc-400 hover:text-white" title="Taxado"><Strikethrough size={14} /></button>
+                  <div className="w-[1px] h-4 bg-white/10 mx-1"></div>
+                  <button onClick={() => insertMarkdown('# ')} className="p-1.5 hover:bg-white/10 rounded text-zinc-400 hover:text-white" title="Título 1"><Heading1 size={14} /></button>
+                  <button onClick={() => insertMarkdown('## ')} className="p-1.5 hover:bg-white/10 rounded text-zinc-400 hover:text-white" title="Título 2"><Heading2 size={14} /></button>
+                  <div className="w-[1px] h-4 bg-white/10 mx-1"></div>
+                  <button onClick={() => insertMarkdown('- ')} className="p-1.5 hover:bg-white/10 rounded text-zinc-400 hover:text-white" title="Lista"><List size={14} /></button>
+                  <button onClick={() => insertMarkdown('1. ')} className="p-1.5 hover:bg-white/10 rounded text-zinc-400 hover:text-white" title="Lista Numérica"><ListOrdered size={14} /></button>
+                  <button onClick={() => insertMarkdown('- [ ] ')} className="p-1.5 hover:bg-white/10 rounded text-zinc-400 hover:text-white" title="Checklist"><CheckSquare size={14} /></button>
+                  <div className="w-[1px] h-4 bg-white/10 mx-1"></div>
+                  <button onClick={() => insertMarkdown('> ')} className="p-1.5 hover:bg-white/10 rounded text-zinc-400 hover:text-white" title="Citação"><Quote size={14} /></button>
+                  <button onClick={() => insertMarkdown('```\n', '\n```')} className="p-1.5 hover:bg-white/10 rounded text-zinc-400 hover:text-white" title="Código"><Code size={14} /></button>
                 </div>
 
                 {/* View Modes */}
-                <div className="flex bg-zinc-900 rounded p-0.5 border border-zinc-800">
-                  <button onClick={() => setEditorViewMode('edit')} className={`p-1.5 rounded ${editorViewMode === 'edit' ? 'bg-zinc-700 text-white' : 'text-zinc-500 hover:text-zinc-300'}`} title="Apenas Editor"><Edit3 size={14} /></button>
-                  <button onClick={() => setEditorViewMode('split')} className={`p-1.5 rounded ${editorViewMode === 'split' ? 'bg-zinc-700 text-white' : 'text-zinc-500 hover:text-zinc-300'}`} title="Live Preview (Dividido)"><SplitSquareHorizontal size={14} /></button>
-                  <button onClick={() => setEditorViewMode('preview')} className={`p-1.5 rounded ${editorViewMode === 'preview' ? 'bg-zinc-700 text-white' : 'text-zinc-500 hover:text-zinc-300'}`} title="Apenas Leitura"><Eye size={14} /></button>
+                <div className="flex bg-black/20 rounded p-0.5 border border-white/5">
+                  <button onClick={() => setEditorViewMode('edit')} className={`p-1.5 rounded ${editorViewMode === 'edit' ? 'bg-white/10 text-white' : 'text-zinc-500 hover:text-zinc-300'}`} title="Apenas Editor"><Edit3 size={14} /></button>
+                  <button onClick={() => setEditorViewMode('split')} className={`p-1.5 rounded ${editorViewMode === 'split' ? 'bg-white/10 text-white' : 'text-zinc-500 hover:text-zinc-300'}`} title="Live Preview (Dividido)"><SplitSquareHorizontal size={14} /></button>
+                  <button onClick={() => setEditorViewMode('preview')} className={`p-1.5 rounded ${editorViewMode === 'preview' ? 'bg-white/10 text-white' : 'text-zinc-500 hover:text-zinc-300'}`} title="Apenas Leitura"><Eye size={14} /></button>
                 </div>
               </div>
             </div>
@@ -411,7 +411,7 @@ const Notes: React.FC = () => {
                   onChange={(e) => updateContent(activeNote.id, e.target.value)}
                   onScroll={handleEditorScroll}
                   onKeyDown={handleKeyDown}
-                  className={`flex-1 h-full bg-[#1e1e1e] p-6 font-mono text-sm text-zinc-300 resize-none focus:outline-none custom-scrollbar leading-relaxed selection:bg-blue-500/30 ${editorViewMode === 'split' ? 'border-r border-zinc-800' : ''}`}
+                  className={`flex-1 h-full bg-transparent p-6 font-mono text-sm text-zinc-300 resize-none focus:outline-none custom-scrollbar leading-relaxed selection:bg-blue-500/30 ${editorViewMode === 'split' ? 'border-r border-white/10' : ''}`}
                   placeholder="# Comece sua nota..."
                 />
               )}
@@ -420,11 +420,11 @@ const Notes: React.FC = () => {
               {(editorViewMode === 'preview' || editorViewMode === 'split') && (
                 <div
                   ref={previewRef}
-                  className={`flex-1 h-full overflow-y-auto custom-scrollbar bg-[#1a1a1c] p-8 prose prose-invert prose-zinc max-w-none 
+                  className={`flex-1 h-full overflow-y-auto custom-scrollbar bg-black/5 p-8 prose prose-invert prose-zinc max-w-none 
                                      prose-headings:text-white prose-p:leading-7 prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline 
-                                     prose-code:text-purple-300 prose-code:bg-zinc-900 prose-code:px-1 prose-code:rounded 
-                                     prose-pre:bg-zinc-900 prose-pre:border prose-pre:border-zinc-800 
-                                     prose-blockquote:border-blue-500 prose-blockquote:bg-zinc-900/30 prose-blockquote:not-italic prose-blockquote:px-4 prose-blockquote:py-1
+                                     prose-code:text-purple-300 prose-code:bg-black/30 prose-code:px-1 prose-code:rounded 
+                                     prose-pre:bg-black/30 prose-pre:border prose-pre:border-white/10 
+                                     prose-blockquote:border-blue-500 prose-blockquote:bg-white/5 prose-blockquote:not-italic prose-blockquote:px-4 prose-blockquote:py-1
                                      ${editorViewMode === 'split' ? 'w-1/2' : 'w-full'}
                            `}
                 >

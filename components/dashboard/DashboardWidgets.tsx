@@ -139,12 +139,9 @@ const DashboardWidgets: React.FC<DashboardWidgetsProps> = ({
                                 }
                             }}
                             className="
-                            glass-spatial h-full
+                            glass-hydro h-full
                             rounded-[32px] p-6 flex flex-col relative overflow-hidden group
                             transition-all duration-500"
-                            style={{
-                                backgroundImage: 'linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%)'
-                            }}
                         >
                             <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
@@ -327,15 +324,10 @@ const MetricCard: React.FC<MetricCardProps> = ({ icon: Icon, gradient, label, va
                 }}
                 className={`
             relative overflow-hidden rounded-[32px] p-6 h-full flex flex-col justify-between group
-            bg-white/[0.03] dark:bg-black/[0.2] backdrop-blur-[40px] backdrop-saturate-[180%]
-            border border-white/[0.08] hover:border-white/[0.12]
-            shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)]
-            hover:shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)]
+            glass-hydro
+            hover:border-white/[0.2]
             transition-all duration-500 cursor-pointer
         `}
-                style={{
-                    backgroundImage: 'linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%)'
-                }}
             >
                 {/* Background Gradient Blob */}
                 <div className={`absolute -right-10 -top-10 w-32 h-32 bg-gradient-to-br ${gradient} rounded-full blur-[80px] opacity-15 group-hover:opacity-25 group-hover:scale-110 transition-all duration-700`} />
@@ -399,17 +391,11 @@ const BentoCard: React.FC<BentoCardProps> = ({ title, icon: Icon, gradient, onCl
                 onClick={onClick}
                 className={`
                 relative overflow-hidden rounded-[32px] p-6 h-full group cursor-pointer
-                bg-white/[0.03] dark:bg-black/[0.2] backdrop-blur-[40px] backdrop-saturate-[180%]
-                border border-white/[0.08] hover:border-white/[0.12]
-                shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)]
-                hover:shadow-[0_20px_50px_rgba(0,0,0,0.15),_0_0_30px_rgba(59,130,246,0.15)] 
-                dark:hover:shadow-[0_20px_50px_rgba(0,0,0,0.5),_0_0_40px_rgba(99,102,241,0.2)]
+                glass-hydro
+                hover:border-white/[0.2]
                 transition-all duration-500
                 flex flex-col
             `}
-                style={{
-                    backgroundImage: bgImage || 'linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%)'
-                }}
             >
                 {/* Hover Glow Effect */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-[0.08] transition-opacity duration-700`} />

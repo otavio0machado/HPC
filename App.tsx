@@ -79,7 +79,15 @@ const App: React.FC = () => {
 
   return (
     <ThemeProvider>
-      <div className="min-h-screen bg-transparent text-zinc-900 dark:text-white font-sans selection:bg-blue-500/30">
+      <div className="min-h-screen bg-transparent text-zinc-900 dark:text-white font-sans selection:bg-blue-500/30 overflow-hidden relative">
+
+        {/* --- FLUID BACKGROUND ENGINE --- */}
+        <div className="fixed inset-0 -z-50 overflow-hidden pointer-events-none bg-zinc-50 dark:bg-[#050505]">
+          <div className="absolute top-[-10%] left-[-10%] w-[70vw] h-[70vw] bg-[#4F46E5] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[80px] opacity-20 animate-[float-blob_15s_ease-in-out_infinite]" />
+          <div className="absolute top-[-10%] right-[-10%] w-[70vw] h-[70vw] bg-[#9333EA] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[80px] opacity-20 animate-[float-blob_20s_ease-in-out_infinite_reverse]" />
+          <div className="absolute bottom-[-20%] left-[20%] w-[70vw] h-[70vw] bg-[#0EA5E9] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[80px] opacity-20 animate-[float-blob_25s_ease-in-out_infinite]" />
+        </div>
+
         <AnimatePresence mode="wait">
           {showTransition && (
             <TransitionOverlay onAnimationComplete={handleTransitionComplete} />

@@ -16,7 +16,7 @@ import { pdfjs } from 'react-pdf';
 import { ReaderSettings } from '../../services/libraryService';
 
 // Set worker with specific version to match react-pdf dependency
-pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@4.4.168/build/pdf.worker.min.mjs`;
+pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@4.8.69/build/pdf.worker.min.mjs`;
 
 interface PDFReaderProps {
     url: string;

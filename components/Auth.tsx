@@ -51,9 +51,8 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
       return true;
     } catch (err) {
       if (err instanceof z.ZodError) {
-        const zodError = err as z.ZodError<any>;
         const fieldErrors: { [key: string]: string } = {};
-        zodError.errors.forEach((error: any) => {
+        (err as any).errors.forEach((error: any) => {
           const fieldName = error.path[0];
           if (typeof fieldName === 'string') {
             fieldErrors[fieldName] = error.message;
@@ -61,8 +60,8 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
         });
         setErrors(fieldErrors);
         // Toast the first error for visibility
-        if (zodError.errors[0]) {
-          toast.error(zodError.errors[0].message);
+        if ((err as any).errors[0]) {
+          toast.error((err as any).errors[0].message);
         }
       }
       return false;
@@ -227,10 +226,10 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
         </button>
       </div>
 
-      <div className="w-full max-w-md bg-white/80 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 p-8 rounded-2xl shadow-2xl backdrop-blur-xl relative overflow-hidden group">
+      <div className="w-full max-w-md glass-hydro p-8 rounded-[36px] shadow-2xl relative overflow-hidden group">
 
         {/* Decorative glow */}
-        <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-500/20 dark:bg-blue-600/20 rounded-full blur-[50px] group-hover:bg-blue-500/30 dark:group-hover:bg-blue-600/30 transition-all duration-700"></div>
+        <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-500/20 rounded-full blur-[50px] group-hover:bg-blue-500/30 transition-all duration-700"></div>
 
         <div className="relative z-10">
           <h2 className="text-3xl font-bold text-zinc-900 dark:text-white mb-2">

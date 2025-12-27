@@ -72,7 +72,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             {/* Sidebar Container */}
             <aside
                 className={`
-          fixed top-4 left-4 bottom-4 z-50 glass-spatial rounded-[32px] transition-all duration-300 ease-in-out overflow-hidden
+          fixed top-4 left-4 bottom-4 z-50 glass-hydro rounded-[32px] transition-all duration-300 ease-in-out overflow-hidden
           ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
           ${isCollapsed ? 'md:w-20' : 'md:w-64'}
           w-64 flex flex-col justify-between
@@ -110,16 +110,14 @@ const Sidebar: React.FC<SidebarProps> = ({
                             <SpotlightButton
                                 key={item.id}
                                 className={`
-                  w-full rounded-xl transition-all duration-200 group relative
-                  ${isActive
-                                        ? 'glass-active text-blue-400'
-                                        : 'hover:bg-white/5'}
+                  w-full rounded-xl transition-all duration-200 group relative liquid-border
+                  ${isActive ? 'active bg-white/5' : 'hover:bg-white/5'}
                 `}
                             >
                                 <button
                                     onClick={() => handleTabClick(item.id, item.restricted)}
                                     className={`
-                    w-full flex items-center gap-3 px-3 py-3 transition-all duration-200
+                    w-full flex items-center gap-3 px-3 py-3 transition-all duration-300 relative z-10
                     ${isActive
                                             ? 'text-blue-400'
                                             : 'text-zinc-400 hover:text-zinc-200'}

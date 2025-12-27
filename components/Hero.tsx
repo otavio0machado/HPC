@@ -39,7 +39,7 @@ const Hero: React.FC = () => {
       </div>
       <div className="mt-20 relative max-w-4xl mx-auto transform hover:scale-[1.01] transition-transform duration-700">
         <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-[32px] blur opacity-20 animate-pulse"></div>
-        <div className="relative bg-white/[0.03] backdrop-blur-xl border border-white/[0.1] shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] rounded-[30px] ring-1 ring-white/[0.05] inset bg-gradient-to-br from-white/[0.1] to-white/[0.02] p-6 lg:p-8 overflow-hidden aspect-video flex items-center justify-center">
+        <div className="relative glass-hydro rounded-[30px] p-6 lg:p-8 overflow-hidden aspect-video flex items-center justify-center">
           {/* Mock UI Content inside Glass Card */}
           <div className="absolute top-0 left-0 right-0 h-12 border-b border-white/[0.05] flex items-center px-6 gap-2">
             <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
