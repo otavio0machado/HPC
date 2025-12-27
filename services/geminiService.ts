@@ -453,3 +453,145 @@ export const generateExams = async (config: { type: ExamType, area: string, diff
     return [];
   }
 };
+
+export const generatePillsFromContent = async (text: string, pageCount: number = 0, images: string[] = []): Promise<any[]> => {
+  if (!import.meta.env.VITE_GEMINI_API_KEY) return [];
+
+  // Determine target pill count based on page count
+  let targetPillCount = 50;
+  if (pageCount >= 200 && pageCount <= 500) targetPillCount = 100;
+  if (pageCount > 500) targetPillCount = 150;
+
+  console.log(`Generating approx ${targetPillCount} pills for ${pageCount} pages.`);
+
+  // Chunking strategy
+  const CHUNK_SIZE = 25000; // Slightly reduced to ensure context fits
+  const chunks = [];
+  for (let i = 0; i < text.length; i += CHUNK_SIZE) {
+    chunks.push(text.substring(i, i + CHUNK_SIZE));
+  }
+
+  // Calculate distinct chunks needed. 
+  // We want roughly targetPillCount. If we ask for ~8 pills per chunk:
+  const pillsPerChunk = 8;
+  const chunksNeeded = Math.ceil(targetPillCount / pillsPerChunk);
+
+  // Select chunks distributed evenly throughout the text
+  let selectedChunks = chunks;
+  if (chunks.length > chunksNeeded) {
+    const step = Math.floor(chunks.length / chunksNeeded);
+    selectedChunks = [];
+    for (let i = 0; i < chunksNeeded; i++) {
+      const idx = Math.min(i * step, chunks.length - 1);
+      selectedChunks.push(chunks[idx]);
+    }
+    // Always ensure last chunk is included for conclusion/summary
+    if (selectedChunks[selectedChunks.length - 1] !== chunks[chunks.length - 1]) {
+      selectedChunks.push(chunks[chunks.length - 1]);
+    }
+  }
+
+  const processChunk = async (chunkText: string, index: number) => {
+    const prompt = `
+      Você é um especialista em criar material de estudo resumido ("Pílulas de Conhecimento").
+      Analise o seguinte texto extraído de um PDF e gere de ${pillsPerChunk} a ${pillsPerChunk + 5} "Pílulas de Conhecimento" únicas e memorizáveis.
+      
+      Instruções de Formatação:
+      - Use MARKDOWN RICH para o conteúdo (negrito, listas, blocos de código).
+      - Use LATEX para fórmulas matemáticas e científicas (ex: $E=mc^2$ ou $$\\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}$$).
+      - Seja conciso mas informativo.
+      - Foque em conceitos-chave, curiosidades, resumos e definições.
+      
+      Gere o resultado estritamente no formato JSON como um array de objetos:
+      [{
+          "title": "Título Curto",
+          "description": "Breve descrição (1 frase)",
+          "content": "Conteúdo detalhado da pílula em Markdown...",
+          "readTime": "2 min"
+      }]
+      
+      Texto: ${chunkText.substring(0, 24000)}
+    `;
+
+    try {
+      const ai = getAI();
+      const response = await generateWithRetry(ai.models, {
+        model: STUDY_MODEL,
+        contents: prompt,
+        config: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.ARRAY,
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                title: { type: Type.STRING },
+                description: { type: Type.STRING },
+                content: { type: Type.STRING },
+                readTime: { type: Type.STRING }
+              },
+              required: ["title", "description", "content", "readTime"]
+            }
+          }
+        }
+      });
+
+      let jsonText = response.text || "[]";
+      jsonText = jsonText.replace(/```json/g, '').replace(/```/g, '').trim();
+      return jsonText ? JSON.parse(jsonText) : [];
+    } catch (e) {
+      console.error(`Pill generation failed for chunk ${index}`, e);
+      return [];
+    }
+  };
+
+  try {
+    // Run in parallel batches to avoid hitting rate limits instantly if chunksNeeded is high
+    // Batch size of 5
+    const results: any[] = [];
+    for (let i = 0; i < selectedChunks.length; i += 5) {
+      const batch = selectedChunks.slice(i, i + 5);
+      const batchResults = await Promise.all(batch.map((chunk, idx) => processChunk(chunk, i + idx)));
+      results.push(...batchResults);
+      // Small delay between batches
+      if (i + 5 < selectedChunks.length) await new Promise(r => setTimeout(r, 1000));
+    }
+
+    let allPills = results.flat();
+
+    // Post-process: Assign Layouts and Images
+    allPills = allPills.map(pill => {
+      const rand = Math.random();
+      let layout = 'default';
+      let imageUrl = undefined;
+
+      // 20% chance for specific layouts or if images are available
+      if (images.length > 0 && rand > 0.7) {
+        layout = 'image_top';
+        // Pick random image
+        imageUrl = images[Math.floor(Math.random() * images.length)];
+      } else if (rand > 0.5) {
+        layout = 'quote';
+      } else if (rand > 0.3) {
+        layout = 'list';
+      }
+
+      // Heuristic: If content has bullet points or multiple numbers, force list layout
+      if (pill.content.includes('1.') || pill.content.includes('- ')) {
+        layout = 'list';
+      }
+
+      return {
+        ...pill,
+        layout,
+        imageUrl
+      };
+    });
+
+    return allPills;
+
+  } catch (error) {
+    console.error("Error processing text chunks", error);
+    return [];
+  }
+};

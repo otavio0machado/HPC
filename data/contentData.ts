@@ -5,6 +5,14 @@ export interface KnowledgePill {
     description: string;
     content: string; // The "pill" summary
     readTime?: string;
+    layout?: 'default' | 'image_top' | 'quote' | 'list';
+    imageUrl?: string;
+    folder?: string;
+}
+
+export interface Folder {
+    id: string;
+    name: string;
 }
 
 export interface Subject {
@@ -13,6 +21,7 @@ export interface Subject {
     icon: string; // Lucide icon name or generic string
     color: string;
     pills: KnowledgePill[];
+    folders?: Folder[];
 }
 
 export const contentData: Subject[] = [
