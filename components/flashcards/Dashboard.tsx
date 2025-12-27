@@ -75,9 +75,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <div className="h-6 w-1 bg-gradient-to-b from-blue-400 to-cyan-400 rounded-full shadow-[0_0_15px_rgba(34,211,238,0.5)]" />
-                        <h1 className="text-3xl font-bold text-white tracking-tight">Flashcards & Memory</h1>
+                        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-200 to-cyan-200 tracking-tight drop-shadow-md">Flashcards & Memory</h1>
                     </div>
-                    <p className="text-zinc-400 text-sm">Sua central de controle para maestria acadêmica.</p>
+                    <p className="text-zinc-400 text-sm tracking-wide">Sua central de controle para maestria acadêmica.</p>
                 </div>
                 <div className="flex gap-3">
                     <button
@@ -98,17 +98,19 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 pb-20">
                 {/* Column 1: Fila de Revisão (3/12) */}
                 <div className="md:col-span-12 lg:col-span-3 space-y-4">
-                    <div className="bg-[var(--glass-bg)] border border-[var(--border-glass)] p-6 rounded-3xl mb-4 backdrop-blur-xl relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                    <div className="glass-hydro p-6 rounded-[32px] mb-4 relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                         <div className="relative z-10">
-                            <div className="text-zinc-500 text-[10px] font-bold uppercase tracking-wider mb-2">Revisões Pendentes</div>
-                            <div className="text-5xl font-black text-white mb-6 tracking-tighter">{totalDue}</div>
+                            <div className="text-blue-300 text-[10px] font-bold uppercase tracking-wider mb-2 flex items-center gap-2">
+                                <div className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></div> Revisões Pendentes
+                            </div>
+                            <div className="text-6xl font-black text-white mb-6 tracking-tighter drop-shadow-lg">{totalDue}</div>
 
                             <button
                                 onClick={() => onStartSession()}
                                 disabled={totalDue === 0}
-                                className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3.5 rounded-xl font-bold text-sm shadow-lg shadow-blue-900/20 flex items-center justify-center gap-2 transition-all active:scale-95 backdrop-blur-md border border-white/20"
+                                className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3.5 rounded-xl font-bold text-sm shadow-lg shadow-blue-900/20 flex items-center justify-center gap-2 transition-all active:scale-95 backdrop-blur-md border border-white/20 hover:shadow-cyan-500/20"
                             >
                                 <Play fill="currentColor" size={14} /> Iniciar Revisão Global
                             </button>
@@ -125,7 +127,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         {revisionQueue.map((card) => {
                             const isUrgent = card.nextReview < Date.now() - 86400000;
                             return (
-                                <div key={card.id} className="bg-[var(--glass-bg)] border border-[var(--border-glass)] p-4 rounded-2xl hover:border-white/20 transition-all hover:bg-white/5 group relative backdrop-blur-md">
+                                <div key={card.id} className="glass-card p-4 rounded-2xl hover:border-white/30 transition-all hover:scale-[1.02] group relative backdrop-blur-md bubble-hover">
                                     <div className="flex justify-between items-start mb-2">
                                         <span className={`text-[10px] font-bold uppercase tracking-wider rounded px-1.5 py-0.5 border ${isUrgent ? 'text-red-300 border-red-500/30 bg-red-500/10' : 'text-blue-300 border-blue-500/30 bg-blue-500/10'}`}>
                                             {isUrgent ? 'Urgente' : 'Revisão'}
@@ -134,7 +136,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                                             {card.folderPath[card.folderPath.length - 1] || 'Geral'}
                                         </span>
                                     </div>
-                                    <p className="text-xs font-medium text-zinc-300 line-clamp-2 mb-3 leading-relaxed">
+                                    <p className="text-xs font-medium text-zinc-300 line-clamp-2 mb-3 leading-relaxed group-hover:text-white transition-colors">
                                         {card.front}
                                     </p>
                                     <div className="flex items-center gap-3 text-[10px] text-zinc-500 font-medium">
@@ -188,7 +190,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
                     {/* Sub Stats */}
                     <div className="grid grid-cols-2 gap-6">
-                        <div className="bg-[var(--glass-bg)] border border-[var(--border-glass)] p-6 rounded-3xl backdrop-blur-xl">
+                        <div className="glass-card p-6 rounded-[28px] backdrop-blur-xl">
                             <div className="text-zinc-500 text-[10px] uppercase font-bold tracking-wider mb-2">Cards Dominados</div>
                             <div className="text-3xl font-black text-emerald-400 flex items-baseline gap-2">
                                 {masteredCount} <span className="text-xs font-bold text-zinc-600 uppercase">cards</span>
@@ -197,7 +199,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                                 <div className="bg-emerald-500 h-full shadow-[0_0_8px_rgba(16,185,129,0.5)]" style={{ width: `${(masteredCount / (totalCards || 1)) * 100}%` }}></div>
                             </div>
                         </div>
-                        <div className="bg-[var(--glass-bg)] border border-[var(--border-glass)] p-6 rounded-3xl backdrop-blur-xl">
+                        <div className="glass-card p-6 rounded-[28px] backdrop-blur-xl">
                             <div className="flex justify-between">
                                 <div>
                                     <div className="text-zinc-500 text-[10px] uppercase font-bold tracking-wider mb-2">Total na Base</div>
@@ -220,7 +222,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     </div>
 
                     {/* Breadcrumbs & Navigation Header */}
-                    <div className="bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-t-3xl p-4 border-b-0 flex items-center gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide backdrop-blur-xl">
+                    <div className="glass-spatial rounded-t-3xl p-4 border-b-0 flex items-center gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide backdrop-blur-xl">
                         <button
                             onClick={() => setCurrentPath([])}
                             className={`p-2 rounded-lg text-zinc-400 hover:bg-white/10 hover:text-white transition-colors border border-transparent hover:border-white/10 ${currentPath.length === 0 ? 'text-white bg-white/10 shadow-sm backdrop-blur-sm border-white/10' : ''}`}
@@ -240,7 +242,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         ))}
                     </div>
 
-                    <div className="bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-b-3xl rounded-tr-none overflow-hidden max-h-[500px] overflow-y-auto min-h-[400px] backdrop-blur-xl">
+                    <div className="glass-card rounded-b-[32px] rounded-tr-none overflow-hidden max-h-[500px] overflow-y-auto min-h-[400px] backdrop-blur-xl border-t-0">
                         <table className="w-full text-left text-sm">
                             <thead className="sticky top-0 bg-black/40 backdrop-blur-md z-10 border-b border-white/5">
                                 <tr className="text-zinc-500 text-[10px] uppercase tracking-wider">

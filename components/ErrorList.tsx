@@ -225,9 +225,9 @@ const ErrorList: React.FC = () => {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <div className="h-6 w-1 bg-gradient-to-b from-red-500 to-rose-600 rounded-full shadow-[0_0_15px_rgba(244,63,94,0.5)]" />
-            <h2 className="text-2xl font-bold text-white tracking-tight">O Caderno de Erros</h2>
+            <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-200 to-rose-200 tracking-tight drop-shadow-md">O Caderno de Erros</h2>
           </div>
-          <p className="text-zinc-400 text-sm">Identifique padrões e elimine suas fraquezas.</p>
+          <p className="text-zinc-400 text-sm tracking-wide">Identifique padrões e elimine suas fraquezas.</p>
         </div>
 
         <div className="flex flex-wrap gap-3">
@@ -238,9 +238,9 @@ const ErrorList: React.FC = () => {
               <span className="text-[10px] text-red-400/70 font-mono tracking-wider">{mostFrequentSubject[1]} erros</span>
             </div>
           )}
-          <div className="bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-2xl px-5 py-3 flex flex-col items-center justify-center min-w-[100px] backdrop-blur-md">
-            <span className="text-[10px] text-zinc-500 uppercase font-bold mb-1 tracking-wider">Total</span>
-            <span className="text-2xl font-black text-white">{totalErrors}</span>
+          <div className="glass-spatial rounded-[24px] px-6 py-4 flex flex-col items-center justify-center min-w-[120px] shadow-lg">
+            <span className="text-[10px] text-zinc-400 uppercase font-bold mb-1 tracking-wider">Total</span>
+            <span className="text-3xl font-black text-white">{totalErrors}</span>
           </div>
         </div>
       </div>
@@ -255,35 +255,35 @@ const ErrorList: React.FC = () => {
               placeholder="Buscar erro..."
               value={filterText}
               onChange={(e) => setFilterText(e.target.value)}
-              className="w-full bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-xl py-3 pl-12 pr-4 text-sm text-white focus:outline-none focus:border-red-500 transition-all placeholder:text-zinc-600"
+              className="w-full glass-card bg-white/5 border-white/10 rounded-xl py-3 pl-12 pr-4 text-sm text-white focus:outline-none focus:border-red-500/50 focus:bg-white/10 transition-all placeholder:text-zinc-600 shadow-sm"
             />
           </div>
           <div className="flex gap-2">
             <select
-              className="bg-[var(--glass-bg)] border border-[var(--border-glass)] text-zinc-300 text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-red-500 appearance-none min-w-[140px]"
+              className="glass-card bg-white/5 border-white/10 text-zinc-300 text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-red-500/50 appearance-none min-w-[140px] hover:bg-white/10 transition-colors cursor-pointer"
               value={filterSubject}
               onChange={(e) => setFilterSubject(e.target.value)}
             >
-              <option value="">Todas Matérias</option>
-              {subjects.map(s => <option key={s} value={s}>{s}</option>)}
+              <option value="" className="bg-zinc-900">Todas Matérias</option>
+              {subjects.map(s => <option key={s} value={s} className="bg-zinc-900">{s}</option>)}
             </select>
             <select
-              className="bg-[var(--glass-bg)] border border-[var(--border-glass)] text-zinc-300 text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-red-500 appearance-none min-w-[140px]"
+              className="glass-card bg-white/5 border-white/10 text-zinc-300 text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-red-500/50 appearance-none min-w-[140px] hover:bg-white/10 transition-colors cursor-pointer"
               value={filterCause}
               onChange={(e) => setFilterCause(e.target.value)}
             >
-              <option value="">Todos Motivos</option>
-              {causes.map(c => <option key={c.id} value={c.id}>{c.id}</option>)}
+              <option value="" className="bg-zinc-900">Todos Motivos</option>
+              {causes.map(c => <option key={c.id} value={c.id} className="bg-zinc-900">{c.id}</option>)}
             </select>
             <div className="relative">
               <select
-                className="bg-[var(--glass-bg)] border border-[var(--border-glass)] text-zinc-300 text-sm rounded-xl px-4 py-3 pl-10 focus:outline-none focus:border-red-500 appearance-none"
+                className="glass-card bg-white/5 border-white/10 text-zinc-300 text-sm rounded-xl px-4 py-3 pl-10 focus:outline-none focus:border-red-500/50 appearance-none hover:bg-white/10 transition-colors cursor-pointer"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
               >
-                <option value="date-desc">Recentes</option>
-                <option value="date-asc">Antigos</option>
-                <option value="subject">Matéria</option>
+                <option value="date-desc" className="bg-zinc-900">Recentes</option>
+                <option value="date-asc" className="bg-zinc-900">Antigos</option>
+                <option value="subject" className="bg-zinc-900">Matéria</option>
               </select>
               <ArrowUpDown size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none" />
             </div>
@@ -291,16 +291,16 @@ const ErrorList: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3 justify-between sm:justify-start">
-          <div className="flex items-center bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-xl p-1">
+          <div className="flex items-center glass-card bg-white/5 border border-white/10 rounded-xl p-1 shadow-sm">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-2.5 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white/10 text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}
+              className={`p-2.5 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white/10 text-white shadow-inner' : 'text-zinc-500 hover:text-zinc-300 hover:bg-white/5'}`}
             >
               <LayoutGrid size={18} />
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-2.5 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white/10 text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}
+              className={`p-2.5 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white/10 text-white shadow-inner' : 'text-zinc-500 hover:text-zinc-300 hover:bg-white/5'}`}
             >
               <ListIcon size={18} />
             </button>
@@ -308,7 +308,7 @@ const ErrorList: React.FC = () => {
 
           <button
             onClick={() => openModal()}
-            className="flex-1 sm:flex-none bg-red-600 hover:bg-red-500 text-white font-bold px-6 py-3 rounded-xl flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-lg shadow-red-900/20 whitespace-nowrap text-sm"
+            className="flex-1 sm:flex-none bg-red-600 hover:bg-red-500 text-white font-bold px-6 py-3 rounded-xl flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-[0_0_20px_rgba(220,38,38,0.3)] whitespace-nowrap text-sm backdrop-blur-md border border-white/20"
           >
             <Plus size={18} /> Registrar Erro
           </button>
@@ -332,8 +332,8 @@ const ErrorList: React.FC = () => {
             const causeData = causes.find(c => c.id === error.cause) || causes[0];
             return (
               <div key={error.id} className={`
-                bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-2xl hover:border-white/20 transition-all group relative backdrop-blur-xl
-                ${viewMode === 'grid' ? 'p-6 flex flex-col' : 'p-4 flex flex-col sm:flex-row sm:items-center gap-4'}
+                glass-card rounded-[28px] hover:border-white/30 transition-all duration-300 group relative
+                ${viewMode === 'grid' ? 'p-6 flex flex-col hover:shadow-2xl hover:-translate-y-1' : 'p-4 flex flex-col sm:flex-row sm:items-center gap-4 hover:bg-white/5'}
               `}>
                 {viewMode === 'grid' ? (
                   <>
@@ -413,9 +413,9 @@ const ErrorList: React.FC = () => {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in duration-200">
-          <div className="bg-zinc-950 border border-white/10 rounded-3xl w-full max-w-lg shadow-2xl relative animate-in zoom-in-95 duration-200 overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="px-6 py-5 border-b border-white/5 flex justify-between items-center bg-white/5 flex-shrink-0">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xl p-4 animate-in fade-in duration-300">
+          <div className="glass-hydro rounded-[36px] w-full max-w-lg shadow-2xl relative animate-in zoom-in-95 duration-300 overflow-hidden flex flex-col max-h-[90vh] border border-white/20">
+            <div className="px-8 py-6 border-b border-white/10 flex justify-between items-center bg-white/5 flex-shrink-0">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
                 <AlertTriangle size={20} className="text-red-500" />
                 {editingId ? 'Editar Erro' : 'Registrar Erro'}

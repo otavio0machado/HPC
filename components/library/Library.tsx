@@ -99,21 +99,21 @@ const Library: React.FC<{ userId: string }> = ({ userId }) => {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <div className="h-6 w-1 bg-gradient-to-b from-blue-400 to-cyan-500 rounded-full shadow-[0_0_15px_rgba(59,130,246,0.5)]" />
-                        <h2 className="text-2xl font-bold text-white tracking-tight">Biblioteca Digital</h2>
+                        <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-200 to-cyan-200 tracking-tight drop-shadow-md">Biblioteca Digital</h2>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <div className="bg-[var(--glass-bg)] border border-[var(--border-glass)] p-1 rounded-xl flex text-sm backdrop-blur-md">
+                    <div className="glass-spatial p-1.5 rounded-2xl flex text-sm backdrop-blur-xl">
                         <button
                             onClick={() => setActiveTab('books')}
-                            className={`px-4 py-2 rounded-lg transition-all flex items-center gap-2 font-bold ${activeTab === 'books' ? 'bg-white/10 text-white shadow-lg shadow-black/20' : 'text-zinc-500 hover:text-white'}`}
+                            className={`px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 font-bold ${activeTab === 'books' ? 'bg-white/20 text-white shadow-lg border border-white/10' : 'text-zinc-400 hover:text-white hover:bg-white/5'}`}
                         >
                             <BookOpen size={16} /> Livros
                         </button>
                         <button
                             onClick={() => setActiveTab('highlights')}
-                            className={`px-4 py-2 rounded-lg transition-all flex items-center gap-2 font-bold ${activeTab === 'highlights' ? 'bg-white/10 text-white shadow-lg shadow-black/20' : 'text-zinc-500 hover:text-white'}`}
+                            className={`px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 font-bold ${activeTab === 'highlights' ? 'bg-white/20 text-white shadow-lg border border-white/10' : 'text-zinc-400 hover:text-white hover:bg-white/5'}`}
                         >
                             <Quote size={16} /> Destaques
                         </button>
@@ -122,26 +122,26 @@ const Library: React.FC<{ userId: string }> = ({ userId }) => {
             </div>
 
             {/* Action Bar */}
-            <div className="flex items-center justify-between mb-8 bg-[var(--glass-bg)] p-4 rounded-2xl border border-[var(--border-glass)] backdrop-blur-xl">
+            <div className="flex items-center justify-between mb-8 glass-card p-4 rounded-[28px] backdrop-blur-xl">
                 <div className="relative w-full max-w-sm">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" size={18} />
                     <input
                         type="text"
                         placeholder="Buscar em sua biblioteca..."
-                        className="w-full bg-zinc-950/50 border border-white/10 rounded-xl pl-12 pr-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition-all font-medium"
+                        className="w-full bg-black/20 border border-white/5 rounded-xl pl-12 pr-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition-all font-medium placeholder:text-zinc-600"
                     />
                 </div>
 
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => setShowKindleSync(true)}
-                        className="px-4 py-3 text-sm font-bold bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 hover:border-zinc-700 text-zinc-300 rounded-xl transition-all flex items-center gap-2 group"
+                        className="px-5 py-3 text-sm font-bold bg-zinc-900/50 border border-white/10 hover:bg-zinc-800 hover:border-white/20 text-zinc-300 rounded-xl transition-all flex items-center gap-2 group shadow-sm"
                     >
                         <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Kindle_logo.svg" alt="Kindle" className="h-4 opacity-50 invert group-hover:opacity-80 transition-opacity" />
                         Sincronizar
                     </button>
 
-                    <label className="px-5 py-3 text-sm font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-all cursor-pointer flex items-center gap-2 shadow-lg shadow-blue-900/20 active:scale-95 group">
+                    <label className="px-6 py-3 text-sm font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-all cursor-pointer flex items-center gap-2 shadow-lg shadow-blue-900/20 active:scale-95 group border border-white/20">
                         {isUploading ? <Loader2 className="animate-spin" size={18} /> : <Plus size={18} className="group-hover:rotate-90 transition-transform" />}
                         <span className="hidden sm:inline">Adicionar Livro</span>
                         <input
@@ -164,8 +164,10 @@ const Library: React.FC<{ userId: string }> = ({ userId }) => {
                 <div className="flex-1 overflow-y-auto pb-20 pr-2 custom-scrollbar">
                     {activeTab === 'books' ? (
                         books.length === 0 ? (
-                            <div className="text-center py-20 text-zinc-500 bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-3xl">
-                                <LibraryIcon size={64} className="mx-auto mb-6 opacity-20" />
+                            <div className="text-center py-24 text-zinc-500 glass-card rounded-[32px] flex flex-col items-center">
+                                <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-6">
+                                    <LibraryIcon size={40} className="opacity-30" />
+                                </div>
                                 <h3 className="text-xl font-bold text-white mb-2">Sua biblioteca está vazia</h3>
                                 <p className="text-sm text-zinc-400">Adicione livros PDF ou EPUB para começar a ler.</p>
                             </div>
@@ -184,18 +186,23 @@ const Library: React.FC<{ userId: string }> = ({ userId }) => {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {highlights.length === 0 ? (
-                                <div className="col-span-full text-center py-20 text-zinc-500 bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-3xl">
-                                    <Quote size={64} className="mx-auto mb-6 opacity-20" />
+                                <div className="col-span-full text-center py-24 text-zinc-500 glass-card rounded-[32px] flex flex-col items-center">
+                                    <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-6">
+                                        <Quote size={40} className="opacity-30" />
+                                    </div>
                                     <h3 className="text-xl font-bold text-white mb-2">Nenhum destaque importado</h3>
                                     <p className="text-sm text-zinc-400">Use o botão "Sincronizar" para importar seu My Clippings.txt</p>
                                 </div>
                             ) : (
                                 highlights.map((hl) => (
-                                    <div key={hl.id} className="bg-[var(--glass-bg)] border border-[var(--border-glass)] p-6 rounded-3xl hover:border-white/20 transition-all group backdrop-blur-xl">
+                                    <div key={hl.id} className="glass-card p-6 rounded-[28px] bubble-hover relative">
+                                        <div className="absolute top-6 right-6 opacity-10 group-hover:opacity-30 transition-opacity">
+                                            <Quote size={40} />
+                                        </div>
                                         <div className="flex items-start gap-4">
-                                            <div className="flex-1 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
-                                                <Quote size={20} className="text-blue-500/50 mb-3" />
-                                                <p className="font-serif text-zinc-300 leading-relaxed text-sm mb-4 italic">
+                                            <div className="flex-1 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar relative z-10">
+                                                <Quote size={20} className="text-blue-500/80 mb-3" />
+                                                <p className="font-serif text-zinc-200 leading-relaxed text-sm mb-4 italic">
                                                     "{hl.content}"
                                                 </p>
                                                 <div className="flex flex-col gap-1 text-xs text-zinc-500 pt-4 border-t border-white/5">

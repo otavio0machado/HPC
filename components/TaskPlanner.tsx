@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, CheckCircle2, Circle, Trash2, Calendar as CalendarIcon, Target, Flag, ArrowRight, Layout, RefreshCcw, ChevronLeft, ChevronRight, Clock, Book, BookOpen, Bookmark, Percent, BarChart, Loader2 } from 'lucide-react';
+import { Plus, CheckCircle2, Circle, Trash2, Calendar as CalendarIcon, Target, Flag, ArrowRight, Layout, RefreshCcw, ChevronLeft, ChevronRight, Clock, Book, BookOpen, Bookmark, Percent, BarChart, Loader2, Sparkles } from 'lucide-react';
+import { AnimatePresence } from 'framer-motion';
+import RoadmapGenerator from './planner/RoadmapGenerator';
 import { authService } from '../services/authService';
 import { tasksService } from '../services/tasksService';
 import { PlannerTask, TaskScope, TaskPriority, StudyMaterial } from '../types';
@@ -7,6 +9,7 @@ import { toast } from 'sonner';
 
 const TaskPlanner: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'calendar' | 'materials'>('calendar');
+    const [showRoadmapGenerator, setShowRoadmapGenerator] = useState(false);
 
     // --- STATES FOR TASKS ---
     const [tasks, setTasks] = useState<PlannerTask[]>([]);
@@ -233,36 +236,58 @@ const TaskPlanner: React.FC = () => {
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
 
             {/* Header & Tabs */}
+
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <div className="h-6 w-1 bg-gradient-to-b from-emerald-400 to-teal-600 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
-                        <h2 className="text-2xl font-bold text-white tracking-tight">Planner Estratégico</h2>
+                        <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70 tracking-tight drop-shadow-sm">Planner Estratégico</h2>
                     </div>
-                    <p className="text-zinc-400 text-sm">Organize seu tempo e acompanhe seu progresso nas apostilas.</p>
+                    <p className="text-zinc-400 text-sm tracking-wide">Organize seu tempo e acompanhe seu progresso nas apostilas.</p>
                 </div>
 
-                <div className="flex bg-[var(--glass-bg)] border border-[var(--border-glass)] p-1 rounded-xl backdrop-blur-md">
+                <div className="flex gap-3">
                     <button
-                        onClick={() => setActiveTab('calendar')}
-                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${activeTab === 'calendar' ? 'bg-white/10 text-white shadow-lg shadow-black/20 backdrop-blur-md border border-white/10' : 'text-zinc-500 hover:text-white hover:bg-white/5 border border-transparent'}`}
+                        onClick={() => setShowRoadmapGenerator(true)}
+                        className="px-5 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 hover:scale-105 transition-all flex items-center gap-2"
                     >
-                        <CalendarIcon size={16} /> Agenda
+                        <Sparkles size={16} /> GPS de Estudos
                     </button>
-                    <button
-                        onClick={() => setActiveTab('materials')}
-                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${activeTab === 'materials' ? 'bg-white/10 text-white shadow-lg shadow-black/20 backdrop-blur-md border border-white/10' : 'text-zinc-500 hover:text-white hover:bg-white/5 border border-transparent'}`}
-                    >
-                        <Book size={16} /> Apostilas
-                    </button>
+
+                    <div className="flex glass-spatial p-1.5 rounded-2xl">
+                        <button
+                            onClick={() => setActiveTab('calendar')}
+                            className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2 ${activeTab === 'calendar' ? 'bg-white/20 shadow-lg text-white backdrop-blur-md' : 'text-zinc-400 hover:text-white hover:bg-white/10'}`}
+                        >
+                            <CalendarIcon size={16} /> Agenda
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('materials')}
+                            className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2 ${activeTab === 'materials' ? 'bg-white/20 shadow-lg text-white backdrop-blur-md' : 'text-zinc-400 hover:text-white hover:bg-white/10'}`}
+                        >
+                            <Book size={16} /> Apostilas
+                        </button>
+                    </div>
                 </div>
             </div>
+
+            <AnimatePresence>
+                {showRoadmapGenerator && (
+                    <RoadmapGenerator
+                        onClose={() => setShowRoadmapGenerator(false)}
+                        onSuccess={loadData}
+                    />
+                )}
+            </AnimatePresence>
 
             {activeTab === 'calendar' && (
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
                     {/* Left: Calendar Grid */}
-                    <div className="lg:col-span-7 bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-3xl p-6 backdrop-blur-xl">
+                    <div className="lg:col-span-7 glass-hydro rounded-[36px] p-8 relative overflow-hidden">
+                        {/* Decorative background blob */}
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[100px] -z-10 pointer-events-none" />
+
                         <div className="flex justify-between items-center mb-6">
                             <button onClick={() => changeMonth(-1)} className="p-2 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors border border-transparent hover:border-white/10 hover:shadow-lg"><ChevronLeft size={20} /></button>
                             <h3 className="text-xl font-bold text-white capitalize">
@@ -291,17 +316,17 @@ const TaskPlanner: React.FC = () => {
                                     <button
                                         key={idx}
                                         onClick={() => setSelectedDate(date)}
-                                        className={`aspect-square rounded-2xl flex flex-col items-center justify-center relative transition-all duration-300 border
+                                        className={`aspect-square rounded-[20px] flex flex-col items-center justify-center relative transition-all duration-500
                                     ${isSelected
-                                                ? 'bg-blue-600 border-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.4)] scale-105'
+                                                ? 'bg-blue-600 text-white shadow-[0_10px_30px_rgba(37,99,235,0.3)] scale-110'
                                                 : isToday
-                                                    ? 'bg-white/5 border-blue-500/50 text-blue-400'
-                                                    : 'bg-zinc-950/30 border-white/5 text-zinc-400 hover:bg-white/10 hover:border-white/20'
+                                                    ? 'bg-blue-500/10 border border-blue-500/30 text-blue-400'
+                                                    : 'bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white hover:scale-105'
                                             }
                                 `}
                                     >
                                         <span className={`text-sm font-bold ${isSelected ? 'scale-110' : ''}`}>{date.getDate()}</span>
-                                        <div className="flex gap-0.5 mt-1 h-1.5 justify-center w-full">
+                                        <div className="flex gap-0.5 mt-1.5 h-1.5 justify-center w-full">
                                             {hasTasks && <div className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white' : 'bg-blue-500'}`}></div>}
                                             {allCompleted && !hasTasks && <div className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-emerald-300' : 'bg-emerald-500'}`}></div>}
                                         </div>
@@ -313,7 +338,7 @@ const TaskPlanner: React.FC = () => {
 
                     {/* Right: Task List for Selected Day */}
                     <div className="lg:col-span-5 flex flex-col h-full">
-                        <div className="bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-3xl p-6 flex flex-col h-full min-h-[500px] backdrop-blur-xl">
+                        <div className="glass-card rounded-[36px] p-6 flex flex-col h-full min-h-[500px]">
                             <div className="flex justify-between items-center mb-6">
                                 <div>
                                     <h3 className="text-white font-bold flex items-center gap-2 text-lg">
@@ -396,20 +421,20 @@ const TaskPlanner: React.FC = () => {
                                     tasksForSelectedDate.map(task => (
                                         <div
                                             key={task.id}
-                                            className={`group flex items-center gap-3 p-4 rounded-xl border transition-all duration-300 ${task.completed
-                                                ? 'bg-emerald-900/5 border-emerald-500/10 opacity-60'
-                                                : 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10 hover:shadow-lg hover:-translate-y-0.5'
+                                            className={`group bubble-hover flex items-center gap-3 p-4 rounded-2xl border transition-all duration-500 ${task.completed
+                                                ? 'bg-emerald-500/5 border-emerald-500/10 opacity-60'
+                                                : 'bg-white/5 border-white/10 hover:border-white/20'
                                                 }`}
                                         >
                                             <button
                                                 onClick={() => toggleTask(task.id, task.completed)}
                                                 className={`flex-shrink-0 transition-colors ${task.completed ? 'text-emerald-500' : 'text-zinc-600 group-hover:text-emerald-400'}`}
                                             >
-                                                {task.completed ? <CheckCircle2 size={22} className="drop-shadow-[0_0_8px_rgba(16,185,129,0.4)]" /> : <Circle size={22} />}
+                                                {task.completed ? <CheckCircle2 size={24} className="drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]" /> : <Circle size={22} strokeWidth={1.5} />}
                                             </button>
 
                                             <div className="flex-1 min-w-0">
-                                                <p className={`text-sm font-medium truncate ${task.completed ? 'line-through text-zinc-500' : 'text-zinc-200'}`}>
+                                                <p className={`text-sm font-medium truncate ${task.completed ? 'line-through text-zinc-500' : 'text-zinc-100'}`}>
                                                     {task.title}
                                                 </p>
                                                 {task.time && (
@@ -423,7 +448,7 @@ const TaskPlanner: React.FC = () => {
 
                                             <button
                                                 onClick={() => deleteTask(task.id)}
-                                                className="text-zinc-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all p-1 hover:bg-red-500/10 rounded-lg"
+                                                className="text-zinc-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all p-1.5 hover:bg-red-500/10 rounded-lg"
                                             >
                                                 <Trash2 size={16} />
                                             </button>
@@ -440,8 +465,8 @@ const TaskPlanner: React.FC = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
                     {/* Left: Add Material & Stats */}
-                    <div className="space-y-6">
-                        <div className="bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-3xl p-6 backdrop-blur-xl">
+                    <div className="space-y-8">
+                        <div className="glass-hydro rounded-[36px] p-8">
                             <h3 className="text-white font-bold mb-6 flex items-center gap-2 text-lg">
                                 <div className="p-1.5 rounded-lg bg-purple-500/20 text-purple-400">
                                     <Bookmark size={20} />
@@ -489,16 +514,16 @@ const TaskPlanner: React.FC = () => {
                         </div>
 
                         {materials.length > 0 && (
-                            <div className="bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-3xl p-6 flex flex-col items-center justify-center text-center backdrop-blur-xl">
-                                <div className="w-20 h-20 bg-zinc-900/50 rounded-full flex items-center justify-center mb-4 border border-white/5 relative group">
-                                    <div className="absolute inset-0 bg-purple-500/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                                    <BarChart size={32} className="text-purple-400 relative z-10" />
+                            <div className="glass-card rounded-[36px] p-8 flex flex-col items-center justify-center text-center">
+                                <div className="w-24 h-24 bg-zinc-900/30 rounded-full flex items-center justify-center mb-5 border border-white/5 relative group">
+                                    <div className="absolute inset-0 bg-purple-500/20 blur-xl rounded-full opacity-50 group-hover:opacity-100 transition-opacity animate-pulse" />
+                                    <BarChart size={40} className="text-purple-400 relative z-10" />
                                 </div>
-                                <p className="text-zinc-500 text-xs font-bold uppercase tracking-wider">Biblioteca Ativa</p>
-                                <h4 className="text-4xl font-black text-white mb-2 tracking-tighter mt-1">{materials.length}</h4>
-                                <div className="px-3 py-1 bg-white/5 rounded-full border border-white/5">
-                                    <p className="text-xs text-zinc-400 font-medium">
-                                        Progresso Geral: <span className="text-white">{Math.round(materials.reduce((acc, m) => acc + (m.currentChapter / m.totalChapters), 0) / materials.length * 100)}%</span>
+                                <p className="text-zinc-500 text-xs font-bold uppercase tracking-wider mb-2">Biblioteca Ativa</p>
+                                <h4 className="text-5xl font-black text-white mb-4 tracking-tighter">{materials.length}</h4>
+                                <div className="px-5 py-2 glass-spatial rounded-full">
+                                    <p className="text-xs text-zinc-300 font-medium">
+                                        Progresso Geral: <span className="text-white font-bold ml-1">{Math.round(materials.reduce((acc, m) => acc + (m.currentChapter / m.totalChapters), 0) / materials.length * 100)}%</span>
                                     </p>
                                 </div>
                             </div>
@@ -517,7 +542,7 @@ const TaskPlanner: React.FC = () => {
                             materials.map(mat => {
                                 const pct = Math.round((mat.currentChapter / mat.totalChapters) * 100);
                                 return (
-                                    <div key={mat.id} className="bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-3xl p-6 relative group hover:border-white/20 transition-all backdrop-blur-xl flex flex-col justify-between h-[220px]">
+                                    <div key={mat.id} className="bubble hover:scale-[1.02] p-6 relative group transition-all duration-500 flex flex-col justify-between h-[240px]">
                                         <button
                                             onClick={() => deleteMaterial(mat.id)}
                                             className="absolute top-4 right-4 text-zinc-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all p-2 hover:bg-red-500/10 rounded-lg"

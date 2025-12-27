@@ -103,9 +103,9 @@ const FileTreeItem = ({
                     if (note.type === 'folder') setIsOpen(!isOpen);
                     else onSelect(note);
                 }}
-                className={`flex items-center gap-2 py-2 px-3 mx-2 rounded-xl cursor-pointer transition-all group relative overflow-hidden border border-transparent ${selectedNoteId === note.id
-                    ? 'bg-blue-600/10 text-blue-600 dark:text-blue-400 font-bold border-blue-500/20 shadow-[0_0_15px_rgba(37,99,235,0.1)]'
-                    : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/5'
+                className={`flex items-center gap-2 py-2.5 px-3 mx-2 rounded-xl cursor-pointer transition-all group relative overflow-hidden border border-transparent ${selectedNoteId === note.id
+                    ? 'glass-active text-blue-100 font-bold shadow-[0_0_20px_rgba(37,99,235,0.3)]'
+                    : 'text-zinc-400 hover:text-white hover:bg-white/10 bubble-hover'
                     } ${isDragOver ? 'bg-blue-500/20 ring-1 ring-blue-500 scale-[1.02]' : ''}`}
                 style={{ paddingLeft: `${level * 12 + 12}px` }}
             >
@@ -215,18 +215,18 @@ const NotesSidebar: React.FC<NotesSidebarProps> = ({ notes, selectedNoteId, onSe
 
     return (
         <div
-            className="w-full bg-zinc-50/50 dark:bg-zinc-950/30 flex flex-col h-full flex-shrink-0 backdrop-blur-sm border-r border-zinc-200 dark:border-white/5"
+            className="w-full glass-hydro border-r border-white/10 flex flex-col h-full flex-shrink-0 backdrop-blur-xl"
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleDropRoot}
         >
             {/* Header */}
-            <div className="p-4 border-b border-zinc-200 dark:border-white/5 space-y-4 bg-white/50 dark:bg-white/5 backdrop-blur-md">
+            <div className="p-4 border-b border-white/5 space-y-4 bg-transparent backdrop-blur-none">
                 <div className="flex items-center justify-between">
-                    <h2 className="font-bold text-zinc-800 dark:text-white flex items-center gap-2 text-sm tracking-wide">
-                        <Folder className="text-blue-600 dark:text-blue-500" size={16} /> BIBLIOTECA
+                    <h2 className="font-bold text-white flex items-center gap-2 text-xs tracking-widest uppercase opacity-80 pl-1">
+                        <Folder className="text-blue-400" size={14} /> BIBLIOTECA
                     </h2>
-                    <button onClick={onOpenSettings} className="p-1.5 rounded-lg text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-white/10 transition-colors">
-                        <Settings size={16} />
+                    <button onClick={onOpenSettings} className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-white/10 transition-colors">
+                        <Settings size={14} />
                     </button>
                 </div>
 
@@ -237,20 +237,20 @@ const NotesSidebar: React.FC<NotesSidebarProps> = ({ notes, selectedNoteId, onSe
                         placeholder="Buscar arquivos..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full bg-white dark:bg-zinc-950/50 border border-zinc-200 dark:border-white/10 rounded-xl py-2.5 pl-9 pr-3 text-sm text-zinc-900 dark:text-white focus:outline-none focus:border-blue-500/50 focus:bg-white dark:focus:bg-zinc-950 transition-all placeholder:text-zinc-500 dark:placeholder:text-zinc-600 shadow-sm dark:shadow-inner"
+                        className="w-full bg-black/20 border border-white/10 rounded-xl py-2.5 pl-9 pr-3 text-sm text-white focus:outline-none focus:border-blue-500/50 focus:bg-black/40 transition-all placeholder:text-zinc-500 shadow-inner"
                     />
                 </div>
 
                 <div className="flex gap-2">
                     <button
                         onClick={() => onCreateNote(null, 'markdown')}
-                        className="flex-1 bg-gradient-to-b from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white text-xs font-bold py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-900/40 active:scale-95 border border-blue-500/20"
+                        className="flex-1 bg-gradient-to-b from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white text-xs font-bold py-3 px-3 rounded-xl flex items-center justify-center gap-2 transition-all shadow-[0_0_15px_rgba(37,99,235,0.4)] active:scale-95 border border-blue-500/30 backdrop-blur-md"
                     >
                         <FilePlus size={14} /> Nota
                     </button>
                     <button
                         onClick={() => onCreateNote(null, 'folder')}
-                        className="flex-1 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white text-xs font-bold py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 transition-all border border-zinc-200 dark:border-white/10 active:scale-95"
+                        className="flex-1 bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white text-xs font-bold py-3 px-3 rounded-xl flex items-center justify-center gap-2 transition-all border border-white/10 active:scale-95 hover:shadow-lg backdrop-blur-md"
                     >
                         <FolderPlus size={14} /> Pasta
                     </button>

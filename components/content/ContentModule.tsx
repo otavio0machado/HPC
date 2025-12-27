@@ -638,11 +638,11 @@ const ContentModule: React.FC = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={onClick}
-                    className={`cursor-pointer group relative overflow-hidden rounded-3xl p-6 border transition-all duration-300
+                    className={`cursor-pointer group relative overflow-hidden rounded-[32px] p-6 border transition-all duration-300
                         ${isOver
-                            ? 'bg-blue-500/20 border-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.2)]'
-                            : 'bg-white/50 dark:bg-black/40 border-white/20 dark:border-white/5 hover:bg-white/80 dark:hover:bg-black/60 shadow-[0_8px_16px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2)]'
-                        } backdrop-blur-md`}
+                            ? 'bg-blue-500/20 border-blue-500 shadow-[0_0_40px_rgba(59,130,246,0.3)] scale-[1.02]'
+                            : 'glass-card hover:border-white/30 hover:shadow-2xl hover:-translate-y-1'
+                        } backdrop-blur-xl`}
                 >
                     <div className="flex flex-col h-full justify-between relative z-10">
                         <div className="flex items-start justify-between">
@@ -721,16 +721,16 @@ const ContentModule: React.FC = () => {
                     ) : (
                         // FOLDER VIEW: Header + Pills Grid
                         <div className="space-y-6">
-                            <div className="flex items-center gap-4 pb-4 border-b border-zinc-200 dark:border-white/5">
+                            <div className="flex items-center gap-4 pb-4 border-b border-white/10">
                                 <button
                                     onClick={() => setSelectedFolder(null)}
-                                    className="p-2 -ml-2 rounded-xl text-zinc-400 hover:text-white transition-colors bg-white/[0.05] hover:bg-white/[0.1] border border-transparent hover:border-white/10 backdrop-blur-md"
+                                    className="p-3 -ml-2 rounded-2xl text-zinc-400 hover:text-white transition-all bg-white/[0.05] hover:bg-white/[0.1] border border-transparent hover:border-white/10 backdrop-blur-md bubble-hover"
                                 >
                                     <ArrowLeft size={20} />
                                 </button>
                                 <div>
-                                    <h2 className="text-2xl font-black text-zinc-900 dark:text-white tracking-tight">{selectedFolder}</h2>
-                                    <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">
+                                    <h2 className="text-3xl font-black text-white tracking-tight drop-shadow-md">{selectedFolder}</h2>
+                                    <p className="text-sm text-zinc-400 font-medium">
                                         {groupedPills[selectedFolder]?.length || 0} pílulas nesta pasta
                                     </p>
                                 </div>
@@ -741,8 +741,12 @@ const ContentModule: React.FC = () => {
                                     <DraggablePillWrapper key={pill.id} pill={pill} index={index} />
                                 ))}
                                 {(groupedPills[selectedFolder] || []).length === 0 && (
-                                    <div className="col-span-full py-20 flex flex-col items-center justify-center text-zinc-400">
-                                        <p className="font-medium italic">Pasta vazia.</p>
+                                    <div className="col-span-full py-20 flex flex-col items-center justify-center text-zinc-500">
+                                        <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
+                                            <FolderPlus size={32} opacity={0.5} />
+                                        </div>
+                                        <p className="font-medium italic">Esta pasta está vazia.</p>
+                                        <p className="text-sm mt-1 opacity-70">Arraste pílulas para cá ou crie novo conteúdo.</p>
                                     </div>
                                 )}
                             </div>
@@ -752,17 +756,17 @@ const ContentModule: React.FC = () => {
                 </div>
                 <DragOverlay>
                     {activeDragId ? (
-                        <div className="w-[300px] h-[100px] bg-white dark:bg-zinc-800 rounded-3xl shadow-2xl opacity-90 flex items-center justify-center border-2 border-blue-500 scale-105 rotate-2">
+                        <div className="w-[300px] h-[100px] glass-hydro rounded-[32px] shadow-2xl opacity-90 flex items-center justify-center border border-blue-500/50 scale-105 rotate-2 backdrop-blur-xl">
                             <div className="flex items-center gap-3">
-                                <span className="p-2 bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-lg">
-                                    <Sparkles size={20} />
+                                <span className="p-3 bg-blue-500/20 text-blue-300 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+                                    <Sparkles size={24} />
                                 </span>
-                                <span className="font-bold text-zinc-900 dark:text-white">Movendo item...</span>
+                                <span className="font-bold text-white text-lg">Movendo item...</span>
                             </div>
                         </div>
                     ) : null}
                 </DragOverlay>
-            </DndContext>
+            </DndContext >
         );
     }
 
@@ -788,7 +792,7 @@ const ContentModule: React.FC = () => {
                                 border border-white/[0.2] dark:border-white/[0.1] hover:border-white/[0.3] dark:hover:border-white/[0.2]
                                 shadow-lg hover:shadow-xl
                                 ring-1 ring-white/[0.1]
-                                text-sm font-bold hover:scale-[1.02] active:scale-95"
+                                text-sm font-bold hover:scale-[1.02] active:scale-95 shadow-[0_4px_12px_rgba(0,0,0,0.3)]"
                         >
                             Mover para Pasta
                         </button>

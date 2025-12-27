@@ -57,16 +57,16 @@ const Methodology: React.FC = () => {
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ delay: idx * 0.1 }}
-                                    className="p-6 rounded-3xl bg-zinc-900/50 border border-white/5 hover:border-blue-500/30 transition-all group overflow-hidden relative"
+                                    className="glass-card p-6 rounded-[32px] bubble-hover group overflow-hidden relative"
                                 >
                                     <div className="relative z-10">
-                                        <div className="w-12 h-12 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-blue-600 transition-all duration-500">
+                                        <div className="w-12 h-12 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-blue-600 transition-all duration-500 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
                                             <item.icon className="w-6 h-6 text-blue-400 group-hover:text-white" />
                                         </div>
-                                        <h3 className="text-lg font-black text-white mb-2 group-hover:text-blue-400 transition-colors">{item.title}</h3>
-                                        <p className="text-sm text-zinc-500 leading-relaxed group-hover:text-zinc-400 transition-colors">{item.description}</p>
+                                        <h3 className="text-lg font-black text-white mb-2 group-hover:text-blue-400 transition-colors tracking-tight">{item.title}</h3>
+                                        <p className="text-sm text-zinc-400 leading-relaxed group-hover:text-zinc-300 transition-colors font-medium">{item.description}</p>
                                     </div>
-                                    <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-blue-500/5 blur-xl group-hover:bg-blue-500/10 transition-all" />
+                                    <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-blue-500/20 blur-[50px] group-hover:bg-blue-500/30 transition-all duration-700" />
                                 </motion.div>
                             ))}
                         </div>
@@ -80,18 +80,18 @@ const Methodology: React.FC = () => {
                         className="relative"
                     >
                         {/* Interactive Neural Net Visualization Placeholder */}
-                        <div className="absolute -inset-10 bg-gradient-to-r from-blue-600/20 to-indigo-600/20 rounded-full blur-3xl opacity-50 animate-pulse" />
+                        <div className="absolute -inset-20 bg-gradient-to-tr from-blue-600/30 to-indigo-600/30 rounded-full blur-[80px] opacity-60 animate-pulse" />
 
-                        <div className="relative bg-zinc-900/80 backdrop-blur-3xl border border-white/10 rounded-[40px] p-12 aspect-square flex flex-col items-center justify-center shadow-2xl overflow-hidden group">
+                        <div className="relative glass-hydro rounded-[48px] p-12 aspect-square flex flex-col items-center justify-center shadow-2xl overflow-hidden group border-t border-white/20">
                             {/* Animated Background Rings */}
                             {[1, 2, 3].map(i => (
                                 <div
                                     key={i}
-                                    className="absolute border border-blue-500/10 rounded-full animate-ping"
+                                    className="absolute border border-white/5 rounded-full animate-ping"
                                     style={{
-                                        width: `${i * 30}%`,
-                                        height: `${i * 30}%`,
-                                        animationDuration: `${i * 3}s`
+                                        width: `${i * 35}%`,
+                                        height: `${i * 35}%`,
+                                        animationDuration: `${i * 4}s`
                                     }}
                                 />
                             ))}
@@ -100,13 +100,14 @@ const Methodology: React.FC = () => {
                                 <motion.div
                                     animate={{ y: [0, -10, 0] }}
                                     transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                                    className="w-40 h-40 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-[0_0_60px_rgba(59,130,246,0.3)] border-4 border-white/10 mb-8 overflow-hidden group-hover:scale-110 transition-transform duration-700"
+                                    className="w-48 h-48 bg-gradient-to-br from-blue-500 to-indigo-700 rounded-full flex items-center justify-center shadow-[0_0_80px_rgba(59,130,246,0.5)] border-4 border-white/10 mb-8 overflow-hidden group-hover:scale-110 transition-transform duration-700 relative"
                                 >
-                                    <Brain size={80} className="text-white opacity-90 fill-white/20" />
+                                    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30 mix-blend-overlay"></div>
+                                    <Brain size={88} className="text-white opacity-95 fill-white/20 drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]" />
                                 </motion.div>
-                                <h3 className="text-2xl font-black text-white mb-2">NEURAL CORE</h3>
-                                <div className="text-5xl font-black text-blue-400 mb-2">98.2%</div>
-                                <p className="text-zinc-500 font-bold uppercase tracking-widest text-xs">Eficácia Cognitiva Medida</p>
+                                <h3 className="text-3xl font-black text-white mb-2 tracking-tight drop-shadow-lg">NEURAL CORE</h3>
+                                <div className="text-6xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-200 to-indigo-200 mb-2 drop-shadow-lg">98.2%</div>
+                                <p className="text-blue-200 font-bold uppercase tracking-widest text-xs bg-blue-500/20 px-3 py-1 rounded-full border border-blue-500/30">Eficácia Cognitiva Medida</p>
                             </div>
                         </div>
                     </motion.div>

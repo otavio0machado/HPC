@@ -245,50 +245,56 @@ const Simulados: React.FC = () => {
           <ChevronDown className="rotate-90" size={20} /> Voltar para lista
         </button>
 
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 shadow-2xl">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="bg-blue-600/20 p-3 rounded-xl border border-blue-500/20">
-              <Sparkles className="text-blue-400" size={24} />
+        <div className="glass-hydro rounded-[32px] p-8 shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px] -z-10" />
+
+          <div className="flex items-center gap-4 mb-8">
+            <div className="bg-blue-600/20 p-4 rounded-2xl border border-blue-500/20 shadow-[0_0_20px_rgba(37,99,235,0.2)]">
+              <Sparkles className="text-blue-400" size={28} />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-white">Gerador de Simulados IA</h2>
-              <p className="text-zinc-400">Crie provas personalizadas com questões inéditas.</p>
+              <h2 className="text-3xl font-black text-white tracking-tight">Gerador de Simulados IA</h2>
+              <p className="text-zinc-400 font-medium">Crie provas personalizadas com questões inéditas.</p>
             </div>
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-8">
 
             {/* Mode Selection */}
-            <div className="bg-zinc-950/50 p-4 rounded-xl border border-zinc-800">
-              <label className="block text-sm font-medium text-zinc-400 mb-3">Modo de Simulação</label>
-              <div className="grid grid-cols-2 gap-3">
+            <div className="bg-black/20 p-5 rounded-[24px] border border-white/5 backdrop-blur-sm">
+              <label className="block text-xs font-bold text-zinc-500 mb-4 uppercase tracking-widest pl-1">Modo de Simulação</label>
+              <div className="grid grid-cols-2 gap-4">
                 <button
                   onClick={() => setSimConfig(p => ({ ...p, mode: 'Rápido' }))}
-                  className={`flex flex-col items-center gap-2 py-4 px-4 rounded-xl border transition-all ${simConfig.mode === 'Rápido' ? 'bg-blue-600/20 border-blue-500 text-blue-100' : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:bg-zinc-800'}`}
+                  className={`flex flex-col items-center gap-3 py-6 px-4 rounded-2xl border transition-all duration-300 group ${simConfig.mode === 'Rápido' ? 'bg-blue-600/20 border-blue-500/50 text-blue-100 shadow-[0_0_20px_rgba(37,99,235,0.2)]' : 'bg-white/5 border-white/5 text-zinc-400 hover:bg-white/10 hover:border-white/10'}`}
                 >
-                  <Timer size={24} />
-                  <span className="font-bold">Modo Rápido</span>
-                  <span className="text-xs opacity-70">Questões diretas</span>
+                  <Timer size={32} className={`transition-transform duration-300 ${simConfig.mode === 'Rápido' ? 'scale-110 text-blue-400' : 'group-hover:scale-110'}`} />
+                  <div className="text-center">
+                    <span className="font-bold block text-lg">Modo Rápido</span>
+                    <span className="text-xs opacity-70 font-medium">Questões diretas</span>
+                  </div>
                 </button>
                 <button
                   onClick={() => setSimConfig(p => ({ ...p, mode: 'Maratona' }))}
-                  className={`flex flex-col items-center gap-2 py-4 px-4 rounded-xl border transition-all ${simConfig.mode === 'Maratona' ? 'bg-purple-600/20 border-purple-500 text-purple-100' : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:bg-zinc-800'}`}
+                  className={`flex flex-col items-center gap-3 py-6 px-4 rounded-2xl border transition-all duration-300 group ${simConfig.mode === 'Maratona' ? 'bg-purple-600/20 border-purple-500/50 text-purple-100 shadow-[0_0_20px_rgba(147,51,234,0.2)]' : 'bg-white/5 border-white/5 text-zinc-400 hover:bg-white/10 hover:border-white/10'}`}
                 >
-                  <BookOpen size={24} />
-                  <span className="font-bold">Modo Maratona</span>
-                  <span className="text-xs opacity-70">Textos longos e Imagens</span>
+                  <BookOpen size={32} className={`transition-transform duration-300 ${simConfig.mode === 'Maratona' ? 'scale-110 text-purple-400' : 'group-hover:scale-110'}`} />
+                  <div className="text-center">
+                    <span className="font-bold block text-lg">Modo Maratona</span>
+                    <span className="text-xs opacity-70 font-medium">Textos longos e Imagens</span>
+                  </div>
                 </button>
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-2">Tipo de Prova</label>
-              <div className="flex gap-3">
+              <label className="block text-xs font-bold text-zinc-500 mb-3 uppercase tracking-widest pl-1">Tipo de Prova</label>
+              <div className="flex gap-4">
                 {[ExamType.ENEM, ExamType.UFRGS].map(type => (
                   <button
                     key={type}
                     onClick={() => setSimConfig(p => ({ ...p, type }))}
-                    className={`flex-1 py-3 px-4 rounded-xl border font-bold transition-all ${simConfig.type === type ? 'bg-blue-600 border-blue-500 text-white' : 'bg-zinc-950 border-zinc-800 text-zinc-400 hover:bg-zinc-800'}`}
+                    className={`flex-1 py-4 px-6 rounded-2xl border font-bold text-lg transition-all duration-300 shadow-lg ${simConfig.type === type ? 'bg-blue-600 border-blue-500 text-white shadow-blue-900/40 transform scale-[1.02]' : 'bg-white/5 border-white/5 text-zinc-400 hover:bg-white/10'}`}
                   >
                     {type}
                   </button>
@@ -297,57 +303,66 @@ const Simulados: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-2">Área de Conhecimento</label>
-              <select
-                value={simConfig.area}
-                onChange={(e) => setSimConfig(p => ({ ...p, area: e.target.value }))}
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500"
-              >
-                {['Matemática', 'Física', 'Química', 'Biologia', 'História', 'Geografia', 'Literatura', 'Português', 'Linguagens', 'Humanas', 'Natureza'].map(area => (
-                  <option key={area} value={area}>{area}</option>
-                ))}
-              </select>
+              <label className="block text-xs font-bold text-zinc-500 mb-3 uppercase tracking-widest pl-1">Área de Conhecimento</label>
+              <div className="relative">
+                <select
+                  value={simConfig.area}
+                  onChange={(e) => setSimConfig(p => ({ ...p, area: e.target.value }))}
+                  className="w-full appearance-none bg-black/20 border border-white/10 rounded-2xl px-6 py-4 text-white font-medium focus:outline-none focus:border-blue-500/50 focus:bg-black/30 transition-all hover:bg-black/30 cursor-pointer"
+                >
+                  {['Matemática', 'Física', 'Química', 'Biologia', 'História', 'Geografia', 'Literatura', 'Português', 'Linguagens', 'Humanas', 'Natureza'].map(area => (
+                    <option key={area} value={area} className="bg-zinc-900">{area}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none" size={20} />
+              </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-5">
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">Dificuldade</label>
-                <select
-                  value={simConfig.difficulty}
-                  onChange={(e) => setSimConfig(p => ({ ...p, difficulty: e.target.value as any }))}
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500"
-                >
-                  <option value="Fácil">Fácil</option>
-                  <option value="Médio">Médio</option>
-                  <option value="Difícil">Difícil</option>
-                </select>
+                <label className="block text-xs font-bold text-zinc-500 mb-3 uppercase tracking-widest pl-1">Dificuldade</label>
+                <div className="relative">
+                  <select
+                    value={simConfig.difficulty}
+                    onChange={(e) => setSimConfig(p => ({ ...p, difficulty: e.target.value as any }))}
+                    className="w-full appearance-none bg-black/20 border border-white/10 rounded-2xl px-6 py-4 text-white font-medium focus:outline-none focus:border-blue-500/50 focus:bg-black/30 transition-all hover:bg-black/30 cursor-pointer"
+                  >
+                    <option value="Fácil" className="bg-zinc-900">Fácil</option>
+                    <option value="Médio" className="bg-zinc-900">Médio</option>
+                    <option value="Difícil" className="bg-zinc-900">Difícil</option>
+                  </select>
+                  <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none" size={20} />
+                </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">Nº Questões</label>
-                <select
-                  value={simConfig.count}
-                  onChange={(e) => setSimConfig(p => ({ ...p, count: parseInt(e.target.value) }))}
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500"
-                >
-                  <option value={3}>3 Questões</option>
-                  <option value={5}>5 Questões</option>
-                  <option value={10}>10 Questões</option>
-                </select>
+                <label className="block text-xs font-bold text-zinc-500 mb-3 uppercase tracking-widest pl-1">Nº Questões</label>
+                <div className="relative">
+                  <select
+                    value={simConfig.count}
+                    onChange={(e) => setSimConfig(p => ({ ...p, count: parseInt(e.target.value) }))}
+                    className="w-full appearance-none bg-black/20 border border-white/10 rounded-2xl px-6 py-4 text-white font-medium focus:outline-none focus:border-blue-500/50 focus:bg-black/30 transition-all hover:bg-black/30 cursor-pointer"
+                  >
+                    <option value={3} className="bg-zinc-900">3 Questões</option>
+                    <option value={5} className="bg-zinc-900">5 Questões</option>
+                    <option value={10} className="bg-zinc-900">10 Questões</option>
+                  </select>
+                  <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none" size={20} />
+                </div>
               </div>
             </div>
 
             <button
               onClick={handleStartGeneration}
               disabled={isGenerating}
-              className="w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-zinc-200 transition-all hover:scale-[1.01] shadow-xl flex items-center justify-center gap-2 mt-4 backdrop-blur-md border border-white/20"
+              className="w-full bg-white hover:bg-zinc-200 text-black font-black text-lg py-5 rounded-2xl transition-all hover:scale-[1.01] shadow-[0_0_30px_rgba(255,255,255,0.3)] flex items-center justify-center gap-3 mt-8 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed border border-white/50"
             >
               {isGenerating ? (
                 <>
-                  <Loader2 className="animate-spin" size={20} /> Gerando Prova...
+                  <Loader2 className="animate-spin" size={24} /> Gerando Prova...
                 </>
               ) : (
                 <>
-                  <BrainCircuit size={20} /> Gerar Simulado Agora
+                  <BrainCircuit size={24} /> INICIAR SIMULADO
                 </>
               )}
             </button>
@@ -372,21 +387,21 @@ const Simulados: React.FC = () => {
 
         <div className="space-y-12">
           {activeExam.map((q, qIndex) => (
-            <div key={q.id} className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden group hover:border-zinc-700 transition-colors">
+            <div key={q.id} className="glass-hydro rounded-[32px] overflow-hidden group hover:border-white/20 transition-all duration-300 shadow-xl">
 
               {/* Question Header / Number */}
-              <div className="px-8 pt-8 flex justify-between">
-                <span className="text-zinc-500 font-mono text-sm">QUESTÃO {qIndex + 1}</span>
+              <div className="px-10 pt-10 flex justify-between">
+                <span className="text-zinc-400 font-bold text-sm tracking-widest bg-white/5 px-3 py-1 rounded-full border border-white/5">QUESTÃO {qIndex + 1}</span>
               </div>
 
-              <div className="p-8">
+              <div className="p-10">
                 {/* Support Text (Marathon Mode) */}
                 {q.supportText && (
-                  <div className="mb-6 p-6 bg-zinc-950 rounded-xl border-l-4 border-zinc-700">
-                    <div className="flex items-center gap-2 text-zinc-500 text-xs font-bold uppercase tracking-wider mb-2">
-                      <BookOpen size={14} /> Texto de Apoio
+                  <div className="mb-8 p-8 bg-black/20 rounded-[24px] border border-white/5 backdrop-blur-sm">
+                    <div className="flex items-center gap-2 text-zinc-400 text-xs font-black uppercase tracking-widest mb-4">
+                      <BookOpen size={16} /> Texto de Apoio
                     </div>
-                    <p className="text-zinc-300 text-sm leading-relaxed whitespace-pre-line font-serif">
+                    <p className="text-zinc-200 text-base leading-loose whitespace-pre-line font-serif border-l-2 border-zinc-700 pl-6">
                       {q.supportText}
                     </p>
                   </div>
@@ -394,33 +409,33 @@ const Simulados: React.FC = () => {
 
                 {/* Image Placeholder (Marathon Mode) */}
                 {q.imageDescription && (
-                  <div className="mb-6 aspect-video bg-black/50 rounded-xl border border-dashed border-zinc-700 flex flex-col items-center justify-center p-8 text-center">
-                    <ImageIcon size={48} className="text-zinc-700 mb-4" />
-                    <p className="text-zinc-500 text-sm italic max-w-md">
+                  <div className="mb-8 aspect-video bg-black/30 rounded-[24px] border border-dashed border-white/10 flex flex-col items-center justify-center p-8 text-center backdrop-blur-md">
+                    <ImageIcon size={48} className="text-zinc-600 mb-4" />
+                    <p className="text-zinc-400 text-sm italic max-w-md font-medium">
                       "{q.imageDescription}"
                     </p>
-                    <span className="text-zinc-700 text-xs mt-2 font-mono uppercase">[Imagem da Questão]</span>
+                    <span className="text-zinc-600 text-xs mt-3 font-mono uppercase bg-black/40 px-2 py-1 rounded border border-white/5">[Imagem da Questão]</span>
                   </div>
                 )}
 
-                <div className="mb-8">
-                  <p className="text-lg text-white leading-relaxed font-serif font-medium">{q.text}</p>
+                <div className="mb-10">
+                  <p className="text-xl text-white leading-relaxed font-medium font-serif">{q.text}</p>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {q.options.map((opt, optIndex) => (
                     <button
                       key={optIndex}
                       onClick={() => handleAnswerSelect(q.id, optIndex)}
-                      className={`w-full text-left p-4 rounded-xl border transition-all flex items-start gap-4 ${userAnswers[q.id] === optIndex
-                        ? 'bg-blue-900/20 border-blue-500/50 text-blue-100'
-                        : 'bg-zinc-950 border-zinc-800/50 text-zinc-400 hover:bg-zinc-800'
+                      className={`w-full text-left p-6 rounded-2xl border transition-all flex items-start gap-5 group/opt ${userAnswers[q.id] === optIndex
+                        ? 'bg-blue-600/20 border-blue-500/50 text-blue-100 shadow-[0_0_20px_rgba(37,99,235,0.1)]'
+                        : 'bg-white/[0.02] border-white/5 text-zinc-400 hover:bg-white/[0.06] hover:border-white/10'
                         }`}
                     >
-                      <span className={`w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold border ${userAnswers[q.id] === optIndex ? 'bg-blue-500 border-blue-500 text-white' : 'border-zinc-700 text-zinc-600'}`}>
+                      <span className={`w-8 h-8 flex flex-shrink-0 items-center justify-center rounded-full text-sm font-bold border transition-all ${userAnswers[q.id] === optIndex ? 'bg-blue-500 border-blue-500 text-white scale-110 shadow-lg' : 'border-zinc-700 text-zinc-500 group-hover/opt:border-zinc-500 group-hover/opt:text-zinc-300'}`}>
                         {['A', 'B', 'C', 'D', 'E'][optIndex]}
                       </span>
-                      <span className="flex-1 text-sm pt-0.5">{opt}</span>
+                      <span className="flex-1 text-base pt-1 font-medium leading-relaxed">{opt}</span>
                     </button>
                   ))}
                 </div>
@@ -444,51 +459,60 @@ const Simulados: React.FC = () => {
   if (viewMode === 'result' && examResult) {
     return (
       <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-500">
-        <div className="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden mb-8">
-          <div className="bg-gradient-to-r from-zinc-900 to-zinc-950 p-8 text-center border-b border-zinc-800">
-            <h2 className="text-zinc-400 uppercase tracking-widest text-sm font-bold mb-4">Resultado do Simulado</h2>
-            <div className="flex justify-center items-end gap-2 mb-2">
-              <span className={`text-7xl font-black ${examResult.score >= 70 ? 'text-emerald-400' : examResult.score >= 50 ? 'text-yellow-400' : 'text-red-400'}`}>
+        <div className="glass-hydro rounded-[40px] overflow-hidden mb-12 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.7)] border border-white/20">
+          <div className="bg-gradient-to-b from-white/10 to-transparent p-12 text-center border-b border-white/10 relative">
+            <div className="absolute inset-0 bg-blue-500/10 blur-[100px] pointer-events-none" />
+            <h2 className="text-blue-200 uppercase tracking-[0.2em] text-xs font-black mb-6 relative z-10 bg-blue-500/10 inline-block px-4 py-1.5 rounded-full border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.2)]">Resultado do Simulado</h2>
+            <div className="flex justify-center items-end gap-3 mb-4 relative z-10">
+              <span className={`text-8xl font-black tracking-tighter drop-shadow-2xl ${examResult.score >= 70 ? 'text-emerald-400' : examResult.score >= 50 ? 'text-yellow-400' : 'text-red-400'}`}>
                 {examResult.score}%
               </span>
-              <span className="text-zinc-500 font-bold mb-4 text-xl">acertos</span>
+              <span className="text-zinc-400 font-bold mb-6 text-xl tracking-wide uppercase">acertos</span>
             </div>
-            <p className="text-zinc-400">Você acertou <strong className="text-white">{examResult.correct}</strong> de <strong className="text-white">{examResult.total}</strong> questões.</p>
+            <p className="text-zinc-300 font-medium relative z-10 text-lg">Você acertou <strong className="text-white bg-white/10 px-2 py-0.5 rounded-lg border border-white/10 mx-1">{examResult.correct}</strong> de <strong className="text-white bg-white/10 px-2 py-0.5 rounded-lg border border-white/10 mx-1">{examResult.total}</strong> questões.</p>
           </div>
 
-          <div className="p-8 space-y-8 bg-zinc-950/30">
+          <div className="p-10 space-y-10 bg-black/20 backdrop-blur-sm">
             {activeExam.map((q, index) => {
               const isCorrect = userAnswers[q.id] === q.correctOptionIndex;
               return (
-                <div key={q.id} className={`border-b border-zinc-800 pb-8 last:border-0 last:pb-0 ${isCorrect ? 'opacity-70 hover:opacity-100 transition-opacity' : ''}`}>
-                  <div className="flex gap-4">
-                    <div className={`mt-1 min-w-[32px] h-8 rounded-full flex items-center justify-center ${isCorrect ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500'}`}>
-                      {isCorrect ? <Check size={18} /> : <X size={18} />}
+                <div key={q.id} className={`border-b border-white/5 pb-10 last:border-0 last:pb-0 ${isCorrect ? 'opacity-80 hover:opacity-100 transition-opacity' : ''}`}>
+                  <div className="flex gap-6">
+                    <div className={`mt-1 min-w-[40px] h-10 rounded-xl flex items-center justify-center shadow-lg ${isCorrect ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'}`}>
+                      {isCorrect ? <Check size={20} strokeWidth={3} /> : <X size={20} strokeWidth={3} />}
                     </div>
                     <div className="flex-1">
-                      <p className="text-zinc-300 font-medium mb-3">{q.text}</p>
+                      <p className="text-zinc-200 font-medium mb-5 text-lg leading-relaxed">{q.text}</p>
 
-                      <div className="bg-zinc-950 border border-zinc-800 rounded-lg p-4 mb-3">
-                        <p className="text-sm text-zinc-500 mb-2 font-bold uppercase text-[10px] tracking-wider">Sua Resposta</p>
-                        <div className={`flex items-center gap-2 ${isCorrect ? 'text-emerald-400' : 'text-red-400'}`}>
-                          <span className="font-bold">{['A', 'B', 'C', 'D', 'E'][userAnswers[q.id] || 0]})</span>
-                          <span>{q.options[userAnswers[q.id] || 0]}</span>
+                      <div className="glass-card bg-black/40 rounded-2xl p-6 mb-4 border border-white/5">
+                        <p className="text-xs text-zinc-500 mb-3 font-bold uppercase tracking-widest flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-zinc-500"></span>
+                          Sua Resposta
+                        </p>
+                        <div className={`flex items-start gap-3 ${isCorrect ? 'text-emerald-400' : 'text-red-400'}`}>
+                          <span className="font-black text-lg bg-white/5 w-8 h-8 flex items-center justify-center rounded-lg">{['A', 'B', 'C', 'D', 'E'][userAnswers[q.id] || 0]}</span>
+                          <span className="font-medium text-base pt-1">{q.options[userAnswers[q.id] || 0]}</span>
                         </div>
                       </div>
 
                       {!isCorrect && (
-                        <div className="bg-emerald-900/10 border border-emerald-500/10 rounded-lg p-4 mb-3">
-                          <p className="text-sm text-emerald-700 mb-2 font-bold uppercase text-[10px] tracking-wider">Resposta Correta</p>
-                          <div className="flex items-center gap-2 text-emerald-400">
-                            <span className="font-bold">{['A', 'B', 'C', 'D', 'E'][q.correctOptionIndex]})</span>
-                            <span>{q.options[q.correctOptionIndex]}</span>
+                        <div className="glass-card bg-emerald-900/10 border-emerald-500/20 rounded-2xl p-6 mb-4 shadow-[0_0_20px_rgba(16,185,129,0.05)]">
+                          <p className="text-xs text-emerald-600 mb-3 font-bold uppercase tracking-widest flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            Resposta Correta
+                          </p>
+                          <div className="flex items-start gap-3 text-emerald-400">
+                            <span className="font-black text-lg bg-emerald-500/20 w-8 h-8 flex items-center justify-center rounded-lg border border-emerald-500/20">{['A', 'B', 'C', 'D', 'E'][q.correctOptionIndex]}</span>
+                            <span className="font-medium text-base pt-1">{q.options[q.correctOptionIndex]}</span>
                           </div>
                         </div>
                       )}
 
-                      <div className="mt-4 text-sm text-zinc-400 bg-zinc-900 p-4 rounded-xl border border-zinc-800/50">
-                        <strong className="text-zinc-300 block mb-1">Explicação:</strong>
-                        {q.explanation}
+                      <div className="mt-6 text-sm text-zinc-400 bg-white/[0.03] p-6 rounded-2xl border border-white/[0.05]">
+                        <strong className="text-blue-200 block mb-2 flex items-center gap-2 uppercase text-xs tracking-wider font-bold">
+                          <BrainCircuit size={14} /> Explicação
+                        </strong>
+                        <div className="leading-relaxed text-base">{q.explanation}</div>
                       </div>
                     </div>
                   </div>
@@ -497,13 +521,13 @@ const Simulados: React.FC = () => {
             })}
           </div>
 
-          <div className="p-6 bg-zinc-900 border-t border-zinc-800 flex justify-between items-center">
-            <button onClick={() => setViewMode('list')} className="text-zinc-500 hover:text-white text-sm px-4 py-2 hover:bg-white/5 rounded-lg transition-all">Descartar Resultado</button>
+          <div className="p-8 bg-black/40 border-t border-white/10 flex justify-between items-center backdrop-blur-md">
+            <button onClick={() => setViewMode('list')} className="text-zinc-500 hover:text-white text-sm px-6 py-3 hover:bg-white/10 rounded-xl transition-all font-bold tracking-wide">Descartar Resultado</button>
             <button
               onClick={handleSaveAIResult}
-              className="bg-white text-black font-bold py-3 px-8 rounded-xl hover:bg-zinc-200 transition-transform hover:scale-[1.02] shadow-lg flex items-center gap-2 backdrop-blur-md border border-white/20"
+              className="bg-white text-black font-black py-4 px-10 rounded-2xl hover:bg-zinc-200 transition-all hover:scale-[1.02] shadow-[0_0_40px_rgba(255,255,255,0.3)] flex items-center gap-3 backdrop-blur-md border border-white/20 active:scale-95"
             >
-              <CheckCircle2 size={18} /> Salvar no Histórico
+              <CheckCircle2 size={20} /> SALVAR NO HISTÓRICO
             </button>
           </div>
         </div>
@@ -521,22 +545,22 @@ const Simulados: React.FC = () => {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <div className="h-6 w-1 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.5)]"></div>
-            <h2 className="text-2xl font-bold text-white tracking-tight">Central de Simulados</h2>
+            <h2 className="text-3xl font-bold text-white tracking-tight drop-shadow-md">Central de Simulados</h2>
           </div>
-          <p className="text-zinc-400 text-sm">O que não é medido não pode ser melhorado.</p>
+          <p className="text-zinc-400 text-sm tracking-wide">O que não é medido não pode ser melhorado.</p>
         </div>
 
         <div className="flex gap-3">
           <button
             onClick={() => { setViewMode('manual_entry') }}
-            className="bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white font-bold px-5 py-3 rounded-xl flex items-center justify-center gap-2 transition-all border border-zinc-700 backdrop-blur-md hover:border-zinc-600"
+            className="bg-white/5 text-zinc-300 hover:bg-white/10 hover:text-white font-bold px-5 py-3 rounded-2xl flex items-center justify-center gap-2 transition-all border border-white/10 backdrop-blur-md hover:border-white/20 hover:scale-[1.02] shadow-lg"
           >
             <Calculator size={18} /> Lançar Manual
           </button>
 
           <button
             onClick={() => setViewMode('config')}
-            className="bg-white text-black hover:bg-zinc-200 font-bold px-6 py-3 rounded-xl flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-xl backdrop-blur-md border border-white/20"
+            className="bg-white/90 hover:bg-white text-black font-bold px-6 py-3 rounded-2xl flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-[0_0_20px_rgba(255,255,255,0.3)] backdrop-blur-md border border-white/20"
           >
             <BrainCircuit size={20} /> Gerar com IA
           </button>
@@ -549,8 +573,8 @@ const Simulados: React.FC = () => {
         {/* Left Column: History */}
         <div className="lg:col-span-2 space-y-6">
           {history.length === 0 ? (
-            <div className="border border-dashed border-zinc-800 rounded-2xl p-12 text-center bg-zinc-900/30">
-              <Activity size={48} className="mx-auto mb-4 text-zinc-700" />
+            <div className="glass-hydro border-dashed border-white/10 rounded-[32px] p-12 text-center">
+              <Activity size={48} className="mx-auto mb-4 text-zinc-600" />
               <h3 className="text-white font-bold text-lg">Sem dados de performance</h3>
               <p className="text-zinc-500 mt-2">Adicione seu primeiro simulado para gerar inteligência de prova.</p>
             </div>
@@ -558,7 +582,7 @@ const Simulados: React.FC = () => {
             history.map((sim) => {
               const globalPct = calculateGlobalPercentage(sim);
               return (
-                <div key={sim.id} className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden hover:border-zinc-700 transition-all group">
+                <div key={sim.id} className="glass-card rounded-[32px] overflow-hidden hover:border-white/20 transition-all duration-300 group hover:shadow-2xl">
                   <div className="p-6">
                     <div className="flex justify-between items-start mb-6">
                       <div className="flex items-center gap-3">
@@ -653,9 +677,12 @@ const Simulados: React.FC = () => {
 
         {/* Right Column: Global Stats Widget */}
         <div className="space-y-6">
-          <div className="bg-gradient-to-br from-zinc-900 to-zinc-950 border border-zinc-800 p-6 rounded-2xl sticky top-24">
-            <h3 className="text-white font-bold mb-6 flex items-center gap-2">
-              <TrendingUp className="text-blue-500" size={20} /> Métricas Globais
+          <div className="glass-hydro p-8 rounded-[32px] sticky top-24">
+            <h3 className="text-white font-bold mb-6 flex items-center gap-2 text-lg tracking-tight">
+              <div className="p-2 bg-blue-500/20 rounded-xl text-blue-400">
+                <TrendingUp size={20} />
+              </div>
+              Métricas Globais
             </h3>
 
             <div className="space-y-6">
@@ -701,30 +728,33 @@ const Simulados: React.FC = () => {
 
       {/* Manual Input Modal */}
       {viewMode === 'manual_entry' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-2xl shadow-2xl relative animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
-            <div className="px-6 py-5 border-b border-zinc-800 flex justify-between items-center bg-zinc-950/50 rounded-t-2xl">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <Calculator size={20} className="text-blue-500" /> Registrar Simulado
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xl p-6 animate-in fade-in duration-300">
+          <div className="glass-hydro rounded-[40px] w-full max-w-2xl shadow-[0_0_100px_rgba(37,99,235,0.2)] relative animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh] border border-white/20">
+            <div className="px-8 py-6 border-b border-white/10 flex justify-between items-center bg-white/[0.02]">
+              <h3 className="text-xl font-black text-white flex items-center gap-3 tracking-tight">
+                <div className="bg-blue-600/20 p-2 rounded-lg border border-blue-500/20">
+                  <Calculator size={22} className="text-blue-400" />
+                </div>
+                Registrar Simulado
               </h3>
-              <button onClick={() => setViewMode('list')} className="text-zinc-500 hover:text-white transition-colors">
+              <button onClick={() => setViewMode('list')} className="text-zinc-500 hover:text-white transition-colors bg-white/5 p-2 rounded-full hover:bg-white/10">
                 <X size={20} />
               </button>
             </div>
 
-            <div className="p-6 overflow-y-auto custom-scrollbar">
-              <div className="mb-6">
-                <label className="block text-xs font-medium text-zinc-500 mb-2 uppercase tracking-wider">Tipo de Prova</label>
-                <div className="flex gap-2">
+            <div className="p-8 overflow-y-auto custom-scrollbar">
+              <div className="mb-8">
+                <label className="block text-xs font-bold text-zinc-500 mb-3 uppercase tracking-widest pl-1">Tipo de Prova</label>
+                <div className="flex gap-4">
                   <button
                     onClick={() => setSelectedExamType(ExamType.ENEM)}
-                    className={`flex-1 py-3 rounded-xl border font-bold transition-all ${selectedExamType === ExamType.ENEM ? 'bg-blue-600 border-blue-500 text-white' : 'bg-zinc-950 border-zinc-800 text-zinc-400 hover:bg-zinc-900'}`}
+                    className={`flex-1 py-4 rounded-2xl border font-bold text-lg transition-all duration-300 ${selectedExamType === ExamType.ENEM ? 'bg-blue-600 border-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.4)] transform scale-[1.02]' : 'bg-black/20 border-white/5 text-zinc-400 hover:bg-black/40'}`}
                   >
                     ENEM
                   </button>
                   <button
                     onClick={() => setSelectedExamType(ExamType.UFRGS)}
-                    className={`flex-1 py-3 rounded-xl border font-bold transition-all ${selectedExamType === ExamType.UFRGS ? 'bg-blue-600 border-blue-500 text-white' : 'bg-zinc-950 border-zinc-800 text-zinc-400 hover:bg-zinc-900'}`}
+                    className={`flex-1 py-4 rounded-2xl border font-bold text-lg transition-all duration-300 ${selectedExamType === ExamType.UFRGS ? 'bg-blue-600 border-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.4)] transform scale-[1.02]' : 'bg-black/20 border-white/5 text-zinc-400 hover:bg-black/40'}`}
                   >
                     UFRGS
                   </button>
@@ -732,22 +762,22 @@ const Simulados: React.FC = () => {
               </div>
 
               <form onSubmit={handleSaveManualSimulado}>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-5 mb-8">
                   {examConfig[selectedExamType].areas.map((area) => (
                     <div key={area}>
-                      <label className="block text-xs font-medium text-zinc-400 mb-1.5">{area}</label>
-                      <div className="relative">
+                      <label className="block text-xs font-bold text-zinc-400 mb-2 pl-1">{area}</label>
+                      <div className="relative group">
                         <input
                           type="number"
                           min="0"
                           max={examConfig[selectedExamType].totalPerArea}
                           value={areasInput[area] || ''}
                           onChange={(e) => handleManualInputChange(area, e.target.value)}
-                          className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-blue-500 text-center font-mono"
+                          className="w-full bg-black/20 border border-white/10 rounded-xl px-3 py-3 text-white focus:outline-none focus:border-blue-500/50 focus:bg-black/40 text-center font-mono text-lg transition-all shadow-inner group-hover:border-white/20"
                           placeholder="0"
                           required
                         />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-600 text-xs">
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-600 text-[10px] font-bold">
                           /{examConfig[selectedExamType].totalPerArea}
                         </span>
                       </div>
@@ -755,8 +785,10 @@ const Simulados: React.FC = () => {
                   ))}
                 </div>
 
-                <div className="mb-8">
-                  <label className="block text-xs font-medium text-zinc-400 mb-1.5">Nota da Redação (Opcional)</label>
+                <div className="mb-10 bg-black/20 p-6 rounded-2xl border border-white/5">
+                  <label className="block text-xs font-bold text-zinc-400 mb-3 uppercase tracking-widest flex items-center gap-2">
+                    <FileText size={14} className="text-zinc-500" /> Nota da Redação (Opcional)
+                  </label>
                   <input
                     type="number"
                     min="0"
@@ -764,16 +796,16 @@ const Simulados: React.FC = () => {
                     step="20"
                     value={essayScore}
                     onChange={(e) => setEssayScore(e.target.value)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500"
+                    className="w-full bg-black/30 border border-white/10 rounded-xl px-6 py-4 text-white focus:outline-none focus:border-blue-500/50 text-xl font-mono text-center placeholder:text-zinc-700 transition-all focus:bg-black/40"
                     placeholder="Ex: 920"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-zinc-200 transition-transform hover:scale-[1.01] shadow-xl backdrop-blur-md border border-white/20"
+                  className="w-full bg-white text-black font-black py-5 rounded-2xl hover:bg-zinc-200 transition-transform hover:scale-[1.01] shadow-[0_0_30px_rgba(255,255,255,0.2)] backdrop-blur-md border border-white/20 active:scale-95 text-lg"
                 >
-                  Processar Resultados
+                  PROCESSAR RESULTADOS
                 </button>
               </form>
             </div>

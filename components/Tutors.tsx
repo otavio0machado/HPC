@@ -166,12 +166,12 @@ const Tutors: React.FC = () => {
           <div>
             <div className="flex items-center gap-3 mb-2">
               <div className="h-6 w-1 bg-gradient-to-b from-purple-400 to-indigo-600 rounded-full shadow-[0_0_15px_rgba(168,85,247,0.5)]" />
-              <h2 className="text-2xl font-bold text-white tracking-tight">Tutores de Elite</h2>
+              <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-200 to-indigo-200 tracking-tight drop-shadow-md">Tutores de Elite</h2>
             </div>
-            <p className="text-zinc-400 max-w-2xl">Escolha seu mentor especializado e tire dúvidas em tempo real. O histórico é salvo automaticamente.</p>
+            <p className="text-zinc-400 max-w-2xl tracking-wide">Escolha seu mentor especializado e tire dúvidas em tempo real. O histórico é salvo automaticamente.</p>
           </div>
-          <div className="px-4 py-2 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-bold uppercase tracking-wider flex items-center gap-2">
-            <Sparkles size={14} /> Gemini 2.0 Powered
+          <div className="px-4 py-2 rounded-full glass-spatial text-purple-300 text-xs font-bold uppercase tracking-wider flex items-center gap-2 border border-purple-500/20 shadow-[0_0_20px_rgba(168,85,247,0.2)]">
+            <Sparkles size={14} className="text-purple-400" /> Gemini 2.0 Powered
           </div>
         </div>
 
@@ -183,25 +183,26 @@ const Tutors: React.FC = () => {
                 key={sub.id}
                 onClick={() => handleSelectSubject(sub.id)}
                 className={`
-                    group relative overflow-hidden rounded-3xl p-6 text-left border transition-all duration-500
-                    bg-[var(--glass-bg)] border-[var(--border-glass)] hover:border-white/20
-                    hover:shadow-[0_0_30px_rgba(0,0,0,0.3)]
+                    group relative overflow-hidden rounded-[32px] p-6 text-left transition-all duration-500
+                    glass-card hover:border-white/40 hover:scale-[1.03]
+                    hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]
+                    active:scale-95 bubble-hover
                 `}
               >
-                <div className={`absolute -right-10 -top-10 w-24 h-24 bg-gradient-to-br ${sub.from} ${sub.to} rounded-full blur-[50px] opacity-0 group-hover:opacity-30 transition-opacity duration-500`} />
+                <div className={`absolute -right-12 -top-12 w-32 h-32 bg-gradient-to-br ${sub.from} ${sub.to} rounded-full blur-[60px] opacity-0 group-hover:opacity-40 transition-opacity duration-700`} />
                 {hasHistory && (
-                  <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-zinc-950/50 backdrop-blur border border-white/5 px-2.5 py-1 rounded-full">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.5)]"></span>
-                    <span className="text-[9px] font-bold text-zinc-300 uppercase tracking-wide">Ativo</span>
+                  <div className="absolute top-5 right-5 flex items-center gap-1.5 bg-black/60 backdrop-blur-md border border-white/10 px-3 py-1 rounded-full shadow-lg z-10">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.8)]"></span>
+                    <span className="text-[10px] font-bold text-white uppercase tracking-widest">Ativo</span>
                   </div>
                 )}
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 transition-all duration-300 bg-gradient-to-br ${sub.from} ${sub.to} text-white shadow-lg group-hover:scale-110 group-hover:rotate-3`}>
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-5 transition-all duration-500 bg-gradient-to-br ${sub.from} ${sub.to} text-white shadow-[0_8px_16px_-4px_rgba(0,0,0,0.3)] group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-[0_12px_24px_-6px_rgba(0,0,0,0.4)] relative z-10`}>
                   {sub.icon}
                 </div>
-                <div>
-                  <h3 className="text-lg font-bold text-white group-hover:text-blue-100 transition-colors">{sub.id}</h3>
-                  <p className="text-xs text-zinc-500 mt-1 flex items-center gap-1 group-hover:text-zinc-400 transition-colors">
-                    Acessar Tutor <ArrowRight size={10} className="group-hover:translate-x-1 transition-transform" />
+                <div className="relative z-10">
+                  <h3 className="text-xl font-bold text-white group-hover:text-white transition-colors tracking-tight">{sub.id}</h3>
+                  <p className="text-xs text-zinc-500 mt-2 flex items-center gap-1 group-hover:text-zinc-300 transition-colors font-medium">
+                    Acessar Tutor <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
                   </p>
                 </div>
               </button>
@@ -209,15 +210,16 @@ const Tutors: React.FC = () => {
           })}
         </div>
 
-        <div className="mt-12 p-1 rounded-3xl bg-gradient-to-r from-zinc-800 to-zinc-900 border border-white/5">
-          <div className="bg-zinc-950 rounded-[22px] p-6 lg:p-8 flex flex-col md:flex-row items-center gap-8">
-            <div className="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-900/40">
-              <BrainCircuit size={32} className="text-white" />
+        <div className="mt-12 p-1 rounded-[32px] bg-gradient-to-r from-zinc-800 to-zinc-900 border border-white/5 shadow-2xl">
+          <div className="bg-zinc-950 rounded-[28px] p-8 lg:p-10 flex flex-col md:flex-row items-center gap-10 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px]" />
+            <div className="flex-shrink-0 w-20 h-20 rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center shadow-lg shadow-blue-900/40 relative z-10">
+              <BrainCircuit size={40} className="text-white drop-shadow-md" />
             </div>
-            <div className="flex-1 text-center md:text-left">
-              <h4 className="text-xl font-bold text-white mb-2">Engenharia de Prompt Avançada</h4>
-              <p className="text-zinc-400 text-sm leading-relaxed">
-                Nossos tutores utilizam a tecnologia <span className="text-blue-400 font-bold">Google Gemini 2.0</span> com prompts refinados para o padrão UFRGS e ENEM. Peça resoluções passo-a-passo e dicas.
+            <div className="flex-1 text-center md:text-left relative z-10">
+              <h4 className="text-2xl font-bold text-white mb-3">Engenharia de Prompt Avançada</h4>
+              <p className="text-zinc-400 text-base leading-relaxed max-w-2xl">
+                Nossos tutores utilizam a tecnologia <span className="text-blue-400 font-bold bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">Google Gemini 2.0</span> com prompts refinados para o padrão UFRGS e ENEM. Peça resoluções passo-a-passo e dicas.
               </p>
             </div>
           </div>
@@ -229,28 +231,31 @@ const Tutors: React.FC = () => {
   const currentSubjectData = subjects.find(s => s.id === selectedSubject);
 
   return (
-    <div className="h-[750px] flex flex-col bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-3xl overflow-hidden animate-in zoom-in-95 duration-300 backdrop-blur-xl shadow-2xl">
-      <div className="flex items-center justify-between p-4 px-6 border-b border-white/5 bg-white/5 backdrop-blur-md">
-        <div className="flex items-center gap-4">
+    <div className="h-[750px] flex flex-col glass-hydro rounded-[40px] overflow-hidden animate-in zoom-in-95 duration-500 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.6)] border border-white/10">
+      <div className="flex items-center justify-between p-5 px-8 border-b border-white/5 bg-white/[0.02] backdrop-blur-xl">
+        <div className="flex items-center gap-5">
           <button
             onClick={handleBack}
-            className="p-2.5 rounded-xl transition-all group
+            className="p-3 rounded-2xl transition-all group
                 bg-white/[0.05] hover:bg-white/[0.1]
-                border border-white/[0.1] hover:border-white/[0.2]
-                backdrop-blur-md shadow-lg shadow-black/5
-                text-zinc-400 hover:text-white"
+                border border-white/[0.1] hover:border-white/[0.3]
+                backdrop-blur-md shadow-lg
+                text-zinc-400 hover:text-white bubble-hover"
           >
-            <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+            <ArrowLeft size={22} className="group-hover:-translate-x-1 transition-transform" />
           </button>
 
-          <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br ${currentSubjectData?.from} ${currentSubjectData?.to} text-white shadow-lg`}>
+          <div className="flex items-center gap-4">
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center bg-gradient-to-br ${currentSubjectData?.from} ${currentSubjectData?.to} text-white shadow-[0_0_20px_rgba(0,0,0,0.3)] border border-white/20`}>
               {currentSubjectData?.icon}
             </div>
             <div>
-              <h3 className="font-bold text-white text-base">Tutor de {selectedSubject}</h3>
-              <span className="flex items-center gap-1.5 text-xs text-emerald-400 font-medium bg-emerald-500/10 px-2 py-0.5 rounded-full w-fit border border-emerald-500/20">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <h3 className="font-bold text-white text-lg tracking-tight">Tutor de {selectedSubject}</h3>
+              <span className="flex items-center gap-2 text-xs text-emerald-400 font-bold bg-emerald-500/10 px-3 py-1 rounded-full w-fit border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
                 Online
               </span>
             </div>
@@ -259,24 +264,24 @@ const Tutors: React.FC = () => {
         <button
           onClick={clearHistory}
           title="Limpar Histórico"
-          className="p-2.5 rounded-xl transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider
+          className="p-3 rounded-2xl transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider
             bg-white/[0.05] hover:bg-red-500/10
             border border-white/[0.1] hover:border-red-500/20
             backdrop-blur-md
-            text-zinc-500 hover:text-red-400"
+            text-zinc-500 hover:text-red-400 hover:shadow-lg"
         >
-          <Trash2 size={16} /> <span className="hidden sm:inline">Limpar</span>
+          <Trash2 size={18} /> <span className="hidden sm:inline">Limpar</span>
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth custom-scrollbar">
+      <div className="flex-1 overflow-y-auto p-6 space-y-8 scroll-smooth custom-scrollbar">
         {messages.map((msg, idx) => (
           <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[85%] md:max-w-[70%] rounded-2xl p-5 shadow-lg ${msg.role === 'user'
-              ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-br-sm'
-              : 'bg-zinc-800/80 backdrop-blur-md border border-white/5 text-zinc-100 rounded-bl-sm'
+            <div className={`max-w-[85%] md:max-w-[70%] rounded-[24px] p-6 shadow-xl ${msg.role === 'user'
+              ? 'glass-active text-white rounded-br-sm border-blue-400/30'
+              : 'glass-card bg-zinc-900/60 text-zinc-100 rounded-bl-sm border-white/10'
               }`}>
-              <div className="flex items-center gap-2 mb-2 opacity-70 text-xs font-bold tracking-wider uppercase">
+              <div className={`flex items-center gap-2 mb-3 opacity-80 text-xs font-bold tracking-widest uppercase ${msg.role === 'user' ? 'text-blue-100' : 'text-zinc-500'}`}>
                 {msg.role === 'user' ? <User size={12} /> : <Bot size={12} />}
                 <span>{msg.role === 'user' ? 'Você' : 'HPC Tutor'}</span>
               </div>
@@ -287,16 +292,16 @@ const Tutors: React.FC = () => {
                     rehypePlugins={[[rehypeKatex, { throwOnError: false }]]}
                     components={{
                       strong: ({ node, ...props }) => <strong className="font-bold text-white" {...props} />,
-                      ul: ({ node, ...props }) => <ul className="list-disc pl-4 mb-2 space-y-1" {...props} />,
-                      ol: ({ node, ...props }) => <ol className="list-decimal pl-4 mb-2 space-y-1" {...props} />,
-                      p: ({ node, ...props }) => <p className="mb-2 last:mb-0" {...props} />,
-                      code: ({ node, ...props }) => <code className="bg-white/10 px-1 py-0.5 rounded text-xs font-mono" {...props} />
+                      ul: ({ node, ...props }) => <ul className="list-disc pl-4 mb-3 space-y-1 marker:text-zinc-500" {...props} />,
+                      ol: ({ node, ...props }) => <ol className="list-decimal pl-4 mb-3 space-y-1 marker:text-zinc-500" {...props} />,
+                      p: ({ node, ...props }) => <p className="mb-3 last:mb-0" {...props} />,
+                      code: ({ node, ...props }) => <code className="bg-white/5 border border-white/10 px-1.5 py-0.5 rounded text-xs font-mono text-blue-200" {...props} />
                     }}
                   >
                     {msg.text}
                   </ReactMarkdown>
                 ) : (
-                  <div className="whitespace-pre-wrap">{msg.text}</div>
+                  <div className="whitespace-pre-wrap font-medium">{msg.text}</div>
                 )}
               </div>
             </div>
@@ -304,8 +309,8 @@ const Tutors: React.FC = () => {
         ))}
         {isLoading && (
           <div className="flex justify-start">
-            <div className="bg-zinc-800/80 backdrop-blur-md rounded-2xl p-4 border border-white/5 flex items-center gap-2">
-              <span className="text-xs font-bold text-zinc-500 mr-2">DIGITANDO</span>
+            <div className="glass-card rounded-[24px] p-5 flex items-center gap-3">
+              <span className="text-[10px] font-bold text-zinc-500 tracking-widest uppercase">Gerando</span>
               <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce"></div>
               <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce delay-75"></div>
               <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce delay-150"></div>
@@ -315,22 +320,22 @@ const Tutors: React.FC = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      <form onSubmit={handleSendMessage} className="p-4 bg-zinc-900 border-t border-white/5 select-none">
-        <div className="flex gap-3 relative max-w-4xl mx-auto">
+      <form onSubmit={handleSendMessage} className="p-6 bg-black/20 border-t border-white/5 select-none backdrop-blur-sm">
+        <div className="flex gap-4 relative max-w-4xl mx-auto">
           <input
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder={`Pergunte algo sobre ${selectedSubject}...`}
-            className="flex-1 bg-zinc-950/50 text-white border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-zinc-600 shadow-inner"
+            className="flex-1 bg-black/20 text-white border border-white/10 rounded-full px-8 py-5 focus:outline-none focus:border-blue-500/50 focus:bg-black/40 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder:text-zinc-600 shadow-inner font-medium"
             disabled={isLoading}
           />
           <button
             type="submit"
             disabled={!inputValue.trim() || isLoading}
-            className="bg-blue-600 hover:bg-blue-500 text-white p-4 rounded-2xl disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-blue-900/20 active:scale-95 hover:rotate-3 backdrop-blur-md border border-white/10"
+            className="bg-blue-600 hover:bg-blue-500 text-white p-5 rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:scale-105 active:scale-95 border border-white/20 group"
           >
-            <Send size={20} />
+            <Send size={22} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
           </button>
         </div>
       </form>

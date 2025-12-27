@@ -12,7 +12,7 @@ const BookCard: React.FC<BookCardProps> = ({ book, onClick, onDelete }) => {
     return (
         <div
             onClick={onClick}
-            className="group relative bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-2xl overflow-hidden cursor-pointer hover:border-white/20 hover:shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-all duration-300 transform hover:-translate-y-1 backdrop-blur-md"
+            className="group relative glass-card rounded-[24px] overflow-hidden cursor-pointer hover:border-white/30 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] transition-all duration-500 transform hover:-translate-y-2 backdrop-blur-xl"
         >
             {/* Cover / Placeholder */}
             <div className="aspect-[2/3] bg-zinc-900/50 w-full relative overflow-hidden border-b border-white/5">
@@ -23,9 +23,9 @@ const BookCard: React.FC<BookCardProps> = ({ book, onClick, onDelete }) => {
                         className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500 group-hover:scale-105"
                     />
                 ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center text-zinc-600 bg-gradient-to-br from-zinc-800 to-zinc-950">
-                        <BookIcon size={48} strokeWidth={1} className="opacity-50" />
-                        <span className="text-[10px] font-bold mt-3 uppercase tracking-widest bg-black/30 px-2 py-1 rounded text-zinc-500">{book.format}</span>
+                    <div className="w-full h-full flex flex-col items-center justify-center text-zinc-600 bg-gradient-to-br from-zinc-800 to-zinc-950 border-b border-white/5">
+                        <BookIcon size={48} strokeWidth={1} className="opacity-40 mb-3" />
+                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] bg-white/5 px-3 py-1.5 rounded-lg text-zinc-500 border border-white/5">{book.format}</span>
                     </div>
                 )}
 
@@ -33,9 +33,9 @@ const BookCard: React.FC<BookCardProps> = ({ book, onClick, onDelete }) => {
                 <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                 {/* Progress Bar Overlay */}
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-zinc-950">
+                <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-black/50 backdrop-blur-sm">
                     <div
-                        className="h-full bg-gradient-to-r from-blue-600 to-cyan-500 transition-all duration-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]"
+                        className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 transition-all duration-500 shadow-[0_0_10px_rgba(59,130,246,0.6)]"
                         style={{ width: `${book.progress_percentage}%` }}
                     />
                 </div>
@@ -43,10 +43,10 @@ const BookCard: React.FC<BookCardProps> = ({ book, onClick, onDelete }) => {
                 {/* Delete Button (Visible on Hover) */}
                 <button
                     onClick={onDelete}
-                    className="absolute top-2 right-2 p-2 bg-black/60 text-white rounded-xl opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500/80 backdrop-blur-sm border border-white/10"
+                    className="absolute top-3 right-3 p-2.5 bg-black/40 text-white rounded-xl opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:scale-110 backdrop-blur-md border border-white/10 shadow-lg"
                     title="Excluir"
                 >
-                    <Trash2 size={14} />
+                    <Trash2 size={16} />
                 </button>
             </div>
 

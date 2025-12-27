@@ -18,7 +18,7 @@ import { PlannerTask, ErrorEntry, SimuladoResult } from '../../types';
 import { motion } from 'framer-motion';
 import ThemeToggle from '../ThemeToggle';
 import SpotlightCard from '../SpotlightCard';
-
+import ExperienceBar from '../gamification/ExperienceBar';
 
 interface DashboardWidgetsProps {
     currentUser: any;
@@ -33,6 +33,7 @@ interface DashboardWidgetsProps {
     dueFlashcardsCount: number;
     latestSimulado: SimuladoResult | null;
     setIsModalOpen: (isOpen: boolean) => void;
+    onOpenFocusMode: () => void;
     getGreeting: () => string;
 }
 
@@ -49,6 +50,7 @@ const DashboardWidgets: React.FC<DashboardWidgetsProps> = ({
     dueFlashcardsCount,
     latestSimulado,
     setIsModalOpen,
+    onOpenFocusMode,
     getGreeting
 }) => {
 
@@ -71,23 +73,41 @@ const DashboardWidgets: React.FC<DashboardWidgetsProps> = ({
                 </div>
                 <div className="flex items-center gap-3">
                     <ThemeToggle showLabel={false} />
+
                     <button
-                        onClick={() => setIsModalOpen(true)}
+                        onClick={onOpenFocusMode}
                         className="group relative inline-flex items-center justify-center px-6 py-2.5 font-bold text-white 
-                            bg-gradient-to-r from-emerald-600 to-teal-600 backdrop-blur-md
+                            bg-gradient-to-r from-indigo-600 to-purple-600 backdrop-blur-md
                             rounded-xl border border-white/20 
-                            shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50
+                            shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50
                             ring-1 ring-white/10
                             transition-all duration-300 
-                            hover:scale-[1.02] active:scale-95
-                            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-600"
+                            hover:scale-[1.02] active:scale-95"
                     >
-                        <div className="absolute -inset-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-600 opacity-20 blur-lg transition-all duration-300 group-hover:opacity-40" />
+                        <div className="absolute -inset-2 rounded-xl bg-gradient-to-r from-indigo-400 to-purple-600 opacity-20 blur-lg transition-all duration-300 group-hover:opacity-40" />
                         <span className="relative flex items-center gap-2 z-10">
-                            <Plus size={18} /> Registrar Sessão
+                            <Zap size={18} className="fill-white" /> Modo Flow
                         </span>
                     </button>
+
+                    <button
+                        onClick={() => setIsModalOpen(true)}
+                        className="group relative inline-flex items-center justify-center p-2.5 font-bold text-zinc-700 dark:text-white 
+                            bg-white/10 dark:bg-white/5 backdrop-blur-md
+                            rounded-xl border border-black/5 dark:border-white/10 
+                            hover:bg-black/5 dark:hover:bg-white/10
+                            transition-all duration-300 
+                            hover:scale-105 active:scale-95"
+                        title="Registrar Sessão Manual"
+                    >
+                        <Plus size={20} />
+                    </button>
                 </div>
+            </div>
+
+            {/* Gamification Bar - Inline */}
+            <div className="mb-8">
+                <ExperienceBar userId={currentUser.id} />
             </div>
 
             {/* BENTO GRID LAYOUT */}
