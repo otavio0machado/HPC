@@ -275,16 +275,35 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
     const DraggableNavItem = ({ item, isActive, isLocked, changeTab }: any) => {
         const controls = useDragControls();
+        const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
+
+        const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+            setMousePosition({ x, y });
+        };
 
         return (
             <Reorder.Item key={item.id} value={item} style={{ position: 'relative' }} dragListener={false} dragControls={controls}>
-                <div className={`
+                <div
+                    className={`
                     relative w-full flex items-center gap-2 px-4 py-3.5 rounded-2xl text-sm font-medium transition-all duration-300 group
                     ${isActive
-                        ? 'text-blue-600 dark:text-white font-bold shadow-[0_4px_20px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.2)]'
-                        : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
-                    }
-                `}>
+                            ? 'text-blue-600 dark:text-white font-bold shadow-[0_4px_20px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.2)]'
+                            : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                        }
+                `}
+                    onMouseMove={handleMouseMove}
+                >
+                    {/* Mouse Spotlight Effect */}
+                    <div
+                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"
+                        style={{
+                            background: `radial-gradient(circle 150px at ${mousePosition.x}% ${mousePosition.y}%, rgba(255,255,255,0.12) 0%, transparent 70%)`
+                        }}
+                    />
+
                     {/* Drag Handle */}
                     <div
                         onPointerDown={(e) => controls.start(e)}
@@ -339,7 +358,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
             {/* --- MACOS TAHOE LIQUID GLASS SIDEBAR --- */}
             {/* Floating, decoupled sidebar with deep blur */}
-            <aside className="fixed left-4 top-4 bottom-4 w-72 rounded-[32px] bg-white/80 dark:bg-white/5 backdrop-blur-3xl border border-black/5 dark:border-white/10 z-50 flex flex-col justify-between p-6 shadow-[0_4px_30px_rgba(0,0,0,0.1)] dark:shadow-[0_0_40px_rgba(0,0,0,0.5)]">
+            <aside className="fixed left-4 top-4 bottom-4 w-72 rounded-[32px] bg-white/70 dark:bg-white/[0.03] backdrop-blur-3xl border border-black/[0.06] dark:border-white/10 z-50 flex flex-col justify-between p-6 shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
 
                 {/* Logo & Gradient Orb */}
                 {/* Logo & Gradient Orb */}
@@ -351,8 +370,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                         <div className="absolute inset-0 bg-white/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     </div>
                     <div>
-                        <h1 className="text-xl font-bold tracking-tight text-zinc-800 dark:text-white/90">HPC<span className="text-blue-500 dark:text-blue-400">.</span></h1>
-                        <p className="text-[10px] text-zinc-500 dark:text-white/40 uppercase tracking-widest font-medium">Club Member</p>
+                        <h1 className="text-xl font-bold text-zinc-800 dark:text-white/90 text-spatial-title">HPC<span className="text-blue-500 dark:text-blue-400">.</span></h1>
+                        <p className="text-[10px] text-zinc-500 dark:text-white/40 text-spatial-caption">Club Member</p>
                     </div>
                 </div>
 
@@ -465,10 +484,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
                             {/* Info */}
                             <div className="text-left flex-1 min-w-0">
-                                <p className="text-sm font-bold text-zinc-800 dark:text-zinc-100 truncate tracking-tight">{currentUser.name}</p>
+                                <p className="text-sm font-bold text-zinc-800 dark:text-zinc-100 truncate text-spatial">{currentUser.name}</p>
                                 <div className="flex items-center gap-1.5 mt-0.5">
                                     <div className={`w-1.5 h-1.5 rounded-full ${currentUser.subscription_tier === 'pro' ? 'bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.6)] animate-pulse' : 'bg-zinc-400 dark:bg-zinc-600'}`} />
-                                    <p className="text-[10px] text-zinc-500 dark:text-white/40 truncate font-bold uppercase tracking-widest">
+                                    <p className="text-[10px] text-zinc-500 dark:text-white/40 truncate text-spatial-caption">
                                         {currentUser.subscription_tier === 'pro' ? 'PRO ACCOUNT' : 'FREE PLAN'}
                                     </p>
                                 </div>
@@ -525,7 +544,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                                 <div className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-gradient-to-tr from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/30 dark:shadow-blue-900/30">
                                     <Clock size={32} className="text-white" />
                                 </div>
-                                <h3 className="text-2xl font-black text-zinc-900 dark:text-white tracking-tight">Focus Session</h3>
+                                <h3 className="text-2xl font-black text-zinc-900 dark:text-white text-spatial-title">Focus Session</h3>
                                 <p className="text-zinc-500 dark:text-zinc-400 text-sm mt-2">Registre seu tempo de foco.</p>
                             </div>
                             <form onSubmit={handleAddSession}>

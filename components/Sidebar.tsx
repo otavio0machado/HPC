@@ -70,7 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             {/* Sidebar Container */}
             <aside
                 className={`
-          fixed top-0 left-0 z-50 h-screen bg-zinc-950/95 backdrop-blur-xl border-r border-white/5 transition-all duration-300 ease-in-out
+          fixed top-0 left-0 z-50 h-screen bg-zinc-950/40 backdrop-blur-3xl backdrop-saturate-150 border-r border-white/5 transition-all duration-300 ease-in-out
           ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
           ${isCollapsed ? 'md:w-20' : 'md:w-64'}
           w-64 flex flex-col justify-between
