@@ -29,7 +29,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLoginClick, isLoggedIn, onLogout }) =
   return (
     <nav className={`fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-6xl z-50 transition-all duration-500 rounded-full px-6 
       ${isScrolled
-        ? 'py-3 bg-white/80 dark:bg-white/[0.03] backdrop-blur-xl border border-black/5 dark:border-white/[0.1] shadow-[0_8px_32px_0_rgba(0,0,0,0.1)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] ring-1 ring-black/5 dark:ring-white/[0.05] inset bg-gradient-to-br from-white/90 to-white/80 dark:from-white/[0.1] dark:to-white/[0.02]'
+        ? 'py-3 glass-spatial bg-white/[0.01] border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.36)]'
         : 'py-4 bg-transparent border-transparent'
       }`}>
       <div className="flex items-center justify-between">

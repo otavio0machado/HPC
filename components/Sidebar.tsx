@@ -16,6 +16,8 @@ import {
     Menu
 } from 'lucide-react';
 import { User as UserType } from '../types';
+import { SpotlightButton } from './SpotlightCard';
+
 
 interface SidebarProps {
     activeTab: string;
@@ -70,7 +72,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             {/* Sidebar Container */}
             <aside
                 className={`
-          fixed top-0 left-0 z-50 h-screen bg-zinc-950/40 backdrop-blur-3xl backdrop-saturate-150 border-r border-white/5 transition-all duration-300 ease-in-out
+          fixed top-4 left-4 bottom-4 z-50 glass-spatial rounded-[32px] transition-all duration-300 ease-in-out overflow-hidden
           ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
           ${isCollapsed ? 'md:w-20' : 'md:w-64'}
           w-64 flex flex-col justify-between
@@ -105,34 +107,43 @@ const Sidebar: React.FC<SidebarProps> = ({
                         const isLocked = item.restricted && currentUser.subscription_tier !== 'pro';
 
                         return (
-                            <button
+                            <SpotlightButton
                                 key={item.id}
-                                onClick={() => handleTabClick(item.id, item.restricted)}
                                 className={`
-                  w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 group relative
+                  w-full rounded-xl transition-all duration-200 group relative
                   ${isActive
-                                        ? 'bg-blue-600/10 text-blue-500'
-                                        : 'text-zinc-400 hover:bg-white/5 hover:text-zinc-200'}
-                  ${isCollapsed ? 'justify-center' : ''}
+                                        ? 'glass-active text-blue-400'
+                                        : 'hover:bg-white/5'}
                 `}
                             >
-                                <Icon size={20} className={`min-w-[20px] ${isActive ? 'text-blue-500' : 'group-hover:text-zinc-200'}`} />
+                                <button
+                                    onClick={() => handleTabClick(item.id, item.restricted)}
+                                    className={`
+                    w-full flex items-center gap-3 px-3 py-3 transition-all duration-200
+                    ${isActive
+                                            ? 'text-blue-400'
+                                            : 'text-zinc-400 hover:text-zinc-200'}
+                    ${isCollapsed ? 'justify-center' : ''}
+                  `}
+                                >
+                                    <Icon size={20} className={`min-w-[20px] ${isActive ? 'text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]' : 'group-hover:text-zinc-200'}`} />
 
-                                {!isCollapsed && (
-                                    <span className="font-medium text-sm whitespace-nowrap">{item.label}</span>
-                                )}
+                                    {!isCollapsed && (
+                                        <span className="font-medium text-sm whitespace-nowrap">{item.label}</span>
+                                    )}
 
-                                {!isCollapsed && isLocked && (
-                                    <Lock size={14} className="ml-auto text-zinc-600" />
-                                )}
+                                    {!isCollapsed && isLocked && (
+                                        <Lock size={14} className="ml-auto text-zinc-600" />
+                                    )}
 
-                                {/* Collapsed Tooltip */}
-                                {isCollapsed && (
-                                    <div className="absolute left-full ml-2 px-2 py-1 bg-zinc-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
-                                        {item.label}
-                                    </div>
-                                )}
-                            </button>
+                                    {/* Collapsed Tooltip */}
+                                    {isCollapsed && (
+                                        <div className="absolute left-full ml-2 px-2 py-1 bg-zinc-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+                                            {item.label}
+                                        </div>
+                                    )}
+                                </button>
+                            </SpotlightButton>
                         );
                     })}
                 </nav>

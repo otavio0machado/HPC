@@ -321,7 +321,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                         <div className={`
                             absolute inset-0 rounded-2xl transition-all duration-300 pointer-events-none
                             ${isActive
-                                ? 'bg-white dark:bg-gradient-to-r dark:from-blue-600/90 dark:to-indigo-600/90 backdrop-blur-md border border-black/5 dark:border-white/10'
+                                ? 'glass-active'
                                 : 'bg-transparent hover:bg-black/5 dark:hover:bg-white/5'
                             }
                         `} />
@@ -358,20 +358,19 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
             {/* --- MACOS TAHOE LIQUID GLASS SIDEBAR --- */}
             {/* Floating, decoupled sidebar with deep blur */}
-            <aside className="fixed left-4 top-4 bottom-4 w-72 rounded-[32px] bg-white/70 dark:bg-white/[0.03] backdrop-blur-3xl border border-black/[0.06] dark:border-white/10 z-50 flex flex-col justify-between p-6 shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+            <aside className="fixed left-4 top-4 bottom-4 w-72 rounded-[32px] glass-spatial z-50 flex flex-col justify-between p-6 transition-all duration-300">
 
                 {/* Logo & Gradient Orb */}
                 {/* Logo & Gradient Orb */}
-                <div className="flex items-center gap-3 mb-10 px-2 group">
+                <div className="flex items-center gap-3 mb-10 px-2 group relative z-10">
                     <div className="relative">
-                        <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-500 to-purple-600 shadow-[0_0_20px_rgba(59,130,246,0.3)] group-hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] transition-all duration-500 flex items-center justify-center">
-                            <span className="font-black italic text-white text-lg">H</span>
+                        <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-500 to-indigo-600 shadow-[0_0_20px_rgba(59,130,246,0.3)] group-hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] transition-all duration-500 flex items-center justify-center border border-white/20">
+                            <span className="font-black italic text-white text-lg drop-shadow-md">H</span>
                         </div>
-                        <div className="absolute inset-0 bg-white/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     </div>
                     <div>
-                        <h1 className="text-xl font-bold text-zinc-800 dark:text-white/90 text-spatial-title">HPC<span className="text-blue-500 dark:text-blue-400">.</span></h1>
-                        <p className="text-[10px] text-zinc-500 dark:text-white/40 text-spatial-caption">Club Member</p>
+                        <h1 className="text-xl font-bold text-zinc-900 dark:text-white tracking-tight drop-shadow-sm">HPC<span className="text-blue-500 dark:text-blue-400">.</span></h1>
+                        <p className="text-[10px] text-zinc-500 dark:text-zinc-400 font-bold tracking-widest uppercase opacity-80">Club Member</p>
                     </div>
                 </div>
 
