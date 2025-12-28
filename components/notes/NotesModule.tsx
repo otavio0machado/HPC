@@ -290,7 +290,7 @@ const NotesModule: React.FC = () => {
 
     return (
         <div className={`
-            flex overflow-hidden glass-hydro rounded-3xl border border-white/10 shadow-2xl backdrop-blur-xl animate-in fade-in duration-500 relative
+            flex overflow-hidden glass-hydro rounded-3xl shadow-2xl backdrop-blur-xl animate-in fade-in duration-500 relative
             ${isExpandedMode ? 'fixed inset-4 z-50' : 'h-[calc(100vh-80px)]'}
         `}>
             {/* --- MOBILE OVERLAY (Left) --- */}

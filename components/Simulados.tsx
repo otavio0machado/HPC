@@ -255,7 +255,7 @@ const Simulados: React.FC = () => {
           <ChevronDown className="rotate-90" size={20} /> Voltar para lista
         </button>
 
-        <div className="glass-spatial p-8 relative overflow-hidden">
+        <div className="glass-spatial p-8 relative overflow-hidden rounded-[32px]">
           {/* Decorative Background */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-[100px] -z-10" />
           <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-600/10 rounded-full blur-[100px] -z-10" />
@@ -440,7 +440,7 @@ const Simulados: React.FC = () => {
 
         <div className="space-y-16 pb-32">
           {activeExam.map((q, qIndex) => (
-            <div key={q.id} className="glass-hydro group hover:border-white/20 transition-all duration-500 relative">
+            <div key={q.id} className="glass-hydro group hover:border-white/20 transition-all duration-500 relative rounded-[32px]">
               {/* Question Header */}
               <div className="px-10 pt-10 flex justify-between relative z-10">
                 <span className="text-zinc-500 font-bold text-xs tracking-[0.2em] bg-black/20 px-4 py-2 rounded-full border border-white/5 shadow-inner">
@@ -524,7 +524,7 @@ const Simulados: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         className="max-w-4xl mx-auto pb-20"
       >
-        <div className="glass-spatial p-0 overflow-hidden mb-12 relative">
+        <div className="glass-spatial p-0 overflow-hidden mb-12 relative rounded-[32px]">
           <div className="absolute inset-0 bg-blue-500/5 blur-[100px] pointer-events-none" />
 
           <div className="p-16 text-center border-b border-white/5 relative z-10 bg-gradient-to-b from-white/[0.02] to-transparent">
@@ -693,7 +693,7 @@ const Simulados: React.FC = () => {
         {/* Left Column: History */}
         <div className="xl:col-span-2 space-y-6">
           {history.length === 0 ? (
-            <div className="glass-spatial border-dashed border-white/10 p-16 text-center">
+            <div className="glass-spatial border-dashed border-white/10 p-16 text-center rounded-[32px]">
               <div className="w-20 h-20 bg-zinc-900 rounded-full flex items-center justify-center mx-auto mb-6 border border-zinc-800">
                 <History size={32} className="text-zinc-600" />
               </div>
@@ -708,7 +708,7 @@ const Simulados: React.FC = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   key={sim.id}
-                  className="glass-spatial group hover:border-white/20 transition-all duration-300 overflow-visible relative"
+                  className="glass-spatial group hover:border-white/20 transition-all duration-300 overflow-visible relative rounded-[32px]"
                 >
                   <div className="p-8">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
@@ -806,7 +806,7 @@ const Simulados: React.FC = () => {
 
         {/* Right Column: Global Stats Widget */}
         <div className="space-y-6">
-          <div className="glass-spatial p-8 sticky top-24">
+          <div className="glass-spatial p-8 sticky top-24 rounded-[32px]">
             <div className="flex items-center gap-3 mb-8">
               <div className="p-2.5 bg-indigo-500/20 rounded-xl text-indigo-400 border border-indigo-500/20">
                 <TrendingUp size={20} />

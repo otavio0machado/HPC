@@ -3,8 +3,14 @@ import { Settings as SettingsIcon, Bell, Moon, Sun, Database, Trash2, Check, Sma
 import { authService } from '../services/authService';
 import ThemeToggle from './ThemeToggle';
 import { useTheme } from '../contexts/ThemeContext';
+import SubscriptionPortal from './SubscriptionPortal';
+import { User } from '../types';
 
-const Settings: React.FC = () => {
+interface SettingsProps {
+    currentUser?: User | null;
+}
+
+const Settings: React.FC<SettingsProps> = ({ currentUser }) => {
     const [examFocus, setExamFocus] = useState('AMBOS');
     const { theme } = useTheme();
 
@@ -51,6 +57,9 @@ const Settings: React.FC = () => {
             </div>
 
             <div className="space-y-8">
+                {/* Subscription Portal */}
+                <SubscriptionPortal user={currentUser} />
+
                 {/* Study Preferences */}
                 <section className="bg-white/60 dark:bg-[var(--glass-bg)] border border-black/5 dark:border-[var(--border-glass)] rounded-3xl p-8 backdrop-blur-xl">
                     <div className="flex items-center gap-3 mb-8">

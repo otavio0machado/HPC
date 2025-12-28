@@ -337,54 +337,54 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             <Reorder.Item key={item.id} value={item} style={{ position: 'relative' }} dragListener={false} dragControls={controls}>
                 <div
                     className={`
-                    relative w - full flex items - center gap - 2 px - 4 py - 3.5 rounded - 2xl text - sm font - medium transition - all duration - 300 group
+                    relative w-full flex items-center gap-2 px-3 py-2.5 rounded-2xl text-[13px] font-medium transition-all duration-300 group
                     ${isActive
-                            ? 'text-blue-600 dark:text-white font-bold shadow-[0_4px_20px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.2)]'
-                            : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                            ? 'shadow-[0_4px_20px_rgba(59,130,246,0.15)] ring-1 ring-blue-500/30'
+                            : 'hover:bg-white/5'
                         }
-`}
+                    `}
                     onMouseMove={handleMouseMove}
                 >
                     {/* Mouse Spotlight Effect */}
                     <div
                         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"
                         style={{
-                            background: `radial - gradient(circle 150px at ${mousePosition.x} % ${mousePosition.y} %, rgba(255, 255, 255, 0.12) 0 %, transparent 70 %)`
+                            background: `radial-gradient(circle 120px at ${mousePosition.x}% ${mousePosition.y}%, rgba(255, 255, 255, 0.1) 0%, transparent 70%)`
                         }}
                     />
+
+                    {/* Active Background - Glass Pill */}
+                    {isActive && (
+                        <div className="absolute inset-0 bg-blue-500/10 dark:bg-blue-500/10 rounded-2xl backdrop-blur-md pointer-events-none transition-all duration-300 border border-blue-500/20" />
+                    )}
 
                     {/* Drag Handle */}
                     <div
                         onPointerDown={(e) => controls.start(e)}
-                        className="cursor-grab active:cursor-grabbing p-1 text-zinc-400 dark:text-zinc-600 hover:text-zinc-600 dark:hover:text-zinc-400 opacity-0 group-hover:opacity-100 transition-opacity z-20"
+                        className={`cursor-grab active:cursor-grabbing p-1.5 rounded-md transition-all opacity-0 group-hover:opacity-100 z-20 
+                        ${isActive ? 'text-blue-400' : 'text-zinc-500 hover:text-zinc-300 hover:bg-white/10'}`}
                     >
-                        <GripVertical size={14} />
+                        <GripVertical size={12} />
                     </div>
 
                     {/* Button Content Wrapper */}
                     <button
                         onClick={() => changeTab(item.id)}
-                        className="flex-1 flex items-center gap-3.5 text-left w-full outline-none"
+                        className={`flex-1 flex items-center gap-3 text-left w-full outline-none relative z-10 transition-colors duration-300 ${isActive ? 'text-blue-500 dark:text-blue-300 font-bold' : 'text-zinc-500 dark:text-zinc-400 group-hover:text-zinc-200'}`}
                     >
-                        {/* Interactive Background Liquid */}
-                        <div className={`
-                            absolute inset - 0 rounded - 2xl transition - all duration - 300 pointer - events - none
-                            ${isActive
-                                ? 'glass-active'
-                                : 'bg-transparent hover:bg-black/5 dark:hover:bg-white/5'
-                            }
-`} />
+                        <span className={`transition-transform duration-300 ${isActive ? 'scale-110 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]' : 'group-hover:scale-105'}`}>{item.icon}</span>
+                        <span className="flex-1 truncate">{item.label}</span>
 
-                        {/* Active Glow */}
-                        {isActive && (
-                            <div className="absolute inset-0 bg-blue-500/10 dark:bg-blue-500/20 rounded-2xl blur-xl pointer-events-none" />
-                        )}
-
-                        <span className="relative z-10">{item.icon}</span>
-                        <span className="relative z-10 flex-1">{item.label}</span>
-
-                        {isLocked && <Lock size={12} className="relative z-10 text-zinc-400 dark:text-white/30" />}
+                        {isLocked && <Lock size={10} className="ml-auto text-zinc-600 dark:text-white/20" />}
                     </button>
+
+                    {/* Active Indicator Dot */}
+                    {isActive && (
+                        <motion.div
+                            layoutId="activeTabIndicator"
+                            className="absolute right-2 w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_currentColor]"
+                        />
+                    )}
                 </div>
             </Reorder.Item>
         );
@@ -418,7 +418,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
 
             {/* Reopen Sidebar Button */}
-            <div className={`fixed left-6 top-6 z-40 transition-all duration-500 ${isSidebarOpen ? 'opacity-0 pointer-events-none -translate-x-10' : 'opacity-100 translate-x-0'} ${activeTab === 'Dashboard' && isMobile ? 'hidden' : ''}`}>
+            <div className={`fixed left-6 bottom-6 z-40 transition-all duration-500 ${isSidebarOpen ? 'opacity-0 pointer-events-none -translate-x-10' : 'opacity-100 translate-x-0'} ${activeTab === 'Dashboard' && isMobile ? 'hidden' : ''}`}>
                 <button
                     onClick={() => setIsSidebarOpen(true)}
                     className="p-3 rounded-2xl bg-white/70 dark:bg-white/10 hover:bg-white/90 dark:hover:bg-white/20 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-lg hover:shadow-cyan-500/20 hover:scale-110 active:scale-95 transition-all group"
@@ -442,26 +442,34 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                         `}
                     >
                         {/* Header */}
-                        <div className="p-6 pb-4 flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
-                                <Sparkles size={20} fill="currentColor" />
+                        <div className="p-6 pb-4 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+                                    <Sparkles size={20} fill="currentColor" />
+                                </div>
+                                <div>
+                                    <h1 className="text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
+                                        HPC AI
+                                    </h1>
+                                    <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Student OS</span>
+                                </div>
                             </div>
-                            <div>
-                                <h1 className="text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
-                                    HPC AI
-                                </h1>
-                                <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Student OS</span>
-                            </div>
+                            <button
+                                onClick={() => setIsSidebarOpen(false)}
+                                className="p-2 rounded-xl text-zinc-400 hover:text-zinc-800 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                            >
+                                <PanelLeftClose size={20} />
+                            </button>
                         </div>
 
                         {/* Search Bar */}
                         <div className="px-4 mb-4">
                             <div className="relative group">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-blue-500 transition-colors" size={16} />
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-blue-500 transition-colors z-10" size={16} />
                                 <input
                                     type="text"
                                     placeholder="Buscar..."
-                                    className="w-full bg-white/60 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all placeholder:text-zinc-400 text-zinc-800 dark:text-zinc-200"
+                                    className="w-full bg-white/50 dark:bg-black/20 border border-white/20 dark:border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/30 transition-all placeholder:text-zinc-400 text-zinc-800 dark:text-zinc-200 glass-inner-shadow"
                                 />
                             </div>
                         </div>
@@ -485,20 +493,29 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
                         {/* User Profile Section */}
                         <div className="p-4 border-t border-white/20 dark:border-white/5 mt-auto bg-white/40 dark:bg-white/5 backdrop-blur-md">
-                            <div
-                                className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/60 dark:hover:bg-white/10 transition-colors cursor-pointer group"
-                                onClick={() => setUserMenuOpen(!userMenuOpen)}
-                            >
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 p-0.5 shadow-sm">
-                                    <img src={currentUser.avatar_url || `https://ui-avatars.com/api/?name=${currentUser.name}&background=random`} alt="User" className="w-full h-full rounded-full object-cover border-2 border-white dark:border-black" />
+                            <div className="flex items-center gap-2">
+                                <div
+                                    className="flex-1 flex items-center gap-3 p-2 rounded-xl hover:bg-white/60 dark:hover:bg-white/10 transition-colors cursor-pointer group min-w-0"
+                                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                                >
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 p-0.5 shadow-sm flex-shrink-0">
+                                        <img src={currentUser.photo_url || `https://ui-avatars.com/api/?name=${currentUser.name}&background=random`} alt="User" className="w-full h-full rounded-full object-cover border-2 border-white dark:border-black" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="font-bold text-sm truncate text-zinc-800 dark:text-white">{currentUser.name}</p>
+                                        <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate flex items-center gap-1">
+                                            {currentUser.subscription_tier === 'pro' ? <span className="text-amber-500 flex items-center gap-0.5"><Sparkles size={10} /> PRO</span> : "Free Plan"}
+                                        </p>
+                                    </div>
+                                    <ChevronRight size={16} className={`text-zinc-400 transition-transform ${userMenuOpen ? 'rotate-90' : ''}`} />
                                 </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="font-bold text-sm truncate text-zinc-800 dark:text-white">{currentUser.name}</p>
-                                    <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate flex items-center gap-1">
-                                        {currentUser.subscription_tier === 'pro' ? <span className="text-amber-500 flex items-center gap-0.5"><Sparkles size={10} /> PRO</span> : "Free Plan"}
-                                    </p>
-                                </div>
-                                <ChevronRight size={16} className={`text-zinc-400 transition-transform ${userMenuOpen ? 'rotate-90' : ''}`} />
+                                <button
+                                    onClick={onLogout}
+                                    className="p-2.5 rounded-xl text-zinc-400 hover:text-red-500 hover:bg-red-500/10 transition-all border border-transparent hover:border-red-500/20"
+                                    title="Sair"
+                                >
+                                    <LogOut size={18} />
+                                </button>
                             </div>
 
                             {/* Dropdown Menu */}
@@ -511,15 +528,26 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                                         className="absolute bottom-20 left-4 right-4 glass-card rounded-2xl shadow-xl p-2 z-50 flex flex-col gap-1"
                                         ref={userMenuRef}
                                     >
-                                        <button onClick={() => { setActiveTab('Perfil'); setUserMenuOpen(false); }} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 text-sm font-medium transition-colors text-zinc-700 dark:text-zinc-300">
+                                        <button onClick={() => { setActiveTab('Nexus'); setUserMenuOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 text-sm font-medium transition-colors text-zinc-700 dark:text-zinc-300 text-left">
+                                            <Share2 size={16} /> Nexus
+                                        </button>
+                                        <button onClick={() => { setActiveTab('Perfil'); setUserMenuOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 text-sm font-medium transition-colors text-zinc-700 dark:text-zinc-300 text-left">
                                             <User size={16} /> Perfil
                                         </button>
-                                        <button onClick={() => { setActiveTab('Configurações'); setUserMenuOpen(false); }} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 text-sm font-medium transition-colors text-zinc-700 dark:text-zinc-300">
+                                        <button onClick={() => { setActiveTab('Analytics'); setUserMenuOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 text-sm font-medium transition-colors text-zinc-700 dark:text-zinc-300 text-left">
+                                            <TrendingUp size={16} /> Analytics
+                                        </button>
+                                        <button onClick={() => { setActiveTab('Configurações'); setUserMenuOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 text-sm font-medium transition-colors text-zinc-700 dark:text-zinc-300 text-left">
                                             <SettingsIcon size={16} /> Configurações
                                         </button>
-                                        <div className="h-px bg-zinc-200 dark:bg-white/10 my-1" />
-                                        <button onClick={onLogout} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-red-500/10 text-red-500 text-sm font-medium transition-colors">
-                                            <LogOut size={16} /> Sair
+
+                                        <div className="h-px bg-zinc-200 dark:bg-white/10 my-1 mx-2" />
+
+                                        <button onClick={() => { setActiveTab('Whiteboard'); setUserMenuOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 text-sm font-medium transition-colors text-zinc-700 dark:text-zinc-300 text-left">
+                                            <BoxSelect size={16} className="stroke-[2.5]" /> Quadro
+                                        </button>
+                                        <button onClick={onLogout} className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-red-500/10 text-red-500 text-sm font-medium transition-colors text-left group">
+                                            <LogOut size={16} className="group-hover:translate-x-1 transition-transform" /> Sair
                                         </button>
                                     </motion.div>
                                 )}
@@ -599,7 +627,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                             {activeTab === "Analytics" && <AnalyticsDashboard />}
                             {activeTab === "Whiteboard" && <Whiteboard />}
                             {activeTab === "Perfil" && <Profile currentUser={currentUser} onUpdate={handleUpdateUser} />}
-                            {activeTab === "Configurações" && <Settings />}
+                            {activeTab === "Configurações" && <Settings currentUser={currentUser} />}
                         </motion.div>
                     </AnimatePresence >
                 </div >

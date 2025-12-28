@@ -22,7 +22,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLoginClick, isLoggedIn, onLogout }) =
 
   const navLinks = [
     { name: 'Metodologia', href: '#metodologia' },
-    { name: 'Planner AI', href: '#planner' },
+    { name: 'Funcionalidades', href: '#features' }, // Fixed ID
     { name: 'Planos', href: '#pricing' },
   ];
 

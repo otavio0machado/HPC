@@ -110,7 +110,7 @@ const EssayReview: React.FC = () => {
                                 className="space-y-6"
                             >
                                 {/* Score Card */}
-                                <div className="glass-spatial p-8 relative overflow-hidden text-center group">
+                                <div className="glass-spatial p-8 relative overflow-hidden text-center group rounded-[32px]">
                                     <div className="absolute top-0 right-0 p-40 bg-pink-500/10 rounded-full blur-[100px] translate-x-1/3 -translate-y-1/3 pointer-events-none group-hover:bg-pink-500/20 transition-colors duration-700" />
 
                                     <h3 className="text-pink-200 font-bold uppercase tracking-[0.2em] text-xs mb-6 relative z-10 bg-pink-500/10 inline-block px-4 py-1.5 rounded-full border border-pink-500/20">Nota Final</h3>
@@ -160,7 +160,7 @@ const EssayReview: React.FC = () => {
                                 </div>
 
                                 {/* Feedback */}
-                                <div className="glass-spatial p-8">
+                                <div className="glass-spatial p-8 rounded-[32px]">
                                     <h4 className="font-bold text-lg mb-6 flex items-center gap-3 text-white">
                                         <div className="p-2 bg-orange-500/20 rounded-lg text-orange-400">
                                             <AlertCircle size={20} />
@@ -178,7 +178,7 @@ const EssayReview: React.FC = () => {
                                 </div>
 
                                 {/* Rewrite */}
-                                <div className="glass-spatial p-8 border-emerald-500/20 relative overflow-hidden">
+                                <div className="glass-spatial p-8 border-emerald-500/20 relative overflow-hidden rounded-[32px]">
                                     <div className="absolute top-0 right-0 p-32 bg-emerald-500/5 rounded-full blur-[80px]" />
                                     <h4 className="font-bold text-lg mb-6 flex items-center gap-3 text-emerald-400 relative z-10">
                                         <div className="p-2 bg-emerald-500/20 rounded-lg text-emerald-400">

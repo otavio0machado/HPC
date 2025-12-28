@@ -167,6 +167,20 @@ export const authService = {
     }
   },
 
+  createPortalSession: async (): Promise<{ success: boolean; url?: string; message?: string }> => {
+    try {
+      const { data, error } = await supabase.functions.invoke('create-portal-session')
+
+      if (error) throw error
+      if (!data.url) throw new Error('No portal URL returned')
+
+      return { success: true, url: data.url }
+    } catch (error: any) {
+      console.error('Portal error:', error)
+      return { success: false, message: error.message || 'Erro ao acessar portal' }
+    }
+  },
+
   // Deprecated: No longer needed for Supabase RLS, simply returns base key.
   // Kept to avoid breaking existing calls before refactor.
   getUserStorageKey: (baseKey: string): string => {
