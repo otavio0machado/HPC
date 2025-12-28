@@ -284,156 +284,155 @@ const Tutors: React.FC = () => {
             </motion.div>
           </motion.div>
         ) : (
-          {/* Chat Container */ }
-          < motion.div
+          <motion.div
             key="chat"
-        initial={{ opacity: 0, scale: 0.98, filter: "blur(10px)" }}
-        animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-        exit={{ opacity: 0, scale: 0.98, filter: "blur(10px)" }}
-        transition={{ duration: 0.4, ease: "circOut" }}
-        className="flex flex-col h-[calc(100vh-140px)] glass-hydro rounded-[36px] overflow-hidden shadow-[0_40px_80px_-20px_rgba(0,0,0,0.6)] border border-white/10"
+            initial={{ opacity: 0, scale: 0.98, filter: "blur(10px)" }}
+            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+            exit={{ opacity: 0, scale: 0.98, filter: "blur(10px)" }}
+            transition={{ duration: 0.4, ease: "circOut" }}
+            className="flex flex-col h-[calc(100vh-140px)] glass-hydro rounded-[36px] overflow-hidden shadow-[0_40px_80px_-20px_rgba(0,0,0,0.6)] border border-white/10"
           >
-        {/* Chat Header */}
-        <div className="flex items-center justify-between p-4 px-6 border-b border-white/5 bg-white/[0.02] backdrop-blur-xl z-20">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={handleBack}
-              className="p-3 rounded-full transition-all group
+            {/* Chat Header */}
+            <div className="flex items-center justify-between p-4 px-6 border-b border-white/5 bg-white/[0.02] backdrop-blur-xl z-20">
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={handleBack}
+                  className="p-3 rounded-full transition-all group
                       bg-white/[0.05] hover:bg-white/[0.1]
                       border border-white/[0.1] hover:border-white/[0.3]
                       backdrop-blur-md shadow-lg
                       text-zinc-400 hover:text-white"
-              title="Voltar"
-            >
-              <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-            </button>
+                  title="Voltar"
+                >
+                  <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+                </button>
 
-            <div className="flex items-center gap-4">
-              <motion.div
-                layoutId={`icon-${selectedSubject}`}
-                className={`w-12 h-12 rounded-2xl flex items-center justify-center bg-gradient-to-br ${currentSubjectData?.from} ${currentSubjectData?.to} text-white shadow-[0_0_20px_rgba(0,0,0,0.3)] border border-white/20`}
-              >
-                {currentSubjectData?.icon}
-              </motion.div>
-              <div>
-                <h3 className="font-bold text-white text-lg tracking-tight leading-none mb-1">Tutor de {selectedSubject}</h3>
-                <div className="flex items-center gap-2">
-                  <span className="flex items-center gap-1.5 text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                    <span className="relative flex h-1.5 w-1.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
-                    </span>
-                    Online
-                  </span>
-                  <span className="text-[10px] text-zinc-500 font-medium">{currentSubjectData?.description.split(',')[0]}</span>
+                <div className="flex items-center gap-4">
+                  <motion.div
+                    layoutId={`icon-${selectedSubject}`}
+                    className={`w-12 h-12 rounded-2xl flex items-center justify-center bg-gradient-to-br ${currentSubjectData?.from} ${currentSubjectData?.to} text-white shadow-[0_0_20px_rgba(0,0,0,0.3)] border border-white/20`}
+                  >
+                    {currentSubjectData?.icon}
+                  </motion.div>
+                  <div>
+                    <h3 className="font-bold text-white text-lg tracking-tight leading-none mb-1">Tutor de {selectedSubject}</h3>
+                    <div className="flex items-center gap-2">
+                      <span className="flex items-center gap-1.5 text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                        <span className="relative flex h-1.5 w-1.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                        </span>
+                        Online
+                      </span>
+                      <span className="text-[10px] text-zinc-500 font-medium">{currentSubjectData?.description.split(',')[0]}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <button
-            onClick={clearHistory}
-            title="Limpar Histórico"
-            className="p-3 rounded-2xl transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider
+              <button
+                onClick={clearHistory}
+                title="Limpar Histórico"
+                className="p-3 rounded-2xl transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider
                   bg-white/[0.05] hover:bg-red-500/10
                   border border-white/[0.1] hover:border-red-500/20
                   backdrop-blur-md
                   text-zinc-500 hover:text-red-400 hover:shadow-lg"
-          >
-            <Trash2 size={16} /> <span className="hidden sm:inline">Limpar</span>
-          </button>
-        </div>
+              >
+                <Trash2 size={16} /> <span className="hidden sm:inline">Limpar</span>
+              </button>
+            </div>
 
-        {/* Chat Messages */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth custom-scrollbar bg-gradient-to-b from-transparent to-black/20">
-          {messages.map((msg, idx) => (
-            <motion.div
-              initial={{ opacity: 0, y: 10, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.3 }}
-              key={idx}
-              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div className={`max-w-[85%] md:max-w-[75%] rounded-[24px] p-6 shadow-xl relative backdrop-blur-sm ${msg.role === 'user'
-                ? 'bg-gradient-to-br from-blue-600/90 to-indigo-600/90 text-white rounded-br-sm border border-blue-400/30'
-                : 'glass-card bg-zinc-900/60 text-zinc-100 rounded-bl-sm border border-white/10'
-                }`}>
+            {/* Chat Messages */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth custom-scrollbar bg-gradient-to-b from-transparent to-black/20">
+              {messages.map((msg, idx) => (
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                  key={idx}
+                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div className={`max-w-[85%] md:max-w-[75%] rounded-[24px] p-6 shadow-xl relative backdrop-blur-sm ${msg.role === 'user'
+                    ? 'bg-gradient-to-br from-blue-600/90 to-indigo-600/90 text-white rounded-br-sm border border-blue-400/30'
+                    : 'glass-card bg-zinc-900/60 text-zinc-100 rounded-bl-sm border border-white/10'
+                    }`}>
 
-                {/* Role Label */}
-                <div className={`flex items-center gap-2 mb-2 text-[10px] font-bold tracking-widest uppercase opacity-70 ${msg.role === 'user' ? 'text-blue-100' : 'text-zinc-500'}`}>
-                  {msg.role === 'user' ? <User size={10} /> : <Bot size={10} />}
-                  <span>{msg.role === 'user' ? 'Você' : 'HPC Tutor'}</span>
-                </div>
+                    {/* Role Label */}
+                    <div className={`flex items-center gap-2 mb-2 text-[10px] font-bold tracking-widest uppercase opacity-70 ${msg.role === 'user' ? 'text-blue-100' : 'text-zinc-500'}`}>
+                      {msg.role === 'user' ? <User size={10} /> : <Bot size={10} />}
+                      <span>{msg.role === 'user' ? 'Você' : 'HPC Tutor'}</span>
+                    </div>
 
-                <div className="text-sm leading-relaxed">
-                  {msg.role === 'model' ? (
-                    <ReactMarkdown
-                      remarkPlugins={[remarkMath]}
-                      rehypePlugins={[[rehypeKatex, { throwOnError: false }]]}
-                      components={{
-                        strong: ({ node, ...props }) => <strong className="font-bold text-white" {...props} />,
-                        ul: ({ node, ...props }) => <ul className="list-disc pl-4 mb-3 space-y-1 marker:text-zinc-500" {...props} />,
-                        ol: ({ node, ...props }) => <ol className="list-decimal pl-4 mb-3 space-y-1 marker:text-zinc-500" {...props} />,
-                        p: ({ node, ...props }) => <p className="mb-3 last:mb-0" {...props} />,
-                        code: ({ node, ...props }) => <code className="bg-white/10 border border-white/10 px-1.5 py-0.5 rounded text-xs font-mono text-blue-200" {...props} />,
-                        blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-white/10 pl-4 py-1 my-2 italic text-zinc-400" {...props} />
-                      }}
-                    >
-                      {msg.text}
-                    </ReactMarkdown>
-                  ) : (
-                    <div className="whitespace-pre-wrap font-medium">{msg.text}</div>
-                  )}
-                </div>
+                    <div className="text-sm leading-relaxed">
+                      {msg.role === 'model' ? (
+                        <ReactMarkdown
+                          remarkPlugins={[remarkMath]}
+                          rehypePlugins={[[rehypeKatex, { throwOnError: false }]]}
+                          components={{
+                            strong: ({ node, ...props }) => <strong className="font-bold text-white" {...props} />,
+                            ul: ({ node, ...props }) => <ul className="list-disc pl-4 mb-3 space-y-1 marker:text-zinc-500" {...props} />,
+                            ol: ({ node, ...props }) => <ol className="list-decimal pl-4 mb-3 space-y-1 marker:text-zinc-500" {...props} />,
+                            p: ({ node, ...props }) => <p className="mb-3 last:mb-0" {...props} />,
+                            code: ({ node, ...props }) => <code className="bg-white/10 border border-white/10 px-1.5 py-0.5 rounded text-xs font-mono text-blue-200" {...props} />,
+                            blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-white/10 pl-4 py-1 my-2 italic text-zinc-400" {...props} />
+                          }}
+                        >
+                          {msg.text}
+                        </ReactMarkdown>
+                      ) : (
+                        <div className="whitespace-pre-wrap font-medium">{msg.text}</div>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+
+              {isLoading && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="flex justify-start"
+                >
+                  <div className="glass-card rounded-[24px] px-6 py-4 flex items-center gap-3 border border-white/10 shadow-lg">
+                    <span className="text-[10px] font-bold text-zinc-500 tracking-widest uppercase flex items-center gap-2">
+                      <Sparkles size={10} className="text-blue-400 animate-spin-slow" />
+                      Gerando
+                    </span>
+                    <div className="flex gap-1">
+                      <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0 }} className="w-1.5 h-1.5 bg-blue-500 rounded-full"></motion.div>
+                      <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></motion.div>
+                      <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1.5 h-1.5 bg-purple-500 rounded-full"></motion.div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* Input Area */}
+            <form onSubmit={handleSendMessage} className="p-5 bg-black/20 border-t border-white/5 select-none backdrop-blur-md relative z-20">
+              <div className="flex gap-3 relative max-w-5xl mx-auto">
+                <input
+                  type="text"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  placeholder={`Pergunte algo sobre ${selectedSubject}...`}
+                  className="flex-1 bg-black/30 text-white border border-white/10 rounded-full px-6 py-4 focus:outline-none focus:border-blue-500/50 focus:bg-black/50 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder:text-zinc-600 shadow-inner font-medium text-sm backdrop-blur-md"
+                  disabled={isLoading}
+                />
+                <button
+                  type="submit"
+                  disabled={!inputValue.trim() || isLoading}
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white p-4 rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] hover:scale-105 active:scale-95 border border-white/20 group"
+                >
+                  <Send size={20} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                </button>
               </div>
-            </motion.div>
-          ))}
-
-          {isLoading && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="flex justify-start"
-            >
-              <div className="glass-card rounded-[24px] px-6 py-4 flex items-center gap-3 border border-white/10 shadow-lg">
-                <span className="text-[10px] font-bold text-zinc-500 tracking-widest uppercase flex items-center gap-2">
-                  <Sparkles size={10} className="text-blue-400 animate-spin-slow" />
-                  Gerando
-                </span>
-                <div className="flex gap-1">
-                  <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0 }} className="w-1.5 h-1.5 bg-blue-500 rounded-full"></motion.div>
-                  <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></motion.div>
-                  <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1.5 h-1.5 bg-purple-500 rounded-full"></motion.div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
-
-        {/* Input Area */}
-        <form onSubmit={handleSendMessage} className="p-5 bg-black/20 border-t border-white/5 select-none backdrop-blur-md relative z-20">
-          <div className="flex gap-3 relative max-w-5xl mx-auto">
-            <input
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder={`Pergunte algo sobre ${selectedSubject}...`}
-              className="flex-1 bg-black/30 text-white border border-white/10 rounded-full px-6 py-4 focus:outline-none focus:border-blue-500/50 focus:bg-black/50 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder:text-zinc-600 shadow-inner font-medium text-sm backdrop-blur-md"
-              disabled={isLoading}
-            />
-            <button
-              type="submit"
-              disabled={!inputValue.trim() || isLoading}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white p-4 rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] hover:scale-105 active:scale-95 border border-white/20 group"
-            >
-              <Send size={20} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-            </button>
-          </div>
-        </form>
-      </motion.div>
+            </form>
+          </motion.div>
         )}
-    </AnimatePresence>
+      </AnimatePresence>
     </div >
   );
 };
