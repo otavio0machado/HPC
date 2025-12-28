@@ -139,45 +139,45 @@ export const PDFReader = React.memo<PDFReaderProps>(({
     };
 
     return (
-        <div className="flex flex-col h-full bg-zinc-900 overflow-hidden relative">
+        <div className="flex flex-col h-full bg-transparent overflow-hidden relative glass-hydro bg-black/40">
             {/* Toolbar */}
-            <div className="flex items-center justify-between p-2 bg-zinc-800 border-b border-zinc-700 z-10">
+            <div className="flex items-center justify-between p-2.5 bg-white/5 backdrop-blur-md border-b border-white/5 z-10 shadow-sm">
                 <div className="flex items-center gap-2">
-                    <button onClick={() => setScale(s => Math.min(s + 0.2, 3))} className="p-1.5 text-zinc-400 hover:text-white rounded hover:bg-zinc-700">
+                    <button onClick={() => setScale(s => Math.min(s + 0.2, 3))} className="p-2 text-zinc-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors">
                         <ZoomIn size={18} />
                     </button>
-                    <span className="text-xs text-zinc-500 w-12 text-center">{Math.round(scale * 100)}%</span>
-                    <button onClick={() => setScale(s => Math.max(s - 0.2, 0.5))} className="p-1.5 text-zinc-400 hover:text-white rounded hover:bg-zinc-700">
+                    <span className="text-xs font-bold text-zinc-300 w-12 text-center bg-black/20 py-1 rounded-md">{Math.round(scale * 100)}%</span>
+                    <button onClick={() => setScale(s => Math.max(s - 0.2, 0.5))} className="p-2 text-zinc-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors">
                         <ZoomOut size={18} />
                     </button>
-                    <div className="w-px h-4 bg-zinc-700 mx-2" />
-                    <button onClick={() => setScale(1.2)} className="p-1.5 text-zinc-400 hover:text-white rounded hover:bg-zinc-700" title="Ajustar Largura">
+                    <div className="w-px h-5 bg-white/10 mx-1" />
+                    <button onClick={() => setScale(1.2)} className="p-2 text-zinc-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors" title="Ajustar Largura">
                         <Maximize size={18} />
                     </button>
-                    <div className="w-px h-4 bg-zinc-700 mx-2" />
-                    <button onClick={() => setRotation(r => (r + 90) % 360)} className="p-1.5 text-zinc-400 hover:text-white rounded hover:bg-zinc-700">
+                    <div className="w-px h-5 bg-white/10 mx-1" />
+                    <button onClick={() => setRotation(r => (r + 90) % 360)} className="p-2 text-zinc-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors">
                         <RotateCw size={18} />
                     </button>
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <a href={url} download className="p-1.5 text-zinc-400 hover:text-white rounded hover:bg-zinc-700" title="Baixar PDF">
+                    <a href={url} download className="p-2 text-zinc-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors" title="Baixar PDF">
                         <Download size={18} />
                     </a>
                     {onClose && (
-                        <button onClick={onClose} className="p-1.5 text-red-400 hover:text-red-300 rounded hover:bg-red-900/20" title="Fechar">
+                        <button onClick={onClose} className="p-2 text-red-400 hover:text-red-300 rounded-lg hover:bg-red-500/20 transition-colors" title="Fechar">
                             <X size={18} />
                         </button>
                     )}
                 </div>
             </div>
 
-            <div className="flex-1 overflow-hidden relative" style={{ height: "calc(100% - 41px)" }}>
+            <div className="flex-1 overflow-hidden relative bg-black/20" style={{ height: "calc(100% - 57px)" }}>
                 <div className="h-full" style={getFilterStyle()}>
                     <PdfLoader
                         url={url}
-                        beforeLoad={<div className="flex justify-center items-center h-full"><Loader2 className="animate-spin text-purple-500" /></div>}
-                        errorMessage={<div className="flex justify-center items-center h-full text-red-400">Erro ao carregar PDF. Verifique se o arquivo existe.</div>}
+                        beforeLoad={<div className="flex justify-center items-center h-full"><Loader2 className="animate-spin text-blue-500" /></div>}
+                        errorMessage={<div className="flex justify-center items-center h-full text-red-400 text-sm font-bold glass-card p-4 rounded-xl border border-red-500/20 bg-red-500/10">Erro ao carregar PDF. Verifique se o arquivo existe.</div>}
                     >
                         {(pdfDocument) => (
                             <PdfHighlighter
@@ -194,7 +194,7 @@ export const PDFReader = React.memo<PDFReaderProps>(({
                                     hideTipAndSelection,
                                     transformSelection
                                 ) => (
-                                    <div className="bg-zinc-800 text-zinc-200 border border-zinc-700 rounded-lg shadow-xl p-2 flex flex-col gap-2">
+                                    <div className="glass-spatial text-white rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.5)] p-2.5 flex flex-col gap-2 animate-in fade-in zoom-in-95 duration-200">
                                         <div className="flex gap-2">
                                             <button
                                                 onClick={() => {
@@ -206,13 +206,13 @@ export const PDFReader = React.memo<PDFReaderProps>(({
                                                     navigator.clipboard.writeText(quote);
                                                     toast.success("Citação copiada para a área de transferência!");
                                                 }}
-                                                className="px-3 py-1.5 text-xs font-medium bg-zinc-700 hover:bg-zinc-600 rounded text-zinc-200 transition-colors flex items-center gap-1"
+                                                className="px-3 py-1.5 text-xs font-bold bg-white/10 hover:bg-white/20 rounded-lg text-zinc-200 transition-colors flex items-center gap-1.5 border border-white/5"
                                             >
                                                 <Download size={12} className="rotate-180" /> Copiar Citação
                                             </button>
                                             <button
                                                 onClick={transformSelection}
-                                                className="px-3 py-1.5 text-xs font-bold bg-blue-600 hover:bg-blue-500 rounded text-white transition-colors"
+                                                className="px-3 py-1.5 text-xs font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 rounded-lg text-white transition-all shadow-lg active:scale-95"
                                             >
                                                 Adicionar Nota
                                             </button>
@@ -273,19 +273,27 @@ export const PDFReader = React.memo<PDFReaderProps>(({
 
             <style>{`
                 .PdfHighlighter {
-                   background: #18181b !important; /* zinc-950 */
+                   background: transparent !important;
                 }
                 .pdf-viewer__document {
-                    background-color: #52525b !important; /* zinc-600 */
+                    background: transparent !important;
+                    padding: 20px 0;
+                }
+                .pdf-viewer__page {
+                    box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
+                    border-radius: 4px;
+                    margin-bottom: 20px !important;
                 }
                 
                 /* Selection Tip Customization */
                  .Tip {
-                    background: #27272a; /* zinc-800 */
+                    background: rgba(30, 30, 35, 0.9);
+                    backdrop-filter: blur(10px);
                     color: white;
-                    border: 1px solid #3f3f46;
-                    border-radius: 4px;
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    border-radius: 8px;
                     padding: 4px;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
                 }
                 .Tip__compact {
                     display: flex;

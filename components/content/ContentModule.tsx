@@ -21,7 +21,7 @@ import {
     useDraggable,
     useDroppable
 } from '@dnd-kit/core';
-import { FilePlus } from 'lucide-react';
+import { FilePlus, FolderPlus } from 'lucide-react';
 
 const SUBJECT_TABS = [
     'Todas',
@@ -638,24 +638,24 @@ const ContentModule: React.FC = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={onClick}
-                    className={`cursor-pointer group relative overflow-hidden rounded-[32px] p-6 border transition-all duration-300
+                    className={`cursor-pointer group relative overflow-hidden rounded-[32px] p-6 transition-all duration-300
                         ${isOver
-                            ? 'bg-blue-500/20 border-blue-500 shadow-[0_0_40px_rgba(59,130,246,0.3)] scale-[1.02]'
-                            : 'glass-card hover:border-white/30 hover:shadow-2xl hover:-translate-y-1'
-                        } backdrop-blur-xl`}
+                            ? 'bg-blue-500/20 border border-blue-500 shadow-[0_0_40px_rgba(59,130,246,0.3)] scale-[1.02]'
+                            : 'glass-hydro hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)]'
+                        }`}
                 >
                     <div className="flex flex-col h-full justify-between relative z-10">
                         <div className="flex items-start justify-between">
-                            <div className={`p-3 rounded-2xl ${isOver ? 'bg-blue-500 text-white' : 'bg-blue-100 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400'} transition-colors`}>
+                            <div className={`p-3 rounded-2xl ${isOver ? 'bg-blue-500 text-white' : 'bg-blue-100/50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400'} transition-colors backdrop-blur-md`}>
                                 <Sparkles size={24} strokeWidth={1.5} />
                             </div>
-                            <span className="text-2xl font-black text-zinc-200 dark:text-white/5 group-hover:text-zinc-300 dark:group-hover:text-white/10 transition-colors">
+                            <span className="text-2xl font-black text-zinc-900/20 dark:text-white/20 group-hover:text-zinc-900/40 dark:group-hover:text-white/40 transition-colors">
                                 {String(count).padStart(2, '0')}
                             </span>
                         </div>
 
                         <div>
-                            <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-1 line-clamp-1">{name}</h3>
+                            <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-1 line-clamp-1 drop-shadow-sm">{name}</h3>
                             <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">{count} itens</p>
                         </div>
                     </div>
@@ -698,9 +698,9 @@ const ContentModule: React.FC = () => {
                             {groupedPills['Sem Pasta']?.length > 0 && (
                                 <div className="space-y-6">
                                     <div className="flex items-center gap-4">
-                                        <div className="h-[1px] flex-1 bg-zinc-200 dark:bg-white/10" />
+                                        <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-zinc-200 dark:via-white/10 to-transparent" />
                                         <span className="text-sm font-bold text-zinc-400 uppercase tracking-wider">Itens Soltos</span>
-                                        <div className="h-[1px] flex-1 bg-zinc-200 dark:bg-white/10" />
+                                        <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-zinc-200 dark:via-white/10 to-transparent" />
                                     </div>
                                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                                         {groupedPills['Sem Pasta'].map((pill, index) => (
@@ -741,12 +741,12 @@ const ContentModule: React.FC = () => {
                                     <DraggablePillWrapper key={pill.id} pill={pill} index={index} />
                                 ))}
                                 {(groupedPills[selectedFolder] || []).length === 0 && (
-                                    <div className="col-span-full py-20 flex flex-col items-center justify-center text-zinc-500">
-                                        <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
-                                            <FolderPlus size={32} opacity={0.5} />
+                                    <div className="col-span-full h-64 flex flex-col items-center justify-center glass-card border-dashed border-2 border-zinc-300/30 dark:border-white/10 rounded-[32px] group">
+                                        <div className="p-5 rounded-full bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors mb-4 backdrop-blur-md">
+                                            <FolderPlus size={32} className="text-blue-400/50 group-hover:text-blue-400 transition-colors" />
                                         </div>
-                                        <p className="font-medium italic">Esta pasta está vazia.</p>
-                                        <p className="text-sm mt-1 opacity-70">Arraste pílulas para cá ou crie novo conteúdo.</p>
+                                        <p className="font-bold text-zinc-700 dark:text-white mb-1">Esta pasta está vazia</p>
+                                        <p className="text-sm text-zinc-500 dark:text-zinc-400 opacity-80">Arraste pílulas para cá ou crie novo conteúdo.</p>
                                     </div>
                                 )}
                             </div>
@@ -756,7 +756,7 @@ const ContentModule: React.FC = () => {
                 </div>
                 <DragOverlay>
                     {activeDragId ? (
-                        <div className="w-[300px] h-[100px] glass-hydro rounded-[32px] shadow-2xl opacity-90 flex items-center justify-center border border-blue-500/50 scale-105 rotate-2 backdrop-blur-xl">
+                        <div className="w-[300px] h-[100px] glass-hydro rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.5)] opacity-95 flex items-center justify-center border border-white/20 scale-105 rotate-2 backdrop-blur-2xl">
                             <div className="flex items-center gap-3">
                                 <span className="p-3 bg-blue-500/20 text-blue-300 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.3)]">
                                     <Sparkles size={24} />
@@ -779,18 +779,19 @@ const ContentModule: React.FC = () => {
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         exit={{ y: 20, opacity: 0 }}
-                        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-4"
+                        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 glass-spatial px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-4"
                     >
-                        <span className="font-bold text-sm bg-white/10 dark:bg-black/10 px-3 py-1 rounded-lg">
+                        <span className="font-bold text-sm bg-white/10 px-3 py-1 rounded-lg text-white">
                             {selectedPills.size} selecionados
                         </span>
-                        <div className="h-4 w-[1px] bg-white/20 dark:bg-black/20" />
+                        <div className="h-4 w-[1px] bg-white/20" />
                         <button
                             onClick={() => setIsMoveModalOpen(true)}
                             className="px-4 py-2 rounded-xl backdrop-blur-md transition-all duration-300
-                                bg-white/[0.1] dark:bg-white/[0.05] hover:bg-white/[0.15] dark:hover:bg-white/[0.1]
-                                border border-white/[0.2] dark:border-white/[0.1] hover:border-white/[0.3] dark:hover:border-white/[0.2]
+                                bg-white/[0.1] hover:bg-white/[0.2]
+                                border border-white/[0.2] hover:border-white/[0.3]
                                 shadow-lg hover:shadow-xl
+                                text-white
                                 ring-1 ring-white/[0.1]
                                 text-sm font-bold hover:scale-[1.02] active:scale-95 shadow-[0_4px_12px_rgba(0,0,0,0.3)]"
                         >
@@ -823,11 +824,11 @@ const ContentModule: React.FC = () => {
 
             {/* Move Modal */}
             {isMoveModalOpen && (
-                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-4 transition-all">
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-2xl w-full max-w-sm p-6 shadow-2xl"
+                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        className="bg-white/90 dark:bg-zinc-950/90 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-3xl w-full max-w-sm p-6 shadow-[0_30px_60px_rgba(0,0,0,0.5)]"
                     >
                         <h3 className="font-bold text-lg mb-4 text-zinc-900 dark:text-white">Mover para Pasta</h3>
                         <input
@@ -835,27 +836,19 @@ const ContentModule: React.FC = () => {
                             placeholder="Nome da pasta (ex: Capítulo 1)"
                             value={targetFolder}
                             onChange={e => setTargetFolder(e.target.value)}
-                            className="w-full bg-zinc-100 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500/50 mb-4"
+                            className="w-full bg-zinc-50/50 dark:bg-black/20 border border-zinc-200/50 dark:border-white/10 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500/50 mb-4 transition-all font-medium"
                             autoFocus
                         />
                         <div className="flex justify-end gap-2">
                             <button
                                 onClick={() => setIsMoveModalOpen(false)}
-                                className="px-4 py-2 rounded-xl backdrop-blur-sm transition-all duration-300
-                                    bg-transparent hover:bg-black/5 dark:hover:bg-white/5
-                                    border border-transparent hover:border-black/10 dark:hover:border-white/10
-                                    text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
+                                className="px-4 py-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
                             >
                                 Cancelar
                             </button>
                             <button
                                 onClick={handleBulkMove}
-                                className="px-4 py-2 rounded-xl backdrop-blur-md transition-all duration-300
-                                    bg-gradient-to-r from-blue-600 to-indigo-600 text-white
-                                    border border-white/20 shadow-lg shadow-blue-500/30
-                                    hover:shadow-blue-500/50
-                                    ring-1 ring-white/10
-                                    font-bold text-sm hover:scale-[1.02] active:scale-95"
+                                className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 hover:scale-[1.02] active:scale-95 transition-all"
                             >
                                 Mover
                             </button>
@@ -918,7 +911,7 @@ const ContentModule: React.FC = () => {
                                                 className={`px-5 py-2.5 rounded-full font-bold text-sm whitespace-nowrap transition-all duration-300
                                                     ${selectedSubjectTab === tab
                                                         ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30 scale-105 backdrop-blur-md border border-white/20 ring-1 ring-white/10'
-                                                        : 'bg-zinc-100/50 dark:bg-white/5 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-white/10 hover:scale-105 backdrop-blur-sm border border-transparent hover:border-black/10 dark:hover:border-white/10'
+                                                        : 'bubble text-zinc-500 dark:text-zinc-400 hover:bg-white/10 hover:text-white hover:scale-105 hover:border-white/20'
                                                     }`}
                                             >
                                                 {tab}
@@ -929,15 +922,15 @@ const ContentModule: React.FC = () => {
 
                                 {/* Search Bar */}
                                 <div className="relative mb-8 group">
-                                    <div className="absolute inset-0 bg-blue-500/5 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                                    <div className="relative flex items-center gap-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-2xl px-5 py-4 shadow-sm group-focus-within:border-blue-500/50 group-focus-within:ring-4 group-focus-within:ring-blue-500/10 transition-all">
-                                        <Search size={20} className="text-zinc-400 group-focus-within:text-blue-500 transition-colors" />
+                                    <div className="absolute inset-0 bg-blue-500/10 rounded-2xl blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
+                                    <div className="relative flex items-center gap-3 glass-hydro rounded-2xl px-5 py-4 group-focus-within:border-blue-500/40 group-focus-within:ring-1 group-focus-within:ring-blue-500/20 transition-all">
+                                        <Search size={22} className="text-zinc-400 group-focus-within:text-blue-400 transition-colors" />
                                         <input
                                             type="text"
                                             placeholder="Buscar matérias ou tópicos..."
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
-                                            className="flex-1 bg-transparent border-none outline-none text-zinc-900 dark:text-white placeholder:text-zinc-400 font-medium"
+                                            className="flex-1 bg-transparent border-none outline-none text-zinc-900 dark:text-white placeholder:text-zinc-500/70 font-medium text-lg"
                                         />
                                     </div>
                                 </div>
@@ -955,7 +948,7 @@ const ContentModule: React.FC = () => {
                                         </button>
                                     </div>
                                 ) : (
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 hover-cards-container">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                                         {filteredSubjects.map((subject, index) => (
                                             <SubjectCard
                                                 key={subject.id}
@@ -980,7 +973,7 @@ const ContentModule: React.FC = () => {
                         <div className='flex items-center justify-between mb-6'>
                             <button
                                 onClick={() => setSelectedSubject(null)}
-                                className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors font-medium px-4 py-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-transparent hover:border-white/10 backdrop-blur-md w-fit"
+                                className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors font-medium px-4 py-2 bubble-hover w-fit"
                             >
                                 <ArrowLeft size={18} />
                                 Voltar para Matérias
@@ -989,14 +982,14 @@ const ContentModule: React.FC = () => {
                             <div className='flex gap-2 items-center'>
                                 <button
                                     onClick={() => setIsCreateFolderModalOpen(true)}
-                                    className="px-4 py-2 rounded-xl font-bold text-sm text-zinc-400 hover:text-white bg-white/[0.05] hover:bg-white/10 border border-transparent hover:border-white/10 backdrop-blur-md transition-all flex items-center gap-2"
+                                    className="px-4 py-2 font-bold text-sm text-zinc-400 hover:text-white bubble-hover transition-all flex items-center gap-2"
                                 >
                                     <Plus size={16} />
                                     Nova Pasta
                                 </button>
                                 <button
                                     onClick={() => setIsManualModalOpen(true)}
-                                    className="px-4 py-2 rounded-xl font-bold text-sm text-zinc-400 hover:text-white bg-white/[0.05] hover:bg-white/10 border border-transparent hover:border-white/10 backdrop-blur-md transition-all flex items-center gap-2"
+                                    className="px-4 py-2 font-bold text-sm text-zinc-400 hover:text-white bubble-hover transition-all flex items-center gap-2"
                                 >
                                     <FilePlus size={16} />
                                     Novo Conteúdo
@@ -1055,15 +1048,17 @@ const ContentModule: React.FC = () => {
                         </div>
 
                         {selectedSubject.pills.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center h-64 border-2 border-dashed border-zinc-200 dark:border-white/10 rounded-3xl bg-zinc-50/50 dark:bg-white/5">
-                                <Sparkles size={48} className="text-zinc-300 dark:text-zinc-600 mb-4" />
-                                <h3 className="text-lg font-bold text-zinc-500 dark:text-zinc-400">Nenhuma pílula ainda</h3>
-                                <p className="text-sm text-zinc-400 dark:text-zinc-500 max-w-xs text-center mt-2">
-                                    Faça upload de um PDF para gerar cards de estudo automaticamente.
+                            <div className="flex flex-col items-center justify-center h-80 glass-card border-dashed border-2 border-zinc-300/30 dark:border-white/10 rounded-[32px] group">
+                                <div className="p-6 rounded-full bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors mb-6 backdrop-blur-md">
+                                    <Sparkles size={48} className="text-blue-400/50 group-hover:text-blue-400 transition-colors" />
+                                </div>
+                                <h3 className="text-xl font-bold text-zinc-700 dark:text-white mb-2">Nenhuma pílula ainda</h3>
+                                <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-sm text-center leading-relaxed">
+                                    Faça upload de um PDF para gerar cards de estudo automaticamente ou crie um novo conteúdo manualmente.
                                 </p>
                                 <button
                                     onClick={() => fileInputRef.current?.click()}
-                                    className="mt-6 text-blue-500 hover:text-blue-600 font-bold text-sm"
+                                    className="mt-8 px-6 py-3 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-bold text-sm shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 hover:scale-105 active:scale-95 transition-all"
                                 >
                                     Selecionar arquivo agora
                                 </button>
@@ -1077,11 +1072,11 @@ const ContentModule: React.FC = () => {
 
             {/* Custom Gen Modal */}
             {isCustomGenModalOpen && (
-                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-4">
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-2xl w-full max-w-2xl p-6 shadow-2xl flex flex-col max-h-[90vh]"
+                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        className="bg-white/95 dark:bg-zinc-950/95 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-3xl w-full max-w-2xl p-6 shadow-[0_30px_60px_rgba(0,0,0,0.5)] flex flex-col max-h-[90vh]"
                     >
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-xl font-bold text-zinc-900 dark:text-white flex items-center gap-2">
@@ -1090,7 +1085,7 @@ const ContentModule: React.FC = () => {
                             </h2>
                             <button
                                 onClick={() => setIsCustomGenModalOpen(false)}
-                                className="p-2 hover:bg-zinc-100 dark:hover:bg-white/5 rounded-full"
+                                className="p-2 hover:bg-zinc-100 dark:hover:bg-white/5 rounded-full transition-colors"
                             >
                                 <X size={20} className="text-zinc-500" />
                             </button>
@@ -1102,7 +1097,7 @@ const ContentModule: React.FC = () => {
                                     Prompt / Instruções para a IA
                                 </label>
                                 <textarea
-                                    className="w-full bg-zinc-50 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-xl px-4 py-3 min-h-[100px] outline-none focus:ring-2 focus:ring-purple-500/50 resize-y"
+                                    className="w-full bg-zinc-50/50 dark:bg-black/20 border border-zinc-200/50 dark:border-white/10 rounded-xl px-4 py-3 min-h-[100px] outline-none focus:ring-2 focus:ring-purple-500/50 resize-y transition-all font-medium"
                                     placeholder="Ex: Foque apenas nas datas históricas e seus eventos. Ignore introduções longas. Crie perguntas de revisão difíceis."
                                     value={customPrompt}
                                     onChange={e => setCustomPrompt(e.target.value)}
@@ -1119,7 +1114,7 @@ const ContentModule: React.FC = () => {
 
                                 <div
                                     onClick={() => customFileInputRef.current?.click()}
-                                    className="border-2 border-dashed border-zinc-200 dark:border-white/10 rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer hover:bg-zinc-50 dark:hover:bg-white/5 transition-colors group"
+                                    className="border-2 border-dashed border-zinc-200 dark:border-white/10 rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer hover:bg-purple-50 dark:hover:bg-purple-500/5 hover:border-purple-300 dark:hover:border-purple-500/30 transition-all group"
                                 >
                                     <Upload size={32} className="text-zinc-300 dark:text-zinc-600 group-hover:text-purple-500 transition-colors mb-3" />
                                     <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400 text-center">
@@ -1181,12 +1176,14 @@ const ContentModule: React.FC = () => {
                         <div className="pt-4 border-t border-zinc-100 dark:border-white/5 flex justify-end gap-3 mt-4">
                             <button
                                 onClick={() => setIsCustomGenModalOpen(false)}
-                                className="px-5 py-2.5 text-sm font-bold text-zinc-500 hover:text-white transition-colors"
+                                className="px-5 py-2.5 text-sm font-bold text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
                             >
                                 Cancelar
                             </button>
                             <button
-                                className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-bold text-sm hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-purple-500/25 flex items-center gap-2 backdrop-blur-md border border-white/20"
+                                onClick={handleCustomGeneration}
+                                disabled={isGenerating}
+                                className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-bold text-sm hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-purple-500/25 flex items-center gap-2"
                             >
                                 {isGenerating ? <Loader2 className="animate-spin" size={16} /> : <Sparkles size={16} />}
                                 {isGenerating ? "Processando..." : "Gerar Conteúdo"}
@@ -1198,11 +1195,11 @@ const ContentModule: React.FC = () => {
 
             {/* Create Subject Modal */}
             {isCreateModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-4">
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-2xl w-full max-w-md p-6 shadow-2xl"
+                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        className="bg-white/90 dark:bg-zinc-950/90 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-3xl w-full max-w-md p-6 shadow-[0_30px_60px_rgba(0,0,0,0.5)]"
                     >
                         <h2 className="text-xl font-bold text-zinc-900 dark:text-white mb-4">Nova Matéria</h2>
                         <form onSubmit={handleCreateSubject}>
@@ -1213,7 +1210,7 @@ const ContentModule: React.FC = () => {
                                     value={newSubjectTitle}
                                     onChange={(e) => setNewSubjectTitle(e.target.value)}
                                     placeholder="Ex: Biologia"
-                                    className="w-full bg-zinc-100 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500/50"
+                                    className="w-full bg-zinc-50/50 dark:bg-black/20 border border-zinc-200/50 dark:border-white/10 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500/50 transition-all font-medium"
                                     autoFocus
                                 />
                             </div>
@@ -1226,7 +1223,7 @@ const ContentModule: React.FC = () => {
                                             key={color}
                                             type="button"
                                             onClick={() => setNewSubjectColor(color)}
-                                            className={`w-8 h-8 rounded-full ${color} transition-transform hover:scale-110 ${newSubjectColor === color ? 'ring-2 ring-offset-2 ring-zinc-900 dark:ring-white dark:ring-offset-zinc-900' : ''}`}
+                                            className={`w-10 h-10 rounded-xl ${color} transition-transform hover:scale-110 shadow-sm ${newSubjectColor === color ? 'ring-2 ring-offset-2 ring-zinc-900 dark:ring-white dark:ring-offset-zinc-900' : ''}`}
                                         />
                                     ))}
                                 </div>
@@ -1243,7 +1240,7 @@ const ContentModule: React.FC = () => {
                                 <button
                                     type="submit"
                                     disabled={!newSubjectTitle.trim() || isCreating}
-                                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                    className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 transition-all hover:scale-[1.02] active:scale-95"
                                 >
                                     {isCreating && <Loader2 className="animate-spin" size={14} />}
                                     Criar Matéria
@@ -1256,11 +1253,11 @@ const ContentModule: React.FC = () => {
 
             {/* Create Folder Modal */}
             {isCreateFolderModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-4">
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-2xl w-full max-w-sm p-6 shadow-2xl"
+                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        className="bg-white/90 dark:bg-zinc-950/90 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-3xl w-full max-w-sm p-6 shadow-[0_30px_60px_rgba(0,0,0,0.5)]"
                     >
                         <h2 className="text-xl font-bold text-zinc-900 dark:text-white mb-4">Nova Pasta</h2>
                         <form onSubmit={handleCreateFolder}>
@@ -1271,7 +1268,7 @@ const ContentModule: React.FC = () => {
                                     value={newFolderName}
                                     onChange={(e) => setNewFolderName(e.target.value)}
                                     placeholder="Ex: Capítulo 1"
-                                    className="w-full bg-zinc-100 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500/50"
+                                    className="w-full bg-zinc-50/50 dark:bg-black/20 border border-zinc-200/50 dark:border-white/10 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500/50 transition-all font-medium"
                                     autoFocus
                                 />
                             </div>
@@ -1287,7 +1284,7 @@ const ContentModule: React.FC = () => {
                                 <button
                                     type="submit"
                                     disabled={!newFolderName.trim() || isCreatingFolder}
-                                    className="px-4 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-sm font-bold rounded-xl disabled:opacity-50 flex items-center gap-2"
+                                    className="px-4 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-sm font-bold rounded-xl disabled:opacity-50 flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-all shadow-lg"
                                 >
                                     {isCreatingFolder && <Loader2 className="animate-spin" size={14} />}
                                     Criar Pasta
@@ -1300,11 +1297,11 @@ const ContentModule: React.FC = () => {
 
             {/* Manual Content Modal */}
             {isManualModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-4 text-left">
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-2xl w-full max-w-lg p-6 shadow-2xl"
+                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        className="bg-white/95 dark:bg-zinc-950/95 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-3xl w-full max-w-lg p-6 shadow-[0_30px_60px_rgba(0,0,0,0.5)]"
                     >
                         <h2 className="text-xl font-bold text-zinc-900 dark:text-white mb-4">Novo Conteúdo</h2>
                         <form onSubmit={handleCreateManualPill}>
@@ -1315,7 +1312,7 @@ const ContentModule: React.FC = () => {
                                         type="text"
                                         value={manualTitle}
                                         onChange={e => setManualTitle(e.target.value)}
-                                        className="w-full bg-zinc-100 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500/50"
+                                        className="w-full bg-zinc-50/50 dark:bg-black/20 border border-zinc-200/50 dark:border-white/10 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500/50 transition-all font-medium"
                                         placeholder="Título do conteúdo"
                                         autoFocus
                                     />
@@ -1326,7 +1323,7 @@ const ContentModule: React.FC = () => {
                                     <select
                                         value={manualFolder}
                                         onChange={e => setManualFolder(e.target.value)}
-                                        className="w-full bg-zinc-100 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500/50"
+                                        className="w-full bg-zinc-50/50 dark:bg-black/20 border border-zinc-200/50 dark:border-white/10 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500/50 transition-all font-medium"
                                     >
                                         <option value="">Sem Pasta</option>
                                         {selectedSubject?.folders?.map(f => (
@@ -1340,7 +1337,7 @@ const ContentModule: React.FC = () => {
                                     <textarea
                                         value={manualContent}
                                         onChange={e => setManualContent(e.target.value)}
-                                        className="w-full h-40 bg-zinc-100 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500/50 resize-none font-mono text-sm"
+                                        className="w-full h-40 bg-zinc-50/50 dark:bg-black/20 border border-zinc-200/50 dark:border-white/10 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500/50 resize-none font-mono text-sm transition-all"
                                         placeholder="Escreva seu conteúdo aqui..."
                                     />
                                 </div>
@@ -1350,10 +1347,7 @@ const ContentModule: React.FC = () => {
                                 <button
                                     type="button"
                                     onClick={() => setIsManualModalOpen(false)}
-                                    className="px-4 py-2 rounded-xl backdrop-blur-sm transition-all duration-300
-                                        bg-transparent hover:bg-black/5 dark:hover:bg-white/5
-                                        border border-transparent hover:border-black/10 dark:hover:border-white/10
-                                        text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
+                                    className="px-4 py-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
                                 >
                                     Cancelar
                                 </button>

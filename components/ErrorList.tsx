@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, AlertTriangle, Brain, Eye, Clock, X, CheckCircle2, Search, BookOpen, User, Image as ImageIcon, Sparkles, Loader2, Edit2, Filter, ArrowUpDown, LayoutGrid, List as ListIcon, AlertOctagon } from 'lucide-react';
+import { Plus, Trash2, AlertTriangle, Brain, Eye, Clock, X, CheckCircle2, Search, BookOpen, User, Image as ImageIcon, Sparkles, Loader2, Edit2, Filter, ArrowUpDown, LayoutGrid, List as ListIcon, AlertOctagon, ChevronDown } from 'lucide-react';
 import { authService } from '../services/authService';
 import { analyzeErrorImage } from '../services/geminiService';
 import { flashcardService, Flashcard } from '../services/flashcardService';
@@ -8,7 +8,7 @@ import { ErrorEntry } from '../types';
 
 const subjects = [
   'Matemática', 'Física', 'Química', 'Biologia',
-  'História', 'Geografia', 'Português', 'Inglês'
+  'História', 'Geografia', 'Português', 'Inglês', 'Filosofia', 'Sociologia'
 ];
 
 const causes = [
@@ -221,26 +221,37 @@ const ErrorList: React.FC = () => {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-7xl mx-auto w-full">
       {/* Header & Stats */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <div className="h-6 w-1 bg-gradient-to-b from-red-500 to-rose-600 rounded-full shadow-[0_0_15px_rgba(244,63,94,0.5)]" />
-            <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-200 to-rose-200 tracking-tight drop-shadow-md">O Caderno de Erros</h2>
+            <div className="relative">
+              <div className="absolute inset-0 bg-red-500 blur-xl opacity-30 animate-pulse" />
+              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center shadow-lg shadow-red-500/20 border border-white/20">
+                <AlertOctagon className="text-white" size={20} />
+              </div>
+            </div>
+            <h2 className="text-4xl font-black text-white tracking-tight drop-shadow-sm">Caderno de Erros</h2>
           </div>
-          <p className="text-zinc-400 text-sm tracking-wide">Identifique padrões e elimine suas fraquezas.</p>
+          <p className="text-zinc-400 text-base font-medium pl-14">Transforme falhas em aprendizado.</p>
         </div>
 
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-4">
           {mostFrequentSubject && (
-            <div className="bg-gradient-to-br from-red-900/50 to-red-950/50 border border-red-500/20 rounded-2xl px-5 py-3 flex flex-col items-center justify-center min-w-[120px] shadow-lg shadow-red-900/20 backdrop-blur-sm">
-              <span className="text-[10px] text-red-300 uppercase font-bold flex items-center gap-1.5 mb-1"><AlertOctagon size={12} /> Ponto Fraco</span>
-              <span className="text-xl font-black text-white">{mostFrequentSubject[0]}</span>
-              <span className="text-[10px] text-red-400/70 font-mono tracking-wider">{mostFrequentSubject[1]} erros</span>
+            <div className="glass-spatial rounded-[24px] pl-5 pr-8 py-4 flex flex-col justify-center min-w-[140px] relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-3 opacity-50 group-hover:opacity-100 transition-opacity">
+                <AlertTriangle size={16} className="text-red-400" />
+              </div>
+              <div className="absolute bottom-0 right-0 w-16 h-16 bg-red-500/10 blur-2xl rounded-full translate-y-1/2 translate-x-1/2" />
+
+              <span className="text-[10px] text-red-300 uppercase font-bold tracking-wider mb-1">Atenção Necessária</span>
+              <span className="text-2xl font-black text-white leading-none mb-1">{mostFrequentSubject[0]}</span>
+              <span className="text-xs text-zinc-400 font-medium">{mostFrequentSubject[1]} erros registrados</span>
             </div>
           )}
-          <div className="glass-spatial rounded-[24px] px-6 py-4 flex flex-col items-center justify-center min-w-[120px] shadow-lg">
-            <span className="text-[10px] text-zinc-400 uppercase font-bold mb-1 tracking-wider">Total</span>
-            <span className="text-3xl font-black text-white">{totalErrors}</span>
+          <div className="glass-spatial rounded-[24px] px-8 py-4 flex flex-col justify-center min-w-[120px] items-start relative overflow-hidden">
+            <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-50" />
+            <span className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider mb-1">Total de Erros</span>
+            <span className="text-3xl font-black text-white leading-none">{totalErrors}</span>
           </div>
         </div>
       </div>
@@ -248,36 +259,47 @@ const ErrorList: React.FC = () => {
       {/* Controls Bar */}
       <div className="flex flex-col xl:flex-row gap-4 mb-6">
         <div className="flex-1 flex flex-col sm:flex-row gap-3">
-          <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
+          <div className="relative flex-1 group">
+            <div className="absolute inset-0 bg-blue-500/5 rounded-2xl blur-lg group-hover:bg-blue-500/10 transition-colors opacity-0 group-hover:opacity-100" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-hover:text-blue-400 transition-colors" size={18} />
             <input
               type="text"
-              placeholder="Buscar erro..."
+              placeholder="Buscar nos seus erros..."
               value={filterText}
               onChange={(e) => setFilterText(e.target.value)}
-              className="w-full glass-card bg-white/5 border-white/10 rounded-xl py-3 pl-12 pr-4 text-sm text-white focus:outline-none focus:border-red-500/50 focus:bg-white/10 transition-all placeholder:text-zinc-600 shadow-sm"
+              className="w-full glass-card bg-zinc-900/30 hover:bg-zinc-900/50 border-white/5 hover:border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-sm text-white focus:outline-none focus:ring-1 focus:ring-blue-500/50 transition-all placeholder:text-zinc-600 shadow-sm relative z-10"
             />
           </div>
+
           <div className="flex gap-2">
-            <select
-              className="glass-card bg-white/5 border-white/10 text-zinc-300 text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-red-500/50 appearance-none min-w-[140px] hover:bg-white/10 transition-colors cursor-pointer"
-              value={filterSubject}
-              onChange={(e) => setFilterSubject(e.target.value)}
-            >
-              <option value="" className="bg-zinc-900">Todas Matérias</option>
-              {subjects.map(s => <option key={s} value={s} className="bg-zinc-900">{s}</option>)}
-            </select>
-            <select
-              className="glass-card bg-white/5 border-white/10 text-zinc-300 text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-red-500/50 appearance-none min-w-[140px] hover:bg-white/10 transition-colors cursor-pointer"
-              value={filterCause}
-              onChange={(e) => setFilterCause(e.target.value)}
-            >
-              <option value="" className="bg-zinc-900">Todos Motivos</option>
-              {causes.map(c => <option key={c.id} value={c.id} className="bg-zinc-900">{c.id}</option>)}
-            </select>
-            <div className="relative">
+            <div className="relative group">
+              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none group-hover:text-zinc-300" size={14} />
               <select
-                className="glass-card bg-white/5 border-white/10 text-zinc-300 text-sm rounded-xl px-4 py-3 pl-10 focus:outline-none focus:border-red-500/50 appearance-none hover:bg-white/10 transition-colors cursor-pointer"
+                className="glass-card bg-zinc-900/30 border-white/5 text-zinc-300 text-sm rounded-2xl pl-4 pr-10 py-3.5 focus:outline-none focus:border-white/20 appearance-none min-w-[140px] hover:bg-zinc-900/50 transition-all cursor-pointer font-medium"
+                value={filterSubject}
+                onChange={(e) => setFilterSubject(e.target.value)}
+              >
+                <option value="" className="bg-zinc-900">Matéria</option>
+                {subjects.map(s => <option key={s} value={s} className="bg-zinc-900">{s}</option>)}
+              </select>
+            </div>
+
+            <div className="relative group">
+              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none group-hover:text-zinc-300" size={14} />
+              <select
+                className="glass-card bg-zinc-900/30 border-white/5 text-zinc-300 text-sm rounded-2xl pl-4 pr-10 py-3.5 focus:outline-none focus:border-white/20 appearance-none min-w-[140px] hover:bg-zinc-900/50 transition-all cursor-pointer font-medium"
+                value={filterCause}
+                onChange={(e) => setFilterCause(e.target.value)}
+              >
+                <option value="" className="bg-zinc-900">Motivo</option>
+                {causes.map(c => <option key={c.id} value={c.id} className="bg-zinc-900">{c.id}</option>)}
+              </select>
+            </div>
+
+            <div className="relative group">
+              <ArrowUpDown size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none group-hover:text-zinc-300" />
+              <select
+                className="glass-card bg-zinc-900/30 border-white/5 text-zinc-300 text-sm rounded-2xl pl-10 pr-8 py-3.5 focus:outline-none focus:border-white/20 appearance-none hover:bg-zinc-900/50 transition-all cursor-pointer font-medium"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
               >
@@ -285,7 +307,6 @@ const ErrorList: React.FC = () => {
                 <option value="date-asc" className="bg-zinc-900">Antigos</option>
                 <option value="subject" className="bg-zinc-900">Matéria</option>
               </select>
-              <ArrowUpDown size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none" />
             </div>
           </div>
         </div>
@@ -308,9 +329,9 @@ const ErrorList: React.FC = () => {
 
           <button
             onClick={() => openModal()}
-            className="flex-1 sm:flex-none bg-red-600 hover:bg-red-500 text-white font-bold px-6 py-3 rounded-xl flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-[0_0_20px_rgba(220,38,38,0.3)] whitespace-nowrap text-sm backdrop-blur-md border border-white/20"
+            className="flex-1 sm:flex-none bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold px-6 py-3 rounded-2xl flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-[0_0_20px_rgba(220,38,38,0.4)] whitespace-nowrap text-sm border border-white/10"
           >
-            <Plus size={18} /> Registrar Erro
+            <Plus size={18} /> Registrar Novo Erro
           </button>
         </div>
       </div>
@@ -338,32 +359,40 @@ const ErrorList: React.FC = () => {
                 {viewMode === 'grid' ? (
                   <>
                     <div className="flex justify-between items-start mb-4">
-                      <span className="px-3 py-1 rounded-lg bg-zinc-950/50 text-xs font-bold text-zinc-300 border border-white/5">
-                        {error.subject}
-                      </span>
-                      <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${causeData.bg} ${causeData.color} ${causeData.border}`}>
+                      <div className="flex flex-col">
+                        <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Matéria</span>
+                        <span className="px-3 py-1.5 rounded-xl bg-zinc-900/50 text-xs font-bold text-zinc-200 border border-white/10 backdrop-blur-md">
+                          {error.subject}
+                        </span>
+                      </div>
+                      <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-wider border backdrop-blur-md ${causeData.bg} ${causeData.color} ${causeData.border}`}>
                         {causeData.icon}
                         {error.cause}
                       </div>
                     </div>
 
-                    <p className="text-zinc-200 text-sm leading-relaxed mb-6 min-h-[60px] line-clamp-4 font-medium">
-                      {error.description}
-                    </p>
+                    <div className="flex-1 bg-zinc-950/20 rounded-xl p-4 border border-white/5 mb-4 group-hover:border-white/10 transition-colors">
+                      <p className="text-zinc-300 text-sm leading-relaxed min-h-[60px] line-clamp-4 font-medium">
+                        {error.description}
+                      </p>
+                    </div>
 
-                    <div className="mt-auto flex items-center justify-between pt-4 border-t border-white/5">
-                      <span className="text-xs text-zinc-600 font-mono">{error.date}</span>
-                      <div className="flex gap-1">
+                    <div className="mt-auto flex items-center justify-between pt-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-zinc-700" />
+                        <span className="text-xs text-zinc-500 font-mono font-medium">{error.date}</span>
+                      </div>
+                      <div className="flex gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => openModal(error)}
-                          className="text-zinc-600 hover:text-blue-400 transition-colors p-2 hover:bg-blue-500/10 rounded-lg"
+                          className="text-zinc-400 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-xl"
                           title="Editar"
                         >
                           <Edit2 size={16} />
                         </button>
                         <button
                           onClick={() => handleDelete(error.id)}
-                          className="text-zinc-600 hover:text-red-400 transition-colors p-2 hover:bg-red-500/10 rounded-lg"
+                          className="text-zinc-400 hover:text-red-400 transition-colors p-2 hover:bg-red-500/10 rounded-xl"
                           title="Remover"
                         >
                           <Trash2 size={16} />
@@ -373,35 +402,36 @@ const ErrorList: React.FC = () => {
                   </>
                 ) : (
                   <>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-zinc-950/50 text-zinc-400 border border-white/5">
-                          {error.subject}
-                        </span>
-                        <span className="text-xs text-zinc-600 font-mono">• {error.date}</span>
+                    <div className="flex-1 min-w-0 flex items-center gap-6">
+                      <div className="flex flex-col items-center justify-center min-w-[60px] border-r border-white/5 pr-6">
+                        <span className="text-xs font-mono text-zinc-500">{error.date.split('/')[0]}/{error.date.split('/')[1]}</span>
+                        <span className="text-[10px] font-bold text-zinc-600">{error.date.split('/')[2]}</span>
                       </div>
-                      <p className="text-zinc-200 text-sm truncate font-medium">{error.description}</p>
+
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-1.5">
+                          <span className="text-sm font-bold text-white">{error.subject}</span>
+                          <div className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider border ${causeData.bg} ${causeData.color} ${causeData.border}`}>
+                            {error.cause}
+                          </div>
+                        </div>
+                        <p className="text-zinc-400 text-sm truncate font-medium pr-4">{error.description}</p>
+                      </div>
                     </div>
 
-                    <div className="flex items-center gap-4">
-                      <div className={`flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${causeData.bg} ${causeData.color} ${causeData.border} whitespace-nowrap`}>
-                        {causeData.icon}
-                        {error.cause}
-                      </div>
-                      <div className="flex gap-1 border-l border-white/5 pl-4">
-                        <button
-                          onClick={() => openModal(error)}
-                          className="text-zinc-500 hover:text-blue-400 transition-colors p-2 hover:bg-zinc-800 rounded-lg"
-                        >
-                          <Edit2 size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(error.id)}
-                          className="text-zinc-500 hover:text-red-400 transition-colors p-2 hover:bg-zinc-800 rounded-lg"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => openModal(error)}
+                        className="text-zinc-500 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-xl"
+                      >
+                        <Edit2 size={16} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(error.id)}
+                        className="text-zinc-500 hover:text-red-400 transition-colors p-2 hover:bg-red-500/10 rounded-xl"
+                      >
+                        <Trash2 size={16} />
+                      </button>
                     </div>
                   </>
                 )}
@@ -431,14 +461,21 @@ const ErrorList: React.FC = () => {
                 <div className="bg-zinc-900 border border-white/5 rounded-2xl p-4">
                   <label className="block text-[10px] font-bold text-zinc-500 mb-2 uppercase tracking-wider">Foto da Questão (IA)</label>
                   <div className="flex items-start gap-4">
-                    <label className="flex-shrink-0 w-24 h-24 bg-black/40 border-2 border-dashed border-white/10 hover:border-white/20 rounded-xl flex flex-col items-center justify-center cursor-pointer transition-all group overflow-hidden relative">
+                    <label className="flex-shrink-0 w-32 h-32 bg-zinc-950/50 border border-dashed border-white/10 hover:border-blue-500/50 rounded-2xl flex flex-col items-center justify-center cursor-pointer transition-all group overflow-hidden relative shadow-inner">
                       <input type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
                       {imagePreview ? (
-                        <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                        <div className="relative w-full h-full group-hover:scale-105 transition-transform duration-500">
+                          <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Edit2 className="text-white" size={20} />
+                          </div>
+                        </div>
                       ) : (
                         <>
-                          <ImageIcon size={24} className="text-zinc-600 group-hover:text-zinc-400 mb-1" />
-                          <span className="text-[10px] text-zinc-600 group-hover:text-zinc-400 font-bold uppercase">Upload</span>
+                          <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center mb-2 group-hover:bg-blue-500/20 group-hover:text-blue-400 transition-all">
+                            <ImageIcon size={20} className="text-zinc-500 group-hover:text-blue-400" />
+                          </div>
+                          <span className="text-[10px] text-zinc-500 group-hover:text-blue-400 font-bold uppercase tracking-wide">Inserir Foto</span>
                         </>
                       )}
                     </label>
@@ -465,24 +502,30 @@ const ErrorList: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1.5 tracking-wider">Matéria</label>
-                  <select
-                    value={subject}
-                    onChange={(e) => setSubject(e.target.value)}
-                    className="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-3 text-white focus:outline-none focus:border-red-500 text-sm appearance-none font-medium"
-                  >
-                    {subjects.map(s => <option key={s} value={s}>{s}</option>)}
-                  </select>
+                  <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-2 tracking-wider">Matéria</label>
+                  <div className="relative">
+                    <ChevronDown size={14} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none" />
+                    <select
+                      value={subject}
+                      onChange={(e) => setSubject(e.target.value)}
+                      className="w-full bg-zinc-950/50 border border-white/10 rounded-2xl px-4 py-3.5 text-white focus:outline-none focus:ring-1 focus:ring-blue-500/50 focus:border-blue-500/50 text-sm appearance-none font-medium transition-all"
+                    >
+                      {subjects.map(s => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                  </div>
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1.5 tracking-wider">Motivo</label>
-                  <select
-                    value={cause}
-                    onChange={(e) => setCause(e.target.value as ErrorEntry['cause'])}
-                    className="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-3 text-white focus:outline-none focus:border-red-500 text-sm appearance-none font-medium"
-                  >
-                    {causes.map(c => <option key={c.id} value={c.id}>{c.id}</option>)}
-                  </select>
+                  <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-2 tracking-wider">Motivo do Erro</label>
+                  <div className="relative">
+                    <ChevronDown size={14} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none" />
+                    <select
+                      value={cause}
+                      onChange={(e) => setCause(e.target.value as ErrorEntry['cause'])}
+                      className="w-full bg-zinc-950/50 border border-white/10 rounded-2xl px-4 py-3.5 text-white focus:outline-none focus:ring-1 focus:ring-blue-500/50 focus:border-blue-500/50 text-sm appearance-none font-medium transition-all"
+                    >
+                      {causes.map(c => <option key={c.id} value={c.id}>{c.id}</option>)}
+                    </select>
+                  </div>
                 </div>
               </div>
 
@@ -492,7 +535,7 @@ const ErrorList: React.FC = () => {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Descreva o que aconteceu... (Ex: Confundi a fórmula de Bhaskara)"
-                  className="w-full bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-500 min-h-[120px] resize-none text-sm placeholder:text-zinc-600"
+                  className="w-full bg-zinc-950/50 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:ring-1 focus:ring-blue-500/50 focus:border-blue-500/50 min-h-[140px] resize-none text-sm placeholder:text-zinc-600 leading-relaxed custom-scrollbar shadow-inner"
                 />
               </div>
 

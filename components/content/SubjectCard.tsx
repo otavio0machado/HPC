@@ -69,7 +69,7 @@ const SubjectCard: React.FC<SubjectCardProps> = ({ subject, onClick, index }) =>
             }}
             onClick={onClick}
             onMouseMove={handleMouseMove}
-            className="group relative w-full aspect-[4/3] rounded-[36px] overflow-hidden transition-all duration-500 text-left bg-white/70 dark:bg-white/[0.05] backdrop-blur-3xl border border-black/[0.06] dark:border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.15),_0_0_30px_rgba(59,130,246,0.2)] dark:hover:shadow-[0_20px_60px_rgba(0,0,0,0.6),_0_0_40px_rgba(99,102,241,0.3)]"
+            className="group relative w-full aspect-[4/3] rounded-[36px] overflow-hidden text-left glass-card hover:scale-[1.03] hover:-translate-y-2 hover:shadow-[0_20px_60px_rgba(0,0,0,0.15),_0_0_30px_rgba(59,130,246,0.2)] dark:hover:shadow-[0_20px_60px_rgba(0,0,0,0.6),_0_0_40px_rgba(99,102,241,0.3)] transition-all duration-500"
         >
             {/* Enhanced Spotlight Effect */}
             <div

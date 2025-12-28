@@ -68,7 +68,7 @@ const MenuBar = ({ editor, onOpenAI }: { editor: any, onOpenAI: () => void }) =>
     };
 
     return (
-        <div className="flex flex-wrap gap-1 p-2 bg-zinc-900 border-b border-zinc-800 rounded-t-xl sticky top-0 z-10 items-center">
+        <div className="flex flex-wrap gap-1 p-2 bg-white/5 backdrop-blur-md border-b border-white/5 sticky top-0 z-20 items-center transition-all">
             {/* Hidden Input */}
             <input
                 type="file"
@@ -78,11 +78,11 @@ const MenuBar = ({ editor, onOpenAI }: { editor: any, onOpenAI: () => void }) =>
                 accept="application/pdf"
             />
 
-            <div className="flex items-center gap-1 border-r border-zinc-800 pr-2 mr-1">
+            <div className="flex items-center gap-1 border-r border-white/10 pr-2 mr-1">
                 <button
                     onClick={() => editor.chain().focus().toggleBold().run()}
                     disabled={!editor.can().chain().focus().toggleBold().run()}
-                    className={`p-1.5 rounded transition-colors ${editor.isActive('bold') ? 'bg-blue-500/20 text-blue-400' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
+                    className={`p-1.5 rounded-lg transition-colors ${editor.isActive('bold') ? 'bg-blue-500/20 text-blue-400 shadow-inner' : 'text-zinc-400 hover:text-white hover:bg-white/10'}`}
                     title="Negrito"
                 >
                     <Bold size={16} />
@@ -90,7 +90,7 @@ const MenuBar = ({ editor, onOpenAI }: { editor: any, onOpenAI: () => void }) =>
                 <button
                     onClick={() => editor.chain().focus().toggleItalic().run()}
                     disabled={!editor.can().chain().focus().toggleItalic().run()}
-                    className={`p-1.5 rounded transition-colors ${editor.isActive('italic') ? 'bg-blue-500/20 text-blue-400' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
+                    className={`p-1.5 rounded-lg transition-colors ${editor.isActive('italic') ? 'bg-blue-500/20 text-blue-400 shadow-inner' : 'text-zinc-400 hover:text-white hover:bg-white/10'}`}
                     title="Itálico"
                 >
                     <Italic size={16} />
@@ -98,89 +98,89 @@ const MenuBar = ({ editor, onOpenAI }: { editor: any, onOpenAI: () => void }) =>
                 <button
                     onClick={() => editor.chain().focus().toggleStrike().run()}
                     disabled={!editor.can().chain().focus().toggleStrike().run()}
-                    className={`p-1.5 rounded transition-colors ${editor.isActive('strike') ? 'bg-blue-500/20 text-blue-400' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
+                    className={`p-1.5 rounded-lg transition-colors ${editor.isActive('strike') ? 'bg-blue-500/20 text-blue-400 shadow-inner' : 'text-zinc-400 hover:text-white hover:bg-white/10'}`}
                     title="Tachado"
                 >
                     <span className="line-through font-bold text-xs px-0.5">S</span>
                 </button>
             </div>
 
-            <div className="flex items-center gap-1 border-r border-zinc-800 pr-2 mr-1">
+            <div className="flex items-center gap-1 border-r border-white/10 pr-2 mr-1">
                 <button
                     onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-                    className={`p-1.5 rounded transition-colors ${editor.isActive('heading', { level: 1 }) ? 'bg-blue-500/20 text-blue-400' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
+                    className={`p-1.5 rounded-lg transition-colors ${editor.isActive('heading', { level: 1 }) ? 'bg-blue-500/20 text-blue-400 shadow-inner' : 'text-zinc-400 hover:text-white hover:bg-white/10'}`}
                     title="Título 1"
                 >
                     <Heading1 size={16} />
                 </button>
                 <button
                     onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                    className={`p-1.5 rounded transition-colors ${editor.isActive('heading', { level: 2 }) ? 'bg-blue-500/20 text-blue-400' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
+                    className={`p-1.5 rounded-lg transition-colors ${editor.isActive('heading', { level: 2 }) ? 'bg-blue-500/20 text-blue-400 shadow-inner' : 'text-zinc-400 hover:text-white hover:bg-white/10'}`}
                     title="Título 2"
                 >
                     <Heading2 size={16} />
                 </button>
                 <button
                     onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-                    className={`p-1.5 rounded transition-colors ${editor.isActive('heading', { level: 3 }) ? 'bg-blue-500/20 text-blue-400' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
+                    className={`p-1.5 rounded-lg transition-colors ${editor.isActive('heading', { level: 3 }) ? 'bg-blue-500/20 text-blue-400 shadow-inner' : 'text-zinc-400 hover:text-white hover:bg-white/10'}`}
                     title="Título 3"
                 >
                     <Heading3 size={16} />
                 </button>
             </div>
 
-            <div className="flex items-center gap-1 border-r border-zinc-800 pr-2 mr-1">
+            <div className="flex items-center gap-1 border-r border-white/10 pr-2 mr-1">
                 <button
                     onClick={() => editor.chain().focus().toggleBulletList().run()}
-                    className={`p-1.5 rounded transition-colors ${editor.isActive('bulletList') ? 'bg-blue-500/20 text-blue-400' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
+                    className={`p-1.5 rounded-lg transition-colors ${editor.isActive('bulletList') ? 'bg-blue-500/20 text-blue-400 shadow-inner' : 'text-zinc-400 hover:text-white hover:bg-white/10'}`}
                     title="Lista de Marcadores"
                 >
                     <List size={16} />
                 </button>
                 <button
                     onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                    className={`p-1.5 rounded transition-colors ${editor.isActive('orderedList') ? 'bg-blue-500/20 text-blue-400' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
+                    className={`p-1.5 rounded-lg transition-colors ${editor.isActive('orderedList') ? 'bg-blue-500/20 text-blue-400 shadow-inner' : 'text-zinc-400 hover:text-white hover:bg-white/10'}`}
                     title="Lista Numerada"
                 >
                     <ListOrdered size={16} />
                 </button>
                 <button
                     onClick={() => editor.chain().focus().toggleTaskList().run()}
-                    className={`p-1.5 rounded transition-colors ${editor.isActive('taskList') ? 'bg-blue-500/20 text-blue-400' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
+                    className={`p-1.5 rounded-lg transition-colors ${editor.isActive('taskList') ? 'bg-blue-500/20 text-blue-400 shadow-inner' : 'text-zinc-400 hover:text-white hover:bg-white/10'}`}
                     title="Lista de Tarefas"
                 >
                     <CheckSquare size={16} />
                 </button>
             </div>
 
-            <div className="flex items-center gap-1 border-r border-zinc-800 pr-2 mr-1">
+            <div className="flex items-center gap-1 border-r border-white/10 pr-2 mr-1">
                 <button
                     onClick={() => editor.chain().focus().toggleBlockquote().run()}
-                    className={`p-1.5 rounded transition-colors ${editor.isActive('blockquote') ? 'bg-blue-500/20 text-blue-400' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
+                    className={`p-1.5 rounded-lg transition-colors ${editor.isActive('blockquote') ? 'bg-blue-500/20 text-blue-400 shadow-inner' : 'text-zinc-400 hover:text-white hover:bg-white/10'}`}
                     title="Citação"
                 >
                     <Quote size={16} />
                 </button>
                 <button
                     onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-                    className={`p-1.5 rounded transition-colors ${editor.isActive('codeBlock') ? 'bg-blue-500/20 text-blue-400' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
+                    className={`p-1.5 rounded-lg transition-colors ${editor.isActive('codeBlock') ? 'bg-blue-500/20 text-blue-400 shadow-inner' : 'text-zinc-400 hover:text-white hover:bg-white/10'}`}
                     title="Código"
                 >
                     <Code size={16} />
                 </button>
             </div>
 
-            <div className="flex items-center gap-1 border-r border-zinc-800 pr-2 mr-1">
+            <div className="flex items-center gap-1 border-r border-white/10 pr-2 mr-1">
                 <button
                     onClick={() => editor.chain().focus().setDrawing().run()}
-                    className={`p-1.5 rounded transition-colors ${editor.isActive('drawing') ? 'bg-blue-500/20 text-blue-400' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
+                    className={`p-1.5 rounded-lg transition-colors ${editor.isActive('drawing') ? 'bg-blue-500/20 text-blue-400 shadow-inner' : 'text-zinc-400 hover:text-white hover:bg-white/10'}`}
                     title="Desenho"
                 >
                     <PenTool size={16} />
                 </button>
                 <button
                     onClick={() => fileInputRef.current?.click()}
-                    className={`p-1.5 rounded transition-colors text-zinc-400 hover:text-white hover:bg-zinc-800`}
+                    className={`p-1.5 rounded-lg transition-colors text-zinc-400 hover:text-white hover:bg-white/10`}
                     title="Anexar PDF"
                 >
                     <Paperclip size={16} />
@@ -192,7 +192,7 @@ const MenuBar = ({ editor, onOpenAI }: { editor: any, onOpenAI: () => void }) =>
             <div className="flex items-center gap-1">
                 <button
                     onClick={onOpenAI}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 text-xs font-bold border border-blue-500/20 transition-all"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 hover:text-white text-xs font-bold border border-purple-500/20 transition-all shadow-[0_0_10px_rgba(168,85,247,0.2)]"
                 >
                     <Wand2 size={12} /> Ask AI
                 </button>
@@ -357,43 +357,49 @@ const NotesEditor: React.FC<NotesEditorProps> = ({ noteId, content, onUpdate, re
     }
 
     return (
-        <div className="flex flex-col h-full bg-zinc-950 rounded-xl overflow-hidden border border-zinc-800">
+        <div className="flex flex-col h-full rounded-2xl overflow-hidden border border-white/5 glass-card shadow-xl relative group">
             <MenuBar editor={editor} onOpenAI={() => setShowAIDialog(true)} />
 
             {showAIDialog && (
-                <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-                    <div className="bg-zinc-900 border border-zinc-700 rounded-xl w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-                        <div className="flex items-center justify-between p-4 border-b border-zinc-800">
-                            <h3 className="flex items-center gap-2 font-bold text-zinc-100">
-                                <Wand2 size={16} className="text-purple-400" />
+                <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md p-4 animate-in fade-in duration-300">
+                    <div className="glass-spatial border border-white/10 rounded-3xl w-full max-w-lg shadow-[0_20px_60px_rgba(0,0,0,0.5)] overflow-hidden animate-in zoom-in-95 duration-300 relative">
+                        {/* Background Gradients */}
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/20 rounded-full blur-[50px] pointer-events-none" />
+                        <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-500/20 rounded-full blur-[50px] pointer-events-none" />
+
+                        <div className="flex items-center justify-between p-5 border-b border-white/10 relative z-10">
+                            <h3 className="flex items-center gap-2 font-bold text-white text-lg tracking-tight">
+                                <div className="p-1.5 rounded-lg bg-purple-500/20 text-purple-300 shadow-inner">
+                                    <Wand2 size={16} />
+                                </div>
                                 Gerar Nota com IA
                             </h3>
                             <button
                                 onClick={() => setShowAIDialog(false)}
-                                className="text-zinc-400 hover:text-white transition-colors"
+                                className="p-1 rounded-full hover:bg-white/10 text-zinc-400 hover:text-white transition-colors"
                             >
-                                <X size={18} />
+                                <X size={20} />
                             </button>
                         </div>
 
-                        <div className="p-6 space-y-4">
+                        <div className="p-6 space-y-5 relative z-10">
                             <div>
-                                <label className="block text-xs font-medium text-zinc-400 mb-1.5 uppercase tracking-wide">
+                                <label className="block text-xs font-bold text-zinc-400 mb-2 uppercase tracking-wide ml-1">
                                     Sobre o que você quer aprender?
                                 </label>
                                 <textarea
                                     value={aiPrompt}
                                     onChange={(e) => setAiPrompt(e.target.value)}
                                     placeholder="Ex: Revolução Industrial, Leis de Newton, Funções de 2º Grau..."
-                                    className="w-full h-32 bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-sm text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-purple-500/50 resize-none"
+                                    className="w-full h-32 bg-black/20 border border-white/10 rounded-2xl p-4 text-base text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-purple-500/40 focus:bg-black/30 resize-none transition-all"
                                     autoFocus
                                 />
                             </div>
 
-                            <div className="flex justify-end gap-2 pt-2">
+                            <div className="flex justify-end gap-3 pt-2">
                                 <button
                                     onClick={() => setShowAIDialog(false)}
-                                    className="px-4 py-2 text-sm font-medium text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors"
+                                    className="px-5 py-2.5 text-sm font-medium text-zinc-400 hover:text-white hover:bg-white/5 rounded-xl transition-colors"
                                     disabled={isGenerating}
                                 >
                                     Cancelar
@@ -401,15 +407,15 @@ const NotesEditor: React.FC<NotesEditorProps> = ({ noteId, content, onUpdate, re
                                 <button
                                     onClick={handleGenerateNote}
                                     disabled={!aiPrompt.trim() || isGenerating}
-                                    className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-white bg-purple-600 hover:bg-purple-500 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-all"
+                                    className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl transition-all shadow-lg shadow-purple-900/40 hover:scale-105 active:scale-95"
                                 >
                                     {isGenerating ? (
                                         <>
-                                            <Wand2 size={14} className="animate-spin" /> Gerando...
+                                            <Wand2 size={16} className="animate-spin" /> Gerando...
                                         </>
                                     ) : (
                                         <>
-                                            <Wand2 size={14} /> Gerar Nota
+                                            <Wand2 size={16} /> Gerar Nota
                                         </>
                                     )}
                                 </button>
@@ -418,7 +424,7 @@ const NotesEditor: React.FC<NotesEditorProps> = ({ noteId, content, onUpdate, re
                     </div>
                 </div>
             )}
-            <div className="flex-1 overflow-y-auto custom-scrollbar">
+            <div className="flex-1 overflow-y-auto custom-scrollbar bg-transparent">
                 <EditorContent editor={editor} />
             </div>
         </div>

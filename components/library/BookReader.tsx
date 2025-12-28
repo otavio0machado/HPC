@@ -35,14 +35,14 @@ const BookReader: React.FC<BookReaderProps> = ({ book, onClose, onUpdate }) => {
     const adjustFontSize = (delta: number) => setSettings(s => ({ ...s, fontSize: Math.max(50, Math.min(200, s.fontSize + delta)) }));
 
     return (
-        <div className="fixed inset-0 z-50 bg-zinc-950 flex flex-col animate-in slide-in-from-bottom duration-300">
+        <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl flex flex-col animate-in slide-in-from-bottom duration-300">
 
             {/* Reader Header */}
-            <div className="h-14 border-b border-zinc-800 flex items-center justify-between px-4 bg-zinc-900 shadow-sm z-20">
+            <div className="h-16 border-b border-white/5 flex items-center justify-between px-6 bg-white/5 backdrop-blur-3xl z-20 shadow-lg">
                 <div className="flex items-center gap-4">
                     <button
                         onClick={onClose}
-                        className="p-2 rounded-full hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
+                        className="p-2.5 rounded-xl hover:bg-white/10 text-zinc-400 hover:text-white transition-all hover:scale-105 active:scale-95"
                     >
                         <ArrowLeft size={20} />
                     </button>
@@ -55,49 +55,49 @@ const BookReader: React.FC<BookReaderProps> = ({ book, onClose, onUpdate }) => {
                 <div className="relative">
                     <button
                         onClick={() => setShowSettings(!showSettings)}
-                        className={`p-2 rounded-lg transition-colors flex items-center gap-2 ${showSettings ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
+                        className={`p-2.5 rounded-xl transition-all flex items-center gap-2 ${showSettings ? 'bg-white/10 text-white shadow-lg border border-white/10' : 'text-zinc-400 hover:text-white hover:bg-white/5'}`}
                     >
                         <Settings size={20} />
-                        <span className="text-xs font-medium hidden sm:inline">Aparência</span>
+                        <span className="text-xs font-bold hidden sm:inline">Aparência</span>
                     </button>
 
                     {showSettings && (
-                        <div className="absolute right-0 top-full mt-2 w-64 bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl p-4 animate-in fade-in zoom-in-95 duration-200">
+                        <div className="absolute right-0 top-full mt-4 w-72 glass-card rounded-[24px] p-5 animate-in fade-in zoom-in-95 duration-200 border border-white/10 shadow-2xl z-50">
                             {/* Theme Selector */}
-                            <div className="mb-4">
-                                <label className="text-xs font-bold text-zinc-500 uppercase mb-2 block">Tema</label>
-                                <div className="grid grid-cols-3 gap-2">
+                            <div className="mb-6">
+                                <label className="text-[10px] font-bold text-zinc-500 uppercase mb-3 block tracking-wider">Tema</label>
+                                <div className="grid grid-cols-3 gap-3">
                                     <button
                                         onClick={() => toggleTheme('light')}
-                                        className={`p-2 rounded-lg border flex flex-col items-center justify-center gap-1 transition-all ${settings.theme === 'light' ? 'border-blue-500 bg-white text-black' : 'border-zinc-800 bg-zinc-950 text-zinc-400 hover:border-zinc-700'}`}
+                                        className={`p-3 rounded-xl border flex flex-col items-center justify-center gap-2 transition-all ${settings.theme === 'light' ? 'border-blue-500 bg-white text-black ring-2 ring-blue-500/20' : 'border-white/5 bg-zinc-900/50 text-zinc-400 hover:bg-white/5'}`}
                                     >
-                                        <Sun size={16} />
-                                        <span className="text-[10px]">Claro</span>
+                                        <Sun size={18} />
+                                        <span className="text-[10px] font-bold">Claro</span>
                                     </button>
                                     <button
                                         onClick={() => toggleTheme('sepia')}
-                                        className={`p-2 rounded-lg border flex flex-col items-center justify-center gap-1 transition-all ${settings.theme === 'sepia' ? 'border-blue-500 bg-[#f4ecd8] text-[#5b4636]' : 'border-zinc-800 bg-zinc-950 text-zinc-400 hover:border-zinc-700'}`}
+                                        className={`p-3 rounded-xl border flex flex-col items-center justify-center gap-2 transition-all ${settings.theme === 'sepia' ? 'border-amber-500 bg-[#f4ecd8] text-[#5b4636] ring-2 ring-amber-500/20' : 'border-white/5 bg-zinc-900/50 text-zinc-400 hover:bg-white/5'}`}
                                     >
-                                        <Type size={16} />
-                                        <span className="text-[10px]">Sépia</span>
+                                        <Type size={18} />
+                                        <span className="text-[10px] font-bold">Sépia</span>
                                     </button>
                                     <button
                                         onClick={() => toggleTheme('dark')}
-                                        className={`p-2 rounded-lg border flex flex-col items-center justify-center gap-1 transition-all ${settings.theme === 'dark' ? 'border-blue-500 bg-zinc-900 text-white' : 'border-zinc-800 bg-zinc-950 text-zinc-400 hover:border-zinc-700'}`}
+                                        className={`p-3 rounded-xl border flex flex-col items-center justify-center gap-2 transition-all ${settings.theme === 'dark' ? 'border-indigo-500 bg-zinc-950 text-white ring-2 ring-indigo-500/20' : 'border-white/5 bg-zinc-900/50 text-zinc-400 hover:bg-white/5'}`}
                                     >
-                                        <Moon size={16} />
-                                        <span className="text-[10px]">Escuro</span>
+                                        <Moon size={18} />
+                                        <span className="text-[10px] font-bold">Escuro</span>
                                     </button>
                                 </div>
                             </div>
 
                             {/* Font Size Selector */}
                             <div>
-                                <label className="text-xs font-bold text-zinc-500 uppercase mb-2 block">Tamanho da Fonte</label>
-                                <div className="flex items-center justify-between bg-zinc-950 border border-zinc-800 rounded-lg p-1">
-                                    <button onClick={() => adjustFontSize(-10)} className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-md transition-colors"><Type size={14} /></button>
-                                    <span className="text-sm font-mono text-zinc-300">{settings.fontSize}%</span>
-                                    <button onClick={() => adjustFontSize(10)} className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-md transition-colors"><Type size={20} /></button>
+                                <label className="text-[10px] font-bold text-zinc-500 uppercase mb-3 block tracking-wider">Tamanho da Fonte</label>
+                                <div className="flex items-center justify-between bg-black/40 border border-white/5 rounded-xl p-1.5">
+                                    <button onClick={() => adjustFontSize(-10)} className="p-2.5 text-zinc-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"><Type size={14} /></button>
+                                    <span className="text-sm font-mono text-zinc-200 font-bold">{settings.fontSize}%</span>
+                                    <button onClick={() => adjustFontSize(10)} className="p-2.5 text-zinc-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"><Type size={20} /></button>
                                 </div>
                             </div>
                         </div>
@@ -106,7 +106,7 @@ const BookReader: React.FC<BookReaderProps> = ({ book, onClose, onUpdate }) => {
             </div>
 
             {/* Reader Body */}
-            <div className="flex-1 overflow-hidden relative">
+            <div className={`flex-1 overflow-hidden relative ${settings.theme === 'light' ? 'bg-zinc-100' : settings.theme === 'sepia' ? 'bg-[#f4ecd8]' : 'bg-transparent'}`}>
                 {book.format === 'pdf' ? (
                     <PDFReader
                         url={book.file_url}

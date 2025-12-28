@@ -2,8 +2,9 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
 import { flashcardService, Flashcard } from '../services/flashcardService';
 import { Dashboard } from './flashcards/Dashboard';
-import { StudySession } from './flashcards/StudySession';
+import SmartReview from './flashcards/SmartReview';
 import { CreateCardModal } from './flashcards/CreateCardModal';
+import { SmartReviewItem } from '../services/reviewService';
 
 // --- SM-2 Constants ---
 const MIN_EASE = 1.3;
@@ -24,7 +25,7 @@ const Flashcards: React.FC = () => {
 
   // --- View State ---
   const [view, setView] = useState<'dashboard' | 'study'>('dashboard');
-  const [studyQueue, setStudyQueue] = useState<Flashcard[]>([]);
+  const [studyQueue, setStudyQueue] = useState<SmartReviewItem[]>([]);
 
   // --- Modals ---
   const [isCardModalOpen, setIsCardModalOpen] = useState(false);
@@ -82,7 +83,6 @@ const Flashcards: React.FC = () => {
 
     if (targetPath && targetPath.length > 0) {
       queue = queue.filter(c => {
-        // Check if card path STARTS with targetPath
         if (c.folderPath.length < targetPath.length) return false;
         for (let i = 0; i < targetPath.length; i++) {
           if (c.folderPath[i] !== targetPath[i]) return false;
@@ -96,7 +96,20 @@ const Flashcards: React.FC = () => {
       return;
     }
 
-    setStudyQueue(queue);
+    // Convert to SmartReviewItem
+    const smartQueue: any[] = queue.map(c => ({
+      id: c.id,
+      type: 'flashcard',
+      content: {
+        front: c.front,
+        back: c.back,
+        context: c.folderPath.join(' / ')
+      },
+      sourceRef: c, // Important for SmartReview to handle updates
+      priority: 100
+    }));
+
+    setStudyQueue(smartQueue); // Note: State type might need update safely, or cast
     setView('study');
   };
 
@@ -104,7 +117,6 @@ const Flashcards: React.FC = () => {
     try {
       await flashcardService.createFlashcard(newCard as any);
       toast.success("Card criado!");
-      // setIsCardModalOpen(false); // Valid choice to keep open for batch creation
       loadCards();
     } catch (e) {
       toast.error("Erro ao criar card.");
@@ -112,46 +124,15 @@ const Flashcards: React.FC = () => {
     }
   };
 
-  const handleCardReview = (quality: number) => {
-    setStudyQueue(prevQueue => {
-      const currentCard = prevQueue[0];
-      if (!currentCard) return prevQueue;
-
-      // SM-2 Logic
-      let { interval, repetitions, ease } = currentCard;
-      if (quality >= 3) {
-        if (repetitions === 0) interval = 1;
-        else if (repetitions === 1) interval = 6;
-        else interval = Math.round(interval * ease);
-        repetitions++;
-      } else {
-        repetitions = 0;
-        interval = 1;
-      }
-      ease = ease + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
-      if (ease < MIN_EASE) ease = MIN_EASE;
-
-      const nextReview = Date.now() + (interval * 24 * 60 * 60 * 1000);
-      const updated = { ...currentCard, interval, repetitions, ease, nextReview };
-
-      // Update DB (async fire & forget)
-      flashcardService.updateFlashcard(updated);
-
-      // Update Local State synchronously
-      setCards(prev => prev.map(c => c.id === updated.id ? updated : c));
-
-      if (quality < 3) {
-        return [...prevQueue.slice(1), updated];
-      }
-
-      return prevQueue.slice(1);
-    });
+  // Deprecated local handler, logic moved to SmartReview/Service, but we need to refresh cards on exit
+  const handleSessionExit = () => {
+    setView('dashboard');
+    loadCards(); // Refresh data to show correct stats
   };
 
   useEffect(() => {
     if (view === 'study' && studyQueue.length === 0) {
-      toast.success("Sessão finalizada!");
-      setView('dashboard');
+      // Just in case
     }
   }, [studyQueue, view]);
 
@@ -168,10 +149,9 @@ const Flashcards: React.FC = () => {
 
   if (view === 'study') {
     return (
-      <StudySession
-        queue={studyQueue}
-        onExit={() => setView('dashboard')}
-        onReview={handleCardReview}
+      <SmartReview
+        initialQueue={studyQueue}
+        onExit={handleSessionExit}
       />
     );
   }

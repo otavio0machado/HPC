@@ -97,23 +97,23 @@ const Library: React.FC<{ userId: string }> = ({ userId }) => {
             {/* Header / Toolbar */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                 <div>
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="h-6 w-1 bg-gradient-to-b from-blue-400 to-cyan-500 rounded-full shadow-[0_0_15px_rgba(59,130,246,0.5)]" />
-                        <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-200 to-cyan-200 tracking-tight drop-shadow-md">Biblioteca Digital</h2>
-                    </div>
+                    <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-300 via-indigo-300 to-purple-300 tracking-tight drop-shadow-md mb-1">
+                        Biblioteca Digital
+                    </h2>
+                    <p className="text-zinc-400 text-sm">Gerencie seus livros e destaques.</p>
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <div className="glass-spatial p-1.5 rounded-2xl flex text-sm backdrop-blur-xl">
+                    <div className="glass-spatial p-1.5 rounded-2xl flex text-sm backdrop-blur-xl border border-white/10">
                         <button
                             onClick={() => setActiveTab('books')}
-                            className={`px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 font-bold ${activeTab === 'books' ? 'bg-white/20 text-white shadow-lg border border-white/10' : 'text-zinc-400 hover:text-white hover:bg-white/5'}`}
+                            className={`px-6 py-2 rounded-xl transition-all flex items-center gap-2 font-bold ${activeTab === 'books' ? 'bg-white/10 text-white shadow-lg border border-white/10' : 'text-zinc-400 hover:text-white hover:bg-white/5'}`}
                         >
                             <BookOpen size={16} /> Livros
                         </button>
                         <button
                             onClick={() => setActiveTab('highlights')}
-                            className={`px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 font-bold ${activeTab === 'highlights' ? 'bg-white/20 text-white shadow-lg border border-white/10' : 'text-zinc-400 hover:text-white hover:bg-white/5'}`}
+                            className={`px-6 py-2 rounded-xl transition-all flex items-center gap-2 font-bold ${activeTab === 'highlights' ? 'bg-white/10 text-white shadow-lg border border-white/10' : 'text-zinc-400 hover:text-white hover:bg-white/5'}`}
                         >
                             <Quote size={16} /> Destaques
                         </button>
@@ -122,28 +122,30 @@ const Library: React.FC<{ userId: string }> = ({ userId }) => {
             </div>
 
             {/* Action Bar */}
-            <div className="flex items-center justify-between mb-8 glass-card p-4 rounded-[28px] backdrop-blur-xl">
-                <div className="relative w-full max-w-sm">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" size={18} />
+            <div className="flex items-center justify-between mb-8 glass-card p-4 rounded-[28px] backdrop-blur-3xl border border-white/10">
+                <div className="relative w-full max-w-sm group">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 transition-colors group-focus-within:text-blue-400" size={18} />
                     <input
                         type="text"
                         placeholder="Buscar em sua biblioteca..."
-                        className="w-full bg-black/20 border border-white/5 rounded-xl pl-12 pr-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition-all font-medium placeholder:text-zinc-600"
+                        className="w-full bg-black/20 border border-white/5 rounded-xl pl-12 pr-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all font-medium placeholder:text-zinc-600 hover:bg-black/30"
                     />
                 </div>
 
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => setShowKindleSync(true)}
-                        className="px-5 py-3 text-sm font-bold bg-zinc-900/50 border border-white/10 hover:bg-zinc-800 hover:border-white/20 text-zinc-300 rounded-xl transition-all flex items-center gap-2 group shadow-sm"
+                        className="glass-button px-5 py-3 text-sm font-bold text-zinc-300 rounded-xl transition-all flex items-center gap-2 group hover:text-white"
                     >
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Kindle_logo.svg" alt="Kindle" className="h-4 opacity-50 invert group-hover:opacity-80 transition-opacity" />
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Kindle_logo.svg" alt="Kindle" className="h-4 opacity-50 invert group-hover:opacity-100 transition-opacity" />
                         Sincronizar
                     </button>
 
-                    <label className="px-6 py-3 text-sm font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-all cursor-pointer flex items-center gap-2 shadow-lg shadow-blue-900/20 active:scale-95 group border border-white/20">
-                        {isUploading ? <Loader2 className="animate-spin" size={18} /> : <Plus size={18} className="group-hover:rotate-90 transition-transform" />}
-                        <span className="hidden sm:inline">Adicionar Livro</span>
+                    <label className="cursor-pointer">
+                        <div className="glass-button-primary px-6 py-3 text-sm font-bold text-white rounded-xl transition-all flex items-center gap-2 hover:scale-105 active:scale-95">
+                            {isUploading ? <Loader2 className="animate-spin" size={18} /> : <Plus size={18} className="transition-transform group-hover:rotate-90" />}
+                            <span className="hidden sm:inline">{isUploading ? 'Enviando...' : 'Adicionar Livro'}</span>
+                        </div>
                         <input
                             type="file"
                             accept=".pdf,.epub"
@@ -164,12 +166,12 @@ const Library: React.FC<{ userId: string }> = ({ userId }) => {
                 <div className="flex-1 overflow-y-auto pb-20 pr-2 custom-scrollbar">
                     {activeTab === 'books' ? (
                         books.length === 0 ? (
-                            <div className="text-center py-24 text-zinc-500 glass-card rounded-[32px] flex flex-col items-center">
-                                <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-6">
-                                    <LibraryIcon size={40} className="opacity-30" />
+                            <div className="text-center py-24 text-zinc-500 glass-card rounded-[32px] flex flex-col items-center border border-white/5">
+                                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-white/5 to-transparent flex items-center justify-center mb-6 border border-white/10 shadow-inner">
+                                    <LibraryIcon size={48} className="opacity-30 drop-shadow-lg" />
                                 </div>
-                                <h3 className="text-xl font-bold text-white mb-2">Sua biblioteca está vazia</h3>
-                                <p className="text-sm text-zinc-400">Adicione livros PDF ou EPUB para começar a ler.</p>
+                                <h3 className="text-2xl font-bold text-white mb-2">Sua biblioteca está vazia</h3>
+                                <p className="text-sm text-zinc-400 max-w-md mx-auto">Adicione livros PDF ou EPUB para começar a ler e anotar seus estudos.</p>
                             </div>
                         ) : (
                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
@@ -186,23 +188,23 @@ const Library: React.FC<{ userId: string }> = ({ userId }) => {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {highlights.length === 0 ? (
-                                <div className="col-span-full text-center py-24 text-zinc-500 glass-card rounded-[32px] flex flex-col items-center">
-                                    <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-6">
-                                        <Quote size={40} className="opacity-30" />
+                                <div className="col-span-full text-center py-24 text-zinc-500 glass-card rounded-[32px] flex flex-col items-center border border-white/5">
+                                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-white/5 to-transparent flex items-center justify-center mb-6 border border-white/10 shadow-inner">
+                                        <Quote size={48} className="opacity-30 drop-shadow-lg" />
                                     </div>
-                                    <h3 className="text-xl font-bold text-white mb-2">Nenhum destaque importado</h3>
-                                    <p className="text-sm text-zinc-400">Use o botão "Sincronizar" para importar seu My Clippings.txt</p>
+                                    <h3 className="text-2xl font-bold text-white mb-2">Nenhum destaque importado</h3>
+                                    <p className="text-sm text-zinc-400 max-w-md mx-auto">Use o botão "Sincronizar" para importar seu My Clippings.txt do Kindle.</p>
                                 </div>
                             ) : (
                                 highlights.map((hl) => (
-                                    <div key={hl.id} className="glass-card p-6 rounded-[28px] bubble-hover relative">
-                                        <div className="absolute top-6 right-6 opacity-10 group-hover:opacity-30 transition-opacity">
-                                            <Quote size={40} />
+                                    <div key={hl.id} className="glass-card hover:glass-card-hover p-6 rounded-[28px] group relative transition-all duration-300 border border-white/5 hover:border-white/10">
+                                        <div className="absolute top-6 right-6 opacity-10 group-hover:opacity-20 transition-opacity">
+                                            <Quote size={32} />
                                         </div>
                                         <div className="flex items-start gap-4">
                                             <div className="flex-1 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar relative z-10">
-                                                <Quote size={20} className="text-blue-500/80 mb-3" />
-                                                <p className="font-serif text-zinc-200 leading-relaxed text-sm mb-4 italic">
+                                                <Quote size={18} className="text-blue-400/80 mb-3" />
+                                                <p className="font-serif text-zinc-200 leading-relaxed text-sm mb-4 italic pl-2 border-l-2 border-white/10">
                                                     "{hl.content}"
                                                 </p>
                                                 <div className="flex flex-col gap-1 text-xs text-zinc-500 pt-4 border-t border-white/5">

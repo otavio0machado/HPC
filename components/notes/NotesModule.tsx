@@ -6,7 +6,7 @@ import NotesSettings from './NotesSettings';
 import { notesService } from '../../services/notesService';
 import { NoteFile } from '../../types';
 import { toast } from 'sonner';
-import { Loader2, Hash, Star, Layout, Maximize2, Minimize2, PanelRight, Calendar, Info, FileText } from 'lucide-react';
+import { Loader2, Hash, Star, Layout, Maximize2, Minimize2, PanelRight, Calendar, Info, FileText, Check } from 'lucide-react';
 import TagInput from './TagInput';
 import { PDFReader } from './PDFReader';
 import type { IHighlight } from 'react-pdf-highlighter';
@@ -273,11 +273,11 @@ const NotesModule: React.FC = () => {
 
     return (
         <div className={`
-            flex overflow-hidden bg-[var(--glass-bg)] border border-[var(--border-glass)] shadow-2xl backdrop-blur-xl animate-in fade-in duration-300
-            ${isExpandedMode ? 'fixed inset-4 z-50 rounded-3xl' : 'h-[calc(100vh-80px)] rounded-3xl relative'}
+            flex overflow-hidden glass-hydro rounded-3xl border border-white/10 shadow-2xl backdrop-blur-xl animate-in fade-in duration-500
+            ${isExpandedMode ? 'fixed inset-4 z-50' : 'h-[calc(100vh-80px)] relative'}
         `}>
             {/* --- LEFT SIDEBAR: File Tree --- */}
-            <div className={`${showLeftSidebar ? 'w-72' : 'w-0'} bg-zinc-950/20 transition-all duration-300 ease-in-out border-r border-white/5 flex flex-col overflow-hidden`}>
+            <div className={`${showLeftSidebar ? 'w-72' : 'w-0'} transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] border-r border-white/5 flex flex-col overflow-hidden bg-black/10`}>
                 <div className="w-72 h-full">
                     <NotesSidebar
                         notes={filteredNotes}
@@ -297,16 +297,16 @@ const NotesModule: React.FC = () => {
             </div>
 
             {/* --- MAIN CONTENT: Editor --- */}
-            <div className="flex-1 flex flex-col min-w-0 bg-white/5 relative">
+            <div className="flex-1 flex flex-col min-w-0 bg-transparent relative">
                 {selectedNote ? (
                     <>
                         {/* Editor Toolbar / Header */}
-                        <div className="h-14 flex items-center justify-between px-6 border-b border-white/5 bg-zinc-950/30 backdrop-blur-md">
+                        <div className="h-16 flex items-center justify-between px-6 border-b border-white/5 bg-white/5 backdrop-blur-md z-10">
                             <div className="flex items-center gap-4">
-                                <button onClick={() => setShowLeftSidebar(!showLeftSidebar)} className="p-2 hover:bg-white/10 rounded-lg text-zinc-400 hover:text-white transition-colors">
-                                    <Layout size={18} className={showLeftSidebar ? "text-blue-400" : ""} />
+                                <button onClick={() => setShowLeftSidebar(!showLeftSidebar)} className="p-2 hover:bg-white/10 rounded-xl text-zinc-400 hover:text-white transition-colors bubble-hover">
+                                    <Layout size={20} className={showLeftSidebar ? "text-blue-400" : ""} />
                                 </button>
-                                <span className="text-zinc-500 text-sm">/</span>
+                                <span className="text-zinc-600 text-lg font-light">/</span>
                                 <input
                                     type="text"
                                     value={selectedNote.name}
@@ -315,27 +315,30 @@ const NotesModule: React.FC = () => {
                                         setSelectedNote(prev => prev ? { ...prev, name: newName } : null);
                                         setNotes(prev => prev.map(n => n.id === selectedNote.id ? { ...n, name: newName } : n));
                                     }}
-                                    className="bg-transparent text-white font-bold text-lg focus:outline-none placeholder:text-zinc-600 min-w-[200px]"
+                                    className="bg-transparent text-white font-bold text-xl focus:outline-none placeholder:text-zinc-600 min-w-[200px] tracking-tight"
                                     placeholder="Sem Título"
                                 />
                             </div>
 
                             <div className="flex items-center gap-2">
                                 <div className="hidden md:flex items-center gap-3 mr-4">
-                                    <span className="text-xs font-mono text-zinc-500 uppercase tracking-widest">{isSaving ? 'Salvando...' : 'Salvo'}</span>
-                                    <button onClick={() => setIsExpandedMode(!isExpandedMode)} className="p-2 hover:bg-white/10 rounded-lg text-zinc-400 hover:text-white transition-colors" title={isExpandedMode ? "Sair do modo foco" : "Modo foco"}>
-                                        {isExpandedMode ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+                                    <div className={`flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-lg border ${isSaving ? 'text-yellow-500 border-yellow-500/20 bg-yellow-500/5' : 'text-emerald-500 border-emerald-500/20 bg-emerald-500/5'}`}>
+                                        {isSaving ? <Loader2 size={10} className="animate-spin" /> : <Check size={10} />}
+                                        {isSaving ? 'Salvando' : 'Salvo'}
+                                    </div>
+                                    <button onClick={() => setIsExpandedMode(!isExpandedMode)} className="p-2 hover:bg-white/10 rounded-xl text-zinc-400 hover:text-white transition-colors bubble-hover" title={isExpandedMode ? "Sair do modo foco" : "Modo foco"}>
+                                        {isExpandedMode ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
                                     </button>
                                 </div>
-                                <button onClick={() => setShowRightSidebar(!showRightSidebar)} className={`p-2 hover:bg-white/10 rounded-lg transition-colors ${showRightSidebar ? 'text-blue-400 bg-blue-500/10' : 'text-zinc-400'}`}>
-                                    <PanelRight size={18} />
+                                <button onClick={() => setShowRightSidebar(!showRightSidebar)} className={`p-2 hover:bg-white/10 rounded-xl transition-colors bubble-hover ${showRightSidebar ? 'text-blue-400 bg-blue-500/10' : 'text-zinc-400'}`}>
+                                    <PanelRight size={20} />
                                 </button>
                             </div>
                         </div>
 
                         {/* Editor & PDF Split */}
                         <div className="flex-1 overflow-hidden flex bg-transparent">
-                            <div className={`flex flex-col transition-all duration-300 ${showPdfReader ? 'w-1/2 border-r border-white/5' : 'w-full'}`}>
+                            <div className={`flex flex-col transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] ${showPdfReader ? 'w-1/2 border-r border-white/5' : 'w-full'}`}>
                                 <NotesEditor
                                     noteId={selectedNote.id}
                                     content={selectedNote.content || ''}
@@ -347,7 +350,7 @@ const NotesModule: React.FC = () => {
 
                             {/* PDF Reader */}
                             {showPdfReader && activePdfUrl && (
-                                <div className="w-1/2 flex flex-col bg-zinc-900 border-l border-white/5 shadow-inner">
+                                <div className="w-1/2 flex flex-col bg-transparent border-l border-white/5 shadow-inner">
                                     <div className="flex justify-between items-center bg-zinc-950 p-2 border-b border-white/5">
                                         <span className="text-xs font-bold text-zinc-400 px-2 uppercase tracking-wider">Leitor PDF</span>
                                         <button onClick={() => setShowPdfReader(false)} className="text-zinc-500 hover:text-white p-1 hover:bg-white/10 rounded">
@@ -365,43 +368,50 @@ const NotesModule: React.FC = () => {
                         </div>
                     </>
                 ) : (
-                    <div className="flex-1 flex flex-col items-center justify-center text-zinc-500">
-                        <div className="w-24 h-24 rounded-full bg-white/5 flex items-center justify-center mb-6 shadow-inner border border-white/5">
-                            <FileText size={48} className="text-zinc-700" />
+                    <div className="flex-1 flex flex-col items-center justify-center text-zinc-500 animate-in fade-in duration-700">
+                        <div className="w-32 h-32 rounded-full glass-spatial flex items-center justify-center mb-8 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10 relative group">
+                            <div className="absolute inset-0 bg-blue-500/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+                            <FileText size={48} className="text-zinc-600 group-hover:text-blue-400 transition-colors duration-500 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]" />
                         </div>
-                        <p className="font-bold text-zinc-400">Nenhuma nota selecionada</p>
+                        <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 mb-2 tracking-tight">
+                            Nenhuma nota selecionada
+                        </h2>
+                        <p className="font-medium text-zinc-500 max-w-xs text-center leading-relaxed">
+                            Selecione uma nota na barra lateral ou crie uma nova para começar a escrever.
+                        </p>
                     </div>
                 )}
             </div>
 
             {/* --- RIGHT SIDEBAR: Meta & Details --- */}
-            <div className={`${showRightSidebar && selectedNote ? 'w-72' : 'w-0'} bg-zinc-950/30 transition-all duration-300 ease-in-out border-l border-white/5 flex flex-col overflow-hidden`}>
-                <div className="w-72 h-full overflow-y-auto custom-scrollbar p-5 space-y-6">
+            <div className={`${showRightSidebar && selectedNote ? 'w-80' : 'w-0'} transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] flex flex-col overflow-hidden glass-hydro border-l border-white/5`}>
+                <div className="w-80 h-full overflow-y-auto custom-scrollbar p-5 space-y-6">
                     {selectedNote && (
                         <>
                             {/* Meta Header */}
                             <div>
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">Metadados</h3>
                                 <div className="space-y-4">
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex items-center justify-between group">
                                         <span className="text-sm text-zinc-400">Favorito</span>
                                         <button
                                             onClick={handleToggleFavorite}
-                                            className={`p-1.5 rounded-lg transition-all ${selectedNote.isFavorite ? 'bg-yellow-500/10 text-yellow-500' : 'bg-white/5 text-zinc-500 hover:text-yellow-500'}`}
+                                            className={`p-2 rounded-xl transition-all duration-300 ${selectedNote.isFavorite ? 'bg-yellow-500/10 text-yellow-500 ring-1 ring-yellow-500/30' : 'bg-white/5 text-zinc-500 hover:text-white hover:bg-white/10'}`}
                                         >
-                                            <Star size={16} className={selectedNote.isFavorite ? 'fill-yellow-500' : ''} />
+                                            <Star size={16} className={`${selectedNote.isFavorite ? 'fill-yellow-500' : ''} transition-all duration-300`} />
                                         </button>
                                     </div>
                                     <div className="flex items-center justify-between">
                                         <span className="text-sm text-zinc-400">Criado em</span>
-                                        <div className="flex items-center gap-2 text-xs text-zinc-500">
-                                            <Calendar size={12} /> 2024
+                                        <div className="flex items-center gap-2 text-xs font-medium text-zinc-300 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
+                                            <Calendar size={12} className="text-zinc-500" />
+                                            {selectedNote.createdAt ? new Date(selectedNote.createdAt).getFullYear() : 2024}
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <hr className="border-white/5" />
+                            <div className="h-px bg-white/5 w-full" />
 
                             {/* Tags */}
                             <div>
@@ -409,37 +419,43 @@ const NotesModule: React.FC = () => {
                                 <div className="flex flex-wrap gap-2 mb-3">
                                     {selectedNote.tags && selectedNote.tags.length > 0 ? (
                                         selectedNote.tags.map(tag => (
-                                            <span key={tag} className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-medium px-2.5 py-1 rounded-lg flex items-center gap-1 cursor-pointer hover:bg-emerald-500/20 transition-colors" onClick={() => setSelectedTag(tag)}>
-                                                <Hash size={12} /> {tag.replace('#', '')}
+                                            <span key={tag} className="glass-card bg-emerald-500/5 text-emerald-400 border-white/5 hover:border-emerald-500/30 text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5 cursor-pointer hover:bg-emerald-500/10 transition-all shadow-sm" onClick={() => setSelectedTag(tag)}>
+                                                <Hash size={12} className="opacity-50" /> {tag.replace('#', '')}
                                             </span>
                                         ))
                                     ) : (
-                                        <span className="text-xs text-zinc-600 italic">Sem tags adicionadas.</span>
+                                        <span className="text-xs text-zinc-600 italic px-2">Sem tags.</span>
                                     )}
                                 </div>
-                                <TagInput allTags={allTags} onAddTag={handleAddTag} />
+                                <div className="p-1">
+                                    <TagInput allTags={allTags} onAddTag={handleAddTag} />
+                                </div>
                             </div>
 
-                            <hr className="border-white/5" />
+                            <div className="h-px bg-white/5 w-full" />
 
                             {/* Stats */}
                             <div>
                                 <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-3">Estatísticas</h3>
-                                <div className="grid grid-cols-2 gap-2">
-                                    <div className="bg-white/5 rounded-xl p-3 border border-white/5 relative overflow-hidden group">
-                                        <div className="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                        <span className="text-2xl font-bold text-white block mb-1">{selectedNote.content?.split(/\s+/).filter(w => w.length > 0).length || 0}</span>
-                                        <span className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider">Palavras</span>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="glass-card rounded-2xl p-4 border border-white/5 relative overflow-hidden group hover:bg-blue-500/5 transition-colors">
+                                        <div className="absolute top-2 right-2 text-blue-500/20 group-hover:text-blue-500/40 transition-colors">
+                                            <FileText size={20} />
+                                        </div>
+                                        <span className="text-2xl font-black text-white block mb-1 tracking-tight">{selectedNote.content?.split(/\s+/).filter(w => w.length > 0).length || 0}</span>
+                                        <span className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider group-hover:text-blue-400/80 transition-colors">Palavras</span>
                                     </div>
-                                    <div className="bg-white/5 rounded-xl p-3 border border-white/5 relative overflow-hidden group">
-                                        <div className="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                        <span className="text-2xl font-bold text-white block mb-1">{selectedNote.content?.length || 0}</span>
-                                        <span className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider">Caracteres</span>
+                                    <div className="glass-card rounded-2xl p-4 border border-white/5 relative overflow-hidden group hover:bg-purple-500/5 transition-colors">
+                                        <div className="absolute top-2 right-2 text-purple-500/20 group-hover:text-purple-500/40 transition-colors">
+                                            <Layout size={20} />
+                                        </div>
+                                        <span className="text-2xl font-black text-white block mb-1 tracking-tight">{selectedNote.content?.length || 0}</span>
+                                        <span className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider group-hover:text-purple-400/80 transition-colors">Caracteres</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <hr className="border-white/5" />
+                            <div className="h-px bg-white/5 w-full" />
 
                             {/* AI Insights Stub */}
                             <div>

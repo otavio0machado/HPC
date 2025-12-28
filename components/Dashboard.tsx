@@ -3,7 +3,7 @@ import { AnimatePresence, motion, Reorder, useDragControls } from 'framer-motion
 import AnalyticsDashboard from './analytics/AnalyticsDashboard';
 import SmartReview from './flashcards/SmartReview';
 import Whiteboard from './whiteboard/Whiteboard';
-import { Menu, X, Clock, Loader2, ChevronRight, User, Settings as SettingsIcon, LogOut, Lock, LayoutDashboard, Calendar, BookOpen, GraduationCap, AlertOctagon, Zap, FileText, ChevronDown, Search, GripVertical, Sparkles, Share2, Play, Mic, TrendingUp, Brain, BoxSelect } from 'lucide-react';
+import { Menu, X, Clock, Loader2, ChevronRight, User, Settings as SettingsIcon, LogOut, Lock, LayoutDashboard, Calendar, BookOpen, GraduationCap, AlertOctagon, Zap, FileText, ChevronDown, Search, GripVertical, Sparkles, Share2, Play, Mic, TrendingUp, Brain, BoxSelect, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 
 
 import { toast } from 'sonner';
@@ -57,6 +57,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     ];
     const [activeTab, setActiveTab] = useState("Dashboard");
     const [tabs, setTabs] = useState(navItems);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     // User Menu State
     const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -396,9 +397,27 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
 
 
+            {/* Reopen Sidebar Button */}
+            <div className={`fixed left-6 top-6 z-40 transition-all duration-500 ${isSidebarOpen ? 'opacity-0 pointer-events-none -translate-x-10' : 'opacity-100 translate-x-0'}`}>
+                <button
+                    onClick={() => setIsSidebarOpen(true)}
+                    className="p-3 rounded-2xl bg-white/10 hover:bg-white/20 text-zinc-500 dark:text-zinc-400 hover:text-white backdrop-blur-xl border border-white/10 shadow-lg hover:shadow-cyan-500/20 hover:scale-110 active:scale-95 transition-all group"
+                >
+                    <PanelLeftOpen size={24} className="group-hover:text-cyan-400 transition-colors" />
+                </button>
+            </div>
+
             {/* --- MACOS TAHOE LIQUID GLASS SIDEBAR --- */}
-            {/* Floating, decoupled sidebar with deep blur */}
-            <aside className="fixed left-4 top-4 bottom-4 w-72 rounded-[32px] glass-spatial z-50 flex flex-col justify-between p-6 transition-all duration-300">
+            <aside className={`fixed left-4 top-4 bottom-4 w-72 rounded-[32px] glass-spatial z-50 flex flex-col justify-between p-6 transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) ${isSidebarOpen ? 'translate-x-0 opacity-100' : '-translate-x-[120%] opacity-0 pointer-events-none'
+                }`}>
+                {/* Close Button - Forced Visibility */}
+                <button
+                    onClick={() => setIsSidebarOpen(false)}
+                    className="absolute top-3 right-3 p-2 text-zinc-400 hover:text-white bg-black/20 hover:bg-black/40 border border-white/5 rounded-xl transition-all z-[60] backdrop-blur-md"
+                    title="Recolher Menu"
+                >
+                    <PanelLeftClose size={18} />
+                </button>
 
                 {/* Logo & Gradient Orb */}
                 {/* Logo & Gradient Orb */}
@@ -416,11 +435,11 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
                 {/* Global Search - Floating Bubble */}
                 <div className="mb-6 relative group px-2">
-                    <div className="absolute inset-0 bg-black/5 dark:bg-white/5 rounded-2xl blur-md shadow-inner opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <div className="relative flex items-center gap-3 bg-zinc-100 dark:bg-black/20 hover:bg-zinc-200 dark:hover:bg-black/40 border border-black/5 dark:border-white/5 hover:border-black/10 dark:hover:border-white/10 rounded-2xl px-4 py-3 transition-all cursor-pointer group-active:scale-95">
-                        <Search size={18} className="text-zinc-500 dark:text-white/40 group-hover:text-zinc-800 dark:group-hover:text-white/80 transition-colors" />
-                        <span className="text-sm text-zinc-500 dark:text-white/40 font-medium group-hover:text-zinc-800 dark:group-hover:text-white/70">Buscar...</span>
-                        <span className="ml-auto text-xs bg-black/5 dark:bg-white/10 text-zinc-500 dark:text-white/30 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5 font-mono">⌘K</span>
+                    <div className="absolute inset-0 bg-blue-500/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <div className="relative flex items-center gap-3 bg-white/40 dark:bg-black/20 hover:bg-white/60 dark:hover:bg-black/40 backdrop-blur-md border border-black/5 dark:border-white/10 hover:border-blue-500/30 rounded-2xl px-4 py-3 transition-all cursor-pointer group-active:scale-95 shadow-sm hover:shadow-md">
+                        <Search size={18} className="text-zinc-500 dark:text-white/50 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
+                        <span className="text-sm text-zinc-600 dark:text-white/50 font-medium group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">Buscar...</span>
+                        <span className="ml-auto text-[10px] bg-white/50 dark:bg-white/10 text-zinc-400 dark:text-white/30 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5 font-mono group-hover:border-blue-500/30 group-hover:text-blue-500 transition-colors">⌘K</span>
                     </div>
                 </div>
 
@@ -569,7 +588,7 @@ w - 10 h - 10 flex items - center justify - center rounded - [18px] transition -
             </div>
 
             {/* --- MAIN CONTENT AREA --- */}
-            <main className="flex-1 overflow-y-auto h-full relative pl-80 pr-4 py-4">
+            <main className={`flex-1 overflow-y-auto h-full relative transition-all duration-500 ease-in-out py-4 pr-4 ${isSidebarOpen ? 'pl-80' : 'pl-4'}`}>
 
                 {/* Modals Layer */}
                 {isModalOpen && (
@@ -668,14 +687,14 @@ w - 10 h - 10 flex items - center justify - center rounded - [18px] transition -
                             {activeTab === "Flashcards" && <Flashcards />}
                             {activeTab === "Simulados" && <Simulados />}
                             {activeTab === "Nexus" && (
-                                <div className="h-[80vh]">
-                                    <React.Suspense fallback={<div className="flex items-center justify-center h-full text-white">Carregando Nexus...</div>}>
+                                <div className="h-[calc(100vh-3rem)] w-full">
+                                    <React.Suspense fallback={<div className="flex items-center justify-center h-full text-white/50 font-medium tracking-widest animate-pulse">CARREGANDO NEXUS...</div>}>
                                         <NexusGraph />
                                     </React.Suspense>
                                 </div>
                             )}
 
-                            {activeTab === "SmartReview" && <SmartReview />}
+                            {activeTab === "SmartReview" && <SmartReview onExit={() => setActiveTab("Dashboard")} />}
                             {activeTab === "Analytics" && <AnalyticsDashboard />}
                             {activeTab === "Whiteboard" && <Whiteboard />}
                             {activeTab === "Perfil" && <Profile currentUser={currentUser} onUpdate={handleUpdateUser} />}

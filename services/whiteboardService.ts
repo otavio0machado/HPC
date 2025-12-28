@@ -5,7 +5,7 @@ export interface CanvasNode {
     type: 'note' | 'card' | 'image' | 'text' | 'sticker';
     x: number;
     y: number;
-    content: any; // Text, URL, or Reference ID
+    content: any;
     style?: {
         width?: number;
         height?: number;
@@ -16,7 +16,7 @@ export interface CanvasNode {
 }
 
 export interface InfiniteCanvas {
-    id: string;
+    id: string; // UUID from DB
     userId: string;
     name: string;
     nodes: CanvasNode[];
@@ -25,32 +25,73 @@ export interface InfiniteCanvas {
 
 export const whiteboardService = {
     async fetchCanvases(): Promise<InfiniteCanvas[]> {
-        // Mock implementation for MVP - replace with Supabase call later
-        // return [];
-        const saved = localStorage.getItem('hpc_whiteboards');
-        return saved ? JSON.parse(saved) : [];
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return [];
+
+        const { data, error } = await supabase
+            .from('whiteboards')
+            .select('*')
+            .eq('user_id', user.id)
+            .order('updated_at', { ascending: false });
+
+        if (error) {
+            console.error('Error fetching whiteboards:', error);
+            // Fallback to local storage for offline support/resilience?
+            // For now, return empty or try local.
+            return [];
+        }
+
+        return data.map((d: any) => ({
+            id: d.id,
+            userId: d.user_id,
+            name: d.name,
+            nodes: d.nodes as CanvasNode[],
+            updatedAt: new Date(d.updated_at).getTime()
+        }));
     },
 
-    async saveCanvas(canvas: InfiniteCanvas): Promise<void> {
-        // Mock save
-        const saved = await whiteboardService.fetchCanvases();
-        const existingIndex = saved.findIndex(c => c.id === canvas.id);
+    async saveCanvas(canvas: Partial<InfiniteCanvas> & { nodes: CanvasNode[] }): Promise<string | null> {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return null;
 
-        if (existingIndex >= 0) {
-            saved[existingIndex] = { ...canvas, updatedAt: Date.now() };
+        // Check if update or insert
+        if (canvas.id && canvas.id.length > 10) { // Simple UUID check
+            // Update
+            const { error } = await supabase
+                .from('whiteboards')
+                .update({
+                    name: canvas.name,
+                    nodes: canvas.nodes,
+                    updated_at: new Date().toISOString()
+                })
+                .eq('id', canvas.id);
+
+            if (error) {
+                console.error("Error updating whiteboard", error);
+                return null;
+            }
+            return canvas.id;
         } else {
-            saved.push({ ...canvas, updatedAt: Date.now() });
-        }
+            // Create New
+            const { data, error } = await supabase
+                .from('whiteboards')
+                .insert({
+                    user_id: user.id,
+                    name: canvas.name || 'Novo Quadro',
+                    nodes: canvas.nodes
+                })
+                .select()
+                .single();
 
-        localStorage.setItem('hpc_whiteboards', JSON.stringify(saved));
+            if (error) {
+                console.error("Error creating whiteboard", error);
+                return null;
+            }
+            return data.id;
+        }
     },
 
-    async createNode(canvasId: string, node: CanvasNode): Promise<void> {
-        const canvases = await whiteboardService.fetchCanvases();
-        const canvas = canvases.find(c => c.id === canvasId);
-        if (canvas) {
-            canvas.nodes.push(node);
-            await whiteboardService.saveCanvas(canvas);
-        }
+    async deleteCanvas(id: string): Promise<void> {
+        await supabase.from('whiteboards').delete().eq('id', id);
     }
 };

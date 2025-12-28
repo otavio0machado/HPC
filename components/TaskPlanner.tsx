@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, CheckCircle2, Circle, Trash2, Calendar as CalendarIcon, Target, Flag, ArrowRight, Layout, RefreshCcw, ChevronLeft, ChevronRight, Clock, Book, BookOpen, Bookmark, Percent, BarChart, Loader2, Sparkles } from 'lucide-react';
-import { AnimatePresence } from 'framer-motion';
+import { Plus, CheckCircle2, Circle, Trash2, Calendar as CalendarIcon, Target, Flag, ArrowRight, Layout, RefreshCcw, ChevronLeft, ChevronRight, Clock, Book, BookOpen, Bookmark, Percent, BarChart, Loader2, Sparkles, MoreHorizontal, GraduationCap } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 import RoadmapGenerator from './planner/RoadmapGenerator';
 import { authService } from '../services/authService';
 import { tasksService } from '../services/tasksService';
@@ -237,37 +237,72 @@ const TaskPlanner: React.FC = () => {
 
             {/* Header & Tabs */}
 
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                <div>
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="h-6 w-1 bg-gradient-to-b from-emerald-400 to-teal-600 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
-                        <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70 tracking-tight drop-shadow-sm">Planner Estratégico</h2>
+            {/* Header & Tabs */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+                <div className="relative">
+                    <div className="absolute -top-10 -left-10 w-40 h-40 bg-blue-500/20 rounded-full blur-[80px] -z-10 pointer-events-none" />
+                    <div className="flex items-center gap-4 mb-2">
+                        <div className="h-10 w-1.5 bg-gradient-to-b from-blue-400 to-indigo-600 rounded-full shadow-[0_0_20px_rgba(59,130,246,0.6)]" />
+                        <h2 className="text-4xl font-black text-white tracking-tight drop-shadow-md">
+                            Planner <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-indigo-300">Inteligente</span>
+                        </h2>
                     </div>
-                    <p className="text-zinc-400 text-sm tracking-wide">Organize seu tempo e acompanhe seu progresso nas apostilas.</p>
+                    <p className="text-zinc-400 text-base font-medium pl-6 max-w-md leading-relaxed">
+                        Gerencie seu tempo com precisão e acompanhe suas metas estratégicas.
+                    </p>
                 </div>
 
-                <div className="flex gap-3">
-                    <button
-                        onClick={() => setShowRoadmapGenerator(true)}
-                        className="px-5 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 hover:scale-105 transition-all flex items-center gap-2"
-                    >
-                        <Sparkles size={16} /> GPS de Estudos
-                    </button>
-
-                    <div className="flex glass-spatial p-1.5 rounded-2xl">
+                <div className="flex items-center gap-4 bg-black/20 p-2 rounded-3xl border border-white/5 backdrop-blur-xl shadow-2xl">
+                    <div className="flex glass-spatial p-1.5 rounded-2xl gap-1">
                         <button
                             onClick={() => setActiveTab('calendar')}
-                            className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2 ${activeTab === 'calendar' ? 'bg-white/20 shadow-lg text-white backdrop-blur-md' : 'text-zinc-400 hover:text-white hover:bg-white/10'}`}
+                            className={`relative px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2 overflow-hidden
+                                ${activeTab === 'calendar'
+                                    ? 'shadow-[0_0_20px_rgba(59,130,246,0.3)] text-white'
+                                    : 'text-zinc-500 hover:text-white hover:bg-white/5'
+                                }
+                            `}
                         >
-                            <CalendarIcon size={16} /> Agenda
+                            {activeTab === 'calendar' && (
+                                <motion.div
+                                    layoutId="activeTab"
+                                    className="absolute inset-0 bg-blue-500/20 border border-blue-500/30 rounded-xl"
+                                />
+                            )}
+                            <span className="relative z-10 flex items-center gap-2">
+                                <CalendarIcon size={16} /> Agenda
+                            </span>
                         </button>
                         <button
                             onClick={() => setActiveTab('materials')}
-                            className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2 ${activeTab === 'materials' ? 'bg-white/20 shadow-lg text-white backdrop-blur-md' : 'text-zinc-400 hover:text-white hover:bg-white/10'}`}
+                            className={`relative px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2 overflow-hidden
+                                ${activeTab === 'materials'
+                                    ? 'shadow-[0_0_20px_rgba(168,85,247,0.3)] text-white'
+                                    : 'text-zinc-500 hover:text-white hover:bg-white/5'
+                                }
+                            `}
                         >
-                            <Book size={16} /> Apostilas
+                            {activeTab === 'materials' && (
+                                <motion.div
+                                    layoutId="activeTab"
+                                    className="absolute inset-0 bg-purple-500/20 border border-purple-500/30 rounded-xl"
+                                />
+                            )}
+                            <span className="relative z-10 flex items-center gap-2">
+                                <Book size={16} /> Materiais
+                            </span>
                         </button>
                     </div>
+
+                    <div className="w-[1px] h-8 bg-white/10 mx-1" />
+
+                    <button
+                        onClick={() => setShowRoadmapGenerator(true)}
+                        className="px-5 py-3 rounded-2xl text-sm font-bold bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:scale-105 transition-all flex items-center gap-2 border border-white/20"
+                    >
+                        <Sparkles size={16} />
+                        <span className="hidden sm:inline">IA Assistant</span>
+                    </button>
                 </div>
             </div>
 
@@ -284,21 +319,22 @@ const TaskPlanner: React.FC = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
                     {/* Left: Calendar Grid */}
-                    <div className="lg:col-span-7 glass-hydro rounded-[36px] p-8 relative overflow-hidden">
+                    <div className="lg:col-span-7 glass-hydro rounded-[48px] p-8 relative overflow-hidden flex flex-col min-h-[600px]">
                         {/* Decorative background blob */}
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[100px] -z-10 pointer-events-none" />
+                        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] -z-10 pointer-events-none mix-blend-screen" />
+                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-[100px] -z-10 pointer-events-none mix-blend-screen" />
 
-                        <div className="flex justify-between items-center mb-6">
-                            <button onClick={() => changeMonth(-1)} className="p-2 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors border border-transparent hover:border-white/10 hover:shadow-lg"><ChevronLeft size={20} /></button>
-                            <h3 className="text-xl font-bold text-white capitalize">
+                        <div className="flex justify-between items-center mb-8 px-2">
+                            <button onClick={() => changeMonth(-1)} className="p-3 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-all hover:scale-110 border border-transparent hover:border-white/10 hover:shadow-lg"><ChevronLeft size={24} /></button>
+                            <h3 className="text-3xl font-black text-white capitalize tracking-tight drop-shadow-sm">
                                 {currentDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
                             </h3>
-                            <button onClick={() => changeMonth(1)} className="p-2 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors border border-transparent hover:border-white/10 hover:shadow-lg"><ChevronRight size={20} /></button>
+                            <button onClick={() => changeMonth(1)} className="p-3 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-all hover:scale-110 border border-transparent hover:border-white/10 hover:shadow-lg"><ChevronRight size={24} /></button>
                         </div>
 
-                        <div className="grid grid-cols-7 gap-2 mb-2 text-center">
-                            {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map((d, i) => (
-                                <div key={i} className="text-xs font-bold text-zinc-500 uppercase tracking-widest">{d}</div>
+                        <div className="grid grid-cols-7 gap-4 mb-4 text-center px-2">
+                            {['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'].map((d, i) => (
+                                <div key={i} className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em]">{d}</div>
                             ))}
                         </div>
 
@@ -316,19 +352,24 @@ const TaskPlanner: React.FC = () => {
                                     <button
                                         key={idx}
                                         onClick={() => setSelectedDate(date)}
-                                        className={`aspect-square rounded-[20px] flex flex-col items-center justify-center relative transition-all duration-500
-                                    ${isSelected
-                                                ? 'bg-blue-600 text-white shadow-[0_10px_30px_rgba(37,99,235,0.3)] scale-110'
+                                        className={`
+                                            aspect-square rounded-[24px] flex flex-col items-center justify-center relative transition-all duration-300 group
+                                            ${isSelected
+                                                ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-[0_15px_30px_rgba(59,130,246,0.4)] scale-110 z-10 border border-white/20'
                                                 : isToday
-                                                    ? 'bg-blue-500/10 border border-blue-500/30 text-blue-400'
-                                                    : 'bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white hover:scale-105'
+                                                    ? 'bg-blue-500/10 border border-blue-500/30 text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.1)]'
+                                                    : 'bg-white/[0.03] border border-white/[0.05] text-zinc-400 hover:bg-white/[0.08] hover:text-white hover:scale-105 hover:border-white/20 hover:shadow-lg'
                                             }
-                                `}
+                                        `}
                                     >
-                                        <span className={`text-sm font-bold ${isSelected ? 'scale-110' : ''}`}>{date.getDate()}</span>
-                                        <div className="flex gap-0.5 mt-1.5 h-1.5 justify-center w-full">
-                                            {hasTasks && <div className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white' : 'bg-blue-500'}`}></div>}
-                                            {allCompleted && !hasTasks && <div className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-emerald-300' : 'bg-emerald-500'}`}></div>}
+                                        <span className={`text-sm font-bold ${isSelected ? 'scale-125' : 'group-hover:scale-110'} transition-transform`}>{date.getDate()}</span>
+                                        <div className="flex gap-0.5 mt-2 h-1.5 justify-center w-full">
+                                            {hasTasks && (
+                                                <div className={`w-1.5 h-1.5 rounded-full shadow-[0_0_5px_currentColor] ${isSelected ? 'bg-white' : 'bg-blue-400'}`} />
+                                            )}
+                                            {allCompleted && !hasTasks && (
+                                                <div className={`w-1.5 h-1.5 rounded-full shadow-[0_0_5px_currentColor] ${isSelected ? 'bg-emerald-300' : 'bg-emerald-500'}`} />
+                                            )}
                                         </div>
                                     </button>
                                 );
@@ -359,99 +400,152 @@ const TaskPlanner: React.FC = () => {
                             </div>
 
                             {/* Progress Bar */}
-                            <div className="mb-8 p-4 rounded-2xl bg-zinc-950/30 border border-white/5">
-                                <div className="flex justify-between text-xs mb-2">
-                                    <span className="text-zinc-400 font-bold uppercase tracking-wider">Progresso Diário</span>
-                                    <span className="text-white font-bold">{progress}%</span>
+                            <div className="mb-8 p-6 rounded-3xl bg-zinc-950/40 border border-white/5 backdrop-blur-md shadow-inner relative overflow-hidden group">
+                                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-indigo-500/5 to-purple-500/5 opacity-50 group-hover:opacity-100 transition-opacity" />
+
+                                <div className="flex justify-between text-xs mb-3 relative z-10">
+                                    <span className="text-zinc-400 font-bold uppercase tracking-widest flex items-center gap-2">
+                                        <Target size={14} className="text-blue-400" />
+                                        Metas do Dia
+                                    </span>
+                                    <span className={`font-black text-lg ${progress === 100 ? 'text-emerald-400' : 'text-white'}`}>{progress}%</span>
                                 </div>
-                                <div className="h-2 bg-zinc-900 rounded-full overflow-hidden border border-white/5">
-                                    <div className={`h-full transition-all duration-700 ease-out ${progress === 100 ? 'bg-gradient-to-r from-emerald-500 to-teal-400' : 'bg-gradient-to-r from-blue-600 to-indigo-500'}`} style={{ width: `${progress}%` }}>
-                                        {progress === 100 && <div className="w-full h-full animate-pulse bg-white/20" />}
+                                <div className="h-3 bg-zinc-900/80 rounded-full overflow-hidden border border-white/5 relative z-10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]">
+                                    <div
+                                        className={`h-full rounded-full transition-all duration-1000 cubic-bezier(0.34, 1.56, 0.64, 1) relative overflow-hidden
+                                            ${progress === 100
+                                                ? 'bg-gradient-to-r from-emerald-500 to-teal-400 shadow-[0_0_20px_rgba(16,185,129,0.5)]'
+                                                : 'bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500 shadow-[0_0_20px_rgba(79,70,229,0.5)]'
+                                            }`}
+                                        style={{ width: `${progress}%` }}
+                                    >
+                                        <div className="absolute inset-0 bg-[linear-gradient(45deg,rgba(255,255,255,0.2)_25%,transparent_25%,transparent_50%,rgba(255,255,255,0.2)_50%,rgba(255,255,255,0.2)_75%,transparent_75%,transparent)] bg-[length:1rem_1rem] animate-[progress-bar-stripes_1s_linear_infinite] opacity-30" />
+                                        <div className="absolute right-0 top-0 bottom-0 w-2 bg-white/50 blur-[4px]" />
                                     </div>
                                 </div>
                             </div>
 
                             {/* Add Task Form */}
-                            <form onSubmit={handleAddTask} className="mb-6 space-y-3">
+                            <form onSubmit={handleAddTask} className="mb-6 space-y-3 glass-spatial p-4 rounded-3xl border border-white/10 relative">
                                 <div className="flex gap-3">
-                                    <div className="relative w-28 flex-shrink-0">
-                                        <Clock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+                                    <div className="relative w-24 flex-shrink-0 group">
+                                        <Clock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 group-hover:text-blue-400 transition-colors" />
                                         <input
                                             type="time"
                                             value={newTaskTime}
                                             onChange={(e) => setNewTaskTime(e.target.value)}
-                                            className="w-full bg-zinc-950/50 border border-white/10 rounded-xl py-3 pl-9 pr-2 text-white text-xs focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition-all font-mono"
+                                            className="w-full bg-black/20 border border-white/5 rounded-2xl py-3 pl-9 pr-2 text-white text-xs focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition-all font-mono hover:bg-black/30"
                                         />
                                     </div>
-                                    <div className="relative flex-1">
+                                    <div className="relative flex-1 group">
                                         <input
                                             type="text"
                                             value={newTaskTitle}
                                             onChange={(e) => setNewTaskTitle(e.target.value)}
-                                            placeholder="Nova tarefa..."
-                                            className="w-full bg-zinc-950/50 border border-white/10 rounded-xl py-3 pl-4 pr-12 text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder:text-zinc-600"
+                                            placeholder="Nova tarefa estratégica..."
+                                            className="w-full bg-black/20 border border-white/5 rounded-2xl py-3 pl-4 pr-12 text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder:text-zinc-600 hover:bg-black/30"
                                         />
+                                        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
+                                            <button
+                                                type="submit"
+                                                disabled={!newTaskTitle.trim()}
+                                                className="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-xl transition-all shadow-lg shadow-blue-900/20 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            >
+                                                <Plus size={16} />
+                                            </button>
+                                        </div>
                                     </div>
-                                    <button type="submit" className="bg-gradient-to-br from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-3.5 rounded-xl transition-all shadow-lg shadow-blue-900/20 active:scale-95 border border-white/20 backdrop-blur-md">
-                                        <Plus size={20} />
-                                    </button>
                                 </div>
-                                <div className="flex gap-2 justify-end">
-                                    {(['Low', 'Medium', 'High'] as TaskPriority[]).map(p => (
-                                        <button
-                                            key={p}
-                                            type="button"
-                                            onClick={() => setNewPriority(p)}
-                                            className={`px-3 py-1 rounded-lg text-[10px] uppercase font-bold border transition-all ${newPriority === p ? getPriorityColor(p) + ' shadow-lg' : 'border-transparent text-zinc-600 hover:bg-white/5'}`}
-                                        >
-                                            {p === 'High' ? 'Alta' : p === 'Medium' ? 'Média' : 'Baixa'}
-                                        </button>
-                                    ))}
+                                <div className="flex gap-2 justify-between items-center px-1">
+                                    <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Prioridade</span>
+                                    <div className="flex gap-2 bg-black/20 p-1 rounded-xl">
+                                        {(['Low', 'Medium', 'High'] as TaskPriority[]).map(p => (
+                                            <button
+                                                key={p}
+                                                type="button"
+                                                onClick={() => setNewPriority(p)}
+                                                className={`px-3 py-1.5 rounded-lg text-[10px] uppercase font-bold transition-all ${newPriority === p
+                                                    ? getPriorityColor(p) + ' shadow-lg scale-105 ring-1 ring-white/10'
+                                                    : 'text-zinc-600 hover:bg-white/5 hover:text-zinc-400'
+                                                    }`}
+                                            >
+                                                {p === 'High' ? 'Alta' : p === 'Medium' ? 'Média' : 'Baixa'}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
                             </form>
 
                             {/* List */}
                             <div className="flex-1 overflow-y-auto custom-scrollbar space-y-3 pr-2">
                                 {tasksForSelectedDate.length === 0 ? (
-                                    <div className="h-full flex flex-col items-center justify-center text-zinc-500 border-2 border-dashed border-white/5 rounded-2xl bg-white/5">
-                                        <Target size={32} className="mb-2 opacity-20" />
-                                        <span className="text-sm font-medium">Dia livre. Adicione metas!</span>
+                                    <div className="h-full min-h-[200px] flex flex-col items-center justify-center text-zinc-500 border border-white/5 rounded-3xl bg-white/[0.02] relative overflow-hidden">
+                                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 hover:opacity-100 transition-opacity" />
+                                        <div className="p-4 rounded-full bg-white/5 mb-3 ring-1 ring-white/10 shadow-lg">
+                                            <Target size={24} className="text-zinc-600" />
+                                        </div>
+                                        <span className="text-sm font-medium text-zinc-400">Dia livre de tarefas.</span>
+                                        <span className="text-xs text-zinc-600 mt-1">Adicione metas estratégicas.</span>
                                     </div>
                                 ) : (
                                     tasksForSelectedDate.map(task => (
                                         <div
                                             key={task.id}
-                                            className={`group bubble-hover flex items-center gap-3 p-4 rounded-2xl border transition-all duration-500 ${task.completed
-                                                ? 'bg-emerald-500/5 border-emerald-500/10 opacity-60'
-                                                : 'bg-white/5 border-white/10 hover:border-white/20'
-                                                }`}
+                                            className={`group relative overflow-hidden transition-all duration-500  rounded-2xl border
+                                                ${task.completed
+                                                    ? 'bg-emerald-500/5 border-emerald-500/10 opacity-60'
+                                                    : 'bg-white/[0.03] border-white/[0.05] hover:border-white/20 hover:bg-white/[0.06] hover:shadow-lg'
+                                                }
+                                                p-0
+                                            `}
                                         >
-                                            <button
-                                                onClick={() => toggleTask(task.id, task.completed)}
-                                                className={`flex-shrink-0 transition-colors ${task.completed ? 'text-emerald-500' : 'text-zinc-600 group-hover:text-emerald-400'}`}
-                                            >
-                                                {task.completed ? <CheckCircle2 size={24} className="drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]" /> : <Circle size={22} strokeWidth={1.5} />}
-                                            </button>
+                                            <div className="flex items-center gap-4 p-4 relative z-10">
+                                                <button
+                                                    onClick={() => toggleTask(task.id, task.completed)}
+                                                    className={`flex-shrink-0 transition-all duration-300 transform group-hover:scale-110 ${task.completed ? 'text-emerald-500' : 'text-zinc-600 group-hover:text-emerald-400'}`}
+                                                >
+                                                    {task.completed ? (
+                                                        <div className="relative">
+                                                            <div className="absolute inset-0 bg-emerald-500 blur-lg opacity-50" />
+                                                            <CheckCircle2 size={26} className="relative z-10 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                                                        </div>
+                                                    ) : (
+                                                        <Circle size={24} strokeWidth={1.5} />
+                                                    )}
+                                                </button>
 
-                                            <div className="flex-1 min-w-0">
-                                                <p className={`text-sm font-medium truncate ${task.completed ? 'line-through text-zinc-500' : 'text-zinc-100'}`}>
-                                                    {task.title}
-                                                </p>
-                                                {task.time && (
-                                                    <p className="text-xs text-blue-400 flex items-center gap-1 mt-1 font-mono">
-                                                        <Clock size={10} /> {task.time}
+                                                <div className="flex-1 min-w-0">
+                                                    <p className={`text-sm font-medium truncate transition-all ${task.completed ? 'line-through text-zinc-500' : 'text-white'}`}>
+                                                        {task.title}
                                                     </p>
-                                                )}
+                                                    <div className="flex items-center gap-3 mt-1.5">
+                                                        {task.time && (
+                                                            <span className="text-[10px] text-blue-300 bg-blue-500/10 px-2 py-0.5 rounded-md border border-blue-500/20 font-mono flex items-center gap-1">
+                                                                <Clock size={10} /> {task.time}
+                                                            </span>
+                                                        )}
+                                                        <span className={`text-[10px] px-2 py-0.5 rounded-md border text-opacity-80
+                                                            ${task.priority === 'High' ? 'bg-red-500/10 border-red-500/20 text-red-400' :
+                                                                task.priority === 'Medium' ? 'bg-amber-500/10 border-amber-500/20 text-amber-400' :
+                                                                    'bg-blue-500/10 border-blue-500/20 text-blue-400'}
+                                                        `}>
+                                                            {task.priority === 'High' ? 'Alta' : task.priority === 'Medium' ? 'Média' : 'Baixa'}
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <button
+                                                    onClick={() => deleteTask(task.id)}
+                                                    className="w-8 h-8 flex items-center justify-center text-zinc-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500/10 rounded-lg transform translate-x-4 group-hover:translate-x-0"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
                                             </div>
 
-                                            <div className={`w-2 h-2 rounded-full shadow-[0_0_8px_currentColor] ${task.priority === 'High' ? 'bg-red-500 text-red-500' : task.priority === 'Medium' ? 'bg-amber-500 text-amber-500' : 'bg-blue-500 text-blue-500'}`}></div>
-
-                                            <button
-                                                onClick={() => deleteTask(task.id)}
-                                                className="text-zinc-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all p-1.5 hover:bg-red-500/10 rounded-lg"
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
+                                            {/* Priority Indicator Stripe */}
+                                            <div className={`absolute left-0 top-0 bottom-0 w-1 ${task.priority === 'High' ? 'bg-red-500' :
+                                                task.priority === 'Medium' ? 'bg-amber-500' : 'bg-blue-500'
+                                                } opacity-0 group-hover:opacity-100 transition-opacity`} />
                                         </div>
                                     ))
                                 )}
@@ -466,12 +560,15 @@ const TaskPlanner: React.FC = () => {
 
                     {/* Left: Add Material & Stats */}
                     <div className="space-y-8">
-                        <div className="glass-hydro rounded-[36px] p-8">
-                            <h3 className="text-white font-bold mb-6 flex items-center gap-2 text-lg">
-                                <div className="p-1.5 rounded-lg bg-purple-500/20 text-purple-400">
-                                    <Bookmark size={20} />
-                                </div>
-                                Nova Apostila
+                        <div className="glass-hydro rounded-[48px] p-8 relative overflow-hidden">
+                            {/* Shiny effect */}
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 blur-[50px] -z-10 rounded-full" />
+
+                            <h3 className="text-white font-bold mb-6 flex items-center gap-3 text-xl">
+                                <span className="p-2.5 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 text-purple-300 border border-purple-500/20 shadow-[0_0_15px_rgba(168,85,247,0.2)]">
+                                    <Bookmark size={22} />
+                                </span>
+                                Novo Material
                             </h3>
                             <form onSubmit={handleAddMaterial} className="space-y-4">
                                 <div>
@@ -507,7 +604,8 @@ const TaskPlanner: React.FC = () => {
                                         />
                                     </div>
                                 </div>
-                                <button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-purple-900/20 active:scale-95 mt-2 border border-white/20 backdrop-blur-md">
+                                <button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-4 rounded-2xl transition-all shadow-[0_10px_30px_rgba(168,85,247,0.3)] hover:shadow-[0_15px_40px_rgba(168,85,247,0.5)] active:scale-95 mt-4 border border-white/20 backdrop-blur-md flex items-center justify-center gap-2 group">
+                                    <Plus size={20} className="group-hover:rotate-90 transition-transform" />
                                     Adicionar ao Planner
                                 </button>
                             </form>
@@ -533,10 +631,13 @@ const TaskPlanner: React.FC = () => {
                     {/* Right: Grid of Materials */}
                     <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 h-fit">
                         {materials.length === 0 ? (
-                            <div className="col-span-full py-20 flex flex-col items-center justify-center text-zinc-500 border-2 border-dashed border-white/5 rounded-3xl bg-[var(--glass-bg)]">
-                                <BookOpen size={48} className="mb-4 opacity-20" />
-                                <p className="font-medium">Nenhuma apostila cadastrada.</p>
-                                <p className="text-xs opacity-50 mt-1">Adicione seus materiais para rastrear o estudo.</p>
+                            <div className="col-span-full py-24 flex flex-col items-center justify-center text-zinc-500 border border-white/5 rounded-[32px] bg-white/[0.02] relative overflow-hidden group">
+                                <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/5 to-transparent opacity-50" />
+                                <div className="p-6 rounded-full bg-black/20 mb-4 ring-1 ring-white/10 shadow-[0_0_20px_rgba(0,0,0,0.2)] group-hover:scale-110 transition-transform duration-500">
+                                    <BookOpen size={48} className="text-zinc-700 group-hover:text-purple-400 transition-colors" />
+                                </div>
+                                <p className="font-bold text-lg text-zinc-400">Nenhuma apostila cadastrada.</p>
+                                <p className="text-sm opacity-50 mt-1 max-w-xs text-center">Adicione seus materiais didáticos para rastrear o progresso de estudo.</p>
                             </div>
                         ) : (
                             materials.map(mat => {
@@ -550,15 +651,16 @@ const TaskPlanner: React.FC = () => {
                                             <Trash2 size={16} />
                                         </button>
 
-                                        <div className="flex items-start gap-4">
-                                            <div className="w-14 h-20 bg-gradient-to-br from-zinc-800 to-black border border-white/10 rounded-lg flex items-center justify-center shadow-2xl group-hover:-translate-y-1 transition-transform duration-300">
-                                                <Book size={24} className="text-zinc-600" />
+                                        <div className="flex items-start gap-5 relative z-10">
+                                            <div className="w-16 h-20 bg-gradient-to-br from-zinc-800 to-zinc-950 border border-white/10 rounded-xl flex items-center justify-center shadow-2xl group-hover:-translate-y-2 group-hover:rotate-2 transition-all duration-300 relative overflow-hidden">
+                                                <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                                <Book size={28} className="text-zinc-600 group-hover:text-purple-400 transition-colors" />
                                             </div>
                                             <div className="flex-1 min-w-0 pt-1">
-                                                <span className="text-[10px] font-bold text-purple-400 uppercase tracking-widest bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">{mat.subject}</span>
-                                                <h4 className="text-white font-bold leading-tight mt-2 text-lg truncate pr-6">{mat.title}</h4>
-                                                <p className="text-zinc-500 text-xs mt-1 font-medium">
-                                                    Capítulo <span className="text-white">{mat.currentChapter}</span> de {mat.totalChapters}
+                                                <span className="text-[10px] font-black text-purple-300 uppercase tracking-widest bg-purple-500/10 px-2.5 py-1 rounded-md border border-purple-500/20 shadow-[0_0_10px_rgba(168,85,247,0.1)]">{mat.subject}</span>
+                                                <h4 className="text-white font-bold leading-tight mt-2.5 text-lg truncate pr-6 group-hover:text-purple-200 transition-colors">{mat.title}</h4>
+                                                <p className="text-zinc-500 text-xs mt-1.5 font-medium flex items-center gap-1.5">
+                                                    <BookOpen size={12} /> Capítulo <span className="text-white font-bold">{mat.currentChapter}</span> / {mat.totalChapters}
                                                 </p>
                                             </div>
                                         </div>

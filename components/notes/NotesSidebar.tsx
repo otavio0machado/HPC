@@ -215,52 +215,51 @@ const NotesSidebar: React.FC<NotesSidebarProps> = ({ notes, selectedNoteId, onSe
 
     return (
         <div
-            className="w-full glass-hydro border-r border-white/10 flex flex-col h-full flex-shrink-0 backdrop-blur-xl"
+            className="w-full h-full flex flex-col flex-shrink-0"
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleDropRoot}
         >
             {/* Header */}
-            <div className="p-4 border-b border-white/5 space-y-4 bg-transparent backdrop-blur-none">
+            <div className="p-4 space-y-4">
                 <div className="flex items-center justify-between">
-                    <h2 className="font-bold text-white flex items-center gap-2 text-xs tracking-widest uppercase opacity-80 pl-1">
+                    <h2 className="font-bold text-white flex items-center gap-2 text-xs tracking-widest uppercase opacity-80 pl-1 text-spatial">
                         <Folder className="text-blue-400" size={14} /> BIBLIOTECA
                     </h2>
-                    <button onClick={onOpenSettings} className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-white/10 transition-colors">
+                    <button onClick={onOpenSettings} className="p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-white/10 transition-colors bubble-hover">
                         <Settings size={14} />
                     </button>
                 </div>
 
                 <div className="relative group">
-                    <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-blue-500 transition-colors" />
+                    <div className="absolute inset-0 bg-blue-500/5 rounded-2xl blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-blue-400 transition-colors z-10" />
                     <input
                         type="text"
                         placeholder="Buscar arquivos..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full bg-black/20 border border-white/10 rounded-xl py-2.5 pl-9 pr-3 text-sm text-white focus:outline-none focus:border-blue-500/50 focus:bg-black/40 transition-all placeholder:text-zinc-500 shadow-inner"
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl py-2.5 pl-9 pr-3 text-sm text-white focus:outline-none focus:border-blue-500/30 focus:bg-white/10 transition-all placeholder:text-zinc-500 relative z-0 glass-inner-shadow"
                     />
                 </div>
 
                 <div className="flex gap-2">
                     <button
                         onClick={() => onCreateNote(null, 'markdown')}
-                        className="flex-1 bg-gradient-to-b from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white text-xs font-bold py-3 px-3 rounded-xl flex items-center justify-center gap-2 transition-all shadow-[0_0_15px_rgba(37,99,235,0.4)] active:scale-95 border border-blue-500/30 backdrop-blur-md"
+                        className="flex-1 bg-gradient-to-b from-blue-500/80 to-blue-600/80 hover:from-blue-500 hover:to-blue-600 text-white text-xs font-bold py-3 px-3 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-500/20 active:scale-95 border-t border-white/20 backdrop-blur-md group"
                     >
-                        <FilePlus size={14} /> Nota
+                        <FilePlus size={14} className="group-hover:scale-110 transition-transform" /> Nova Nota
                     </button>
                     <button
                         onClick={() => onCreateNote(null, 'folder')}
-                        className="flex-1 bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white text-xs font-bold py-3 px-3 rounded-xl flex items-center justify-center gap-2 transition-all border border-white/10 active:scale-95 hover:shadow-lg backdrop-blur-md"
+                        className="flex-1 bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white text-xs font-bold py-3 px-3 rounded-2xl flex items-center justify-center gap-2 transition-all border border-white/5 hover:border-white/10 active:scale-95 shadow-lg backdrop-blur-md group glass-card"
                     >
-                        <FolderPlus size={14} /> Pasta
+                        <FolderPlus size={14} className="group-hover:scale-110 transition-transform" /> Nova Pasta
                     </button>
                 </div>
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-2">
-                {/* Favorites & Tags are now in Right Sidebar in parent component */}
-
+            <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-1">
                 <div className="min-h-[200px] pb-20">
                     {rootNotes.map(note => (
                         <FileTreeItem
@@ -278,9 +277,12 @@ const NotesSidebar: React.FC<NotesSidebarProps> = ({ notes, selectedNoteId, onSe
                     ))}
 
                     {rootNotes.length === 0 && (
-                        <div className="text-zinc-400 dark:text-zinc-600 text-xs text-center py-12 border-2 border-dashed border-zinc-200 dark:border-white/5 rounded-2xl mx-4 mt-4">
-                            Sua biblioteca está vazia.
-                            <br />Crie uma nota para começar.
+                        <div className="flex flex-col items-center justify-center py-12 px-4 text-center mt-4">
+                            <div className="w-16 h-16 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center mb-4 rotate-3">
+                                <FilePlus size={24} className="text-zinc-600 dark:text-zinc-400" />
+                            </div>
+                            <p className="text-zinc-400 text-sm font-medium">Sua biblioteca está vazia.</p>
+                            <p className="text-zinc-600 text-xs mt-1">Crie uma nota para começar a escrever.</p>
                         </div>
                     )}
                 </div>

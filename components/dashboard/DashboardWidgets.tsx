@@ -179,8 +179,8 @@ const DashboardWidgets: React.FC<DashboardWidgetsProps> = ({
 
                             <div className="flex-1 overflow-y-auto custom-scrollbar space-y-3 relative z-10 pr-2">
                                 {dailyTasks.length === 0 ? (
-                                    <div className="h-full flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 text-sm text-center p-4 border-2 border-dashed border-zinc-200 dark:border-white/5 rounded-2xl">
-                                        <Target size={24} className="mb-2 opacity-50" />
+                                    <div className="h-full flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 text-sm text-center p-4 border-2 border-dashed border-zinc-200 dark:border-white/5 rounded-2xl group/empty">
+                                        <Target size={24} className="mb-2 opacity-50 group-hover/empty:animate-bounce text-emerald-500" />
                                         <p>Sem tarefas prioritárias.</p>
                                         <button onClick={() => changeTab('Planner')} className="text-emerald-500 dark:text-emerald-400 mt-2 hover:underline font-medium text-xs">Definir Metas</button>
                                     </div>
@@ -235,6 +235,13 @@ const DashboardWidgets: React.FC<DashboardWidgetsProps> = ({
                                 <p className="text-blue-600 dark:text-blue-400 text-xs mt-1">Inicie uma sessão para tirar dúvidas.</p>
                             </div>
                         )}
+                        {/* Online Indicator */}
+                        <div className="absolute top-6 right-6 flex items-center gap-2">
+                            <span className="relative flex h-3 w-3">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
+                            </span>
+                        </div>
                     </BentoCard>
                 </div>
 
@@ -275,6 +282,13 @@ const DashboardWidgets: React.FC<DashboardWidgetsProps> = ({
                                 {latestSimulado ? `${calculateSimuladoPercentage(latestSimulado)}%` : '-'}
                             </span>
                             <span className="text-zinc-500 text-xs block mt-1">Média Global: 78%</span>
+                        </div>
+                        {/* Decorative Circular Progress (Visual only) */}
+                        <div className="absolute top-6 right-6 w-16 h-16 opacity-20 pointer-events-none">
+                            <svg viewBox="0 0 36 36" className="w-full h-full rotate-[-90deg]">
+                                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="4" className="text-zinc-300 dark:text-zinc-700" />
+                                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="4" strokeDasharray={`${latestSimulado ? calculateSimuladoPercentage(latestSimulado) : 0}, 100`} className="text-emerald-500" />
+                            </svg>
                         </div>
                     </BentoCard>
                 </div>
@@ -372,6 +386,22 @@ const MetricCard: React.FC<MetricCardProps> = ({ icon: Icon, gradient, label, va
                         {subValue && <span className="text-zinc-400 dark:text-zinc-500 text-sm font-medium">{subValue}</span>}
                     </div>
                 </div>
+
+                {/* Visual Decorator for "Foco Hoje" */}
+                {label === 'Foco Hoje' && (
+                    <div className="absolute bottom-0 left-0 right-0 h-16 opacity-20 pointer-events-none">
+                        <svg viewBox="0 0 100 40" className="w-full h-full" preserveAspectRatio="none">
+                            <path d="M0 30 Q 20 25, 40 10 T 80 15 T 100 5" fill="none" stroke="currentColor" strokeWidth="2" className="text-blue-500" />
+                            <path d="M0 30 Q 20 25, 40 10 T 80 15 T 100 5 V 40 H 0 Z" fill="url(#gradient-area)" className="text-blue-500" />
+                            <defs>
+                                <linearGradient id="gradient-area" x1="0" x2="0" y1="0" y2="1">
+                                    <stop offset="0%" stopColor="currentColor" stopOpacity="0.5" />
+                                    <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                )}
             </motion.div>
         </SpotlightCard>
     );

@@ -114,16 +114,27 @@ export const nexusService = {
                 }
             });
 
+            // Central Hub (frontend ensures user_center, but we can rely on it being the root)
+
             // B. Process Flashcards (Heatmap Mode)
             if (mode === 'heatmap' || mode === 'default') {
+                // Create Hub
+                if (flashcards && flashcards.length > 0) {
+                    nodes.push({ id: 'flashcards_hub', name: 'Decks de Memória', type: 'folder', group: 'System', val: 10, color: '#f59e0b' });
+                    // Link hub to user? Front end adds user_center. We can't link to it here if it's not in nodes list yet.
+                    // The frontend adds user_center if it's missing.
+                    // Let's add user_center here explicitly to be safe and ensure links work.
+                }
+
                 flashcards?.forEach((card: any) => {
                     const now = Date.now();
                     let status = 'FRESH';
                     if (card.next_review < now) status = 'OVERDUE';
                     else if (card.next_review < now + 86400000 * 3) status = 'SOON'; // 3 days
 
+                    const cardId = `fc_${card.id}`;
                     nodes.push({
-                        id: `fc_${card.id}`,
+                        id: cardId,
                         name: card.front.substring(0, 20) + '...',
                         type: 'flashcard',
                         group: 'Flashcards',
@@ -132,20 +143,21 @@ export const nexusService = {
                         metadata: { review: card.next_review }
                     });
 
-                    // Try to link to a note if possible (by folder path?)
-                    // If card has folder_path, try to find a note with that name
-                    if (card.folder_path && card.folder_path.length > 0) {
-                        // Implementation vague without strict ID linking
-                        // Just float them for now or link to a central node?
-                    }
+                    // Link to Hub
+                    links.push({ source: 'flashcards_hub', target: cardId });
                 });
             }
 
             // C. Process Errors (Detective Mode)
-            if (mode === 'detective') {
+            if (mode === 'detective' || mode === 'default') {
+                if (errors.length > 0) {
+                    nodes.push({ id: 'errors_hub', name: 'Central de Erros', type: 'folder', group: 'System', val: 10, color: '#ef4444' });
+                }
+
                 errors.forEach((err: any) => {
+                    const errId = `err_${err.id}`;
                     nodes.push({
-                        id: `err_${err.id}`,
+                        id: errId,
                         name: err.description,
                         type: 'error',
                         group: 'Errors',
@@ -154,11 +166,13 @@ export const nexusService = {
                         metadata: err
                     });
 
+                    links.push({ source: 'errors_hub', target: errId });
+
                     // Create "Evidence" links
                     // Search for notes with same subject
                     const relatedNotes = notes.filter((n: any) => n.tags?.includes(err.subject));
                     relatedNotes.forEach((n: any) => {
-                        links.push({ source: `err_${err.id}`, target: n.id });
+                        links.push({ source: errId, target: n.id });
                     });
                 });
             }
