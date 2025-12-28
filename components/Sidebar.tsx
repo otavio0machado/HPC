@@ -87,13 +87,20 @@ const Sidebar: React.FC<SidebarProps> = ({
                 {/* Header / Logo */}
                 <div className="p-6 flex items-center justify-between relative z-10">
                     {!isCollapsed && (
-                        <div className="font-bold text-2xl tracking-tighter text-spatial text-zinc-800 dark:text-white animate-in fade-in duration-300">
-                            HPC<span className="text-blue-500 font-extrabold">.</span>
+                        <div className="flex items-center gap-2 animate-in fade-in duration-300">
+                            <div className="w-8 h-8 rounded-lg bg-blue-600/10 flex items-center justify-center overflow-hidden border border-blue-500/20">
+                                <img src="/logo-hpc.png" alt="Logo" className="w-full h-full object-contain mix-blend-screen brightness-110" />
+                            </div>
+                            <div className="font-bold text-xl tracking-tighter text-spatial text-zinc-800 dark:text-white">
+                                HPC<span className="text-blue-500 font-extrabold">.</span>
+                            </div>
                         </div>
                     )}
                     {isCollapsed && (
-                        <div className="w-full flex justify-center font-bold text-2xl tracking-tighter text-zinc-800 dark:text-white">
-                            H<span className="text-blue-500">.</span>
+                        <div className="w-full flex justify-center">
+                            <div className="w-10 h-10 rounded-xl bg-blue-600/10 flex items-center justify-center overflow-hidden border border-blue-500/20 p-1">
+                                <img src="/logo-hpc.png" alt="Logo" className="w-full h-full object-contain mix-blend-screen brightness-110" />
+                            </div>
                         </div>
                     )}
 

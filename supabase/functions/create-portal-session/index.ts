@@ -33,25 +33,30 @@ serve(async (req) => {
             throw new Error('Usuário não autenticado')
         }
 
-        const priceId = "price_1SjQB9DnckVBVorNps5sKT1z"; // ID real do Stripe: Plano Pro Mensal
+        let customerId = user.user_metadata?.stripe_customer_id
 
-        // 1. Criar Checkout Session
-        const session = await stripe.checkout.sessions.create({
-            payment_method_types: ['card'],
-            line_items: [
-                {
-                    price: priceId,
-                    quantity: 1,
-                },
-            ],
-            mode: 'subscription',
-            success_url: `${req.headers.get('origin')}/dashboard?payment=success`,
-            cancel_url: `${req.headers.get('origin')}/dashboard?payment=canceled`,
-            client_reference_id: user.id,
-            customer_email: user.email,
-            metadata: {
-                user_id: user.id,
+        if (!customerId) {
+            console.log(`No customer ID found for user ${user.id}, searching by email ${user.email}`)
+            const customers = await stripe.customers.list({
+                email: user.email,
+                limit: 1,
+            })
+
+            if (customers.data.length > 0) {
+                customerId = customers.data[0].id
+                console.log(`Found customer ID ${customerId} by email`)
+
+                // Opcional: Salvar para o futuro (requer service_role key)
+                // Isso pode ser feito aqui ou deixado apenas para o webhook,
+                // mas fazer aqui garante consistência imediata se o webhook falhou.
+            } else {
+                throw new Error('Assinatura não encontrada. Por favor, entre em contato com o suporte.')
             }
+        }
+
+        const session = await stripe.billingPortal.sessions.create({
+            customer: customerId,
+            return_url: `${req.headers.get('origin')}/dashboard`,
         })
 
         return new Response(

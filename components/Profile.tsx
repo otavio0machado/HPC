@@ -9,9 +9,10 @@ import ThemeToggle from './ThemeToggle';
 interface ProfileProps {
    currentUser: UserType;
    onUpdate: (user: UserType) => void;
+   isAdmin?: boolean;
 }
 
-const Profile: React.FC<ProfileProps> = ({ currentUser, onUpdate }) => {
+const Profile: React.FC<ProfileProps> = ({ currentUser, onUpdate, isAdmin = false }) => {
    const [name, setName] = useState(currentUser.name);
    const [email, setEmail] = useState(currentUser.email);
    const [isEditing, setIsEditing] = useState(false);
@@ -22,7 +23,19 @@ const Profile: React.FC<ProfileProps> = ({ currentUser, onUpdate }) => {
    const isPro = currentUser.subscription_tier === 'pro';
 
    const handleCancelSubscription = async () => {
-      toast.info("Gerenciamento de assinatura disponível em breve via Portal do Cliente.");
+      setIsLoadingTier(true);
+      try {
+         const result = await authService.createPortalSession();
+         if (result.success && result.url) {
+            window.location.href = result.url;
+         } else {
+            toast.error(result.message || 'Erro ao abrir o portal de assinatura.');
+         }
+      } catch (error) {
+         toast.error('Erro ao conectar com o serviço de assinatura.');
+      } finally {
+         setIsLoadingTier(false);
+      }
    };
 
    const handleSave = async (e: React.FormEvent) => {
@@ -55,8 +68,8 @@ const Profile: React.FC<ProfileProps> = ({ currentUser, onUpdate }) => {
                <p className="text-zinc-600 dark:text-zinc-400 mt-2 text-lg">Gerencie suas informações pessoais e sua jornada de aprendizado.</p>
             </div>
 
-            {/* Theme Toggle Button */}
-            <ThemeToggle showLabel={false} />
+            {/* Theme Toggle Button - Only visible to admins */}
+            {isAdmin && <ThemeToggle showLabel={false} />}
          </div>
 
          {showUpgradeModal && (

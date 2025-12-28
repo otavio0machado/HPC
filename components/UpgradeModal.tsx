@@ -97,8 +97,6 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ onClose, onSuccess }) => {
                             "Virar PRO agora"
                         )}
                     </button>
-
-                    <p className="text-xs text-zinc-500 mt-4">Somente simulação. Nenhum pagamento real.</p>
                 </div>
             </div>
         </div>

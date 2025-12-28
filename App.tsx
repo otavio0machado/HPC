@@ -22,7 +22,7 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Check for active session on mount
+  // Check for active session on mount and listen for changes
   useEffect(() => {
     const checkSession = async () => {
       try {
@@ -30,6 +30,9 @@ const App: React.FC = () => {
         if (user) {
           setIsLoggedIn(true);
           setView('dashboard');
+        } else {
+          setIsLoggedIn(false);
+          setView('landing');
         }
       } catch (error) {
         console.error("Session check failed", error);
@@ -37,7 +40,27 @@ const App: React.FC = () => {
         setIsLoading(false);
       }
     };
+
     checkSession();
+
+    // Listen for auth state changes (login, logout, token refresh, etc.)
+    const { data: { subscription } } = authService.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        setIsLoggedIn(true);
+        setView('dashboard');
+      } else if (event === 'SIGNED_OUT') {
+        setIsLoggedIn(false);
+        setView('landing');
+      } else if (event === 'TOKEN_REFRESHED') {
+        // Just refresh the state if needed
+        const user = await authService.getCurrentUser();
+        if (user) setIsLoggedIn(true);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const handleLoginClick = async () => {

@@ -6,9 +6,14 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
-            <span className="text-xl font-bold tracking-tighter text-zinc-900 dark:text-white">
-              HPC<span className="text-blue-600 dark:text-blue-500">.</span>
-            </span>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-blue-600/10 flex items-center justify-center overflow-hidden border border-blue-500/20">
+                <img src="/logo-hpc.png" alt="Logo" className="w-full h-full object-contain mix-blend-screen brightness-110" />
+              </div>
+              <span className="text-xl font-bold tracking-tighter text-zinc-900 dark:text-white">
+                HPC<span className="text-blue-600 dark:text-blue-500">.</span>
+              </span>
+            </div>
             <p className="text-zinc-600 dark:text-zinc-400 text-sm mt-2 font-medium">
               High Performance Club &copy; {new Date().getFullYear()}
             </p>

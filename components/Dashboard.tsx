@@ -3,7 +3,7 @@ import { AnimatePresence, motion, Reorder, useDragControls } from 'framer-motion
 import AnalyticsDashboard from './analytics/AnalyticsDashboard';
 
 import Whiteboard from './whiteboard/Whiteboard';
-import { Menu, X, Clock, Loader2, ChevronRight, User, Settings as SettingsIcon, LogOut, Lock, LayoutDashboard, Calendar, BookOpen, GraduationCap, AlertOctagon, Zap, FileText, ChevronDown, Search, GripVertical, Sparkles, Share2, Play, Mic, TrendingUp, BoxSelect, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Menu, X, Clock, Loader2, ChevronRight, User, Settings as SettingsIcon, LogOut, Lock, LayoutDashboard, Calendar, BookOpen, GraduationCap, AlertOctagon, Zap, FileText, ChevronDown, GripVertical, Sparkles, Share2, Play, Mic, TrendingUp, BoxSelect, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 
 
 import { toast } from 'sonner';
@@ -44,16 +44,16 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     const allNavItems = [
         { id: "Dashboard", label: "Início", icon: <LayoutDashboard size={20} /> },
         { id: "Planner", label: "Planner", icon: <Calendar size={20} /> },
-        { id: "Notas", label: "Notas", icon: <FileText size={20} /> },
-        { id: "Nexus", label: "Nexus", icon: <Share2 size={20} />, restricted: true },
-        { id: "Analytics", label: "Analytics", icon: <TrendingUp size={20} />, restricted: true },
-        { id: "Whiteboard", label: "Quadro", icon: <BoxSelect size={20} />, restricted: true },
+        { id: "Notas", label: "Notas", icon: <FileText size={20} />, restricted: true },
+        { id: "Nexus", label: "Nexus", icon: <Share2 size={20} />, adminOnly: true },
+        { id: "Analytics", label: "Analytics", icon: <TrendingUp size={20} />, adminOnly: true },
+        { id: "Whiteboard", label: "Quadro", icon: <BoxSelect size={20} />, adminOnly: true },
         { id: "Conteúdos", label: "Conteúdos", icon: <Sparkles size={20} />, restricted: true },
-        { id: "Biblioteca", label: "Biblioteca", icon: <BookOpen size={20} /> },
-        { id: "Tutores", label: "Tutores", icon: <GraduationCap size={20} /> },
-        { id: "Lista de Erros", label: "Erros", icon: <AlertOctagon size={20} /> },
-        { id: "Flashcards", label: "Cards", icon: <Zap size={20} /> },
-        { id: "Simulados", label: "Simulados", icon: <Clock size={20} /> }
+        { id: "Biblioteca", label: "Biblioteca", icon: <BookOpen size={20} />, restricted: true, adminOnly: true },
+        { id: "Tutores", label: "Tutores", icon: <GraduationCap size={20} />, restricted: true },
+        { id: "Lista de Erros", label: "Erros", icon: <AlertOctagon size={20} />, restricted: true },
+        { id: "Flashcards", label: "Cards", icon: <Zap size={20} />, restricted: true },
+        { id: "Simulados", label: "Simulados", icon: <Clock size={20} />, restricted: true }
     ];
 
     const [activeTab, setActiveTab] = useState('Dashboard');
@@ -71,9 +71,14 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     // Update tabs when isAdmin changes or user loads
     useEffect(() => {
         if (currentUser) {
-            setTabs(allNavItems);
+            // Filter out admin-only items for non-admins
+            const filteredItems = allNavItems.filter(item => {
+                if (item.adminOnly && !isUserAdmin) return false;
+                return true;
+            });
+            setTabs(filteredItems);
         }
-    }, [currentUser]);
+    }, [currentUser, isUserAdmin]);
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [isMobile, setIsMobile] = useState(false);
@@ -96,8 +101,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     }, []);
 
     // User Menu State
-    const [userMenuOpen, setUserMenuOpen] = useState(false);
-    const userMenuRef = useRef<HTMLDivElement>(null);
+
 
     // Data States
     const [todayHours, setTodayHours] = useState<number>(0);
@@ -138,16 +142,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     // Effects
     // --------------------------------------------------------------------------
 
-    // Close dropdown when clicking outside
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
-                setUserMenuOpen(false);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
+
 
     // Load User
     useEffect(() => {
@@ -168,6 +163,23 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             }
         };
         loadUser();
+    }, []);
+
+    // Handle Payment Return
+    useEffect(() => {
+        const query = new URLSearchParams(window.location.search);
+        const paymentDetails = query.get('payment');
+
+        if (paymentDetails === 'success') {
+            toast.success("Pagamento realizado com sucesso! Bem-vindo ao PRO!");
+            // Remove param from URL without reload
+            window.history.replaceState({}, document.title, window.location.pathname);
+            // Reload user to get new subscription status
+            reloadUser();
+        } else if (paymentDetails === 'canceled') {
+            toast.info("Pagamento cancelado. Se precisar de ajuda, entre em contato.");
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
     }, []);
 
     // Load Data
@@ -342,9 +354,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             <Reorder.Item key={item.id} value={item} style={{ position: 'relative' }} dragListener={false} dragControls={controls}>
                 <div
                     className={`
-                    relative w-full flex items-center gap-2 px-3 py-2.5 rounded-2xl text-[13px] font-medium transition-all duration-300 group
+                    relative w-full flex items-center gap-1.5 px-2.5 py-1.5 rounded-2xl text-[12px] font-medium transition-all duration-300 group
                     ${isActive
-                            ? 'shadow-[0_4px_20px_rgba(59,130,246,0.15)] ring-1 ring-blue-500/30'
+                            ? 'shadow-[0_4px_20px_rgba(59,130,246,0.15)]'
                             : 'hover:bg-white/5'
                         }
                     `}
@@ -360,7 +372,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
                     {/* Active Background - Glass Pill */}
                     {isActive && (
-                        <div className="absolute inset-0 bg-blue-500/10 dark:bg-blue-500/10 rounded-2xl backdrop-blur-md pointer-events-none transition-all duration-300 border border-blue-500/20" />
+                        <div className="absolute inset-0 bg-blue-500/10 dark:bg-blue-500/10 rounded-2xl backdrop-blur-md pointer-events-none transition-all duration-300 border border-blue-500/30" />
                     )}
 
                     {/* Drag Handle */}
@@ -375,7 +387,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                     {/* Button Content Wrapper */}
                     <button
                         onClick={() => changeTab(item.id)}
-                        className={`flex-1 flex items-center gap-3 text-left w-full outline-none relative z-10 transition-colors duration-300 ${isActive ? 'text-blue-500 dark:text-blue-300 font-bold' : 'text-zinc-500 dark:text-zinc-400 group-hover:text-zinc-200'}`}
+                        className={`flex-1 flex items-center gap-2 text-left w-full outline-none relative z-10 transition-colors duration-300 ${isActive ? 'text-blue-500 dark:text-blue-300 font-bold' : 'text-zinc-500 dark:text-zinc-400 group-hover:text-zinc-200'}`}
                     >
                         <span className={`transition-transform duration-300 ${isActive ? 'scale-110 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]' : 'group-hover:scale-105'}`}>{item.icon}</span>
                         <span className="flex-1 truncate">{item.label}</span>
@@ -449,6 +461,75 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                 )}
             </AnimatePresence>
 
+            {/* Manual Session Modal */}
+            <AnimatePresence>
+                {isModalOpen && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsModalOpen(false)}
+                            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="relative w-full max-w-sm bg-[#09090b] border border-white/10 rounded-3xl p-6 shadow-2xl glass-hydro overflow-hidden"
+                        >
+                            {/* Decorative Glow */}
+                            <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
+
+                            <h3 className="text-xl font-bold text-white mb-1 relative z-10">Registrar Sessão</h3>
+                            <p className="text-zinc-400 text-sm mb-6 relative z-10">Adicione horas de estudo manualmente.</p>
+
+                            <form onSubmit={handleAddSession} className="relative z-10">
+                                <div className="space-y-5">
+                                    <div>
+                                        <div className="relative group">
+                                            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-zinc-500 group-focus-within:text-blue-500 transition-colors">
+                                                <Clock size={18} />
+                                            </div>
+                                            <input
+                                                type="number"
+                                                step="0.1"
+                                                min="0.1"
+                                                required
+                                                value={inputHours}
+                                                onChange={(e) => setInputHours(e.target.value)}
+                                                placeholder="0.0"
+                                                className="w-full bg-white/5 border border-white/10 rounded-2xl pl-10 pr-4 py-3.5 text-white placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white/10 transition-all font-mono text-lg"
+                                                autoFocus
+                                            />
+                                            <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-zinc-500 text-sm font-medium">
+                                                horas
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-3 pt-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => setIsModalOpen(false)}
+                                            className="flex-1 px-4 py-3 text-zinc-400 hover:text-white hover:bg-white/5 rounded-xl transition-all text-sm font-medium"
+                                        >
+                                            Cancelar
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-blue-500/25 active:scale-95"
+                                        >
+                                            Adicionar
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
 
 
             {/* Reopen Sidebar Button */}
@@ -465,12 +546,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             <AnimatePresence mode="wait">
                 {isSidebarOpen && (
                     <motion.aside
-                        initial={{ x: -280, opacity: 0 }}
+                        initial={{ x: -208, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
-                        exit={{ x: -280, opacity: 0 }}
+                        exit={{ x: -208, opacity: 0 }}
                         transition={{ duration: 0.4, ease: [0.19, 1.0, 0.22, 1.0] }}
                         className={`
-                            fixed md:relative z-30 h-full w-72 flex flex-col 
+                            fixed md:relative z-30 h-full w-52 flex flex-col 
                             glass-hydro border-r border-white/40 dark:border-white/5 
                             shadow-2xl md:shadow-none
                         `}
@@ -480,7 +561,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                             <motion.div
                                 initial={{ opacity: 0, y: -10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="flex items-center justify-between"
+                                className="flex items-center"
                             >
                                 <div className="flex items-center gap-3 group cursor-pointer">
                                     <div className="relative group/logo">
@@ -496,89 +577,29 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                                         />
 
                                         {/* VisionOS Icon Container */}
-                                        <div className="relative w-12 h-12 perspective-1000">
-                                            {/* Base Layer: Deep Liquid Gradient */}
-                                            <motion.div
-                                                whileHover={{ rotateY: 10, rotateX: -10, scale: 1.05 }}
-                                                className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-700 to-slate-900 shadow-[0_8px_32px_rgba(0,0,0,0.4)] overflow-hidden border border-white/10"
-                                            >
-                                                {/* Internal Animated Liquid Effect */}
-                                                <motion.div
-                                                    animate={{
-                                                        x: [-20, 20, -20],
-                                                        y: [-20, 20, -20]
-                                                    }}
-                                                    transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-                                                    className="absolute -inset-4 bg-gradient-to-tr from-cyan-400/20 via-transparent to-white/10 blur-xl"
-                                                />
-                                            </motion.div>
-
-                                            {/* Glass Overlay Layer */}
-                                            <div className="absolute inset-0 rounded-2xl backdrop-blur-[2px] bg-white/5 border border-white/20 shadow-inner" />
-
-                                            {/* Specular Highlight (The "Shine") */}
-                                            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/30 via-transparent to-transparent opacity-50" />
-
-                                            {/* Symbol Layer: Glowing Sparkle */}
-                                            <div className="absolute inset-0 flex items-center justify-center">
-                                                <motion.div
-                                                    animate={{
-                                                        filter: ['drop-shadow(0 0 2px white)', 'drop-shadow(0 0 8px #60a5fa)', 'drop-shadow(0 0 2px white)']
-                                                    }}
-                                                    transition={{ duration: 3, repeat: Infinity }}
-                                                >
-                                                    <Sparkles size={24} fill="white" className="text-white drop-shadow-lg" />
-                                                </motion.div>
-                                            </div>
-
-                                            {/* Rim Light Effect */}
-                                            <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-blue-400/50 to-transparent" />
+                                        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/30 overflow-hidden border border-white/20">
+                                            <img
+                                                src="/logo-hpc.png"
+                                                alt="HPC Logo"
+                                                className="w-full h-full object-contain mix-blend-screen brightness-110 contrast-125 scale-110"
+                                            />
                                         </div>
                                     </div>
                                     <div>
                                         <h1 className="text-base font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 dark:from-blue-400 dark:via-indigo-400 dark:to-violet-400 leading-tight">
                                             High Performance Club
                                         </h1>
-                                        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-zinc-500/80 dark:text-zinc-400/80 mt-0.5 block">
-                                            Student OS
-                                        </span>
                                     </div>
                                 </div>
-                                <button
-                                    onClick={() => setIsSidebarOpen(false)}
-                                    className="p-2 rounded-xl text-zinc-400 hover:text-zinc-800 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-all active:scale-90"
-                                >
-                                    <PanelLeftClose size={20} />
-                                </button>
                             </motion.div>
 
-                            {/* Search Bar */}
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ delay: 0.1 }}
-                                className="relative group"
-                            >
-                                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                    <Search className="text-zinc-400 group-focus-within:text-blue-500 transition-colors" size={16} />
-                                </div>
-                                <input
-                                    type="text"
-                                    placeholder="Buscar no sistema..."
-                                    className="w-full bg-white/40 dark:bg-black/40 border border-white/30 dark:border-white/10 rounded-2xl pl-11 pr-4 py-3 text-sm outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/40 transition-all placeholder:text-zinc-400/70 text-zinc-800 dark:text-zinc-200 glass-inner-shadow"
-                                />
-                                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-1 items-center pointer-events-none opacity-0 group-focus-within:opacity-100 transition-opacity">
-                                    <kbd className="px-1.5 py-0.5 rounded-md bg-zinc-500/10 text-[10px] text-zinc-500">⌘</kbd>
-                                    <kbd className="px-1.5 py-0.5 rounded-md bg-zinc-500/10 text-[10px] text-zinc-500">K</kbd>
-                                </div>
-                            </motion.div>
+
                         </div>
 
                         {/* Navigation Tabs */}
-                        <Reorder.Group axis="y" values={tabs} onReorder={setTabs} className="flex-1 overflow-y-auto px-4 space-y-1.5 scrollbar-hide py-2">
-                            {tabs.map((item) => {
-                                const restricted = ['Notas', 'Biblioteca', 'Tutores', 'Lista de Erros', 'Flashcards', 'Simulados', 'Conteúdos'];
-                                const isLocked = restricted.includes(item.id) && currentUser.subscription_tier !== 'pro';
+                        <Reorder.Group axis="y" values={tabs} onReorder={setTabs} className="flex-1 overflow-y-auto px-3 space-y-1 scrollbar-hide py-1">
+                            {tabs.map((item: any) => {
+                                const isLocked = item.restricted && currentUser.subscription_tier !== 'pro' && !isUserAdmin;
                                 return (
                                     <DraggableNavItem
                                         key={item.id}
@@ -596,55 +617,37 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                             <div className="flex items-center gap-2">
                                 <div
                                     className="flex-1 flex items-center gap-3 p-2 rounded-2xl hover:bg-white/60 dark:hover:bg-white/10 transition-all cursor-pointer group min-w-0 active:scale-95 border border-transparent hover:border-white/20"
-                                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                                    onClick={() => setActiveTab('Perfil')}
                                 >
                                     <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 p-0.5 shadow-lg flex-shrink-0 group-hover:ring-2 ring-blue-500/50 transition-all">
                                         <img src={currentUser.photo_url || `https://ui-avatars.com/api/?name=${currentUser.name}&background=random`} alt="User" className="w-full h-full rounded-full object-cover border-2 border-white dark:border-black" />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="font-bold text-sm truncate text-zinc-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{currentUser.name}</p>
-                                        <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate flex items-center gap-1">
+                                        <p className="text-xs font-black text-zinc-500 dark:text-zinc-400 truncate flex items-center gap-1 uppercase tracking-wider">
                                             {currentUser.subscription_tier === 'pro' ? <span className="text-amber-500 flex items-center gap-0.5"><Sparkles size={10} /> PRO</span> : "Free Plan"}
                                         </p>
                                     </div>
-                                    <ChevronRight size={16} className={`text-zinc-400 transition-transform duration-300 ${userMenuOpen ? 'rotate-90 text-blue-500' : 'group-hover:translate-x-1'}`} />
+                                    <ChevronRight size={14} className="text-zinc-400 transition-transform duration-300 group-hover:translate-x-1" />
                                 </div>
-                                <button
-                                    onClick={onLogout}
-                                    className="p-2.5 rounded-xl text-zinc-400 hover:text-red-500 hover:bg-red-500/10 transition-all border border-transparent hover:border-red-500/20"
-                                    title="Sair"
-                                >
-                                    <LogOut size={18} />
-                                </button>
+                                <div className="flex flex-col gap-1.5">
+                                    <button
+                                        onClick={() => setIsSidebarOpen(false)}
+                                        className="p-2 rounded-xl text-zinc-400 hover:text-zinc-800 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-all active:scale-90 border border-transparent hover:border-white/10"
+                                        title="Recolher"
+                                    >
+                                        <PanelLeftClose size={18} />
+                                    </button>
+                                    <button
+                                        onClick={onLogout}
+                                        className="p-2 rounded-xl text-zinc-400 hover:text-red-500 hover:bg-red-500/10 transition-all border border-transparent hover:border-red-500/20"
+                                        title="Sair"
+                                    >
+                                        <LogOut size={18} />
+                                    </button>
+                                </div>
                             </div>
 
-                            {/* Dropdown Menu - VisionOS Style */}
-                            <AnimatePresence>
-                                {userMenuOpen && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 10, scale: 0.95, filter: 'blur(10px)' }}
-                                        animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-                                        exit={{ opacity: 0, y: 10, scale: 0.95, filter: 'blur(10px)' }}
-                                        className="absolute bottom-[84px] left-3 right-3 rounded-[24px] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.8)] p-1.5 z-[100] flex flex-col gap-1 border border-white/40 dark:border-white/20 overflow-hidden bg-white/98 dark:bg-zinc-900/95 backdrop-blur-[120px]"
-                                        ref={userMenuRef}
-                                    >
-                                        <motion.button
-                                            whileHover={{ x: 4, backgroundColor: 'rgba(59, 130, 246, 0.1)' }}
-                                            whileTap={{ scale: 0.98 }}
-                                            onClick={() => { setActiveTab('Perfil'); setUserMenuOpen(false); }}
-                                            className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all text-[13px] font-bold text-zinc-800 dark:text-white group"
-                                        >
-                                            <div className="flex items-center gap-2.5">
-                                                <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-all">
-                                                    <User size={16} strokeWidth={2.5} />
-                                                </div>
-                                                <span className="tracking-tight">Perfil e configurações</span>
-                                            </div>
-                                            <ChevronRight size={14} className="text-zinc-400 group-hover:text-blue-500 dark:group-hover:text-white transition-colors" />
-                                        </motion.button>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
+
                         </div>
                     </motion.aside>
                 )}
@@ -676,7 +679,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                             className="max-w-7xl mx-auto space-y-6 pb-20"
                         >
 
-                            {((['Notas', 'Biblioteca', 'Tutores', 'Lista de Erros', 'Flashcards', 'Simulados', 'Conteúdos', 'Nexus', 'Analytics', 'Whiteboard'].includes(activeTab)) && currentUser.subscription_tier !== 'pro' && !isUserAdmin) ? (
+                            {((tabs.find(t => t.id === activeTab) as any)?.restricted || (tabs.find(t => t.id === activeTab) as any)?.adminOnly) && currentUser.subscription_tier !== 'pro' && !isUserAdmin ? (
                                 <div className="relative min-h-[600px] w-full">
                                     <ProLockOverlay onUpgrade={() => setShowUpgradeModal(true)} />
                                     <div className="blur-[8px] pointer-events-none select-none h-full w-full">
@@ -744,7 +747,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
                                     {activeTab === "Analytics" && <AnalyticsDashboard />}
                                     {activeTab === "Whiteboard" && <Whiteboard />}
-                                    {activeTab === "Perfil" && <Profile currentUser={currentUser} onUpdate={handleUpdateUser} />}
+                                    {activeTab === "Perfil" && <Profile currentUser={currentUser} onUpdate={handleUpdateUser} isAdmin={isUserAdmin} />}
                                     {activeTab === "Configurações" && <Settings currentUser={currentUser} />}
                                 </>
                             )}

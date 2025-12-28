@@ -4,8 +4,11 @@ import { NoteFile } from '../types';
 export const notesService = {
     // Fetch all notes for the current user
     async fetchNotes(): Promise<NoteFile[]> {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) throw new Error('User not authenticated');
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        if (authError || !user) {
+            console.error('Auth error in fetchNotes:', authError);
+            throw new Error('Usuário não autenticado ou sessão expirada');
+        }
 
         const { data, error } = await supabase
             .from('notes')
@@ -43,8 +46,12 @@ export const notesService = {
     },
 
     async createNote(note: Partial<NoteFile>): Promise<{ data: NoteFile | null, error: string | null }> {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return { data: null, error: 'User not authenticated' };
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+        if (authError || !user) {
+            console.error('Auth error in createNote:', authError);
+            return { data: null, error: 'Usuário não autenticado ou sessão expirada. Por favor, faça login novamente.' };
+        }
 
         // Extract tags
         const tags = note.content ? (note.content.match(/#[\w\u00C0-\u00FF]+/g) || []) : [];

@@ -13,8 +13,8 @@ export interface Flashcard {
 
 export const flashcardService = {
     fetchFlashcards: async (): Promise<Flashcard[]> => {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) throw new Error('User not authenticated');
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        if (authError || !user) throw new Error('Usuário não autenticado ou sessão expirada');
 
         const { data, error } = await supabase
             .from('flashcards')
@@ -39,8 +39,8 @@ export const flashcardService = {
     },
 
     createFlashcard: async (card: Omit<Flashcard, 'id'>): Promise<Flashcard | null> => {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) throw new Error('User not authenticated');
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        if (authError || !user) throw new Error('Usuário não autenticado ou sessão expirada');
 
         const { data, error } = await supabase
             .from('flashcards')

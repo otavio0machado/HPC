@@ -7,24 +7,28 @@ import { User } from '../types';
 export const authService = {
   // Changed to async
   getCurrentUser: async (): Promise<User | null> => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session?.user) return null;
+    try {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error || !user) return null;
 
-    return {
-      id: session.user.id,
-      email: session.user.email || '',
-      name: session.user.user_metadata?.name || '',
-      subscription_tier: session.user.user_metadata?.subscription_tier || 'free',
-    };
+      return {
+        id: user.id,
+        email: user.email || '',
+        name: user.user_metadata?.name || '',
+        subscription_tier: user.user_metadata?.subscription_tier || 'free',
+        photo_url: user.user_metadata?.photo_url
+      };
+    } catch (error) {
+      console.error("Error in getCurrentUser:", error);
+      return null;
+    }
   },
 
-  // Helper to get session synchronously if needed (wrapping basic check), 
-  // though getSession() is the source of truth.
-  // This is a "best effort" check from memory if session was already loaded, 
-  // but reliable auth should use the async method.
+  // Helper to get session - getSession is fast but can be stale.
+  // Using getUser is slower but more reliable as it validates with the server.
   isLoggedIn: async (): Promise<boolean> => {
-    const { data } = await supabase.auth.getSession();
-    return !!data.session;
+    const { data: { user } } = await supabase.auth.getUser();
+    return !!user;
   },
 
   register: async (name: string, email: string, password: string): Promise<{ success: boolean; message?: string; user?: User }> => {
@@ -153,7 +157,11 @@ export const authService = {
     await supabase.auth.signOut();
   },
 
-  createCheckoutSession: async (): Promise<{ success: boolean; url?: string; message?: string }> => {
+  onAuthStateChange: (callback: (event: any, session: any) => void) => {
+    return supabase.auth.onAuthStateChange(callback);
+  },
+
+  createCheckoutSession: async () => {
     try {
       const { data, error } = await supabase.functions.invoke('create-checkout-session')
 

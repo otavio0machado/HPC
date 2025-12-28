@@ -3,8 +3,8 @@ import { SimuladoResult, SimuladoArea } from '../types';
 
 export const simuladosService = {
     async fetchSimulados(): Promise<SimuladoResult[]> {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) throw new Error('User not authenticated');
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        if (authError || !user) throw new Error('Usuário não autenticado ou sessão expirada');
 
         const { data, error } = await supabase
             .from('simulados')
@@ -29,8 +29,8 @@ export const simuladosService = {
     },
 
     async createSimulado(simulado: Omit<SimuladoResult, 'id'>): Promise<SimuladoResult | null> {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) throw new Error('User not authenticated');
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        if (authError || !user) throw new Error('Usuário não autenticado ou sessão expirada');
 
         const { data, error } = await supabase
             .from('simulados')

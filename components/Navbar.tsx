@@ -39,8 +39,12 @@ const Navbar: React.FC<NavbarProps> = ({ onLoginClick, isLoggedIn, onLogout }) =
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/30 dark:shadow-blue-900/40">
-            <span className="font-black italic text-white text-sm">H</span>
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/30 dark:shadow-blue-900/40 overflow-hidden border border-white/20">
+            <img
+              src="/logo-hpc.png"
+              alt="HPC Logo"
+              className="w-full h-full object-contain mix-blend-screen brightness-110 contrast-125 scale-110"
+            />
           </div>
           <span className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 cursor-pointer">
             HPC<span className="text-blue-600 dark:text-blue-500 text-2xl leading-none">.</span>
