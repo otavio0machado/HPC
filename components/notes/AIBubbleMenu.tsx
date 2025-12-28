@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { BubbleMenu, Editor } from '@tiptap/react';
 import { Wand2, Sparkles, Check, ChevronDown, AlignLeft, Bot, Maximize2, Minimize2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { aiService, refineText } from '../../services/geminiService';
+import { aiService, refineText } from '../../services/aiService';
 
 interface AIBubbleMenuProps {
     editor: Editor;

@@ -1,8 +1,40 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Check, Sparkles, Zap, Star, ShieldCheck, Flame } from 'lucide-react';
+import { authService } from '../../services/authService';
+import { toast } from 'sonner';
 
-const Pricing: React.FC = () => {
+interface PricingProps {
+    onNavigate?: (view: 'landing' | 'auth' | 'dashboard') => void;
+}
+
+const Pricing: React.FC<PricingProps> = ({ onNavigate }) => {
+    const [isLoading, setIsLoading] = React.useState(false);
+
+    const handleCheckout = async () => {
+        setIsLoading(true);
+        try {
+            const user = await authService.getCurrentUser();
+            if (!user) {
+                if (onNavigate) onNavigate('auth');
+                else window.location.href = '/auth'; // Fallback
+                return;
+            }
+
+            const result = await authService.createCheckoutSession();
+            if (result.success && result.url) {
+                window.location.href = result.url;
+            } else {
+                toast.error(result.message || "Erro ao iniciar checkout");
+            }
+        } catch (error) {
+            console.error("Pricing checkout error:", error);
+            toast.error("Erro interno no checkout");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
         <section id="pricing" className="py-24 relative overflow-hidden">
             {/* Background Elements */}
@@ -77,6 +109,8 @@ const Pricing: React.FC = () => {
 
                         {/* HIGH DOPAMINE CTA */}
                         <motion.button
+                            onClick={handleCheckout}
+                            disabled={isLoading}
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             className="w-full py-5 px-8 rounded-xl font-bold text-lg
@@ -84,10 +118,10 @@ const Pricing: React.FC = () => {
                                 bg-zinc-900 dark:bg-white text-white dark:text-black
                                 shadow-xl hover:shadow-2xl
                                 transition-all duration-300
-                                relative overflow-hidden group z-10"
+                                relative overflow-hidden group z-10 disabled:opacity-70"
                         >
-                            <Zap className="fill-current w-5 h-5" />
-                            <span className="relative z-10">GARANTIR ACESSO AGORA</span>
+                            {isLoading ? <div className="w-6 h-6 border-2 border-current border-t-transparent rounded-full animate-spin" /> : <Zap className="fill-current w-5 h-5" />}
+                            <span className="relative z-10">{isLoading ? 'PROCESSANDO...' : 'GARANTIR ACESSO AGORA'}</span>
                         </motion.button>
 
                         <div className="mt-8 flex items-center justify-center gap-6 text-zinc-400 relative z-10">
@@ -112,8 +146,8 @@ const Pricing: React.FC = () => {
                     <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
                     Novas vagas abertas
                 </motion.p>
-            </div>
-        </section>
+            </div >
+        </section >
     );
 };
 

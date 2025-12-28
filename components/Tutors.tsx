@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { createTutorChat } from '../services/geminiService';
+import { createTutorChat } from '../services/aiService';
 import { MessageSquare, Send, ArrowLeft, ArrowRight, Bot, User, Sparkles, BrainCircuit, Atom, Calculator, BookOpen, Globe, Dna, FlaskConical, Trash2, Users, Lightbulb, Languages, Feather, GraduationCap } from 'lucide-react';
 import { toast } from 'sonner';
 import { Chat, GenerateContentResponse, Content } from "@google/genai";
@@ -108,11 +108,11 @@ const Tutors: React.FC = () => {
     try {
       if (subjectHistory.length > 0) {
         setMessages(subjectHistory);
-        const geminiHistory: Content[] = subjectHistory.map(m => ({
+        const aiHistory: Content[] = subjectHistory.map(m => ({
           role: m.role,
           parts: [{ text: m.text }]
         }));
-        chatInstanceRef.current = createTutorChat(subject, geminiHistory);
+        chatInstanceRef.current = createTutorChat(subject, aiHistory);
       } else {
         const initialMsg: Message = { role: 'model', text: `Olá! Sou seu tutor especialista em ${subject}. Como posso te ajudar a destruir na prova hoje?` };
         setMessages([initialMsg]);
@@ -203,7 +203,7 @@ const Tutors: React.FC = () => {
                 transition={{ delay: 0.3 }}
                 className="px-5 py-2.5 rounded-full glass-spatial text-purple-300 text-xs font-bold uppercase tracking-wider flex items-center gap-2 border border-purple-500/20 shadow-[0_0_20px_rgba(168,85,247,0.15)] backdrop-blur-md"
               >
-                <Sparkles size={14} className="text-purple-400 animate-pulse" /> Gemini 2.0 Flash
+                <Sparkles size={14} className="text-purple-400 animate-pulse" /> HPC AI
               </motion.div>
             </div>
 

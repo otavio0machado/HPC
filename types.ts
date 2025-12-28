@@ -53,7 +53,7 @@ export interface SimuladoResult {
   areas: SimuladoArea[];
   essayScore?: number; // Nota da redação (0-1000)
   totalScore?: number; // Média simples ou TRI estimada
-  aiAnalysis?: string; // Análise gerada pelo Gemini
+  aiAnalysis?: string; // Análise gerada pelo HPC AI
 }
 
 export interface GeneratedQuestion {

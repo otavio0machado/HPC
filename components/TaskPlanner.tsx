@@ -7,7 +7,7 @@ import { tasksService } from '../services/tasksService';
 import { PlannerTask, TaskScope, TaskPriority, StudyMaterial } from '../types';
 import { toast } from 'sonner';
 
-const TaskPlanner: React.FC = () => {
+const TaskPlanner: React.FC<{ isAdmin?: boolean }> = ({ isAdmin = false }) => {
     const [activeTab, setActiveTab] = useState<'calendar' | 'materials'>('calendar');
     const [showRoadmapGenerator, setShowRoadmapGenerator] = useState(false);
 
@@ -296,13 +296,16 @@ const TaskPlanner: React.FC = () => {
 
                     <div className="w-[1px] h-8 bg-white/10 mx-1" />
 
-                    <button
-                        onClick={() => setShowRoadmapGenerator(true)}
-                        className="px-5 py-3 rounded-2xl text-sm font-bold bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:scale-105 transition-all flex items-center gap-2 border border-white/20"
-                    >
-                        <Sparkles size={16} />
-                        <span className="hidden sm:inline">IA Assistant</span>
-                    </button>
+                    {/* IA Assistant conditional */}
+                    {isAdmin && (
+                        <button
+                            onClick={() => setShowRoadmapGenerator(true)}
+                            className="px-5 py-3 rounded-2xl text-sm font-bold bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:scale-105 transition-all flex items-center gap-2 border border-white/20"
+                        >
+                            <Sparkles size={16} />
+                            <span className="hidden sm:inline">IA Assistant</span>
+                        </button>
+                    )}
                 </div>
             </div>
 

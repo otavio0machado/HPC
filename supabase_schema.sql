@@ -157,3 +157,23 @@ alter table kindle_highlights enable row level security;
 create policy "Users can CRUD their own highlights"
 on kindle_highlights for all
 using ( auth.uid() = user_id );
+
+-- 8. BLOCKS (Granular content for Nexus Graph)
+create table blocks (
+  id uuid primary key, -- TipTap generated UUID
+  note_id uuid references notes(id) on delete cascade not null,
+  user_id uuid references auth.users(id) on delete cascade not null,
+  type text not null,
+  content text,
+  properties jsonb default '{}',
+  parent_block_id uuid, -- For nested structures (lists, etc)
+  rank int default 0,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+alter table blocks enable row level security;
+
+create policy "Users can CRUD their own blocks"
+on blocks for all
+using ( auth.uid() = user_id );

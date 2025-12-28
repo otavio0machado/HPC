@@ -26,7 +26,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick, isLoggedIn, onL
                 <Methodology />
                 <Features />
                 {/* <Planner /> */}
-                <Pricing />
+                <Pricing onNavigate={(view) => {
+                    if (view === 'auth') onLoginClick();
+                }} />
                 {/* <CTA onCtaClick={onLoginClick} /> */}
             </main>
 

@@ -59,7 +59,7 @@ Este documento detalha o roteiro de implementação para transformar a plataform
 **Status:** ⏳ Pendente
 **Descrição:** Criação automática de tarefas no Planner baseada em uma meta final.
 **Estratégia Técnica:**
-- Prompt complexo para LLM (Gemini): "Dado a meta X e tempo Y, gere JSON de tarefas".
+- Prompt complexo para LLM (HPC AI): "Dado a meta X e tempo Y, gere JSON de tarefas".
 - Inserção em massa na tabela `tasks`.
 
 ## 9. Analytics Biométrico

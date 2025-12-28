@@ -7,7 +7,7 @@ import Highlight from '@tiptap/extension-highlight';
 import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
 import { Bold, Italic, Underline, List, ListOrdered, CheckSquare, Quote, Code, RotateCcw, RotateCw, Wand2, PenTool, X, Paperclip, Heading1, Heading2, Heading3 } from 'lucide-react';
-import { generateNoteContent } from '../../services/geminiService';
+import { generateNoteContent } from '../../services/aiService';
 import { notesService } from '../../services/notesService';
 import { blockService } from '../../services/blockService';
 import UniqueID from '@tiptap/extension-unique-id';

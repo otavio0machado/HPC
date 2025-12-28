@@ -3,7 +3,7 @@ import { Sparkles, ArrowRight, Layers, Loader2, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 import { NoteFile } from '../../types';
 import { flashcardGenerator } from '../../services/flashcardGenerator';
-import { analyzeNoteContent, generateFlashcardsFromNote, aiService } from '../../services/geminiService';
+import { analyzeNoteContent, generateFlashcardsFromNote, aiService } from '../../services/aiService';
 import { flashcardService } from '../../services/flashcardService';
 
 interface NotesInsightsProps {
@@ -46,7 +46,7 @@ const NotesInsights: React.FC<NotesInsightsProps> = ({ note }) => {
             let count = 0;
 
             if (aiService.hasKey) {
-                // Use Gemini AI
+                // Use HPC AI
                 const cards = await generateFlashcardsFromNote(note.content);
                 if (cards.length > 0) {
                     // Save to DB
@@ -107,7 +107,7 @@ const NotesInsights: React.FC<NotesInsightsProps> = ({ note }) => {
                 <div className="flex items-center justify-between mb-3 relative z-10">
                     <div className="flex items-center gap-2 text-blue-400 font-bold text-xs uppercase tracking-wider">
                         <Sparkles size={14} className="animate-pulse" />
-                        {aiService.hasKey ? 'Gemini AI Ativado' : 'Insights'}
+                        {aiService.hasKey ? 'HPC AI Ativado' : 'Insights'}
                     </div>
                     {aiService.hasKey && <Zap size={12} className="text-yellow-400" fill="currentColor" />}
                 </div>

@@ -5,7 +5,7 @@ import { ArrowLeft, Sparkles, Search, Upload, RefreshCw, Loader2, Plus } from 'l
 import { Subject, KnowledgePill as KnowledgePillType } from '../../data/contentData';
 import { contentService } from '../../services/contentService';
 import { extractTextFromPDF } from '../../utils/pdfUtils';
-import { generatePillsFromContent, generatePillsFromPromptAndContent } from '../../services/geminiService';
+import { generatePillsFromContent, generatePillsFromPromptAndContent } from '../../services/aiService';
 import SubjectCard from './SubjectCard';
 import KnowledgePill from './KnowledgePill';
 import { toast } from 'sonner';

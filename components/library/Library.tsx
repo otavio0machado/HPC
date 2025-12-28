@@ -7,7 +7,7 @@ import KindleSync from './KindleSync';
 import { toast } from 'sonner';
 import { extractCover } from '../../utils/coverExtractor';
 
-const Library: React.FC<{ userId: string }> = ({ userId }) => {
+const Library: React.FC<{ userId: string; isAdmin?: boolean }> = ({ userId, isAdmin = false }) => {
     // Tabs: 'books' | 'highlights'
     const [activeTab, setActiveTab] = useState<'books' | 'highlights'>('books');
 
@@ -111,12 +111,14 @@ const Library: React.FC<{ userId: string }> = ({ userId }) => {
                         >
                             <BookOpen size={16} /> Livros
                         </button>
-                        <button
-                            onClick={() => setActiveTab('highlights')}
-                            className={`px-6 py-2 rounded-xl transition-all flex items-center gap-2 font-bold ${activeTab === 'highlights' ? 'bg-white/10 text-white shadow-lg border border-white/10' : 'text-zinc-400 hover:text-white hover:bg-white/5'}`}
-                        >
-                            <Quote size={16} /> Destaques
-                        </button>
+                        {isAdmin && (
+                            <button
+                                onClick={() => setActiveTab('highlights')}
+                                className={`px-6 py-2 rounded-xl transition-all flex items-center gap-2 font-bold ${activeTab === 'highlights' ? 'bg-white/10 text-white shadow-lg border border-white/10' : 'text-zinc-400 hover:text-white hover:bg-white/5'}`}
+                            >
+                                <Quote size={16} /> Destaques
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
@@ -133,13 +135,15 @@ const Library: React.FC<{ userId: string }> = ({ userId }) => {
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <button
-                        onClick={() => setShowKindleSync(true)}
-                        className="glass-button px-5 py-3 text-sm font-bold text-zinc-300 rounded-xl transition-all flex items-center gap-2 group hover:text-white"
-                    >
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Kindle_logo.svg" alt="Kindle" className="h-4 opacity-50 invert group-hover:opacity-100 transition-opacity" />
-                        Sincronizar
-                    </button>
+                    {isAdmin && (
+                        <button
+                            onClick={() => setShowKindleSync(true)}
+                            className="glass-button px-5 py-3 text-sm font-bold text-zinc-300 rounded-xl transition-all flex items-center gap-2 group hover:text-white"
+                        >
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Kindle_logo.svg" alt="Kindle" className="h-4 opacity-50 invert group-hover:opacity-100 transition-opacity" />
+                            Sincronizar
+                        </button>
+                    )}
 
                     <label className="cursor-pointer">
                         <div className="glass-button-primary px-6 py-3 text-sm font-bold text-white rounded-xl transition-all flex items-center gap-2 hover:scale-105 active:scale-95">

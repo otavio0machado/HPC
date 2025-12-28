@@ -120,7 +120,7 @@ const AnalyticsDashboard: React.FC = () => {
     };
 
     return (
-        <motion.div 
+        <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="space-y-8 pb-10 max-w-[1600px] mx-auto"
@@ -131,7 +131,7 @@ const AnalyticsDashboard: React.FC = () => {
                 <div>
                     <h2 className="text-4xl font-black text-white mb-2 flex items-center gap-4 tracking-tight drop-shadow-md">
                         <span className="p-3 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl shadow-[0_0_20px_rgba(6,182,212,0.4)] border border-white/10 relative overflow-hidden group">
-                           <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 pointer-events-none" />
+                            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 pointer-events-none" />
                             <TrendingUp size={32} className="text-white" />
                         </span>
                         Analytics Biométrico
@@ -144,7 +144,7 @@ const AnalyticsDashboard: React.FC = () => {
 
             {/* HERO INSIGHT CARD */}
             {latest.aiAnalysis && (
-                <motion.div 
+                <motion.div
                     initial={{ scale: 0.98, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ delay: 0.2 }}
@@ -153,7 +153,7 @@ const AnalyticsDashboard: React.FC = () => {
                     {/* Background Effects */}
                     <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3 pointer-events-none transition-opacity duration-700 group-hover:opacity-100 opacity-60" />
                     <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-purple-500/10 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/3 pointer-events-none transition-opacity duration-700 group-hover:opacity-100 opacity-60" />
-                    
+
                     <div className="relative z-10">
                         <div className="flex flex-col md:flex-row items-start gap-6">
                             <div className="p-4 bg-blue-500/10 rounded-2xl border border-blue-500/30 text-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.15)] backdrop-blur-md">
@@ -182,7 +182,7 @@ const AnalyticsDashboard: React.FC = () => {
                 <div className="lg:col-span-8 glass-hydro p-8 rounded-[40px] min-h-[450px] flex flex-col group hover:border-white/20 transition-all duration-500">
                     <h3 className="text-xl font-bold text-white mb-8 flex items-center gap-3">
                         <div className="p-2 bg-cyan-500/10 rounded-xl text-cyan-400 border border-cyan-500/20">
-                             <TrendingUp size={20} />
+                            <TrendingUp size={20} />
                         </div>
                         Evolução Temporal
                     </h3>
@@ -196,20 +196,20 @@ const AnalyticsDashboard: React.FC = () => {
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#ffffff08" vertical={false} />
-                                <XAxis 
-                                    dataKey="date" 
-                                    stroke="#71717a" 
-                                    fontSize={12} 
-                                    tickLine={false} 
-                                    axisLine={false} 
+                                <XAxis
+                                    dataKey="date"
+                                    stroke="#71717a"
+                                    fontSize={12}
+                                    tickLine={false}
+                                    axisLine={false}
                                     dy={10}
                                 />
-                                <YAxis 
-                                    stroke="#71717a" 
-                                    fontSize={12} 
-                                    tickLine={false} 
-                                    axisLine={false} 
-                                    domain={[0, 100]} 
+                                <YAxis
+                                    stroke="#71717a"
+                                    fontSize={12}
+                                    tickLine={false}
+                                    axisLine={false}
+                                    domain={[0, 100]}
                                 />
                                 <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(255,255,255,0.2)', strokeWidth: 1, strokeDasharray: '4 4' }} />
                                 <Area
@@ -220,7 +220,7 @@ const AnalyticsDashboard: React.FC = () => {
                                     strokeWidth={4}
                                     fillOpacity={1}
                                     fill="url(#colorScore)"
-                                    activeDot={{ r: 6, strokeWidth: 0, fill: '#fff', shadow: '0 0 10px white' }}
+                                    activeDot={{ r: 6, strokeWidth: 0, fill: '#fff' }}
                                 />
                             </AreaChart>
                         </ResponsiveContainer>
@@ -230,9 +230,9 @@ const AnalyticsDashboard: React.FC = () => {
                 {/* 2. Radar Chart (Proficiency) */}
                 <div className="lg:col-span-4 glass-hydro p-8 rounded-[40px] min-h-[450px] flex flex-col group hover:border-white/20 transition-all duration-500">
                     <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-3">
-                         <div className="p-2 bg-purple-500/10 rounded-xl text-purple-400 border border-purple-500/20">
-                             <Target size={20} />
-                         </div>
+                        <div className="p-2 bg-purple-500/10 rounded-xl text-purple-400 border border-purple-500/20">
+                            <Target size={20} />
+                        </div>
                         Competências
                     </h3>
                     <div className="flex-1 w-full flex items-center justify-center relative">
@@ -240,9 +240,9 @@ const AnalyticsDashboard: React.FC = () => {
                         <ResponsiveContainer width="100%" height="100%">
                             <RadarChart cx="50%" cy="50%" outerRadius="75%" data={radarData}>
                                 <PolarGrid stroke="#ffffff15" />
-                                <PolarAngleAxis 
-                                    dataKey="subject" 
-                                    tick={{ fill: '#a1a1aa', fontSize: 11, fontWeight: 500 }} 
+                                <PolarAngleAxis
+                                    dataKey="subject"
+                                    tick={{ fill: '#a1a1aa', fontSize: 11, fontWeight: 500 }}
                                 />
                                 <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
                                 <Radar
@@ -272,7 +272,7 @@ const AnalyticsDashboard: React.FC = () => {
                 {/* 3. Strengths & Weaknesses (Full Width) */}
                 <div className="lg:col-span-12 glass-card p-8 rounded-[40px] drop-shadow-2xl border border-white/5 relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-32 bg-amber-500/5 rounded-full blur-[100px] pointer-events-none" />
-                    
+
                     <h3 className="text-xl font-bold text-white mb-8 flex items-center gap-3 relative z-10">
                         <div className="p-2 bg-amber-500/10 rounded-xl text-amber-400 border border-amber-500/20">
                             <AlertTriangle size={20} />
@@ -284,15 +284,15 @@ const AnalyticsDashboard: React.FC = () => {
                             <BarChart data={performanceData} layout="vertical" margin={{ left: 20, right: 20 }}>
                                 <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#ffffff08" />
                                 <XAxis type="number" domain={[0, 100]} stroke="#71717a" hide />
-                                <YAxis 
-                                    dataKey="name" 
-                                    type="category" 
-                                    stroke="#e4e4e7" 
-                                    fontSize={13} 
+                                <YAxis
+                                    dataKey="name"
+                                    type="category"
+                                    stroke="#e4e4e7"
+                                    fontSize={13}
                                     fontWeight={500}
-                                    width={140} 
-                                    tickLine={false} 
-                                    axisLine={false} 
+                                    width={140}
+                                    tickLine={false}
+                                    axisLine={false}
                                 />
                                 <Tooltip content={<CustomTooltip />} cursor={{ fill: '#ffffff03' }} />
                                 <Bar dataKey="percentage" name="Acertos" radius={[0, 8, 8, 0]} barSize={24}>

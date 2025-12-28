@@ -42,14 +42,14 @@ export const essayService = {
             }
             `;
 
-            // Using the @google/genai specific API structure (based on test-gemini.js)
+            // Using the @google/genai specific API structure (based on AI testing scripts)
             const result = await ai.models.generateContent({
                 model: "gemini-2.0-flash", // Or gemini-1.5-flash-001 as in test
                 contents: prompt,
             });
 
             // The response object in @google/genai seems to have .text property directly?
-            // Checking test-gemini.js: console.log("Response text:", response.text);
+            // Checking AI testing scripts: console.log("Response text:", response.text);
 
             let textResponse = result.text;
 

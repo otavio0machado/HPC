@@ -3,13 +3,13 @@ import { BarChart3, Plus, X, Activity, TrendingUp, AlertCircle, FileText, CheckC
 import { authService } from '../services/authService';
 import { simuladosService } from '../services/simuladosService';
 import { ExamType, SimuladoResult, SimuladoArea, GeneratedQuestion, SimulationConfig } from '../types';
-import { analyzeExamPerformance, generateExams } from '../services/geminiService';
+import { analyzeExamPerformance, generateExams } from '../services/aiService';
 import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
 import EssayReview from './simulados/EssayReview';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const Simulados: React.FC = () => {
+const Simulados: React.FC<{ isAdmin?: boolean }> = ({ isAdmin = false }) => {
   const [history, setHistory] = useState<SimuladoResult[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -664,12 +664,14 @@ const Simulados: React.FC = () => {
         </div>
 
         <div className="flex flex-wrap gap-3">
-          <button
-            onClick={() => { setViewMode('essay') }}
-            className="glass-button bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white border-white/5 px-6 py-4 rounded-2xl flex items-center gap-3 transition-all hover:-translate-y-0.5"
-          >
-            <PenTool size={18} /> <span className="font-bold">Redação AI</span>
-          </button>
+          {isAdmin && (
+            <button
+              onClick={() => { setViewMode('essay') }}
+              className="glass-button bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white border-white/5 px-6 py-4 rounded-2xl flex items-center gap-3 transition-all hover:-translate-y-0.5"
+            >
+              <PenTool size={18} /> <span className="font-bold">Redação AI</span>
+            </button>
+          )}
 
           <button
             onClick={() => { setViewMode('manual_entry') }}
@@ -678,12 +680,14 @@ const Simulados: React.FC = () => {
             <Calculator size={18} /> <span className="font-bold">Lançar Nota</span>
           </button>
 
-          <button
-            onClick={() => setViewMode('config')}
-            className="bg-zinc-900 dark:bg-white text-white dark:text-black font-bold px-8 py-4 rounded-2xl flex items-center gap-3 transition-all hover:scale-105 shadow-[0_0_30px_rgba(37,99,235,0.2)] dark:shadow-[0_0_30px_rgba(255,255,255,0.2)] border border-white/20"
-          >
-            <BrainCircuit size={20} /> <span className="tracking-tight">GERAR IA</span>
-          </button>
+          {isAdmin && (
+            <button
+              onClick={() => setViewMode('config')}
+              className="bg-zinc-900 dark:bg-white text-white dark:text-black font-bold px-8 py-4 rounded-2xl flex items-center gap-3 transition-all hover:scale-105 shadow-[0_0_30px_rgba(37,99,235,0.2)] dark:shadow-[0_0_30px_rgba(255,255,255,0.2)] border border-white/20"
+            >
+              <BrainCircuit size={20} /> <span className="tracking-tight">GERAR IA</span>
+            </button>
+          )}
         </div>
       </div>
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, AlertTriangle, Brain, Eye, Clock, X, CheckCircle2, Search, BookOpen, User, Image as ImageIcon, Sparkles, Loader2, Edit2, Filter, ArrowUpDown, LayoutGrid, List as ListIcon, AlertOctagon, ChevronDown } from 'lucide-react';
 import { authService } from '../services/authService';
-import { analyzeErrorImage } from '../services/geminiService';
+import { analyzeErrorImage } from '../services/aiService';
 import { flashcardService, Flashcard } from '../services/flashcardService';
 import { toast } from 'sonner';
 import { ErrorEntry } from '../types';
