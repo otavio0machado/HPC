@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion, Reorder, useDragControls } from 'framer-motion';
 import AnalyticsDashboard from './analytics/AnalyticsDashboard';
-import SmartReview from './flashcards/SmartReview';
+
 import Whiteboard from './whiteboard/Whiteboard';
-import { Menu, X, Clock, Loader2, ChevronRight, User, Settings as SettingsIcon, LogOut, Lock, LayoutDashboard, Calendar, BookOpen, GraduationCap, AlertOctagon, Zap, FileText, ChevronDown, Search, GripVertical, Sparkles, Share2, Play, Mic, TrendingUp, Brain, BoxSelect, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Menu, X, Clock, Loader2, ChevronRight, User, Settings as SettingsIcon, LogOut, Lock, LayoutDashboard, Calendar, BookOpen, GraduationCap, AlertOctagon, Zap, FileText, ChevronDown, Search, GripVertical, Sparkles, Share2, Play, Mic, TrendingUp, BoxSelect, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 
 
 import { toast } from 'sonner';
@@ -45,7 +45,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         { id: "Planner", label: "Planner", icon: <Calendar size={20} /> },
         { id: "Notas", label: "Notas", icon: <FileText size={20} /> },
         { id: "Nexus", label: "Nexus", icon: <Share2 size={20} /> },
-        { id: "SmartReview", label: "Revisão", icon: <Brain size={20} /> },
+
         { id: "Analytics", label: "Analytics", icon: <TrendingUp size={20} /> },
         { id: "Whiteboard", label: "Quadro", icon: <BoxSelect size={20} /> },
         { id: "Conteúdos", label: "Conteúdos", icon: <Sparkles size={20} /> },
@@ -58,6 +58,26 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     const [activeTab, setActiveTab] = useState("Dashboard");
     const [tabs, setTabs] = useState(navItems);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [isMobile, setIsMobile] = useState(false);
+
+    // Responsive Handlers
+    useEffect(() => {
+        const handleResize = () => {
+            const mobile = window.innerWidth < 768; // md breakpoint
+            setIsMobile(mobile);
+            if (mobile) {
+                setIsSidebarOpen(false);
+            } else {
+                setIsSidebarOpen(true);
+            }
+        };
+
+        // Initial check
+        handleResize();
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     // User Menu State
     const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -398,263 +418,143 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
 
             {/* Reopen Sidebar Button */}
-            <div className={`fixed left-6 top-6 z-40 transition-all duration-500 ${isSidebarOpen ? 'opacity-0 pointer-events-none -translate-x-10' : 'opacity-100 translate-x-0'}`}>
+            <div className={`fixed left-6 top-6 z-40 transition-all duration-500 ${isSidebarOpen ? 'opacity-0 pointer-events-none -translate-x-10' : 'opacity-100 translate-x-0'} ${activeTab === 'Dashboard' && isMobile ? 'hidden' : ''}`}>
                 <button
                     onClick={() => setIsSidebarOpen(true)}
-                    className="p-3 rounded-2xl bg-white/10 hover:bg-white/20 text-zinc-500 dark:text-zinc-400 hover:text-white backdrop-blur-xl border border-white/10 shadow-lg hover:shadow-cyan-500/20 hover:scale-110 active:scale-95 transition-all group"
+                    className="p-3 rounded-2xl bg-white/70 dark:bg-white/10 hover:bg-white/90 dark:hover:bg-white/20 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-lg hover:shadow-cyan-500/20 hover:scale-110 active:scale-95 transition-all group"
                 >
-                    <PanelLeftOpen size={24} className="group-hover:text-cyan-400 transition-colors" />
+                    <PanelLeftOpen size={24} className="group-hover:text-cyan-500 dark:group-hover:text-cyan-400 transition-colors" />
                 </button>
             </div>
 
-            {/* --- MACOS TAHOE LIQUID GLASS SIDEBAR --- */}
-            <aside className={`fixed left-4 top-4 bottom-4 w-72 rounded-[32px] glass-spatial z-50 flex flex-col justify-between p-6 transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) ${isSidebarOpen ? 'translate-x-0 opacity-100' : '-translate-x-[120%] opacity-0 pointer-events-none'
-                }`}>
-                {/* Close Button - Forced Visibility */}
-                <button
-                    onClick={() => setIsSidebarOpen(false)}
-                    className="absolute top-3 right-3 p-2 text-zinc-400 hover:text-white bg-black/20 hover:bg-black/40 border border-white/5 rounded-xl transition-all z-[60] backdrop-blur-md"
-                    title="Recolher Menu"
-                >
-                    <PanelLeftClose size={18} />
-                </button>
-
-                {/* Logo & Gradient Orb */}
-                {/* Logo & Gradient Orb */}
-                <div className="flex items-center gap-3 mb-10 px-2 group relative z-10">
-                    <div className="relative">
-                        <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-500 to-indigo-600 shadow-[0_0_20px_rgba(59,130,246,0.3)] group-hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] transition-all duration-500 flex items-center justify-center border border-white/20">
-                            <span className="font-black italic text-white text-lg drop-shadow-md">H</span>
-                        </div>
-                    </div>
-                    <div>
-                        <h1 className="text-xl font-bold text-zinc-900 dark:text-white tracking-tight drop-shadow-sm">HPC<span className="text-blue-500 dark:text-blue-400">.</span></h1>
-                        <p className="text-[10px] text-zinc-500 dark:text-zinc-400 font-bold tracking-widest uppercase opacity-80">Club Member</p>
-                    </div>
-                </div>
-
-                {/* Global Search - Floating Bubble */}
-                <div className="mb-6 relative group px-2">
-                    <div className="absolute inset-0 bg-blue-500/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <div className="relative flex items-center gap-3 bg-white/40 dark:bg-black/20 hover:bg-white/60 dark:hover:bg-black/40 backdrop-blur-md border border-black/5 dark:border-white/10 hover:border-blue-500/30 rounded-2xl px-4 py-3 transition-all cursor-pointer group-active:scale-95 shadow-sm hover:shadow-md">
-                        <Search size={18} className="text-zinc-500 dark:text-white/50 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
-                        <span className="text-sm text-zinc-600 dark:text-white/50 font-medium group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">Buscar...</span>
-                        <span className="ml-auto text-[10px] bg-white/50 dark:bg-white/10 text-zinc-400 dark:text-white/30 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5 font-mono group-hover:border-blue-500/30 group-hover:text-blue-500 transition-colors">⌘K</span>
-                    </div>
-                </div>
-
-
-
-                {/* Navigation - Squircle Buttons with Drag & Drop */}
-                <Reorder.Group axis="y" values={tabs} onReorder={setTabs} className="flex-1 space-y-2 overflow-y-auto custom-scrollbar px-2 -mx-2 list-none">
-                    {tabs.map((item) => {
-                        const isActive = activeTab === item.id;
-                        const isLocked = ['Notas', 'Biblioteca', 'Tutores', 'Lista de Erros', 'Flashcards', 'Simulados', 'Conteúdos'].includes(item.id) && currentUser.subscription_tier !== 'pro';
-
-                        return (
-                            <DraggableNavItem
-                                key={item.id}
-                                item={item}
-                                isActive={isActive}
-                                isLocked={isLocked}
-                                changeTab={changeTab}
-                            />
-                        );
-                    })}
-                </Reorder.Group>
-
-
-
-                {/* User Profile Section */}
-                <div className="pt-2 mt-auto px-2 relative" ref={userMenuRef}>
-                    <AnimatePresence>
-                        {userMenuOpen && (
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.95, y: 10, filter: 'blur(10px)' }}
-                                animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
-                                exit={{ opacity: 0, scale: 0.95, y: 10, filter: 'blur(10px)' }}
-                                onClick={(e) => e.stopPropagation()}
-                                className="absolute bottom-full left-0 right-0 mb-4 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-3xl border border-black/10 dark:border-white/10 rounded-[28px] shadow-[0_20px_50px_rgba(0,0,0,0.3)] dark:shadow-[0_0_50px_rgba(0,0,0,0.7)] p-2 z-[100] origin-bottom overflow-hidden"
-                            >
-                                <div className="px-4 py-2 border-b border-black/5 dark:border-white/5 mb-1">
-                                    <p className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">Sua Conta</p>
-                                </div>
-
-                                <button
-                                    onClick={() => { changeTab('Perfil'); setUserMenuOpen(false); }}
-                                    className="w-full flex items-center gap-3 px-3 py-3 text-sm text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/10 rounded-2xl transition-all duration-200 font-semibold group/item"
-                                >
-                                    <div className="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center group-hover/item:scale-110 group-hover/item:bg-blue-500 group-hover/item:text-white transition-all shadow-sm">
-                                        <User size={18} />
-                                    </div>
-                                    <div className="text-left">
-                                        <p className="font-bold">Meu Perfil</p>
-                                        <p className="text-[10px] opacity-50 font-medium">Ver detalhes da conta</p>
-                                    </div>
-                                </button>
-
-                                <button
-                                    onClick={() => { changeTab('Configurações'); setUserMenuOpen(false); }}
-                                    className="w-full flex items-center gap-3 px-3 py-3 text-sm text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/10 rounded-2xl transition-all duration-200 font-semibold group/item"
-                                >
-                                    <div className="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center group-hover/item:scale-110 group-hover/item:bg-indigo-500 group-hover/item:text-white transition-all shadow-sm">
-                                        <SettingsIcon size={18} />
-                                    </div>
-                                    <div className="text-left">
-                                        <p className="font-bold">Configurações</p>
-                                        <p className="text-[10px] opacity-50 font-medium">Preferências do sistema</p>
-                                    </div>
-                                </button>
-
-                                <div className="h-px bg-zinc-200 dark:bg-white/5 my-1.5 mx-2" />
-
-                                <button
-                                    onClick={(e) => { e.stopPropagation(); onLogout(); }}
-                                    className="w-full flex items-center gap-3 px-3 py-3 text-sm text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-200 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-2xl transition-all duration-200 font-semibold group/item"
-                                >
-                                    <div className="w-9 h-9 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center group-hover/item:scale-110 group-hover/item:bg-red-500 group-hover/item:text-white transition-all shadow-sm">
-                                        <LogOut size={18} />
-                                    </div>
-                                    <span className="font-bold">Sair do App</span>
-                                </button>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-
-                    <div
+            {/* Sidebar Navigation */}
+            <AnimatePresence mode="wait">
+                {isSidebarOpen && (
+                    <motion.aside
+                        initial={{ x: -280, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        exit={{ x: -280, opacity: 0 }}
+                        transition={{ duration: 0.4, ease: [0.19, 1.0, 0.22, 1.0] }}
                         className={`
-                            relative w - full flex items - center gap - 3 p - 2 rounded - [28px] border transition - all duration - 500 backdrop - blur - md z - [60] overflow - hidden
-                            ${userMenuOpen
-                                ? 'bg-zinc-200/50 dark:bg-zinc-800/80 border-black/10 dark:border-white/20 shadow-lg scale-[0.98]'
-                                : 'bg-white/40 dark:bg-white/5 border-black/5 dark:border-white/10 hover:bg-white/60 dark:hover:bg-white/10 hover:border-black/10 dark:hover:border-white/20 hover:shadow-xl'
-                            }
-`}
+                            fixed md:relative z-30 h-full w-72 flex flex-col 
+                            glass-hydro border-r border-white/40 dark:border-white/5 
+                            shadow-2xl md:shadow-none
+                        `}
                     >
-                        {/* Interactive Zone: Profile */}
-                        <button
-                            onClick={() => changeTab('Perfil')}
-                            className="flex-1 flex items-center gap-3 p-1 rounded-2xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors group/profile"
-                        >
-                            {/* Avatar Squircle */}
-                            <div className="w-11 h-11 rounded-[16px] bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-800 dark:to-zinc-900 flex items-center justify-center overflow-hidden border border-black/5 dark:border-white/10 shadow-inner relative group-hover/profile:scale-105 transition-transform duration-300">
-                                {currentUser.photo_url ? (
-                                    <img src={currentUser.photo_url} alt={currentUser.name} className="w-full h-full object-cover" />
-                                ) : (
-                                    <span className="font-bold text-sm text-zinc-700 dark:text-zinc-200">{currentUser.name.substring(0, 2).toUpperCase()}</span>
-                                )}
-                                <div className="absolute inset-0 bg-white/10 opacity-0 group-hover/profile:opacity-100 transition-opacity" />
+                        {/* Header */}
+                        <div className="p-6 pb-4 flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+                                <Sparkles size={20} fill="currentColor" />
                             </div>
+                            <div>
+                                <h1 className="text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
+                                    HPC AI
+                                </h1>
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Student OS</span>
+                            </div>
+                        </div>
 
-                            {/* Info */}
-                            <div className="text-left flex-1 min-w-0">
-                                <p className="text-sm font-bold text-zinc-800 dark:text-zinc-100 truncate text-spatial">{currentUser.name}</p>
-                                <div className="flex items-center gap-1.5 mt-0.5">
-                                    <div className={`w - 1.5 h - 1.5 rounded - full ${currentUser.subscription_tier === 'pro' ? 'bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.6)] animate-pulse' : 'bg-zinc-400 dark:bg-zinc-600'} `} />
-                                    <p className="text-[10px] text-zinc-500 dark:text-white/40 truncate text-spatial-caption">
-                                        {currentUser.subscription_tier === 'pro' ? 'PRO ACCOUNT' : 'FREE PLAN'}
+                        {/* Search Bar */}
+                        <div className="px-4 mb-4">
+                            <div className="relative group">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-blue-500 transition-colors" size={16} />
+                                <input
+                                    type="text"
+                                    placeholder="Buscar..."
+                                    className="w-full bg-white/60 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all placeholder:text-zinc-400 text-zinc-800 dark:text-zinc-200"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Navigation Tabs */}
+                        <Reorder.Group axis="y" values={tabs} onReorder={setTabs} className="flex-1 overflow-y-auto px-4 space-y-1.5 scrollbar-hide py-2">
+                            {tabs.map((item) => {
+                                const restricted = ['Notas', 'Biblioteca', 'Tutores', 'Lista de Erros', 'Flashcards', 'Simulados', 'Conteúdos'];
+                                const isLocked = restricted.includes(item.id) && currentUser.subscription_tier !== 'pro';
+                                return (
+                                    <DraggableNavItem
+                                        key={item.id}
+                                        item={item}
+                                        isActive={activeTab === item.id}
+                                        isLocked={isLocked}
+                                        changeTab={changeTab}
+                                    />
+                                );
+                            })}
+                        </Reorder.Group>
+
+                        {/* User Profile Section */}
+                        <div className="p-4 border-t border-white/20 dark:border-white/5 mt-auto bg-white/40 dark:bg-white/5 backdrop-blur-md">
+                            <div
+                                className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/60 dark:hover:bg-white/10 transition-colors cursor-pointer group"
+                                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                            >
+                                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 p-0.5 shadow-sm">
+                                    <img src={currentUser.avatar_url || `https://ui-avatars.com/api/?name=${currentUser.name}&background=random`} alt="User" className="w-full h-full rounded-full object-cover border-2 border-white dark:border-black" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="font-bold text-sm truncate text-zinc-800 dark:text-white">{currentUser.name}</p>
+                                    <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate flex items-center gap-1">
+                                        {currentUser.subscription_tier === 'pro' ? <span className="text-amber-500 flex items-center gap-0.5"><Sparkles size={10} /> PRO</span> : "Free Plan"}
                                     </p>
                                 </div>
+                                <ChevronRight size={16} className={`text-zinc-400 transition-transform ${userMenuOpen ? 'rotate-90' : ''}`} />
                             </div>
-                        </button>
 
-                        {/* Interactive Zone: Menu Trigger */}
-                        <button
-                            onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                setUserMenuOpen(!userMenuOpen);
-                            }}
-                            className={`
-w - 10 h - 10 flex items - center justify - center rounded - [18px] transition - all duration - 300
-                                ${userMenuOpen
-                                    ? 'bg-blue-500 text-white shadow-lg rotate-90'
-                                    : 'bg-black/5 dark:bg-white/5 text-zinc-400 dark:text-white/40 hover:bg-black/10 dark:hover:bg-white/10 hover:text-zinc-800 dark:hover:text-white hover:scale-105'
-                                }
-                                border border - black / 5 dark: border - white / 5
-    `}
-                        >
-                            <SettingsIcon size={18} className={userMenuOpen ? 'animate-spin-slow' : ''} />
-                        </button>
-                    </div>
-                </div>
-
-            </aside>
-
-            {/* --- BACKGROUND AMBIENCE --- */}
-            {/* Subtle animated blobs to enhance glass effect */}
-            <div className="fixed inset-0 pointer-events-none -z-10 bg-transparent">
-                <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-blue-900/10 rounded-full blur-[120px] animate-pulse" />
-                <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-purple-900/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
-            </div>
-
-            {/* --- MAIN CONTENT AREA --- */}
-            <main className={`flex-1 overflow-y-auto h-full relative transition-all duration-500 ease-in-out py-4 pr-4 ${isSidebarOpen ? 'pl-80' : 'pl-4'}`}>
-
-                {/* Modals Layer */}
-                {isModalOpen && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 dark:bg-black/80 backdrop-blur-md p-4 animate-in fade-in duration-300">
-                        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-3xl p-8 w-full max-w-sm shadow-2xl relative animate-in zoom-in-95 duration-300">
-                            <button
-                                onClick={() => setIsModalOpen(false)}
-                                className="absolute top-6 right-6 p-2 rounded-xl backdrop-blur-sm
-                                    bg-transparent hover:bg-black/5 dark:hover:bg-white/10
-                                    border border-transparent hover:border-black/10 dark:hover:border-white/10
-                                    text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white
-                                    transition-all duration-200"
-                            >
-                                <X size={20} />
-                            </button>
-                            <div className="mb-8 text-center">
-                                <div className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-gradient-to-tr from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/30 dark:shadow-blue-900/30">
-                                    <Clock size={32} className="text-white" />
-                                </div>
-                                <h3 className="text-2xl font-black text-zinc-900 dark:text-white text-spatial-title">Focus Session</h3>
-                                <p className="text-zinc-500 dark:text-zinc-400 text-sm mt-2">Registre seu tempo de foco.</p>
-                            </div>
-                            <form onSubmit={handleAddSession}>
-                                <div className="mb-6">
-                                    <div className="relative group">
-                                        <input
-                                            type="number"
-                                            step="0.1"
-                                            min="0"
-                                            autoFocus
-                                            value={inputHours}
-                                            onChange={(e) => setInputHours(e.target.value)}
-                                            className="w-full bg-zinc-100 dark:bg-black/40 border border-zinc-200 dark:border-white/10 rounded-2xl py-4 px-6 text-center text-3xl font-bold text-zinc-900 dark:text-white focus:outline-none focus:border-blue-500/50 focus:bg-white dark:focus:bg-black/60 transition-all placeholder:text-zinc-400 dark:placeholder:text-zinc-800"
-                                            placeholder="0.0"
-                                        />
-                                        <span className="absolute right-6 top-1/2 -translate-y-1/2 font-medium text-zinc-400 dark:text-zinc-600 text-lg">h</span>
-                                    </div>
-                                </div>
-                                <button
-                                    type="submit"
-                                    className="w-full font-bold py-4 rounded-xl backdrop-blur-md
-                                        bg-gradient-to-r from-blue-600 to-indigo-600 text-white
-                                        border border-white/20 shadow-lg shadow-blue-500/30
-                                        hover:shadow-blue-500/50 hover:scale-[1.02] active:scale-95
-                                        ring-1 ring-white/10
-                                        transition-all duration-300"
-                                >
-                                    Confirmar Sessão
-                                </button>
-                            </form>
+                            {/* Dropdown Menu */}
+                            <AnimatePresence>
+                                {userMenuOpen && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        className="absolute bottom-20 left-4 right-4 glass-card rounded-2xl shadow-xl p-2 z-50 flex flex-col gap-1"
+                                        ref={userMenuRef}
+                                    >
+                                        <button onClick={() => { setActiveTab('Perfil'); setUserMenuOpen(false); }} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 text-sm font-medium transition-colors text-zinc-700 dark:text-zinc-300">
+                                            <User size={16} /> Perfil
+                                        </button>
+                                        <button onClick={() => { setActiveTab('Configurações'); setUserMenuOpen(false); }} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 text-sm font-medium transition-colors text-zinc-700 dark:text-zinc-300">
+                                            <SettingsIcon size={16} /> Configurações
+                                        </button>
+                                        <div className="h-px bg-zinc-200 dark:bg-white/10 my-1" />
+                                        <button onClick={onLogout} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-red-500/10 text-red-500 text-sm font-medium transition-colors">
+                                            <LogOut size={16} /> Sair
+                                        </button>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
-                    </div>
+                    </motion.aside>
                 )}
+            </AnimatePresence>
 
-                {showUpgradeModal && <UpgradeModal onClose={() => setShowUpgradeModal(false)} onSuccess={() => { setShowUpgradeModal(false); reloadUser(); }} />}
+            {/* Mobile Overlay */}
+            <AnimatePresence>
+                {isMobile && isSidebarOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setIsSidebarOpen(false)}
+                        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 md:hidden"
+                    />
+                )}
+            </AnimatePresence>
 
-                {/* Page Content Container - Adjusted for fixed sidebar */}
-                <div className="max-w-[1600px] mx-auto min-h-full">
+            {/* Main Content Area */}
+            <main className="flex-1 relative flex flex-col h-full overflow-hidden transition-all duration-300">
+                <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 lg:p-8 scrollbar-hide relative bg-transparent">
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={activeTab}
-                            initial={{ opacity: 0, scale: 0.98, filter: 'blur(10px)' }}
-                            animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-                            exit={{ opacity: 0, scale: 0.98, filter: 'blur(10px)' }}
-                            transition={{ duration: 0.4, ease: "circOut" }}
+                            initial={{ opacity: 0, y: 10, filter: 'blur(10px)' }}
+                            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                            exit={{ opacity: 0, y: -10, filter: 'blur(10px)' }}
+                            transition={{ duration: 0.4, ease: [0.19, 1.0, 0.22, 1.0] }}
+                            className="max-w-7xl mx-auto space-y-6 pb-20"
                         >
+
                             {activeTab === "Dashboard" && (
                                 <DashboardWidgets
                                     currentUser={currentUser}
@@ -675,6 +575,7 @@ w - 10 h - 10 flex items - center justify - center rounded - [18px] transition -
                                     setIsModalOpen={setIsModalOpen}
                                     onOpenFocusMode={() => setFocusModeOpen(true)}
                                     getGreeting={getGreeting}
+                                    onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
                                 />
                             )}
 
@@ -688,21 +589,21 @@ w - 10 h - 10 flex items - center justify - center rounded - [18px] transition -
                             {activeTab === "Simulados" && <Simulados />}
                             {activeTab === "Nexus" && (
                                 <div className="h-[calc(100vh-3rem)] w-full">
-                                    <React.Suspense fallback={<div className="flex items-center justify-center h-full text-white/50 font-medium tracking-widest animate-pulse">CARREGANDO NEXUS...</div>}>
+                                    <React.Suspense fallback={<div className="flex items-center justify-center h-full text-zinc-400 dark:text-white/50 font-medium tracking-widest animate-pulse">CARREGANDO NEXUS...</div>}>
                                         <NexusGraph />
                                     </React.Suspense>
                                 </div>
                             )}
 
-                            {activeTab === "SmartReview" && <SmartReview onExit={() => setActiveTab("Dashboard")} />}
+
                             {activeTab === "Analytics" && <AnalyticsDashboard />}
                             {activeTab === "Whiteboard" && <Whiteboard />}
                             {activeTab === "Perfil" && <Profile currentUser={currentUser} onUpdate={handleUpdateUser} />}
                             {activeTab === "Configurações" && <Settings />}
                         </motion.div>
-                    </AnimatePresence>
-                </div>
-            </main>
+                    </AnimatePresence >
+                </div >
+            </main >
         </div >
     );
 };

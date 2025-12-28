@@ -61,37 +61,37 @@ const NotesSettings: React.FC<NotesSettingsProps> = ({ isOpen, onClose, onImport
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="fixed inset-0 bg-black/40 backdrop-blur-md z-50"
+                        className="fixed inset-0 bg-black/20 dark:bg-black/40 backdrop-blur-md z-50"
                     />
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] glass-spatial border border-white/10 rounded-3xl shadow-[0_25px_50px_rgba(0,0,0,0.5)] z-50 overflow-hidden"
+                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] glass-spatial rounded-3xl z-50 overflow-hidden"
                     >
                         {/* Background Gradients */}
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px] pointer-events-none" />
-                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/10 rounded-full blur-[80px] pointer-events-none" />
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 dark:bg-blue-500/10 rounded-full blur-[80px] pointer-events-none" />
+                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/10 dark:bg-purple-500/10 rounded-full blur-[80px] pointer-events-none" />
 
-                        <div className="flex items-center justify-between p-6 border-b border-white/10 relative z-10">
-                            <h2 className="text-xl font-bold text-white flex items-center gap-3">
-                                <div className="p-2 bg-blue-500/20 text-blue-300 rounded-xl shadow-inner">
+                        <div className="flex items-center justify-between p-6 border-b border-gray-200/50 dark:border-white/10 relative z-10">
+                            <h2 className="text-xl font-bold text-zinc-900 dark:text-white flex items-center gap-3">
+                                <div className="p-2 bg-blue-500/10 text-blue-600 dark:text-blue-300 rounded-xl shadow-sm dark:shadow-inner">
                                     <FileText size={20} />
                                 </div>
                                 <span className="tracking-tight">Configurações de Notas</span>
                             </h2>
-                            <button onClick={onClose} className="p-2 rounded-full text-zinc-400 hover:text-white hover:bg-white/10 transition-colors">
+                            <button onClick={onClose} className="p-2 rounded-full text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
                                 <X size={20} />
                             </button>
                         </div>
 
                         <div className="p-6 space-y-6 relative z-10">
-                            <div className="glass-card p-5 rounded-2xl border border-white/5 relative overflow-hidden group">
+                            <div className="glass-card p-5 rounded-2xl relative overflow-hidden group">
                                 <div className="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                <h3 className="font-bold text-white mb-2 flex items-center gap-2 relative z-10">
-                                    <Upload size={18} className="text-emerald-400" /> Importar Notas
+                                <h3 className="font-bold text-zinc-900 dark:text-white mb-2 flex items-center gap-2 relative z-10">
+                                    <Upload size={18} className="text-emerald-500 dark:text-emerald-400" /> Importar Notas
                                 </h3>
-                                <p className="text-sm text-zinc-400 mb-5 relative z-10">
+                                <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-5 relative z-10">
                                     Importe seus arquivos Markdown (.md) ou texto (.txt) do computador para sua biblioteca.
                                 </p>
 
@@ -106,31 +106,31 @@ const NotesSettings: React.FC<NotesSettingsProps> = ({ isOpen, onClose, onImport
 
                                 <button
                                     onClick={() => fileInputRef.current?.click()}
-                                    className="w-full relative z-10 bg-white/5 hover:bg-white/10 text-white font-bold py-3 rounded-xl border border-white/10 hover:border-emerald-500/30 transition-all flex items-center justify-center gap-2 group shadow-lg active:scale-95"
+                                    className="w-full relative z-10 bg-white/50 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/10 text-zinc-900 dark:text-white font-bold py-3 rounded-xl border border-zinc-200 dark:border-white/10 hover:border-emerald-500/30 transition-all flex items-center justify-center gap-2 group shadow-sm hover:shadow-md active:scale-95"
                                 >
-                                    <Upload size={18} className="group-hover:-translate-y-0.5 transition-transform text-emerald-400" /> Selecionar Arquivos
+                                    <Upload size={18} className="group-hover:-translate-y-0.5 transition-transform text-emerald-500 dark:text-emerald-400" /> Selecionar Arquivos
                                 </button>
                             </div>
 
                             <div className="space-y-4">
-                                <h3 className="font-bold text-xs uppercase tracking-widest text-zinc-500 ml-1">Preferências</h3>
+                                <h3 className="font-bold text-xs uppercase tracking-widest text-zinc-500 dark:text-zinc-500 ml-1">Preferências</h3>
 
-                                <div className="glass-card px-4 py-3 rounded-xl border border-white/5 flex items-center justify-between">
-                                    <span className="text-zinc-200 font-medium text-sm">Modo Leitura por Padrão</span>
-                                    <div className="w-11 h-6 bg-black/40 rounded-full relative cursor-pointer border border-white/10">
+                                <div className="glass-card px-4 py-3 rounded-xl flex items-center justify-between">
+                                    <span className="text-zinc-800 dark:text-zinc-200 font-medium text-sm">Modo Leitura por Padrão</span>
+                                    <div className="w-11 h-6 bg-zinc-200 dark:bg-black/40 rounded-full relative cursor-pointer border border-zinc-300 dark:border-white/10">
                                         <div className="w-4 h-4 bg-zinc-500 rounded-full absolute top-1 left-1 shadow-sm transition-all"></div>
                                     </div>
                                 </div>
 
-                                <div className="glass-card px-4 py-3 rounded-xl border border-white/5 flex items-center justify-between">
-                                    <span className="text-zinc-200 font-medium text-sm">Auto-salvar (Debounce)</span>
-                                    <span className="text-xs text-emerald-300 font-bold bg-emerald-500/20 px-2.5 py-1 rounded-lg border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.2)]">Ativo (2s)</span>
+                                <div className="glass-card px-4 py-3 rounded-xl flex items-center justify-between">
+                                    <span className="text-zinc-800 dark:text-zinc-200 font-medium text-sm">Auto-salvar (Debounce)</span>
+                                    <span className="text-xs text-emerald-600 dark:text-emerald-300 font-bold bg-emerald-100 dark:bg-emerald-500/20 px-2.5 py-1 rounded-lg border border-emerald-200 dark:border-emerald-500/20 shadow-sm">Ativo (2s)</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="p-6 border-t border-white/10 flex justify-end bg-black/20 relative z-10">
-                            <button onClick={onClose} className="px-6 py-2.5 text-sm font-bold text-zinc-300 hover:text-white bg-white/5 hover:bg-white/10 rounded-xl transition-all border border-white/5 hover:shadow-lg active:scale-95">
+                        <div className="p-6 border-t border-gray-200/50 dark:border-white/10 flex justify-end bg-gray-50/50 dark:bg-black/20 relative z-10">
+                            <button onClick={onClose} className="px-6 py-2.5 text-sm font-bold text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white bg-white/50 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/10 rounded-xl transition-all border border-zinc-200 dark:border-white/5 hover:shadow-lg active:scale-95">
                                 Fechar
                             </button>
                         </div>

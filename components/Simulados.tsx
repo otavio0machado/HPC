@@ -656,10 +656,10 @@ const Simulados: React.FC = () => {
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20 border border-white/10">
               <Clock className="text-white" size={24} />
             </div>
-            <h2 className="text-4xl font-black text-white tracking-tight drop-shadow-lg font-sans">Simulados</h2>
+            <h2 className="text-4xl font-black text-zinc-900 dark:text-white tracking-tight drop-shadow-sm dark:drop-shadow-lg font-sans">Simulados</h2>
           </div>
-          <p className="text-zinc-400 text-lg font-medium max-w-2xl text-spatial-body">
-            Domine o formato da prova. O que não é medido não pode ser <span className="text-blue-400">melhorado</span>.
+          <p className="text-zinc-600 dark:text-zinc-400 text-lg font-medium max-w-2xl text-spatial-body">
+            Domine o formato da prova. O que não é medido não pode ser <span className="text-blue-600 dark:text-blue-400">melhorado</span>.
           </p>
         </div>
 
@@ -680,7 +680,7 @@ const Simulados: React.FC = () => {
 
           <button
             onClick={() => setViewMode('config')}
-            className="bg-white text-black font-bold px-8 py-4 rounded-2xl flex items-center gap-3 transition-all hover:scale-105 shadow-[0_0_30px_rgba(255,255,255,0.2)] border border-white/20"
+            className="bg-zinc-900 dark:bg-white text-white dark:text-black font-bold px-8 py-4 rounded-2xl flex items-center gap-3 transition-all hover:scale-105 shadow-[0_0_30px_rgba(37,99,235,0.2)] dark:shadow-[0_0_30px_rgba(255,255,255,0.2)] border border-white/20"
           >
             <BrainCircuit size={20} /> <span className="tracking-tight">GERAR IA</span>
           </button>
@@ -725,16 +725,16 @@ const Simulados: React.FC = () => {
                             </span>
                             <span className="text-zinc-500 text-sm font-medium">{sim.date}</span>
                           </div>
-                          <h3 className="text-white font-bold text-lg">Simulado Geral</h3>
+                          <h3 className="text-zinc-900 dark:text-white font-bold text-lg">Simulado Geral</h3>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-2">
                         {sim.essayScore && (
-                          <div className="px-4 py-2 bg-white/5 rounded-xl border border-white/5 flex items-center gap-2">
-                            <PenTool size={14} className="text-pink-400" />
-                            <span className="text-zinc-400 text-sm font-bold">Redação:</span>
-                            <span className="text-white font-bold">{sim.essayScore}</span>
+                          <div className="px-4 py-2 bg-white/50 dark:bg-white/5 rounded-xl border border-zinc-200 dark:border-white/5 flex items-center gap-2">
+                            <PenTool size={14} className="text-pink-500 dark:text-pink-400" />
+                            <span className="text-zinc-600 dark:text-zinc-400 text-sm font-bold">Redação:</span>
+                            <span className="text-zinc-900 dark:text-white font-bold">{sim.essayScore}</span>
                           </div>
                         )}
                         <button

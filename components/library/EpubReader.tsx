@@ -40,10 +40,13 @@ const EpubReader: React.FC<EpubReaderProps> = ({ url, location, locationChanged,
     }, [settings, rendition]);
 
     return (
-        <div className={`h-full relative font-serif ${settings.theme === 'light' ? 'bg-white' : settings.theme === 'sepia' ? 'bg-[#f4ecd8]' : 'bg-zinc-950'}`}>
+        <div className={`h-full relative font-serif ${settings.theme === 'light' ? 'bg-white' : settings.theme === 'sepia' ? 'bg-[#f4ecd8]' : 'bg-transparent'}`}>
             {isLoading && (
-                <div className={`absolute inset-0 flex items-center justify-center z-10 ${settings.theme === 'light' ? 'bg-white' : settings.theme === 'sepia' ? 'bg-[#f4ecd8]' : 'bg-zinc-900'}`}>
-                    <Loader2 className="animate-spin text-blue-500" />
+                <div className={`absolute inset-0 flex items-center justify-center z-10 ${settings.theme === 'light' ? 'bg-white' : settings.theme === 'sepia' ? 'bg-[#f4ecd8]' : 'bg-black/80 backdrop-blur-xl'}`}>
+                    <div className="flex flex-col items-center gap-2">
+                        <Loader2 className="animate-spin text-blue-500" size={40} />
+                        <span className="text-xs text-zinc-500 font-medium animate-pulse">Carregando livro...</span>
+                    </div>
                 </div>
             )}
 

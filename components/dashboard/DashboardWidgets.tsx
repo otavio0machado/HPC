@@ -35,6 +35,7 @@ interface DashboardWidgetsProps {
     setIsModalOpen: (isOpen: boolean) => void;
     onOpenFocusMode: () => void;
     getGreeting: () => string;
+    onToggleSidebar: () => void;
 }
 
 const DashboardWidgets: React.FC<DashboardWidgetsProps> = ({
@@ -51,7 +52,8 @@ const DashboardWidgets: React.FC<DashboardWidgetsProps> = ({
     latestSimulado,
     setIsModalOpen,
     onOpenFocusMode,
-    getGreeting
+    getGreeting,
+    onToggleSidebar
 }) => {
 
     const calculateSimuladoPercentage = (result: SimuladoResult) => {
@@ -65,13 +67,22 @@ const DashboardWidgets: React.FC<DashboardWidgetsProps> = ({
 
             {/* Welcome Section & Quick Action */}
             <div className="flex flex-col md:flex-row justify-between items-end gap-6 pb-2">
-                <div>
-                    <h2 className="text-3xl font-bold text-zinc-900 dark:text-white mb-2 text-spatial-title">
-                        {getGreeting()}, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-500">{currentUser.name.split(' ')[0]}</span>.
-                    </h2>
-                    <p className="text-zinc-500 dark:text-zinc-400 text-spatial">Pronto para superar seus limites hoje?</p>
+                <div className="flex items-center gap-4 w-full md:w-auto">
+                    {/* Mobile Menu Button */}
+                    <button
+                        onClick={onToggleSidebar}
+                        className="md:hidden p-2 -ml-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                    >
+                        <LayoutList size={24} />
+                    </button>
+                    <div>
+                        <h2 className="text-3xl font-bold text-zinc-900 dark:text-white mb-2 text-spatial-title">
+                            {getGreeting()}, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-500">{currentUser.name.split(' ')[0]}</span>.
+                        </h2>
+                        <p className="text-zinc-500 dark:text-zinc-400 text-spatial">Pronto para superar seus limites hoje?</p>
+                    </div>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 self-end md:self-auto ml-auto md:ml-0">
                     <ThemeToggle showLabel={false} />
 
                     <button
@@ -86,7 +97,7 @@ const DashboardWidgets: React.FC<DashboardWidgetsProps> = ({
                     >
                         <div className="absolute -inset-2 rounded-xl bg-gradient-to-r from-indigo-400 to-purple-600 opacity-20 blur-lg transition-all duration-300 group-hover:opacity-40" />
                         <span className="relative flex items-center gap-2 z-10">
-                            <Zap size={18} className="fill-white" /> Modo Flow
+                            <Zap size={18} className="fill-white" /> <span className="hidden sm:inline">Modo Flow</span>
                         </span>
                     </button>
 

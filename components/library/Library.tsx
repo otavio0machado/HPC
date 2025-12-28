@@ -122,8 +122,8 @@ const Library: React.FC<{ userId: string }> = ({ userId }) => {
             </div>
 
             {/* Action Bar */}
-            <div className="flex items-center justify-between mb-8 glass-card p-4 rounded-[28px] backdrop-blur-3xl border border-white/10">
-                <div className="relative w-full max-w-sm group">
+            <div className="flex flex-col md:flex-row items-center justify-between mb-8 glass-card p-4 rounded-[28px] backdrop-blur-3xl border border-white/10 gap-4">
+                <div className="relative w-full md:max-w-sm group">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 transition-colors group-focus-within:text-blue-400" size={18} />
                     <input
                         type="text"

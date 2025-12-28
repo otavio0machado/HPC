@@ -53,6 +53,23 @@ const NotesModule: React.FC = () => {
         return notes.filter(n => n && Array.isArray(n.tags) && n.tags.includes(selectedTag));
     }, [notes, selectedTag]);
 
+    // Mobile State
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const handleResize = () => {
+            const mobile = window.innerWidth < 768;
+            setIsMobile(mobile);
+            if (mobile) {
+                setShowLeftSidebar(false);
+                setShowRightSidebar(false);
+            }
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     useEffect(() => {
         loadNotes();
     }, []);
@@ -273,11 +290,23 @@ const NotesModule: React.FC = () => {
 
     return (
         <div className={`
-            flex overflow-hidden glass-hydro rounded-3xl border border-white/10 shadow-2xl backdrop-blur-xl animate-in fade-in duration-500
-            ${isExpandedMode ? 'fixed inset-4 z-50' : 'h-[calc(100vh-80px)] relative'}
+            flex overflow-hidden glass-hydro rounded-3xl border border-white/10 shadow-2xl backdrop-blur-xl animate-in fade-in duration-500 relative
+            ${isExpandedMode ? 'fixed inset-4 z-50' : 'h-[calc(100vh-80px)]'}
         `}>
+            {/* --- MOBILE OVERLAY (Left) --- */}
+            {isMobile && showLeftSidebar && (
+                <div
+                    className="absolute inset-0 bg-black/60 z-30 backdrop-blur-sm"
+                    onClick={() => setShowLeftSidebar(false)}
+                />
+            )}
+
             {/* --- LEFT SIDEBAR: File Tree --- */}
-            <div className={`${showLeftSidebar ? 'w-72' : 'w-0'} transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] border-r border-white/5 flex flex-col overflow-hidden bg-black/10`}>
+            <div className={`
+                ${isMobile ? 'absolute inset-y-0 left-0 z-40 shadow-2xl' : 'relative'} 
+                ${showLeftSidebar ? 'w-72' : 'w-0'} 
+                transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] border-r border-white/5 flex flex-col overflow-hidden bg-black/10 backdrop-blur-xl
+            `}>
                 <div className="w-72 h-full">
                     <NotesSidebar
                         notes={filteredNotes}
@@ -383,8 +412,20 @@ const NotesModule: React.FC = () => {
                 )}
             </div>
 
+            {/* --- MOBILE OVERLAY (Right) --- */}
+            {isMobile && showRightSidebar && (
+                <div
+                    className="absolute inset-0 bg-black/60 z-30 backdrop-blur-sm"
+                    onClick={() => setShowRightSidebar(false)}
+                />
+            )}
+
             {/* --- RIGHT SIDEBAR: Meta & Details --- */}
-            <div className={`${showRightSidebar && selectedNote ? 'w-80' : 'w-0'} transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] flex flex-col overflow-hidden glass-hydro border-l border-white/5`}>
+            <div className={`
+                ${isMobile ? 'absolute inset-y-0 right-0 z-40 shadow-2xl' : 'relative'}
+                ${showRightSidebar && selectedNote ? 'w-80' : 'w-0'} 
+                transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] flex flex-col overflow-hidden glass-hydro border-l border-white/5
+            `}>
                 <div className="w-80 h-full overflow-y-auto custom-scrollbar p-5 space-y-6">
                     {selectedNote && (
                         <>
