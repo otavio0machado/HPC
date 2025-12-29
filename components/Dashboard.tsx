@@ -23,7 +23,7 @@ import NotesModule from './notes/NotesModule';
 import Library from './library/Library';
 
 import UpgradeModal from './UpgradeModal';
-import ContentModule from './content/ContentModule';
+import ContentModule from './content/ContentModuleNew';
 import { DashboardSkeleton } from './SkeletonLoader';
 import FocusMode from './dashboard/FocusMode';
 import ExperienceBar from './gamification/ExperienceBar';
