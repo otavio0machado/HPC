@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 
 // Components
 import DashboardWidgets from './dashboard/DashboardWidgets';
+import AddSessionModal from './dashboard/AddSessionModal';
 import Tutors from './Tutors';
 import ErrorList from './ErrorList';
 import Flashcards from './Flashcards';
@@ -121,7 +122,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     // Modal States
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-    const [inputHours, setInputHours] = useState('');
     const [focusModeOpen, setFocusModeOpen] = useState(false);
 
 
@@ -284,24 +284,19 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         if (user) setCurrentUser(user);
     };
 
-    const handleAddSession = (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleAddSession = (hours: number) => {
         if (!currentUser) return;
-        const val = parseFloat(inputHours);
-        if (!isNaN(val) && val > 0) {
-            const newToday = +(todayHours + val).toFixed(1);
-            const newWeek = +(weekHours + val).toFixed(1);
-            const newMonth = +(monthHours + val).toFixed(1);
-            setTodayHours(newToday);
-            setWeekHours(newWeek);
-            setMonthHours(newMonth);
+        const newToday = +(todayHours + hours).toFixed(1);
+        const newWeek = +(weekHours + hours).toFixed(1);
+        const newMonth = +(monthHours + hours).toFixed(1);
+        setTodayHours(newToday);
+        setWeekHours(newWeek);
+        setMonthHours(newMonth);
 
-            const metricsKey = `hpc_metrics_${currentUser.id} `;
-            localStorage.setItem(metricsKey, JSON.stringify({ today: newToday, week: newWeek, month: newMonth }));
-            setIsModalOpen(false);
-            setInputHours('');
-            toast.success("Sessão registrada com sucesso!");
-        }
+        const metricsKey = `hpc_metrics_${currentUser.id} `;
+        localStorage.setItem(metricsKey, JSON.stringify({ today: newToday, week: newWeek, month: newMonth }));
+        setIsModalOpen(false);
+        toast.success("Sessão registrada com sucesso!");
     };
 
     const toggleTaskWidget = (id: string) => {
@@ -461,74 +456,11 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                 )}
             </AnimatePresence>
 
-            {/* Manual Session Modal */}
-            <AnimatePresence>
-                {isModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            onClick={() => setIsModalOpen(false)}
-                            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-                        />
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="relative w-full max-w-sm bg-[#09090b] border border-white/10 rounded-3xl p-6 shadow-2xl glass-hydro overflow-hidden"
-                        >
-                            {/* Decorative Glow */}
-                            <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
-
-                            <h3 className="text-xl font-bold text-white mb-1 relative z-10">Registrar Sessão</h3>
-                            <p className="text-zinc-400 text-sm mb-6 relative z-10">Adicione horas de estudo manualmente.</p>
-
-                            <form onSubmit={handleAddSession} className="relative z-10">
-                                <div className="space-y-5">
-                                    <div>
-                                        <div className="relative group">
-                                            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-zinc-500 group-focus-within:text-blue-500 transition-colors">
-                                                <Clock size={18} />
-                                            </div>
-                                            <input
-                                                type="number"
-                                                step="0.1"
-                                                min="0.1"
-                                                required
-                                                value={inputHours}
-                                                onChange={(e) => setInputHours(e.target.value)}
-                                                placeholder="0.0"
-                                                className="w-full bg-white/5 border border-white/10 rounded-2xl pl-10 pr-4 py-3.5 text-white placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white/10 transition-all font-mono text-lg"
-                                                autoFocus
-                                            />
-                                            <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-zinc-500 text-sm font-medium">
-                                                horas
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center gap-3 pt-2">
-                                        <button
-                                            type="button"
-                                            onClick={() => setIsModalOpen(false)}
-                                            className="flex-1 px-4 py-3 text-zinc-400 hover:text-white hover:bg-white/5 rounded-xl transition-all text-sm font-medium"
-                                        >
-                                            Cancelar
-                                        </button>
-                                        <button
-                                            type="submit"
-                                            className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-blue-500/25 active:scale-95"
-                                        >
-                                            Adicionar
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
+            <AddSessionModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onAdd={handleAddSession}
+            />
 
 
 
@@ -551,7 +483,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                         exit={{ x: -208, opacity: 0 }}
                         transition={{ duration: 0.4, ease: [0.19, 1.0, 0.22, 1.0] }}
                         className={`
-                            fixed md:relative z-30 h-full w-52 flex flex-col 
+                            fixed md:relative z-50 h-full w-52 flex flex-col 
                             glass-hydro border-r border-white/40 dark:border-white/5 
                             shadow-2xl md:shadow-none
                         `}

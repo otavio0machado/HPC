@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, BookOpen, AlertTriangle, Check, RotateCw, Brain } from 'lucide-react';
+import { X, BookOpen, AlertTriangle, Check, RotateCw, Brain, ChevronRight, HelpCircle } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { reviewService, SmartReviewItem } from '../../services/reviewService';
 import { Flashcard } from '../../services/flashcardService';
@@ -64,7 +64,7 @@ export const SmartReview: React.FC<SmartReviewProps> = ({ initialQueue, onExit }
             interval = 1;
         }
 
-        return interval === 1 ? '1 dia' : `${interval} dias`;
+        return interval === 1 ? '1d' : `${interval}d`;
     };
 
     const handleReview = async (quality: number) => {
@@ -100,9 +100,9 @@ export const SmartReview: React.FC<SmartReviewProps> = ({ initialQueue, onExit }
     // Loading State
     if (loading) {
         return (
-            <div className="flex flex-col items-center justify-center h-full text-zinc-500 animate-pulse bg-black">
-                <Brain size={64} className="mb-4 text-violet-500" />
-                <p>Calibrando Rede Neural...</p>
+            <div className="flex flex-col items-center justify-center h-full text-zinc-500 animate-pulse font-light tracking-widest uppercase text-xs gap-4">
+                <div className="w-12 h-12 rounded-full border-2 border-white/10 border-t-white animate-spin" />
+                Carregando Sessão...
             </div>
         );
     }
@@ -110,35 +110,44 @@ export const SmartReview: React.FC<SmartReviewProps> = ({ initialQueue, onExit }
     // Finished State
     if (currentIndex >= queue.length && !loading) {
         return (
-            <div className="flex flex-col items-center justify-center h-full bg-black relative overflow-hidden">
-                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20 pointer-events-none"></div>
-                <div className="w-24 h-24 bg-gradient-to-br from-violet-500 to-fuchsia-600 rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(139,92,246,0.3)] mb-6 animate-bounce relative z-10">
-                    <Check size={48} className="text-white" />
-                </div>
-                <h2 className="text-3xl font-black text-white mb-2 relative z-10">Sessão Concluída!</h2>
-                <p className="text-zinc-400 mb-8 text-center max-w-md relative z-10">
-                    Você revisou {sessionStats.total} itens com <span className="text-emerald-400 font-bold">{sessionStats.total > 0 ? Math.round((sessionStats.correct / sessionStats.total) * 100) : 0}%</span> de aproveitamento.
-                </p>
-                <div className="flex gap-4 relative z-10">
-                    <button
-                        onClick={onExit}
-                        className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold transition-all"
-                    >
-                        Voltar ao Painel
-                    </button>
-                    {!initialQueue && (
+            <div className="flex flex-col items-center justify-center h-full relative overflow-hidden font-sans">
+                {/* Background Elements */}
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-indigo-600/10 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/4 pointer-events-none" />
+
+                <div className="relative z-10 flex flex-col items-center">
+                    <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-[32px] flex items-center justify-center shadow-[0_0_50px_rgba(79,70,229,0.3)] mb-8 animate-in zoom-in duration-500">
+                        <Check size={48} className="text-white drop-shadow-md" strokeWidth={3} />
+                    </div>
+
+                    <h2 className="text-4xl font-light text-white mb-2 tracking-tight">Sessão Finalizada</h2>
+                    <p className="text-zinc-400 mb-10 text-center max-w-md text-sm font-medium leading-relaxed tracking-wide">
+                        Você dominou <span className="text-white font-bold">{sessionStats.total}</span> conceitos hoje.
+                        <br />
+                        Aproveitamento de <span className="text-emerald-400 font-bold">{sessionStats.total > 0 ? Math.round((sessionStats.correct / sessionStats.total) * 100) : 0}%</span>.
+                    </p>
+
+                    <div className="flex gap-4">
                         <button
-                            onClick={() => {
-                                setQueue([]);
-                                setCurrentIndex(0);
-                                setSessionStats({ correct: 0, total: 0 });
-                                loadSmartQueue();
-                            }}
-                            className="px-6 py-3 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold transition-all flex items-center gap-2 shadow-lg shadow-violet-900/20"
+                            onClick={onExit}
+                            className="px-8 py-3.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-zinc-300 hover:text-white text-xs font-bold uppercase tracking-widest transition-all backdrop-blur-md"
                         >
-                            <RotateCw size={18} /> Continuar
+                            Voltar
                         </button>
-                    )}
+                        {!initialQueue && (
+                            <button
+                                onClick={() => {
+                                    setQueue([]);
+                                    setCurrentIndex(0);
+                                    setSessionStats({ correct: 0, total: 0 });
+                                    loadSmartQueue();
+                                }}
+                                className="px-8 py-3.5 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(37,99,235,0.3)] border border-white/10 hover:shadow-[0_0_30px_rgba(37,99,235,0.5)]"
+                            >
+                                <RotateCw size={14} /> Continuar
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
         );
@@ -147,98 +156,131 @@ export const SmartReview: React.FC<SmartReviewProps> = ({ initialQueue, onExit }
     if (!currentItem) return null;
 
     return (
-        <div className="h-full flex items-center justify-center bg-black p-6 relative overflow-hidden font-sans">
-            {/* Background ambient */}
-            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20 pointer-events-none"></div>
-            <div className="absolute top-0 left-0 w-full h-1 bg-zinc-900 z-50">
-                <div className="h-full bg-gradient-to-r from-violet-600 to-fuchsia-400 transition-all duration-300 shadow-[0_0_10px_rgba(167,139,250,0.5)]" style={{ width: `${progress}%` }} />
+        <div className="h-full flex flex-col items-center justify-center relative overflow-hidden font-sans p-4 md:p-8">
+            {/* Background Elements */}
+            <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[150px] pointer-events-none -translate-x-1/2 -translate-y-1/2" />
+            <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[150px] pointer-events-none translate-x-1/2 translate-y-1/2" />
+
+            {/* Top Bar */}
+            <div className="absolute top-0 left-0 w-full p-6 flex justify-between items-center z-20">
+                <div className="flex items-center gap-4">
+                    <button
+                        onClick={onExit}
+                        className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white transition-colors backdrop-blur-md border border-white/5"
+                    >
+                        <X size={20} />
+                    </button>
+
+                    {/* Progress Pills */}
+                    <div className="hidden md:flex gap-1">
+                        {queue.map((_, idx) => (
+                            <div
+                                key={idx}
+                                className={`h-1.5 w-8 rounded-full transition-all duration-300 ${idx < currentIndex ? 'bg-blue-500' :
+                                        idx === currentIndex ? 'bg-white blink' : 'bg-white/10'
+                                    }`}
+                            />
+                        ))}
+                    </div>
+
+                    <span className="md:hidden text-xs font-bold text-zinc-500 tracking-wider">
+                        {currentIndex + 1} / {queue.length}
+                    </span>
+                </div>
+
+                <div className='flex items-center gap-3'>
+                    <div className={`px-3 py-1.5 rounded-full border backdrop-blur-md flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest ${currentItem.type === 'error'
+                            ? 'bg-red-500/10 border-red-500/20 text-red-300'
+                            : 'bg-white/5 border-white/10 text-zinc-400'
+                        }`}>
+                        {currentItem.type === 'error' ? <AlertTriangle size={12} /> : <BookOpen size={12} />}
+                        <span className="max-w-[150px] truncate">{currentItem.content.context || 'Geral'}</span>
+                    </div>
+                </div>
             </div>
 
-            {/* Ambient Glows */}
-            <div className={`absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-[128px] pointer-events-none transition-colors duration-1000 ${currentItem.type === 'error' ? 'bg-red-600/10' : 'bg-violet-600/10'}`}></div>
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-fuchsia-600/10 rounded-full blur-[128px] pointer-events-none"></div>
-
-            <div className="w-full max-w-3xl aspect-[4/3] bg-[var(--glass-bg)] border border-[var(--border-glass)] rounded-3xl relative overflow-hidden flex flex-col shadow-2xl z-10 backdrop-blur-2xl">
-                {/* Header */}
-                <div className="p-6 border-b border-white/5 flex justify-between items-center bg-black/20 backdrop-blur-md z-20">
-                    <div className='flex flex-col gap-1'>
-                        <div className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded w-fit border ${currentItem.type === 'error' ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-white/5 text-zinc-500 border-white/5'}`}>
-                            {currentItem.type === 'error' ? <AlertTriangle size={10} /> : <BookOpen size={10} />}
-                            <span className="max-w-[200px] truncate">{currentItem.content.context || 'Geral'}</span>
-                        </div>
-                        <span className="text-zinc-300 text-xs font-bold pl-1">Card {currentIndex + 1} <span className="text-zinc-600 mx-1">/</span> {queue.length}</span>
-                    </div>
-                    <button onClick={onExit} className="p-2 bg-white/5 hover:bg-white/10 rounded-xl text-zinc-400 hover:text-white transition-colors border border-white/5 hover:border-white/20"><X size={18} /></button>
-                </div>
-
-                {/* Card Content */}
-                <div className="flex-1 relative perspective-1000">
-                    <AnimatePresence mode='wait' custom={direction}>
-                        <motion.div
-                            key={currentItem.id + (isFlipped ? '-back' : '-front')}
-                            initial={{ opacity: 0, rotateX: isFlipped ? -15 : 15, y: 10, scale: 0.95 }}
-                            animate={{ opacity: 1, rotateX: 0, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, rotateX: isFlipped ? 15 : -15, y: -10, scale: 0.95 }}
-                            transition={{ duration: 0.4, type: "spring", stiffness: 100, damping: 20 }}
+            {/* Card Container */}
+            <div className="w-full max-w-4xl flex-1 max-h-[600px] relative perspective-1000 z-10 my-auto">
+                <AnimatePresence mode='wait' custom={direction}>
+                    <motion.div
+                        key={currentItem.id + (isFlipped ? '-back' : '-front')}
+                        initial={{ opacity: 0, rotateX: isFlipped ? -5 : 5, scale: 0.98, y: 10 }}
+                        animate={{ opacity: 1, rotateX: 0, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, rotateX: isFlipped ? 5 : -5, scale: 0.98, y: -10 }}
+                        transition={{ duration: 0.3, ease: "easeOut" }}
+                        className="w-full h-full"
+                    >
+                        <div
                             onClick={() => !isFlipped && setIsFlipped(true)}
-                            className="absolute inset-0 flex items-center justify-center p-12 cursor-pointer"
+                            className={`w-full h-full rounded-[40px] border relative overflow-hidden backdrop-blur-2xl shadow-2xl transition-all duration-500 flex flex-col ${isFlipped
+                                    ? 'bg-zinc-900/80 border-white/10'
+                                    : 'bg-white/5 hover:bg-white/10 border-white/10 cursor-pointer group'
+                                }`}
                         >
-                            <div className="w-full max-h-full overflow-y-auto custom-scrollbar">
-                                <div className="text-center">
-                                    <span className={`text-[10px] font-bold uppercase tracking-[0.2em] mb-8 block border rounded-full py-2 px-6 w-max mx-auto transition-all duration-500 shadow-lg ${isFlipped
-                                        ? 'border-emerald-500/30 text-emerald-300 bg-emerald-500/10 shadow-emerald-500/20'
-                                        : (currentItem.type === 'error' ? 'border-red-500/30 text-red-300 bg-red-500/10 shadow-red-500/20' : 'border-violet-500/30 text-violet-300 bg-violet-500/10 shadow-violet-500/20')
-                                        }`}>
-                                        {isFlipped ? 'Resposta' : (currentItem.type === 'error' ? 'Erro' : 'Pergunta')}
-                                    </span>
-                                    <div className={`prose prose-invert prose-lg max-w-none transition-colors duration-500 ${isFlipped ? 'text-blue-50 drop-shadow-sm' : 'text-zinc-100'}`}>
-                                        <ReactMarkdown>
-                                            {isFlipped ? currentItem.content.back : currentItem.content.front}
-                                        </ReactMarkdown>
-                                    </div>
-                                    {!isFlipped && (
-                                        <div className="mt-12 text-zinc-500 text-xs animate-pulse tracking-widest font-mono">TOQUE PARA REVELAR</div>
-                                    )}
-                                </div>
-                            </div>
-                        </motion.div>
-                    </AnimatePresence>
-                </div>
+                            {/* Inner Glow */}
+                            <div className={`absolute inset-0 bg-gradient-to-br pointer-events-none transition-opacity duration-500 ${isFlipped ? 'from-blue-500/5 to-transparent opacity-100' : 'from-white/5 to-transparent opacity-50 group-hover:opacity-100'
+                                }`} />
 
-                {/* Controls */}
-                <div className="border-t border-white/5 bg-black/40 backdrop-blur-xl">
-                    {isFlipped ? (
-                        <div className="grid grid-cols-4 h-24 divide-x divide-white/5">
-                            <button onClick={(e) => { e.stopPropagation(); handleReview(1); }} className="group hover:bg-red-500/20 transition-all flex flex-col items-center justify-center gap-1.5 relative overflow-hidden">
-                                <div className="absolute inset-0 bg-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                <span className="text-red-400 font-bold text-sm group-hover:scale-110 transition-transform uppercase tracking-wider">Errei</span>
-                                <span className="text-[10px] text-red-300/50 font-mono">AGORA</span>
-                            </button>
-                            <button onClick={(e) => { e.stopPropagation(); handleReview(3); }} className="group hover:bg-orange-500/20 transition-all flex flex-col items-center justify-center gap-1.5 relative overflow-hidden">
-                                <div className="absolute inset-0 bg-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                <span className="text-orange-400 font-bold text-sm group-hover:scale-110 transition-transform uppercase tracking-wider">Difícil</span>
-                                <span className="text-[10px] text-orange-300/50 font-mono">{getNextInterval(3)}</span>
-                            </button>
-                            <button onClick={(e) => { e.stopPropagation(); handleReview(4); }} className="group hover:bg-blue-500/20 transition-all flex flex-col items-center justify-center gap-1.5 relative overflow-hidden">
-                                <div className="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                <span className="text-blue-400 font-bold text-sm group-hover:scale-110 transition-transform uppercase tracking-wider">Bom</span>
-                                <span className="text-[10px] text-blue-300/50 font-mono">{getNextInterval(4)}</span>
-                            </button>
-                            <button onClick={(e) => { e.stopPropagation(); handleReview(5); }} className="group hover:bg-emerald-500/20 transition-all flex flex-col items-center justify-center gap-1.5 relative overflow-hidden">
-                                <div className="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                <span className="text-emerald-400 font-bold text-sm group-hover:scale-110 transition-transform uppercase tracking-wider">Fácil</span>
-                                <span className="text-[10px] text-emerald-300/50 font-mono">{getNextInterval(5)}</span>
-                            </button>
+                            <div className="flex-1 p-10 md:p-16 overflow-y-auto custom-scrollbar flex flex-col items-center justify-center text-center relative z-10">
+
+                                <span className={`text-[10px] font-bold uppercase tracking-[0.2em] mb-12 px-4 py-1.5 rounded-full border ${isFlipped
+                                        ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                                        : 'bg-white/5 border-white/10 text-zinc-500'
+                                    }`}>
+                                    {isFlipped ? 'Resposta' : 'Pergunta'}
+                                </span>
+
+                                <div className={`prose prose-invert prose-2xl max-w-none transition-all duration-500 ${isFlipped ? 'text-white drop-shadow-sm' : 'text-zinc-200'}`}>
+                                    <ReactMarkdown>
+                                        {isFlipped ? currentItem.content.back : currentItem.content.front}
+                                    </ReactMarkdown>
+                                </div>
+
+                                {!isFlipped && (
+                                    <div className="absolute bottom-12 left-1/2 -translate-x-1/2 text-zinc-600 text-xs font-bold uppercase tracking-[0.2em] flex items-center gap-2 opacity-50 bg-black/20 px-4 py-2 rounded-full backdrop-blur-sm">
+                                        <HelpCircle size={14} /> Toque para revelar
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                    ) : (
-                        <button
-                            onClick={() => setIsFlipped(true)}
-                            className="h-24 w-full hover:bg-white/5 text-zinc-400 hover:text-white font-bold tracking-[0.2em] uppercase text-sm transition-all flex items-center justify-center gap-4 group"
-                        >
-                            <span className="group-hover:translate-x-1 transition-transform">Mostrar Resposta</span>
-                            <kbd className="hidden sm:inline-block px-2 py-1 bg-white/10 rounded text-[10px] text-zinc-400 font-mono border border-white/10">ESPAÇO</kbd>
-                        </button>
-                    )}
+                    </motion.div>
+                </AnimatePresence>
+            </div>
+
+            {/* Controls */}
+            <div className={`w-full max-w-2xl mt-8 transition-all duration-500 ${isFlipped ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
+                <div className="grid grid-cols-4 gap-3 bg-black/40 backdrop-blur-xl p-2 rounded-3xl border border-white/10 shadow-2xl">
+                    <button
+                        onClick={() => handleReview(1)}
+                        className="group flex flex-col items-center justify-center py-4 rounded-2xl hover:bg-red-500/20 transition-all border border-transparent hover:border-red-500/20"
+                    >
+                        <span className="text-zinc-400 group-hover:text-red-400 font-bold text-xs uppercase tracking-widest mb-1 transition-colors">Errei</span>
+                        <span className="text-[10px] text-zinc-600 group-hover:text-red-300/70 font-mono">Agora</span>
+                    </button>
+
+                    <button
+                        onClick={() => handleReview(3)}
+                        className="group flex flex-col items-center justify-center py-4 rounded-2xl hover:bg-amber-500/20 transition-all border border-transparent hover:border-amber-500/20"
+                    >
+                        <span className="text-zinc-400 group-hover:text-amber-400 font-bold text-xs uppercase tracking-widest mb-1 transition-colors">Difícil</span>
+                        <span className="text-[10px] text-zinc-600 group-hover:text-amber-300/70 font-mono">{getNextInterval(3)}</span>
+                    </button>
+
+                    <button
+                        onClick={() => handleReview(4)}
+                        className="group flex flex-col items-center justify-center py-4 rounded-2xl hover:bg-blue-500/20 transition-all border border-transparent hover:border-blue-500/20"
+                    >
+                        <span className="text-zinc-400 group-hover:text-blue-400 font-bold text-xs uppercase tracking-widest mb-1 transition-colors">Bom</span>
+                        <span className="text-[10px] text-zinc-600 group-hover:text-blue-300/70 font-mono">{getNextInterval(4)}</span>
+                    </button>
+
+                    <button
+                        onClick={() => handleReview(5)}
+                        className="group flex flex-col items-center justify-center py-4 rounded-2xl hover:bg-emerald-500/20 transition-all border border-transparent hover:border-emerald-500/20"
+                    >
+                        <span className="text-zinc-400 group-hover:text-emerald-400 font-bold text-xs uppercase tracking-widest mb-1 transition-colors">Fácil</span>
+                        <span className="text-[10px] text-zinc-600 group-hover:text-emerald-300/70 font-mono">{getNextInterval(5)}</span>
+                    </button>
                 </div>
             </div>
         </div>
