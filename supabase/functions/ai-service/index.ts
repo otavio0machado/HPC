@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { GoogleGenAI } from "https://esm.sh/@google/genai@0.1.1"
+import { GoogleGenAI } from "https://esm.sh/@google/genai"
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3"
 
 // CORS headers
 const corsHeaders = {
@@ -27,9 +28,18 @@ serve(async (req) => {
         // Initialize Gemini Client
         const sys = new GoogleGenAI({ apiKey: GEMINI_API_KEY })
 
+        // Initialize Supabase Client
+        const supabaseUrl = Deno.env.get('SUPABASE_URL') || ''
+        const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || Deno.env.get('SUPABASE_ANON_KEY') || ''
+        const supabase = createClient(supabaseUrl, supabaseKey)
+
+        // Get User ID from Auth Header
+        const { data: { user }, error: userError } = await supabase.auth.getUser(authHeader.replace('Bearer ', ''))
+        const userId = user?.id
+
         const { action, payload } = await req.json()
 
-        console.log(`Executing AI action: ${action}`)
+        console.log(`Executing AI action: ${action} for user: ${userId}`)
 
         let result;
 
@@ -68,7 +78,35 @@ serve(async (req) => {
                 throw new Error(`Unknown action: ${action}`)
         }
 
-        return new Response(JSON.stringify(result), {
+        // Unwrap usage metadata
+        const { usageMetadata, ...rest } = result || {};
+
+        const finalResponse = result?.result || rest;
+
+        // Log Usage
+        if (userId && usageMetadata) {
+            try {
+                const inputTokens = usageMetadata.promptTokenCount || 0;
+                const outputTokens = usageMetadata.candidatesTokenCount || 0;
+                // Cost estimation for Gemini 1.5 Flash (approximate)
+                // Input: $0.075 / 1M => 0.000000075 per token
+                // Output: $0.30 / 1M => 0.0000003 per token
+                const cost = (inputTokens * 0.000000075) + (outputTokens * 0.0000003);
+
+                await supabase.from('ai_usage_logs').insert({
+                    user_id: userId,
+                    action: action,
+                    model: 'gemini-1.5-flash',
+                    input_tokens: inputTokens,
+                    output_tokens: outputTokens,
+                    cost_estimated: cost
+                });
+            } catch (logMethodError) {
+                console.error("Failed to log usage:", logMethodError);
+            }
+        }
+
+        return new Response(JSON.stringify(finalResponse), {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
             status: 200,
         })
@@ -84,7 +122,7 @@ serve(async (req) => {
 
 // --- Handlers ---
 
-const STUDY_MODEL = "gemini-1.5-flash"
+const STUDY_MODEL = "gemini-2.5-flash"
 
 async function handleGenerateStudyPlan(ai: GoogleGenAI, { exam, subject, hoursPerDay }: any) {
     const prompt = `
@@ -129,16 +167,14 @@ async function handleGenerateStudyPlan(ai: GoogleGenAI, { exam, subject, hoursPe
         }
     })
 
-    return JSON.parse(response.text || '{}')
+    const text = response.text()
+    return {
+        ...JSON.parse(text || '{}'),
+        usageMetadata: response.usageMetadata
+    }
 }
 
-// Chat is a bit distinct because we need history, but Edge Functions are stateless.
-// For now, we will just generate the LAST reply based on full history sent by client.
-// This matches how 'sendMessage' works if we reconstruct the chat.
 async function handleTutorChat(ai: GoogleGenAI, { message, history, subject }: any) {
-    // history comes as [{role: 'user', parts: [{text: '...'}]}, ...]
-    // We need to initialize a chat session
-
     const systemInstruction = `
     Você é um Professor Particular de Elite especializado em ${subject} para pré-vestibulares (ENEM e UFRGS).
     Seu tom é encorajador, porém extremamente técnico e focado em alta performance.
@@ -152,11 +188,6 @@ async function handleTutorChat(ai: GoogleGenAI, { message, history, subject }: a
     6. IMPORTANTE: Para fórmulas matemáticas, use SEMPRE formato LaTeX envolto em cifrões ($ e $$).
   `
 
-    // We act as if we are creating a new chat and sending the last message
-    // But strictly speaking, the SDK 'sendMessage' expects an existing session.
-    // We can just use generateContent with the full history appended with system instruction.
-
-    // Actually, constructing the request manually is safer for stateless usage.
     const contents = [...(history || [])]
     if (message) {
         contents.push({ role: 'user', parts: [{ text: message }] })
@@ -170,7 +201,10 @@ async function handleTutorChat(ai: GoogleGenAI, { message, history, subject }: a
         }
     })
 
-    return { text: response.text }
+    return {
+        text: response.text,
+        usageMetadata: response.usageMetadata
+    }
 }
 
 async function handleAnalyzeExam(ai: GoogleGenAI, { simulado }: any) {
@@ -193,7 +227,10 @@ async function handleAnalyzeExam(ai: GoogleGenAI, { simulado }: any) {
         model: STUDY_MODEL,
         contents: prompt
     })
-    return { text: response.text }
+    return {
+        text: response.text,
+        usageMetadata: response.usageMetadata
+    }
 }
 
 async function handleAnalyzeNote(ai: GoogleGenAI, { content }: any) {
@@ -221,7 +258,11 @@ async function handleAnalyzeNote(ai: GoogleGenAI, { content }: any) {
             }
         }
     })
-    return JSON.parse(response.text || '{}')
+    const text = response.text()
+    return {
+        ...JSON.parse(text || '{}'),
+        usageMetadata: response.usageMetadata
+    }
 }
 
 async function handleGenerateFlashcards(ai: GoogleGenAI, { content }: any) {
@@ -251,7 +292,11 @@ async function handleGenerateFlashcards(ai: GoogleGenAI, { content }: any) {
             }
         }
     })
-    return JSON.parse(response.text || '[]')
+    const text = response.text()
+    return {
+        result: JSON.parse(text || '[]'),
+        usageMetadata: response.usageMetadata
+    }
 }
 
 async function handleRefineText(ai: GoogleGenAI, { text, instruction }: any) {
@@ -274,7 +319,10 @@ async function handleRefineText(ai: GoogleGenAI, { text, instruction }: any) {
         model: STUDY_MODEL,
         contents: prompt
     })
-    return { text: response.text?.trim() }
+    return {
+        text: response.text?.trim(),
+        usageMetadata: response.usageMetadata
+    }
 }
 
 async function handleAnalyzeErrorImage(ai: GoogleGenAI, { imageBase64 }: any) {
@@ -321,7 +369,11 @@ async function handleAnalyzeErrorImage(ai: GoogleGenAI, { imageBase64 }: any) {
             }
         }
     })
-    return JSON.parse(response.text || '{}')
+    const text = response.text()
+    return {
+        ...JSON.parse(text || '{}'),
+        usageMetadata: response.usageMetadata
+    }
 }
 
 async function handleGenerateNoteContent(ai: GoogleGenAI, { topic }: any) {
@@ -334,7 +386,10 @@ async function handleGenerateNoteContent(ai: GoogleGenAI, { topic }: any) {
         model: STUDY_MODEL,
         contents: prompt
     })
-    return { text: response.text }
+    return {
+        text: response.text,
+        usageMetadata: response.usageMetadata
+    }
 }
 
 async function handleGenerateExams(ai: GoogleGenAI, { config }: any) {
@@ -347,8 +402,6 @@ async function handleGenerateExams(ai: GoogleGenAI, { config }: any) {
         
         Retorne JSON Array.
     `
-    // Note: Implementing full schema here is verbose, simplifying for brevity but maintaining structure is key.
-    // For this implementation, I'll rely on the schema definition to enforce structure.
     const response = await ai.models.generateContent({
         model: STUDY_MODEL,
         contents: prompt,
@@ -373,20 +426,14 @@ async function handleGenerateExams(ai: GoogleGenAI, { config }: any) {
         }
     })
 
-    // Inject subject into response as the original service did
     const questions = JSON.parse(response.text || '[]');
-    return questions.map((q: any) => ({ ...q, subject: config.area }));
+    return {
+        result: questions.map((q: any) => ({ ...q, subject: config.area })),
+        usageMetadata: response.usageMetadata
+    }
 }
 
 async function handleGeneratePills(ai: GoogleGenAI, { text, userPrompt, pageCount }: any) {
-    // Limited implementation for brevity. In deployed function, we should ideally handle chunking via repeated calls or ensure payload is small enough.
-    // Edge Functions have 6MB payload limits and timeouts. Heavy processing like 200 pages usually hits timeout.
-    // For this fix, we will implement a simplified single-chunk version or assume text is pre-chunked by client (better).
-    // HOWEVER, to be safe, let's just process the first chunk here or rely on the client to loop.
-    // The previous client-side service did the looping.
-
-    // We will support a single chunk processing per call.
-
     const prompt = userPrompt ?
         `Instrução: ${userPrompt}. Gere Pílulas de Conhecimento JSON para este texto: ${text.substring(0, 30000)}` :
         `Gere Pílulas de Conhecimento JSON para este texto: ${text.substring(0, 30000)}`;
@@ -412,5 +459,8 @@ async function handleGeneratePills(ai: GoogleGenAI, { text, userPrompt, pageCoun
         }
     })
 
-    return JSON.parse(response.text || '[]')
+    return {
+        result: JSON.parse(response.text || '[]'),
+        usageMetadata: response.usageMetadata
+    }
 }
