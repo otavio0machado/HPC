@@ -1,13 +1,13 @@
 
 import { GoogleGenAI } from "@google/genai";
 
-const key = "AIzaSyDyp56-0B2iszL7Exe7LVlzEBYhwLgGvdA";
-console.log("Testing model: gemini-3-flash");
+const key = process.env.GEMINI_API_KEY || "AIzaSyDyp56-0B2iszL7Exe7LVlzEBYhwLgGvdA";
+console.log("Testing model: gemini-2.0-flash");
 
 try {
     const ai = new GoogleGenAI({ apiKey: key });
     const response = await ai.models.generateContent({
-        model: "gemini-3-flash",
+        model: "gemini-2.0-flash",
         contents: "Hello",
     });
     console.log("Success:", response.text);

@@ -31,10 +31,10 @@ export const flashcardService = {
             front: card.front,
             back: card.back,
             folderPath: card.folder_path || [],
-            nextReview: Number(card.next_review),
-            interval: card.interval,
-            ease: card.ease,
-            repetitions: card.repetitions
+            nextReview: Number(card.next_review) || 0,
+            interval: Number(card.interval) || 1,
+            ease: Number(card.ease) || 2.5,
+            repetitions: Number(card.repetitions) || 0
         }));
     },
 
@@ -66,11 +66,11 @@ export const flashcardService = {
             id: data.id,
             front: data.front,
             back: data.back,
-            folderPath: data.folder_path,
-            nextReview: Number(data.next_review),
-            interval: data.interval,
-            ease: data.ease,
-            repetitions: data.repetitions
+            folderPath: data.folder_path || [],
+            nextReview: Number(data.next_review) || 0,
+            interval: Number(data.interval) || 1,
+            ease: Number(data.ease) || 2.5,
+            repetitions: Number(data.repetitions) || 0
         };
     },
 

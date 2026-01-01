@@ -4,11 +4,9 @@ import { flashcardService, Flashcard } from '../services/flashcardService';
 import { Dashboard } from './flashcards/Dashboard';
 import SmartReview from './flashcards/SmartReview';
 import { CreateCardModal } from './flashcards/CreateCardModal';
+import { CreateFolderModal } from './flashcards/CreateFolderModal';
+import { CreateFlashcardsWithAIModal } from './flashcards/CreateFlashcardsWithAIModal';
 import { SmartReviewItem } from '../services/reviewService';
-
-// --- SM-2 Constants ---
-const MIN_EASE = 1.3;
-const INITIAL_EASE = 2.5;
 
 interface DeckStats {
   name: string;
@@ -29,6 +27,9 @@ const Flashcards: React.FC = () => {
 
   // --- Modals ---
   const [isCardModalOpen, setIsCardModalOpen] = useState(false);
+  const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
+  const [isAIModalOpen, setIsAIModalOpen] = useState(false);
+  const [initialCreatePath, setInitialCreatePath] = useState<string | undefined>(undefined);
 
   // --- Data Loading ---
   useEffect(() => {
@@ -41,7 +42,8 @@ const Flashcards: React.FC = () => {
       const fetched = await flashcardService.fetchFlashcards();
       setCards(fetched);
     } catch (e) {
-      toast.error("Erro ao carregar flashcards.");
+      toast.error("Erro ao carregas flashcards.");
+      setCards([]); // Clear on error or keep? Safe to clear or keep old.
     } finally {
       setIsLoading(false);
     }
@@ -124,6 +126,21 @@ const Flashcards: React.FC = () => {
     }
   };
 
+  const handleBatchCreate = async (newCards: Partial<Flashcard>[]) => {
+    try {
+      let createdCount = 0;
+      for (const card of newCards) {
+        await flashcardService.createFlashcard(card as any);
+        createdCount++;
+      }
+      toast.success(`${createdCount} cards criados com sucesso!`);
+      loadCards();
+    } catch (e) {
+      toast.error("Erro ao criar cards em lote.");
+      console.error(e);
+    }
+  };
+
   // Deprecated local handler, logic moved to SmartReview/Service, but we need to refresh cards on exit
   const handleSessionExit = () => {
     setView('dashboard');
@@ -141,8 +158,9 @@ const Flashcards: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="h-full flex items-center justify-center bg-zinc-950 text-zinc-500 animate-pulse">
-        Carregando Flashcards...
+      <div className="flex flex-col items-center justify-center h-full text-zinc-500 animate-pulse font-light tracking-widest uppercase text-xs gap-4">
+        <div className="w-12 h-12 rounded-full border-2 border-white/10 border-t-blue-500 animate-spin" />
+        Carregando Biblioteca...
       </div>
     );
   }
@@ -155,6 +173,50 @@ const Flashcards: React.FC = () => {
       />
     );
   }
+
+  // Helper to check subpath
+  const isSubPath = (fullPath: string[], prefix: string[]) => {
+    if (fullPath.length < prefix.length) return false;
+    for (let i = 0; i < prefix.length; i++) {
+      if (fullPath[i] !== prefix[i]) return false;
+    }
+    return true;
+  }
+
+  const handleMoveFolder = async (sourcePath: string[], targetPath: string[]) => {
+    // 1. Identify all cards that need to be moved
+    const updates: Flashcard[] = [];
+
+    for (const card of cards) {
+      if (isSubPath(card.folderPath, sourcePath)) {
+        // Calculate new path
+        // We keep the last segment of the sourcePath (the folder name itself)
+        // and append everything after it from the card's path.
+        // e.g. Move ['A', 'Sub'] to ['B']
+        // Card ['A', 'Sub', 'Doc'] -> ['B', 'Sub', 'Doc']
+        // sourcePath.length = 2. slice(1) -> ['Sub', 'Doc']
+
+        const relativePath = card.folderPath.slice(sourcePath.length - 1);
+        const newPath = [...targetPath, ...relativePath];
+
+        updates.push({ ...card, folderPath: newPath });
+      }
+    }
+
+    if (updates.length === 0) return;
+
+    // 2. Optimistic Update (Optional, but good for UI)
+    // For now we just wait for the server
+
+    try {
+      await flashcardService.batchUpdateFlashcards(updates);
+      toast.success("Pasta movida com sucesso!");
+      loadCards();
+    } catch (e) {
+      console.error(e);
+      toast.error("Erro ao mover pasta.");
+    }
+  };
 
   return (
     <>
@@ -169,19 +231,67 @@ const Flashcards: React.FC = () => {
             startStudySession(undefined);
           }
         }}
-        onCreateCard={() => setIsCardModalOpen(true)}
-        onCreateFolder={() => {
-          toast.info("Crie um card para inaugurar uma nova pasta");
+        onCreateCard={(path) => {
+          setInitialCreatePath(path);
           setIsCardModalOpen(true);
         }}
+        onCreateFolder={(path) => {
+          setInitialCreatePath(path);
+          setIsFolderModalOpen(true);
+        }}
+        onCreateAI={(path) => {
+          setInitialCreatePath(path);
+          setIsAIModalOpen(true);
+        }}
+        onMoveFolder={handleMoveFolder}
         onFilter={() => { }}
       />
 
       {isCardModalOpen && (
         <CreateCardModal
           decks={knownPaths}
+          initialDeck={initialCreatePath}
           onClose={() => setIsCardModalOpen(false)}
           onCreate={handleCreateCard}
+        />
+      )}
+
+      {isFolderModalOpen && (
+        <CreateFolderModal
+          parentPath={initialCreatePath ? initialCreatePath.split('/').map(s => s.trim()).filter(Boolean) : []}
+          onClose={() => setIsFolderModalOpen(false)}
+          onCreate={async (name) => {
+            const safeParent = initialCreatePath ? initialCreatePath.split('/').map(s => s.trim()).filter(Boolean) : [];
+            const newPath = [...safeParent, name.trim()];
+
+            try {
+              // Direct service call to avoid "Card Created" toast from handleCreateCard
+              await flashcardService.createFlashcard({
+                front: '[[FOLDER_MARKER]]',
+                back: '[[FOLDER_MARKER]]',
+                folderPath: newPath,
+                nextReview: 0,
+                interval: 0,
+                ease: 2.5,
+                repetitions: 0
+              } as any);
+
+              toast.success("Pasta criada com sucesso!");
+              loadCards(); // Refresh UI
+            } catch (e) {
+              console.error(e);
+              toast.error("Erro ao criar pasta");
+            }
+          }}
+        />
+      )}
+
+      {isAIModalOpen && (
+        <CreateFlashcardsWithAIModal
+          decks={knownPaths}
+          initialDeck={initialCreatePath}
+          onClose={() => setIsAIModalOpen(false)}
+          onBatchCreate={handleBatchCreate}
         />
       )}
     </>

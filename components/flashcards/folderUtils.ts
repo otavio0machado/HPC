@@ -33,9 +33,13 @@ export const buildFolderTree = (cards: Flashcard[]): FolderNode => {
 
         // Traverse path
         const path = card.folderPath || [];
-        // If path is empty, it goes to root cards
+
+        // Check for Marker
+        const isMarker = card.front === '[[FOLDER_MARKER]]' || card.back === '[[FOLDER_MARKER]]';
+
+        // If path is empty and it's not a marker (markers usu. have path), or if root cards
         if (path.length === 0) {
-            root.cards.push(card);
+            if (!isMarker) root.cards.push(card);
             return;
         }
 
@@ -51,17 +55,25 @@ export const buildFolderTree = (cards: Flashcard[]): FolderNode => {
                 });
             }
             currentNode = currentNode.children.get(folderName)!;
-            updateNodeStats(currentNode, card);
+            // Only update stats if NOT a marker
+            if (!isMarker) {
+                updateNodeStats(currentNode, card);
+            }
         });
 
-        // Add card to the leaf folder
-        currentNode.cards.push(card);
+        // Add card to the leaf folder ONLY if not marker
+        if (!isMarker) {
+            currentNode.cards.push(card);
+        }
     });
 
     return root;
 };
 
 const updateNodeStats = (node: FolderNode, card: Flashcard) => {
+    // Safety check for marker, though parent loop handles it
+    if (card.front === '[[FOLDER_MARKER]]') return;
+
     node.stats.total++;
     if (card.nextReview <= Date.now()) {
         node.stats.due++;

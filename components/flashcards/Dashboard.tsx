@@ -1,12 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import {
     Play, Clock, Plus, FolderPlus,
-    folder as FolderIcon, ChevronRight, ArrowLeft,
+    Folder as FolderIcon, ChevronRight, ArrowLeft,
     Layers, TrendingUp, Sparkles, MoreHorizontal,
     GraduationCap, BookOpen, Quote
 } from 'lucide-react';
 import { Flashcard } from '../../services/flashcardService';
 import { buildFolderTree, getFolderByPath } from './folderUtils';
+import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface DeckStats {
@@ -22,9 +23,11 @@ interface DashboardProps {
     decks: DeckStats[];
     revisionQueue: Flashcard[];
     onStartSession: (deckName?: string) => void;
-    onCreateCard: () => void;
-    onCreateFolder: () => void;
+    onCreateCard: (initialPath?: string) => void;
+    onCreateFolder: (initialPath?: string) => void;
+    onMoveFolder: (sourcePath: string[], targetPath: string[]) => void;
     onFilter: () => void;
+    onCreateAI: (initialPath?: string) => void;
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({
@@ -33,10 +36,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
     onStartSession,
     onCreateCard,
     onCreateFolder,
+    onMoveFolder,
+    onCreateAI,
 }) => {
     // Tree Navigation State
     const [currentPath, setCurrentPath] = useState<string[]>([]);
     const [hoveredFolder, setHoveredFolder] = useState<string | null>(null);
+    const [dragTarget, setDragTarget] = useState<string | null>(null);
 
     const folderTree = useMemo(() => buildFolderTree(cards), [cards]);
     const currentFolder = useMemo(() => getFolderByPath(folderTree, currentPath) || folderTree, [folderTree, currentPath]);
@@ -45,9 +51,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
     // Calculate folder-specific stats 
     const currentFolderStats = useMemo(() => {
-        // Recursive count for the current view
-        // Ideally these should come from the FolderNode helpers if available, 
-        // but for now we rely on the tree structure passed down or simple visual cues
+        // ... (same as before)
         return {
             totalCards: currentFolder.cards.length + Array.from(currentFolder.children.values()).reduce((acc, child) => acc + child.stats.total, 0),
             dueCards: currentFolder.cards.filter(c => c.nextReview <= Date.now()).length + Array.from(currentFolder.children.values()).reduce((acc, child) => acc + child.stats.due, 0)
@@ -66,6 +70,59 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
     const handleBreadcrumbClick = (index: number) => {
         setCurrentPath(currentPath.slice(0, index + 1));
+    };
+
+    // --- Drag and Drop Handlers ---
+    const handleDragStart = (e: React.DragEvent, path: string[]) => {
+        e.dataTransfer.setData('sourcePath', JSON.stringify(path));
+        e.dataTransfer.effectAllowed = 'move';
+    };
+
+    const handleDragOver = (e: React.DragEvent, folderName: string) => {
+        e.preventDefault(); // Necessary to allow dropping
+        e.stopPropagation();
+        setDragTarget(folderName);
+    };
+
+    const handleDragLeave = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        // Only clear if we are leaving the element, might be tricky with children
+        // A simple way is to clear it when dropping or ending
+        // For now, we rely on dragEnter/Over updates. 
+        // If we leave the container, we might want to clear.
+        // But 'dragleave' fires when entering a child.
+    };
+
+    const handleDrop = (e: React.DragEvent, targetName: string) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragTarget(null);
+
+        const sourcePathStr = e.dataTransfer.getData('sourcePath');
+        if (!sourcePathStr) return;
+
+        try {
+            const sourcePath = JSON.parse(sourcePathStr) as string[];
+            const targetPath = [...currentPath, targetName];
+
+            // 1. Prevent dropping into itself
+            // If targetPath equals sourcePath
+            if (sourcePath.join('/') === targetPath.join('/')) return;
+
+            // 2. Prevent dropping into a child of itself
+            // If targetPath starts with sourcePath
+            const startsWithSource = sourcePath.every((part, i) => targetPath[i] === part);
+            if (startsWithSource && targetPath.length > sourcePath.length) {
+                toast.error("Não é possível mover uma pasta para dentro dela mesma.");
+                return;
+            }
+
+            onMoveFolder(sourcePath, targetPath);
+
+        } catch (err) {
+            console.error("Drop error", err);
+        }
     };
 
     // Sorted children folders
@@ -110,7 +167,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
                 <div className="flex items-center gap-3">
                     <button
-                        onClick={onCreateFolder}
+                        onClick={() => onCreateFolder(currentPath.length > 0 ? currentPath.join(' / ') : undefined)}
                         className="group relative px-5 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold uppercase tracking-widest text-zinc-400 hover:text-white transition-all overflow-hidden"
                     >
                         <span className="relative z-10 flex items-center gap-2">
@@ -119,7 +176,16 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     </button>
 
                     <button
-                        onClick={onCreateCard}
+                        onClick={() => onCreateAI(currentPath.length > 0 ? currentPath.join(' / ') : undefined)}
+                        className="group relative px-6 py-2.5 rounded-full bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(168,85,247,0.3)] hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] border border-white/20 active:scale-95 ml-2"
+                    >
+                        <span className="flex items-center gap-2">
+                            <Sparkles size={16} strokeWidth={2} /> Criar com IA
+                        </span>
+                    </button>
+
+                    <button
+                        onClick={() => onCreateCard(currentPath.length > 0 ? currentPath.join(' / ') : undefined)}
                         className="group relative px-6 py-2.5 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] border border-white/20 active:scale-95"
                     >
                         <span className="flex items-center gap-2">
@@ -165,7 +231,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
                         <div className="flex items-center gap-4 w-full md:w-auto">
                             <button
-                                onClick={() => onStartSession(currentPath.length > 0 ? currentPath[0] : undefined)}
+                                onClick={() => onStartSession(currentPath.length > 0 ? currentPath.join('/') : undefined)}
                                 disabled={totalDue === 0}
                                 className="w-full md:w-auto px-8 py-4 bg-white text-black hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed rounded-2xl font-bold text-sm uppercase tracking-wider shadow-[0_0_30px_rgba(255,255,255,0.15)] flex items-center justify-center gap-3 transition-transform active:scale-[0.98]"
                             >
@@ -192,7 +258,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         <React.Fragment key={folder + index}>
                             <ChevronRight size={14} className="text-zinc-700 flex-shrink-0" />
                             <button
-                                onClick={() => handleBreadcrumbClick(index)}
+                                onClick={() => handleBreadcrumbClick(index)} // Fixed Drop: onDrop here? Maybe later.
                                 className="px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-sm font-medium text-zinc-300 hover:text-white hover:bg-white/10 hover:border-white/10 transition-all whitespace-nowrap"
                             >
                                 {folder}
@@ -205,6 +271,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 {currentPath.length > 0 && (
                     <button
                         onClick={handleNavigateUp}
+                        // Add drop on back button? A bit complex UI wise.
                         className="mb-4 flex items-center gap-2 text-zinc-500 hover:text-white px-2 transition-colors text-sm font-medium group"
                     >
                         <div className="p-1 rounded-full bg-white/5 group-hover:bg-white/10 transition-colors">
@@ -216,6 +283,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
                 {/* Grid View of Folders/Cards */}
                 <motion.div
+                    key={currentPath.join('/') + '-' + cards.length}
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"
@@ -226,11 +294,21 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         <motion.div
                             key={folderNode.name}
                             variants={itemVariants}
-                            layoutId={`folder-${folderNode.name}`}
+                            draggable
+                            onDragStart={(e) => handleDragStart(e as any, folderNode.fullPath)} // Cast needed for Framer motion div occasionally? 
+                            // Actually motion.div props include standard HTML attributes but Typescript might be fuzzy.
+                            onDragOver={(e) => handleDragOver(e as any, folderNode.name)}
+                            onDragLeave={(e) => {
+                                if (dragTarget === folderNode.name) {
+                                    setDragTarget(null);
+                                }
+                            }}
+                            onDrop={(e) => handleDrop(e as any, folderNode.name)}
                             onClick={() => handleNavigate(folderNode.name)}
                             onMouseEnter={() => setHoveredFolder(folderNode.name)}
                             onMouseLeave={() => setHoveredFolder(null)}
-                            className="group relative h-48 rounded-3xl bg-zinc-900/40 border border-white/5 hover:border-white/20 p-6 flex flex-col justify-between cursor-pointer overflow-hidden backdrop-blur-md transition-all hover:bg-white/[0.02]"
+                            className={`group relative h-48 rounded-3xl bg-zinc-900/40 border p-6 flex flex-col justify-between cursor-pointer overflow-hidden backdrop-blur-md transition-all 
+                                ${dragTarget === folderNode.name ? 'border-blue-500 bg-blue-500/10 scale-105 shadow-xl shadow-blue-500/20' : 'border-white/5 hover:border-white/20 hover:bg-white/[0.02]'}`}
                         >
                             {/* Hover Highlight */}
                             <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -239,14 +317,26 @@ export const Dashboard: React.FC<DashboardProps> = ({
                                 <div className="p-3 bg-white/5 rounded-2xl border border-white/5 text-blue-400 group-hover:text-blue-300 group-hover:bg-blue-500/20 group-hover:border-blue-500/30 transition-all shadow-sm">
                                     <BookOpen size={24} />
                                 </div>
-                                {folderNode.stats.due > 0 && (
-                                    <div className="px-2.5 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-bold">
-                                        {folderNode.stats.due} DUE
-                                    </div>
-                                )}
+                                <div className="flex flex-col items-end gap-2">
+                                    {folderNode.stats.due > 0 && (
+                                        <div className="px-2.5 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-bold">
+                                            {folderNode.stats.due} DUE
+                                        </div>
+                                    )}
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            onStartSession(folderNode.fullPath.join('/'));
+                                        }}
+                                        className="p-2 rounded-full bg-white/10 hover:bg-blue-500 text-zinc-400 hover:text-white transition-all opacity-0 group-hover:opacity-100 transform scale-90 hover:scale-105"
+                                        title="Revisar esta pasta"
+                                    >
+                                        <Play size={14} fill="currentColor" />
+                                    </button>
+                                </div>
                             </div>
 
-                            <div className="relative z-10 space-y-1">
+                            <div className="relative z-10 space-y-1 mt-2">
                                 <h3 className="text-xl font-medium text-zinc-200 group-hover:text-white transition-colors truncate">
                                     {folderNode.name}
                                 </h3>
@@ -307,7 +397,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                             <p className="text-lg font-medium text-zinc-400 mb-2">Esta pasta está vazia</p>
                             <p className="text-sm mb-6 max-w-xs text-center">Comece criando uma nova pasta ou adicionando cards aqui.</p>
                             <button
-                                onClick={onCreateCard}
+                                onClick={() => onCreateCard(currentPath.length > 0 ? currentPath.join(' / ') : undefined)}
                                 className="text-blue-400 hover:text-blue-300 text-sm font-bold uppercase tracking-wider flex items-center gap-2 transition-colors"
                             >
                                 <Plus size={14} /> Criar Primeiro Card

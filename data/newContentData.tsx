@@ -21,7 +21,8 @@ export interface Lesson {
     title: string;
     duration: string;
     status: 'Locked' | 'In Progress' | 'Completed';
-    content?: React.ReactNode; // For the actual lesson content
+    content?: React.ReactNode; // Legacy support
+    contentId?: string; // New lazy loading ID
 }
 
 export interface Module {
@@ -83,87 +84,7 @@ export const COURSES_DATA: Course[] = [
                         title: 'Modelos Atômicos e Evolução',
                         duration: '45m',
                         status: 'In Progress',
-                        content: (
-                            <div className="space-y-8" >
-                                <div className="prose prose-invert max-w-none">
-                                    <h2 className="text-2xl font-bold text-emerald-400"> 1. Introdução e Definição</ h2 >
-                                    <p className="text-zinc-400 leading-relaxed" >
-                                        A evolução dos Modelos Atômicos é a espinha dorsal da Química.Não se trata apenas de memorizar nomes de cientistas, mas de compreender como a humanidade passou de uma ideia filosófica abstrata para uma descrição matemática e probabilística da matéria.
-                                    </p>
-                                    < p className="text-zinc-400 leading-relaxed" >
-                                        Definimos < strong > "Modelo Atômico" </strong> não como a verdade absoluta e imutável de como um átomo se parece, mas como uma representação teórica capaz de explicar os fenômenos observados experimentalmente em uma determinada época. Um modelo só é substituído quando falha em explicar uma nova descoberta. Portanto, estudar Dalton, Thomson, Rutherford e Bohr é estudar a história do método científico aplicado à constituição fundamental do universo: o átomo. Esta base é crucial para entender ligações químicas, eletricidade e até a medicina nuclear.
-                                    </p>
-
-                                    < h2 className="text-2xl font-bold text-emerald-400 mt-8" > 2. Contexto Histórico e Científico </h2>
-                                    < p className="text-zinc-400 leading-relaxed" >
-                                        A ideia de átomo nasceu na Grécia Antiga(séc.V a.C.) com os filósofos Leucipo e Demócrito.Eles propuseram que, se dividíssemos a matéria sucessivamente, chegaríamos a uma partícula indivisível(a - tomo = sem partes).Contudo, isso era pura filosofia, sem base experimental.Durante mais de 2000 anos, essa ideia ficou adormecida, ofuscada pela teoria dos quatro elementos de Aristóteles.
-                                    </p>
-                                    < p className="text-zinc-400 leading-relaxed" >
-                                        A retomada científica ocorreu apenas no início do século XIX.O mundo estava vivendo a Revolução Industrial e o nascimento da Química moderna com Lavoisier.Os cientistas precisavam explicar por que as massas se conservavam nas reações e por que os elementos se combinavam em proporções fixas.
-                                    </p>
-                                    < div className="bg-white/5 p-4 rounded-xl border-l-4 border-emerald-500 my-6" >
-                                        <p className="text-sm text-zinc-300 italic">
-                                            "Mais tarde, no final do século XIX e início do XX, a descoberta da eletricidade e da radioatividade quebrou a física clássica... Essas perguntas forçaram a evolução dos modelos."
-                                        </p>
-                                    </div>
-
-                                    < h2 className="text-2xl font-bold text-emerald-400 mt-8" > 3. Características Fundamentais e Análise Técnica</ h2 >
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-6" >
-                                        <div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5" >
-                                            <h3 className="text-xl font-bold text-white mb-2" > A.Modelo de Dalton(1808) </h3>
-                                            < div className="text-sm text-zinc-400 space-y-2" >
-                                                <p><strong className="text-emerald-300" > Apelido: </strong> Bola de Bilhar</p >
-                                                <p>Esfera maciça, indivisível, indestrutível e neutra.</p>
-                                                < p > <span className="text-red-400" > Falha: </span> Não explicava eletricidade/radioatividade.</p>
-                                            </div>
-                                        </div>
-                                        < div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5" >
-                                            <h3 className="text-xl font-bold text-white mb-2" > B.Modelo de Thomson(1897) </h3>
-                                            < div className="text-sm text-zinc-400 space-y-2" >
-                                                <p><strong className="text-emerald-300" > Apelido: </strong> Pudim de Passas</p >
-                                                <p>Esfera positiva com elétrons incrustados.Divisível! </p>
-                                                < p > <span className="text-red-400" > Falha: </span> Não explicava o espalhamento alfa (núcleo denso).</p >
-                                            </div>
-                                        </div>
-                                        < div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5" >
-                                            <h3 className="text-xl font-bold text-white mb-2" > C.Modelo de Rutherford(1911) </h3>
-                                            < div className="text-sm text-zinc-400 space-y-2" >
-                                                <p><strong className="text-emerald-300" > Apelido: </strong> Sistema Planetário</p >
-                                                <p>Núcleo denso e positivo, grandes vazios.</p>
-                                                < p > <span className="text-red-400" > Falha: </span> Instabilidade do elétron pela física clássica.</p >
-                                            </div>
-                                        </div>
-                                        < div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5" >
-                                            <h3 className="text-xl font-bold text-white mb-2" > D.Modelo de Bohr(1913) </h3>
-                                            < div className="text-sm text-zinc-400 space-y-2" >
-                                                <p><strong className="text-emerald-300" > Conceito: </strong> Níveis de Energia</p >
-                                                <p>Órbitas estacionárias e saltos quânticos.</p>
-                                                < p > <strong className="text-emerald-300" > Importância: </strong> Explicou espectros de emissão (cores).</p >
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    < h2 className="text-2xl font-bold text-emerald-400 mt-8" > 4. Estudo de Caso: O Experimento da Lâmina de Ouro </h2>
-                                    < p className="text-zinc-400 leading-relaxed" >
-                                        Imagine que o núcleo do átomo é uma bola de tênis no centro do Maracanã.A eletrosfera seria a arquibancada.Todo o resto é vazio.
-                                    </p>
-                                    < ul className="list-disc list-inside space-y-2 text-zinc-400 mt-2" >
-                                        <li>Rutherford bombardeou ouro com partículas alfa.</li>
-                                        < li > 99 % passaram direto(o átomo é vazio).</li>
-                                        < li > Algumas desviaram(repulsão do núcleo positivo).</li>
-                                    </ul>
-
-                                    < h2 className="text-2xl font-bold text-emerald-400 mt-8" > 5. Resumo "Para Levar"</ h2 >
-                                    <div className="bg-emerald-900/20 p-6 rounded-2xl border border-emerald-500/30 space-y-2 text-zinc-300" >
-                                        <p>✅ <strong>Dalton: </strong> Bola de bilhar, conservação de massa.</p >
-                                        <p>✅ <strong>Thomson: </strong> Pudim de passas, natureza elétrica.</p >
-                                        <p>✅ <strong>Rutherford: </strong> Sistema planetário, núcleo denso.</p >
-                                        <p>✅ <strong>Bohr: </strong> Níveis de energia, luz e fótons.</p >
-                                    </div>
-                                </div>
-                            </div>
-                        )
+                        contentId: 'chemistry_atomistica_modelos'
                     }
                 ]
             },
@@ -180,197 +101,7 @@ export const COURSES_DATA: Course[] = [
                         title: 'Tabela Periódica e Propriedades',
                         duration: '50m',
                         status: 'Locked',
-                        content: (
-                            <div className="space-y-8">
-                                {/* 1. Introduction */}
-                                <div className="prose prose-invert max-w-none">
-                                    <h2 className="text-2xl font-bold text-emerald-400">1. Introdução e Definição</h2>
-                                    <p className="text-zinc-400 leading-relaxed">
-                                        A <strong className="text-white">Tabela Periódica</strong> não é apenas um cartaz colorido na parede do laboratório; ela é o mapa rodoviário definitivo do universo químico. Ela organiza todos os 118 elementos conhecidos não de forma aleatória, mas baseada em uma lei fundamental: a <span className="text-emerald-300 italic">Lei da Periodicidade</span>.
-                                    </p>
-                                    <p className="text-zinc-400 leading-relaxed">
-                                        Definimos a Tabela Periódica moderna como a organização sistemática dos elementos em ordem crescente de <strong className="text-white">Número Atômico (Z)</strong>, de modo que elementos com propriedades químicas e físicas semelhantes se repetem em intervalos regulares (períodos).
-                                    </p>
-                                    <div className="bg-emerald-900/10 border-l-4 border-emerald-500 p-4 rounded-r-xl my-4">
-                                        <p className="text-emerald-200 text-sm italic">
-                                            "Para o estudante de alto desempenho, dominar a tabela não significa decorar nomes, mas sim entender a localização como uma ferramenta preditiva. Se você sabe onde o elemento está, você sabe como ele se comporta."
-                                        </p>
-                                    </div>
-                                </div>
-
-                                {/* 2. Historical Context */}
-                                <div>
-                                    <h2 className="text-2xl font-bold text-emerald-400 mb-4">2. Contexto Histórico e Científico</h2>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                        <div className="bg-zinc-900/50 p-5 rounded-2xl border border-white/5 hover:border-emerald-500/30 transition-colors">
-                                            <div className="text-emerald-500 font-black text-4xl mb-2 opacity-20">1800</div>
-                                            <h3 className="text-lg font-bold text-white mb-2">A "Loucura" Inicial</h3>
-                                            <p className="text-sm text-zinc-400">
-                                                Novos elementos eram descobertos constantemente, mas não havia lógica conectando-os. A química era uma coleção de fatos isolados.
-                                            </p>
-                                        </div>
-                                        <div className="bg-zinc-900/50 p-5 rounded-2xl border border-white/5 hover:border-emerald-500/30 transition-colors relative overflow-hidden group">
-                                            <div className="absolute inset-0 bg-emerald-500/5 group-hover:bg-emerald-500/10 transition-colors" />
-                                            <div className="text-emerald-500 font-black text-4xl mb-2 opacity-20">1869</div>
-                                            <h3 className="text-lg font-bold text-white mb-2">O Sonho de Mendeleev</h3>
-                                            <p className="text-sm text-zinc-400">
-                                                Organizou os elementos por <strong>Massa Atômica</strong>. Deixou espaços vazios para elementos ainda não descobertos (como o Germânio), prevendo suas propriedades com precisão.
-                                            </p>
-                                        </div>
-                                        <div className="bg-zinc-900/50 p-5 rounded-2xl border border-white/5 hover:border-emerald-500/30 transition-colors">
-                                            <div className="text-emerald-500 font-black text-4xl mb-2 opacity-20">1913</div>
-                                            <h3 className="text-lg font-bold text-white mb-2">A Correção de Moseley</h3>
-                                            <p className="text-sm text-zinc-400">
-                                                Reorganizou a tabela por <strong>Número Atômico (Z)</strong> (carga nuclear), corrigindo falhas na sequência de Mendeleev e consolidando a Tabela Moderna.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* 3. Fundamental Characteristics & Image */}
-                                <div className="space-y-6">
-                                    <h2 className="text-2xl font-bold text-emerald-400">3. Características Fundamentais e Análise Técnica</h2>
-
-                                    {/* Uploaded Image Display */}
-                                    <div className="rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-black/40 p-2">
-                                        <img
-                                            src="/assets/periodic_trends.png"
-                                            alt="Tendências da Tabela Periódica"
-                                            className="w-full h-auto rounded-2xl"
-                                        />
-                                        <p className="text-center text-xs text-zinc-500 mt-2 font-mono">Tendências: Raio Atômico, Eletronegatividade e Energia de Ionização</p>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                        <div className="space-y-4">
-                                            <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                                                <div className="w-2 h-8 bg-emerald-500 rounded-full" />
-                                                Anatomia
-                                            </h3>
-                                            <ul className="space-y-3">
-                                                <li className="bg-white/5 p-3 rounded-xl border border-white/5">
-                                                    <strong className="text-emerald-300 block text-xs uppercase tracking-wider mb-1">Períodos (Linhas)</strong>
-                                                    <span className="text-zinc-300 text-sm">São 7. Indicam o número de camadas eletrônicas. Ex: Sódio (3º período) = camadas K, L, M.</span>
-                                                </li>
-                                                <li className="bg-white/5 p-3 rounded-xl border border-white/5">
-                                                    <strong className="text-emerald-300 block text-xs uppercase tracking-wider mb-1">Famílias (Colunas)</strong>
-                                                    <span className="text-zinc-300 text-sm">São 18. Mesma configuração de valência ("sobrenome químico").</span>
-                                                </li>
-                                            </ul>
-                                        </div>
-
-                                        <div className="space-y-4">
-                                            <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                                                <div className="w-2 h-8 bg-blue-500 rounded-full" />
-                                                Principais Grupos
-                                            </h3>
-                                            <div className="grid grid-cols-2 gap-2 text-xs">
-                                                <div className="p-2 bg-red-500/10 text-red-200 rounded-lg border border-red-500/20">
-                                                    <strong>Metais Alcalinos (G1)</strong><br />Reativos, explodem na água.
-                                                </div>
-                                                <div className="p-2 bg-orange-500/10 text-orange-200 rounded-lg border border-orange-500/20">
-                                                    <strong>Alcalinoterrosos (G2)</strong><br />Terminam em ns².
-                                                </div>
-                                                <div className="p-2 bg-yellow-500/10 text-yellow-200 rounded-lg border border-yellow-500/20">
-                                                    <strong>Halogênios (G17)</strong><br />Geradores de sais, muito reativos.
-                                                </div>
-                                                <div className="p-2 bg-purple-500/10 text-purple-200 rounded-lg border border-purple-500/20">
-                                                    <strong>Gases Nobres (G18)</strong><br />Inertes, octeto completo.
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Trends Details */}
-                                <div className="bg-[#1A1B26] p-6 rounded-3xl border border-white/10 space-y-6">
-                                    <h3 className="text-xl font-bold text-white mb-4">As Propriedades Periódicas (O Coração da Matéria)</h3>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                        <div className="space-y-2">
-                                            <div className="flex items-center justify-between text-sm font-bold text-blue-300 border-b border-blue-500/30 pb-2">
-                                                <span>Raio Atômico</span>
-                                                <span>↙ (Baixo-Esquerda)</span>
-                                            </div>
-                                            <p className="text-xs text-zinc-400 leading-relaxed">
-                                                Aumenta para baixo (mais camadas) e para a esquerda (menor atração nuclear). <br />
-                                                <span className="text-white">Maior: Frâncio (Fr)</span><br />
-                                                <span className="text-white">Menor: Hélio (He)</span>
-                                            </p>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <div className="flex items-center justify-between text-sm font-bold text-amber-300 border-b border-amber-500/30 pb-2">
-                                                <span>Energia de Ionização</span>
-                                                <span>↗ (Cima-Direita)</span>
-                                            </div>
-                                            <p className="text-xs text-zinc-400 leading-relaxed">
-                                                Energia para arrancar um elétron. Inverso do raio. Quanto menor, mais difícil tirar.<br />
-                                                <span className="text-white">Maior EI: Hélio (He)</span>
-                                            </p>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <div className="flex items-center justify-between text-sm font-bold text-green-300 border-b border-green-500/30 pb-2">
-                                                <span>Eletronegatividade</span>
-                                                <span>↗ (Cima-Direita)</span>
-                                            </div>
-                                            <p className="text-xs text-zinc-400 leading-relaxed">
-                                                "Ganância" por elétrons. Gases nobres fora.<br />
-                                                <strong className="text-white">F &gt; O &gt; N &gt; Cl &gt; Br &gt; I &gt; S &gt; C &gt; P &gt; H</strong><br />
-                                                <span className="text-white">Rei: Flúor (F)</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* 4. Case Study */}
-                                <div className="space-y-4">
-                                    <h2 className="text-2xl font-bold text-emerald-400">4. Estudo de Caso: Duelo Flúor vs. Frâncio</h2>
-                                    <div className="flex flex-col md:flex-row gap-4">
-                                        <div className="flex-1 bg-green-500/10 p-6 rounded-2xl border border-green-500/20">
-                                            <div className="flex items-center justify-between mb-4">
-                                                <h3 className="text-xl font-bold text-green-400">Flúor (F)</h3>
-                                                <span className="text-xs font-mono bg-green-500/20 px-2 py-1 rounded">Grupo 17 (Topo)</span>
-                                            </div>
-                                            <p className="text-sm text-zinc-300 mb-4">
-                                                Minúsculo, "desesperado" por elétrons. High Energy.<br />
-                                                <strong>Resultado:</strong> Oxidante mais forte. Reage até com vidro.
-                                            </p>
-                                        </div>
-                                        <div className="flex items-center justify-center text-zinc-600 font-bold italic">VS</div>
-                                        <div className="flex-1 bg-blue-500/10 p-6 rounded-2xl border border-blue-500/20">
-                                            <div className="flex items-center justify-between mb-4">
-                                                <h3 className="text-xl font-bold text-blue-400">Frâncio (Fr)</h3>
-                                                <span className="text-xs font-mono bg-blue-500/20 px-2 py-1 rounded">Grupo 1 (Base)</span>
-                                            </div>
-                                            <p className="text-sm text-zinc-300 mb-4">
-                                                Gigantesco, elétron solto (blindagem).<br />
-                                                <strong>Resultado:</strong> Instável, radioativo. Entrega elétrico facilmente (explosivo).
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* 5. Connections */}
-                                <div className="bg-zinc-900/30 p-6 rounded-3xl space-y-4">
-                                    <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                                        <span className="text-2xl">🌍</span> Conexões Interdisciplinares
-                                    </h2>
-                                    <div className="space-y-4">
-                                        <p className="text-sm text-zinc-400">
-                                            <strong className="text-white">Geopolítica (Terras Raras):</strong> Os Lantanídeos são essenciais para baterias e ímãs. Domínio da China.
-                                        </p>
-                                        <p className="text-sm text-zinc-400">
-                                            <strong className="text-white">Biologia (C vs Si):</strong> Carbono é menor que Silício, permitindo ligações duplas/triplas estáveis e cadeias longas (DNA), essencial para vida complexa.
-                                        </p>
-                                        <p className="text-sm text-zinc-400">
-                                            <strong className="text-white">Medicina:</strong> Bário e Iodo são usados em contrastes por serem grandes (barram Raio-X).
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        )
+                        contentId: 'chemistry_atomistica_tabela'
                     }
                 ]
             },
@@ -547,117 +278,7 @@ export const COURSES_DATA: Course[] = [
                         title: 'Funções Inorgânicas e pH',
                         duration: '1h',
                         status: 'Locked',
-                        content: (
-                            <div className="space-y-8">
-                                {/* 1. Intro */}
-                                <div className="prose prose-invert max-w-none">
-                                    <h2 className="text-2xl font-bold text-emerald-400">1. Introdução e Definição</h2>
-                                    <p className="text-zinc-400 leading-relaxed">
-                                        As <strong className="text-white">Funções Inorgânicas</strong> são os "grupos funcionais" da química mineral. Assim como na biologia agrupamos animais, na química agrupamos substâncias baseadas no seu comportamento em solução aquosa.
-                                    </p>
-                                    <p className="text-zinc-400 leading-relaxed">
-                                        A definição clássica de <strong>Arrhenius (1887)</strong> é a base para o vestibular:
-                                    </p>
-                                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                                        <li className="bg-red-500/10 p-3 rounded-xl border border-red-500/20 text-red-200">
-                                            <strong>Ácidos:</strong> Liberam H⁺ em água. <span className="text-xs block opacity-70">Ex: HCl</span>
-                                        </li>
-                                        <li className="bg-blue-500/10 p-3 rounded-xl border border-blue-500/20 text-blue-200">
-                                            <strong>Bases:</strong> Liberam OH⁻ em água. <span className="text-xs block opacity-70">Ex: NaOH</span>
-                                        </li>
-                                        <li className="bg-green-500/10 p-3 rounded-xl border border-green-500/20 text-green-200">
-                                            <strong>Sais:</strong> Produto de Ácido + Base. <span className="text-xs block opacity-70">Ex: NaCl</span>
-                                        </li>
-                                        <li className="bg-orange-500/10 p-3 rounded-xl border border-orange-500/20 text-orange-200">
-                                            <strong>Óxidos:</strong> Binários com Oxigênio. <span className="text-xs block opacity-70">Ex: CO₂</span>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                {/* 2. Characteristics */}
-                                <div className="space-y-6">
-                                    <h2 className="text-2xl font-bold text-emerald-400">2. Características Técnicas</h2>
-
-                                    {/* Acids */}
-                                    <div className="bg-[#1A1B26] p-6 rounded-2xl border border-white/5 space-y-4">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center text-red-400 font-bold">H+</div>
-                                            <h3 className="text-xl font-bold text-white">Ácidos (O Protonador)</h3>
-                                        </div>
-                                        <p className="text-zinc-400 text-sm">Compostos covalentes que <strong>ionizam</strong> em água.</p>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                                            <div className="bg-black/20 p-3 rounded-lg">
-                                                <strong className="text-red-300 block mb-1">Força (Grau α)</strong>
-                                                <ul className="space-y-1 text-zinc-500">
-                                                    <li><span className="text-white">Fortes:</span> HCl, H₂SO₄ (Ionizam &gt;50%)</li>
-                                                    <li><span className="text-white">Fracos:</span> HCN, H₂CO₃ (O "H" fica preso)</li>
-                                                </ul>
-                                            </div>
-                                            <div className="bg-black/20 p-3 rounded-lg">
-                                                <strong className="text-red-300 block mb-1">Nomenclatura</strong>
-                                                <ul className="space-y-1 text-zinc-500">
-                                                    <li>Sem Oxigênio: ...ídrico (Clorídrico)</li>
-                                                    <li>Com Oxigênio: Nox Alto=ICO, Baixo=OSO</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Bases */}
-                                    <div className="bg-[#1A1B26] p-6 rounded-2xl border border-white/5 space-y-4">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold">OH-</div>
-                                            <h3 className="text-xl font-bold text-white">Bases (O Receptor)</h3>
-                                        </div>
-                                        <p className="text-zinc-400 text-sm">Compostos iônicos que <strong>dissociam</strong> em água (liberam íons existentes).</p>
-                                        <div className="text-sm bg-black/20 p-3 rounded-lg border-l-4 border-blue-500">
-                                            <strong className="text-blue-300">Regra de Ouro:</strong> Bases da Família 1 e 2 são fortes e solúveis (exceto Mg/Be). As outras são fracas/insolúveis.<br />
-                                            <span className="text-zinc-500 italic">Ex: NaOH (Soda Cáustica) vs Mg(OH)₂ (Leite de Magnésia).</span>
-                                        </div>
-                                    </div>
-
-                                    {/* Neutralization */}
-                                    <div className="bg-gradient-to-r from-emerald-900/10 to-emerald-500/10 p-6 rounded-2xl border border-emerald-500/20">
-                                        <h3 className="text-lg font-bold text-emerald-400 mb-2">Reação de Neutralização</h3>
-                                        <div className="flex items-center justify-center gap-4 text-xl font-mono font-bold text-white my-4">
-                                            <span className="text-red-400">Ácido</span> + <span className="text-blue-400">Base</span> → <span className="text-green-400">Sal</span> + <span className="text-cyan-400">Água</span>
-                                        </div>
-                                        <p className="text-center text-zinc-400 text-sm">HCl + NaOH → NaCl + H₂O</p>
-                                    </div>
-
-                                </div>
-
-                                {/* Case Study */}
-                                <div className="space-y-4">
-                                    <h2 className="text-2xl font-bold text-emerald-400">4. Estudo de Caso: Chuva Ácida</h2>
-                                    <div className="bg-zinc-800/50 p-6 rounded-2xl border border-white/5 relative overflow-hidden">
-                                        <div className="absolute top-0 right-0 p-4 opacity-10 text-6xl">🌧️</div>
-                                        <h3 className="text-lg font-bold text-white mb-2">Por que estátuas derretem?</h3>
-                                        <p className="text-zinc-400 text-sm mb-4">
-                                            Mármore é Carbonato de Cálcio (CaCO₃). A poluição cria Ácido Sulfúrico (H₂SO₄) na chuva.
-                                        </p>
-                                        <div className="bg-black/30 p-4 rounded-xl font-mono text-xs text-green-300 overflow-x-auto">
-                                            CaCO₃(s) + H₂SO₄(aq) → CaSO₄(aq) + H₂O(l) + CO₂(g)
-                                        </div>
-                                        <p className="text-zinc-500 text-xs mt-2">
-                                            O CaSO₄ (Gesso) é solúvel e a água lava o rosto da estátua.
-                                        </p>
-                                    </div>
-                                </div>
-
-                                {/* Connections */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-zinc-400">
-                                    <div className="bg-white/5 p-4 rounded-xl">
-                                        <strong className="text-white block mb-1">🏥 Fisiologia (Sangue)</strong>
-                                        O pH do sangue deve ser 7.35-7.45. O sistema "tampão" (H₂CO₃/HCO₃⁻) evita que morramos com variações de acidez.
-                                    </div>
-                                    <div className="bg-white/5 p-4 rounded-xl">
-                                        <strong className="text-white block mb-1">🌱 Agricultura (Calagem)</strong>
-                                        Solos do Cerrado são ácidos. Agricultores jogam Calcário (CaCO₃), um sal básico, para neutralizar a terra.
-                                    </div>
-                                </div>
-                            </div>
-                        )
+                        contentId: 'chemistry_funcoes_inorganicas'
                     }
                 ]
             },
@@ -674,87 +295,7 @@ export const COURSES_DATA: Course[] = [
                         title: 'Estequiometria e Leis Ponderais',
                         duration: '1h 30m',
                         status: 'Locked',
-                        content: (
-                            <div className="space-y-8">
-                                {/* Intro */}
-                                <div className="prose prose-invert max-w-none">
-                                    <h2 className="text-2xl font-bold text-emerald-400">1. Introdução e Definição</h2>
-                                    <p className="text-zinc-400 leading-relaxed">
-                                        Se a Química fosse um restaurante, a <strong className="text-white">Estequiometria</strong> seria a matemática da receita. Ela é a contabilidade dos átomos: em um sistema fechado, a massa total dos reagentes DEVE ser igual à massa dos produtos.
-                                    </p>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                                        <div className="bg-zinc-900/50 border border-white/5 p-4 rounded-xl">
-                                            <h3 className="text-emerald-400 font-bold mb-1">Lei de Lavoisier</h3>
-                                            <p className="text-sm text-zinc-300">"Na natureza, nada se cria, nada se perde, tudo se transforma." (Conservação das Massas)</p>
-                                        </div>
-                                        <div className="bg-zinc-900/50 border border-white/5 p-4 rounded-xl">
-                                            <h3 className="text-emerald-400 font-bold mb-1">Lei de Proust</h3>
-                                            <p className="text-sm text-zinc-300">Proporções Definidas. A água é sempre 11% H e 89% O, seja aqui ou em Marte.</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* The Mole */}
-                                <div className="bg-gradient-to-r from-blue-900/20 to-indigo-900/20 p-6 rounded-2xl border border-blue-500/20 flex flex-col items-center text-center">
-                                    <h2 className="text-3xl font-black text-white mb-2">O MOL</h2>
-                                    <div className="text-4xl font-mono text-blue-400 font-bold mb-4">6,02 × 10²³ unidades</div>
-                                    <p className="text-zinc-300 max-w-lg">
-                                        Átomos são pequenos demais para contar um a um. O mol é a "dúzia" do químico. <br />
-                                        <span className="text-sm text-zinc-500 mt-2 block">1 Mol de qualquer gás nas CNTP ocupa <strong>22,4 Litros</strong>.</span>
-                                    </p>
-                                </div>
-
-                                {/* Algorithm */}
-                                <div>
-                                    <h2 className="text-2xl font-bold text-emerald-400 mb-4">3. O Algoritmo da Estequiometria</h2>
-                                    <div className="space-y-3">
-                                        <div className="flex items-start gap-4 p-4 bg-white/5 rounded-xl">
-                                            <div className="bg-emerald-500 text-black font-bold w-6 h-6 rounded flex items-center justify-center shrink-0">1</div>
-                                            <div>
-                                                <strong className="block text-white">Escreva a Equação</strong>
-                                                <span className="text-zinc-400 text-sm">Quem reage com quem? O que produz?</span>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-start gap-4 p-4 bg-white/5 rounded-xl">
-                                            <div className="bg-emerald-500 text-black font-bold w-6 h-6 rounded flex items-center justify-center shrink-0">2</div>
-                                            <div>
-                                                <strong className="block text-white">Balanceie (Obrigatório)</strong>
-                                                <span className="text-zinc-400 text-sm">Use a regra do MACHO (Metal, Ametal, C, H, O). Garanta que os átomos sejam iguais nos dois lados.</span>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-start gap-4 p-4 bg-white/5 rounded-xl">
-                                            <div className="bg-emerald-500 text-black font-bold w-6 h-6 rounded flex items-center justify-center shrink-0">3</div>
-                                            <div>
-                                                <strong className="block text-white">Regra de Três</strong>
-                                                <span className="text-zinc-400 text-sm">Linha 1: Dados da equação (Mols, MM, 22.4L).<br />Linha 2: Dados do problema (X).</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Case Study */}
-                                <div className="space-y-4">
-                                    <h2 className="text-2xl font-bold text-emerald-400">4. Estudo de Caso: Airbag</h2>
-                                    <div className="bg-zinc-800/50 p-6 rounded-2xl border border-white/5">
-                                        <div className="flex flex-col md:flex-row gap-6 items-center">
-                                            <div className="text-5xl">💥</div>
-                                            <div>
-                                                <h3 className="text-lg font-bold text-white mb-2">Salva-vidas em milissegundos</h3>
-                                                <p className="text-zinc-400 text-sm mb-3">
-                                                    Azida de Sódio (NaN₃) decompõe numa colisão para inflar a bolsa com Nitrogênio (N₂).
-                                                </p>
-                                                <div className="bg-black/30 p-3 rounded-lg font-mono text-xs text-blue-300 inline-block mb-3">
-                                                    2 NaN₃(s) → 2 Na(s) + 3 N₂(g)
-                                                </div>
-                                                <p className="text-zinc-500 text-xs">
-                                                    <strong>Erro de cálculo?</strong> Pouca massa = bolsa murcha (bate a cabeça). Muita massa = bolsa dura ou explosão. A estequiometria precisa ser exata.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )
+                        contentId: 'chemistry_estequiometria_leis'
                     }
                 ]
             },
@@ -771,90 +312,7 @@ export const COURSES_DATA: Course[] = [
                         title: 'Concentração e Diluição',
                         duration: '1h 20m',
                         status: 'Locked',
-                        content: (
-                            <div className="space-y-8">
-                                {/* Introduction */}
-                                <div className="prose prose-invert max-w-none">
-                                    <h2 className="text-2xl font-bold text-emerald-400">1. Introdução e Definição</h2>
-                                    <p className="text-zinc-400 leading-relaxed">
-                                        No mundo real, raramente lidamos com substâncias puras. A água que bebemos, o ar e o sangue são <strong className="text-white">Soluções</strong>: misturas homogêneas de duas ou mais substâncias.
-                                    </p>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                                        <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5">
-                                            <strong className="text-emerald-400 block mb-1">Soluto</strong>
-                                            <span className="text-zinc-400 text-sm">O que é dissolvido (menor quantidade). Ex: Pó do suco.</span>
-                                        </div>
-                                        <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5">
-                                            <strong className="text-blue-400 block mb-1">Solvente</strong>
-                                            <span className="text-zinc-400 text-sm">O que dissolve (maior quantidade). A água é o "Solvente Universal".</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Concentration Units */}
-                                <div className="space-y-6">
-                                    <h2 className="text-2xl font-bold text-emerald-400">2. Unidades de Concentração</h2>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                        {/* Comum */}
-                                        <div className="bg-[#1A1B26] p-6 rounded-2xl border border-white/5 hover:border-emerald-500/30 transition-colors">
-                                            <div className="text-xs uppercase tracking-wider text-zinc-500 font-bold mb-2">Rótulos</div>
-                                            <h3 className="text-lg font-bold text-white mb-1">Concentração Comum (C)</h3>
-                                            <div className="text-2xl font-mono text-emerald-400 mb-2">g/L</div>
-                                            <p className="text-zinc-400 text-xs">Massa do soluto / Volume da solução. Usado em alimentos.</p>
-                                        </div>
-
-                                        {/* Molaridade */}
-                                        <div className="bg-gradient-to-br from-emerald-900/20 to-emerald-600/10 p-6 rounded-2xl border border-emerald-500/40 relative overflow-hidden">
-                                            <div className="absolute top-0 right-0 p-2 opacity-50 text-4xl">🧪</div>
-                                            <div className="text-xs uppercase tracking-wider text-emerald-300 font-bold mb-2">A Mais Importante</div>
-                                            <h3 className="text-lg font-bold text-white mb-1">Molaridade (M)</h3>
-                                            <div className="text-2xl font-mono text-emerald-400 mb-2">mol/L</div>
-                                            <p className="text-emerald-100/70 text-xs">Número de mols / Volume. Padrão internacional da química.</p>
-                                        </div>
-
-                                        {/* ppm */}
-                                        <div className="bg-[#1A1B26] p-6 rounded-2xl border border-white/5 hover:border-emerald-500/30 transition-colors">
-                                            <div className="text-xs uppercase tracking-wider text-zinc-500 font-bold mb-2">Poluição</div>
-                                            <h3 className="text-lg font-bold text-white mb-1">ppm</h3>
-                                            <div className="text-2xl font-mono text-emerald-400 mb-2">mg/kg</div>
-                                            <p className="text-zinc-400 text-xs">Partes por milhão. Para poluentes e metais pesados.</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Dilution */}
-                                <div className="bg-zinc-800/30 p-6 rounded-2xl border border-white/5">
-                                    <h2 className="text-xl font-bold text-white mb-4">3. Diluição (Adicionar Água)</h2>
-                                    <p className="text-zinc-400 text-sm mb-6">
-                                        Diluir é acrescentar solvente. A concentração cai, mas a quantidade de soluto (mol) permanece constante.
-                                    </p>
-                                    <div className="flex flex-col items-center justify-center bg-black/40 p-6 rounded-xl border border-white/5">
-                                        <div className="text-3xl font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 mb-2">
-                                            M₁ . V₁ = M₂ . V₂
-                                        </div>
-                                        <p className="text-zinc-500 text-xs text-center mt-2">
-                                            Fórmula de Ouro. O início é igual ao fim.
-                                        </p>
-                                    </div>
-                                </div>
-
-                                {/* Study Case */}
-                                <div className="space-y-4">
-                                    <h2 className="text-2xl font-bold text-emerald-400">4. Estudo de Caso: Soro Fisiológico</h2>
-                                    <div className="bg-blue-500/10 p-6 rounded-2xl border border-blue-500/20">
-                                        <h3 className="text-lg font-bold text-blue-200 mb-2">Osmose e Morte Celular</h3>
-                                        <p className="text-zinc-300 text-sm leading-relaxed mb-4">
-                                            Por que não injetamos água pura? Porque causaria <strong>osmose</strong>: a água entraria nas células do sangue até elas explodirem.
-                                            Usamos Soro 0,9% (Isotônico) para manter o equilíbrio.
-                                        </p>
-                                        <div className="flex gap-2">
-                                            <span className="px-3 py-1 bg-blue-500/20 rounded-full text-xs text-blue-300">0.9g NaCl / 100mL</span>
-                                            <span className="px-3 py-1 bg-green-500/20 rounded-full text-xs text-green-300">Equilíbrio Osmótico</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )
+                        contentId: 'chemistry_solucoes_intro'
                     }
                 ]
             },
@@ -871,77 +329,7 @@ export const COURSES_DATA: Course[] = [
                         title: 'Entalpia e Leis de Hess',
                         duration: '1h 45m',
                         status: 'Locked',
-                        content: (
-                            <div className="space-y-8">
-                                {/* Intro */}
-                                <div className="prose prose-invert max-w-none">
-                                    <h2 className="text-2xl font-bold text-emerald-400">1. Introdução e Definição</h2>
-                                    <p className="text-zinc-400 leading-relaxed">
-                                        Toda reação química envolve uma troca de energia. A <strong className="text-white">Termoquímica</strong> estuda esse calor (Δ). O conceito central é a <strong className="text-emerald-300">Entalpia (H)</strong>, o "conteúdo de energia" das ligações.
-                                    </p>
-                                </div>
-
-                                {/* Reactions Types */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {/* Exo */}
-                                    <div className="bg-gradient-to-br from-orange-500/10 to-red-900/10 p-6 rounded-2xl border border-red-500/20 relative overflow-hidden group">
-                                        <div className="absolute -right-4 -top-4 text-8xl opacity-10 group-hover:opacity-20 transition-opacity">🔥</div>
-                                        <h3 className="text-xl font-bold text-red-400 mb-2">Exotérmica</h3>
-                                        <div className="text-3xl font-mono font-bold text-white mb-2">ΔH &lt; 0</div>
-                                        <p className="text-zinc-300 text-sm mb-4">
-                                            Libera calor. Esquenta o ambiente.<br />
-                                            <span className="text-zinc-500 text-xs">Ex: Fogueira, Respiração.</span>
-                                        </p>
-                                        <div className="bg-black/30 p-2 rounded text-xs text-center text-red-300">Reagentes &gt; Produtos</div>
-                                    </div>
-
-                                    {/* Endo */}
-                                    <div className="bg-gradient-to-br from-blue-500/10 to-cyan-900/10 p-6 rounded-2xl border border-blue-500/20 relative overflow-hidden group">
-                                        <div className="absolute -right-4 -top-4 text-8xl opacity-10 group-hover:opacity-20 transition-opacity">❄️</div>
-                                        <h3 className="text-xl font-bold text-blue-400 mb-2">Endotérmica</h3>
-                                        <div className="text-3xl font-mono font-bold text-white mb-2">ΔH &gt; 0</div>
-                                        <p className="text-zinc-300 text-sm mb-4">
-                                            Absorve calor. Esfria o ambiente.<br />
-                                            <span className="text-zinc-500 text-xs">Ex: Bolsa de gelo instantâneo, Fotossíntese.</span>
-                                        </p>
-                                        <div className="bg-black/30 p-2 rounded text-xs text-center text-blue-300">Produtos &gt; Reagentes</div>
-                                    </div>
-                                </div>
-
-                                {/* Hess Law */}
-                                <div className="bg-[#1A1B26] p-6 rounded-2xl border border-white/5 space-y-4">
-                                    <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                                        <span className="text-2xl">🗺️</span> Lei de Hess
-                                    </h2>
-                                    <p className="text-zinc-400 text-sm">
-                                        "O caminho não importa". A variação de entalpia total é a mesma, seja em uma etapa ou em várias.
-                                    </p>
-                                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mt-2">
-                                        <li className="bg-white/5 p-3 rounded-lg border-l-2 border-emerald-500 text-zinc-300">
-                                            Pode somar as equações.
-                                        </li>
-                                        <li className="bg-white/5 p-3 rounded-lg border-l-2 border-emerald-500 text-zinc-300">
-                                            Se inverter a reação, inverte o sinal do ΔH.
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                {/* Case Study */}
-                                <div className="space-y-4">
-                                    <h2 className="text-2xl font-bold text-emerald-400">4. Estudo de Caso: MRE vs Cold Pack</h2>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="bg-zinc-800/50 p-4 rounded-xl">
-                                            <strong className="text-orange-400 block mb-1">MRE (Ração Militar)</strong>
-                                            <p className="text-xs text-zinc-400">Magnésio + Água = Reação violenta <strong className="text-white">Exotérmica</strong>. Ferve em segundos para esquentar a comida.</p>
-                                        </div>
-                                        <div className="bg-zinc-800/50 p-4 rounded-xl">
-                                            <strong className="text-blue-400 block mb-1">Cold Pack</strong>
-                                            <p className="text-xs text-zinc-400">Nitrato de Amônio + Água = Reação <strong className="text-white">Endotérmica</strong>. Rouba calor e congela em instantes.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )
+                        contentId: 'chemistry_termoquimica_intro'
                     }
                 ]
             },
@@ -958,101 +346,7 @@ export const COURSES_DATA: Course[] = [
                         title: 'Cinética e Equilíbrio Químico',
                         duration: '1h 40m',
                         status: 'Locked',
-                        content: (
-                            <div className="space-y-8">
-                                {/* Intro */}
-                                <div className="prose prose-invert max-w-none">
-                                    <h2 className="text-2xl font-bold text-emerald-400">1. Introdução e Definição</h2>
-                                    <p className="text-zinc-400 leading-relaxed">
-                                        Termodinâmica diz "se" acontece. <strong className="text-white">Cinética</strong> diz "quando". O diamante deveria virar grafite, mas leva milhões de anos (cinética lenta).
-                                    </p>
-                                    <p className="text-zinc-400 leading-relaxed mt-2">
-                                        Já o <strong className="text-white">Equilíbrio Químico</strong> (V₁ = V₂) é a dança dinâmica onde reagentes e produtos coexistem. É vital para a indústria saber manipular esse limite.
-                                    </p>
-                                </div>
-
-                                {/* Kinetics Factors */}
-                                <div className="space-y-4">
-                                    <h2 className="text-2xl font-bold text-emerald-400">2. Cinética: Acelerando Reações</h2>
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                        <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5 hover:border-red-500/30 transition-colors">
-                                            <div className="text-2xl mb-2">🔥</div>
-                                            <strong className="block text-white mb-1">Temperatura</strong>
-                                            <span className="text-xs text-zinc-400">Mais energia = colisions mais fortes. Fator mais poderoso.</span>
-                                        </div>
-                                        <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5 hover:border-yellow-500/30 transition-colors">
-                                            <div className="text-2xl mb-2">🪨</div>
-                                            <strong className="block text-white mb-1">Superfície</strong>
-                                            <span className="text-xs text-zinc-400">Pó reage mais rápido que barra. Mais área de contato.</span>
-                                        </div>
-                                        <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5 hover:border-blue-500/30 transition-colors">
-                                            <div className="text-2xl mb-2">🧪</div>
-                                            <strong className="block text-white mb-1">Concentração</strong>
-                                            <span className="text-xs text-zinc-400">Mais moléculas no mesmo espaço = mais choques.</span>
-                                        </div>
-                                        <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5 hover:border-purple-500/30 transition-colors">
-                                            <div className="text-2xl mb-2">⚡</div>
-                                            <strong className="block text-white mb-1">Catalisador</strong>
-                                            <span className="text-xs text-zinc-400">O Hacker. Cria atalho com menor Energia de Ativação. Não é consumido.</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Equilibrium & Le Chatelier */}
-                                <div className="bg-[#1A1B26] p-6 rounded-2xl border border-white/5 space-y-6">
-                                    <h2 className="text-xl font-bold text-white mb-2">3. Equilíbrio e Le Chatelier</h2>
-                                    <p className="text-zinc-400 text-sm">
-                                        "Se você perturba um sistema em equilíbrio, ele reage para neutralizar a perturbação."
-                                    </p>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                        <div className="space-y-2">
-                                            <strong className="text-blue-300 block border-b border-blue-500/20 pb-1">Pressão</strong>
-                                            <p className="text-xs text-zinc-400">
-                                                Aumentar P desloca para o lado de <strong>menor volume</strong> (menos gás).
-                                            </p>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <strong className="text-red-300 block border-b border-red-500/20 pb-1">Temperatura</strong>
-                                            <p className="text-xs text-zinc-400">
-                                                Aumentar T favorece o sentido <strong>Endotérmico</strong> (absorve calor).
-                                            </p>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <strong className="text-green-300 block border-b border-green-500/20 pb-1">Concentração</strong>
-                                            <p className="text-xs text-zinc-400">
-                                                Adicionar reagente desloca para os produtos (foge do excesso).
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="bg-black/20 p-4 rounded-xl flex items-center justify-between">
-                                        <div>
-                                            <strong className="text-white block">Constante Kc</strong>
-                                            <span className="text-zinc-500 text-xs">[Produtos] / [Reagentes]. Só muda com a Temperatura.</span>
-                                        </div>
-                                        <div className="text-2xl font-mono text-emerald-500 font-bold">Kc &gt; 1 = Rende Bem</div>
-                                    </div>
-                                </div>
-
-                                {/* Case Study */}
-                                <div className="space-y-4">
-                                    <h2 className="text-2xl font-bold text-emerald-400">4. Estudo de Caso: Haber-Bosch</h2>
-                                    <div className="bg-zinc-800/50 p-6 rounded-2xl border border-white/5">
-                                        <h3 className="text-lg font-bold text-white mb-2">Amônia (NH₃) e a Fome Mundial</h3>
-                                        <p className="text-zinc-400 text-sm mb-4">
-                                            Como produzir fertilizantes a partir do ar?
-                                            <br /><code className="text-blue-300">N₂(g) + 3H₂(g) ⇌ 2NH₃(g) (Exo)</code>
-                                        </p>
-                                        <ul className="space-y-2 text-sm text-zinc-300">
-                                            <li><strong className="text-white">Pressão:</strong> Altíssima (200 atm) para forçar o lado de menor volume (2 mols vs 4 mols).</li>
-                                            <li><strong className="text-white">Temperatura:</strong> Moderada (450°C). Baixa seria melhor pro equilíbrio (Exo), mas muito lenta (Cinética).</li>
-                                            <li><strong className="text-white">Catalisador:</strong> Ferro, para compensar a velocidade.</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        )
+                        contentId: 'chemistry_cinetica_equilibrio'
                     }
                 ]
             },
@@ -1290,89 +584,7 @@ export const COURSES_DATA: Course[] = [
                         title: 'Funções e Isomeria',
                         duration: '1h 50m',
                         status: 'Locked',
-                        content: (
-                            <div className="space-y-8">
-                                {/* Intro */}
-                                <div className="prose prose-invert max-w-none">
-                                    <h2 className="text-2xl font-bold text-emerald-400">1. Funções: A Personalidade</h2>
-                                    <p className="text-zinc-400 leading-relaxed">
-                                        Se a cadeia é o esqueleto, a <strong className="text-white">Função</strong> é a personalidade. O grupo funcional define como a molécula reage e cheira.
-                                    </p>
-                                </div>
-
-                                {/* Functions Grid */}
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-blue-500">
-                                        <strong className="text-white block">Álcool (-OH)</strong>
-                                        <span className="text-xs text-zinc-500">Hidroxila em Carbono Saturado. Solúvel.</span>
-                                    </div>
-                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-red-500">
-                                        <strong className="text-white block">Ácido (-COOH)</strong>
-                                        <span className="text-xs text-zinc-500">O mais ácido. Vinagre.</span>
-                                    </div>
-                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-purple-500">
-                                        <strong className="text-white block">Amina (-NH₂)</strong>
-                                        <span className="text-xs text-zinc-500">Básica. Cheiro de peixe.</span>
-                                    </div>
-                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-yellow-500">
-                                        <strong className="text-white block">Aldeído (-CHO)</strong>
-                                        <span className="text-xs text-zinc-500">Na ponta. Formol.</span>
-                                    </div>
-                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-orange-500">
-                                        <strong className="text-white block">Cetona (C=O)</strong>
-                                        <span className="text-xs text-zinc-500">No meio. Acetona.</span>
-                                    </div>
-                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-pink-500">
-                                        <strong className="text-white block">Éster (-COO-)</strong>
-                                        <span className="text-xs text-zinc-500">Cereja do bolo. Aromas de frutas.</span>
-                                    </div>
-                                </div>
-
-                                {/* Isomerism */}
-                                <div className="space-y-6">
-                                    <h2 className="text-2xl font-bold text-emerald-400">2. Isomeria: As Aparências Enganam</h2>
-                                    <p className="text-zinc-400 text-sm">
-                                        Mesma fórmula molecular, estruturas (e destinos) diferentes.
-                                    </p>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        {/* Cis-Trans */}
-                                        <div className="bg-[#1A1B26] p-6 rounded-2xl border border-white/5">
-                                            <h3 className="text-lg font-bold text-white mb-2">Geométrica (Cis-Trans)</h3>
-                                            <div className="flex gap-4 mb-2">
-                                                <span className="px-2 py-1 bg-white/10 rounded text-xs text-emerald-300">Cis: Juntos (Barco)</span>
-                                                <span className="px-2 py-1 bg-white/10 rounded text-xs text-emerald-300">Trans: Opostos (Cadeira)</span>
-                                            </div>
-                                            <p className="text-xs text-zinc-400">Precisa de dupla ligação rígida.</p>
-                                        </div>
-
-                                        {/* Optical */}
-                                        <div className="bg-[#1A1B26] p-6 rounded-2xl border border-white/5">
-                                            <h3 className="text-lg font-bold text-white mb-2">Óptica (Quiralidade)</h3>
-                                            <div className="flex gap-4 mb-2">
-                                                <span className="px-2 py-1 bg-white/10 rounded text-xs text-blue-300">Carbono Quiral*</span>
-                                                <span className="px-2 py-1 bg-white/10 rounded text-xs text-blue-300">4 Ligantes Diferentes</span>
-                                            </div>
-                                            <p className="text-xs text-zinc-400">Imagem no espelho não sobrepõe (Mãos).</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Case Study: Thalidomide */}
-                                <div className="bg-red-900/10 p-6 rounded-2xl border border-red-500/20">
-                                    <h2 className="text-xl font-bold text-red-400 mb-2">A Tragédia da Talidomida</h2>
-                                    <p className="text-zinc-300 text-sm leading-relaxed mb-4">
-                                        O exemplo mais dramático de Isomeria Óptica. Vendida nos anos 50 para enjoo.
-                                        <br />• Isômero R (Dextro): Sedativo seguro.
-                                        <br />• Isômero S (Levo): <strong className="text-red-300">Teratogênico</strong> (causa má formação fetal).
-                                        <br />O remédio era uma mistura dos dois. Milhares de bebês nasceram com focomelia.
-                                    </p>
-                                    <div className="bg-black/30 p-2 rounded text-center text-xs text-red-200">
-                                        Hoje é obrigatório separar os isômeros.
-                                    </div>
-                                </div>
-                            </div>
-                        )
+                        contentId: 'chemistry_organica_funcoes'
                     }
                 ]
             },
@@ -1389,107 +601,7 @@ export const COURSES_DATA: Course[] = [
                         title: 'Reações e Polímeros',
                         duration: '2h 10m',
                         status: 'Locked',
-                        content: (
-                            <div className="space-y-8">
-                                {/* Intro */}
-                                <div className="prose prose-invert max-w-none">
-                                    <h2 className="text-2xl font-bold text-emerald-400">1. Introdução e Definição</h2>
-                                    <p className="text-zinc-400 leading-relaxed">
-                                        As <strong className="text-white">Reações Orgânicas</strong> são a alquimia moderna. É transformar petróleo em plástico, ou casca de árvore em aspirina. O segredo é quebrar ligações e formar novas.
-                                    </p>
-                                    <div className="flex flex-col md:flex-row gap-4 mt-4">
-                                        <div className="bg-zinc-900/50 p-4 rounded-xl flex-1 border border-white/5">
-                                            <strong className="text-red-400 block mb-1">Cisão Homolítica</strong>
-                                            <span className="text-xs text-zinc-500">Quebra igual. Gera <strong className="text-white">Radicais Livres</strong>. Instável e violento.</span>
-                                        </div>
-                                        <div className="bg-zinc-900/50 p-4 rounded-xl flex-1 border border-white/5">
-                                            <strong className="text-blue-400 block mb-1">Cisão Heterolítica</strong>
-                                            <span className="text-xs text-zinc-500">Quebra desigual. Gera <strong className="text-white">Íons</strong>. Padrão das reações polares.</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Reaction Types Rules */}
-                                <div className="space-y-6">
-                                    <h2 className="text-2xl font-bold text-emerald-400">2. As Regras do Jogo</h2>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        {/* Markovnikov */}
-                                        <div className="bg-[#1A1B26] p-6 rounded-2xl border border-white/5 relative overflow-hidden">
-                                            <div className="absolute top-0 right-0 p-2 opacity-10 text-6xl font-bold text-emerald-500">+</div>
-                                            <h3 className="text-lg font-bold text-white mb-2">Adição (Markovnikov)</h3>
-                                            <p className="text-sm text-emerald-400 font-bold mb-2">"O Rico fica mais Rico"</p>
-                                            <p className="text-xs text-zinc-400">
-                                                O Hidrogênio entra no carbono da dupla que já tem <strong>mais</strong> hidrogênios.
-                                            </p>
-                                        </div>
-
-                                        {/* Saytzeff */}
-                                        <div className="bg-[#1A1B26] p-6 rounded-2xl border border-white/5 relative overflow-hidden">
-                                            <div className="absolute top-0 right-0 p-2 opacity-10 text-6xl font-bold text-red-500">-</div>
-                                            <h3 className="text-lg font-bold text-white mb-2">Eliminação (Saytzeff)</h3>
-                                            <p className="text-sm text-red-400 font-bold mb-2">O Inverso</p>
-                                            <p className="text-xs text-zinc-400">
-                                                O Hidrogênio sai do carbono vizinho que tem <strong>menos</strong> hidrogênio.
-                                            </p>
-                                        </div>
-
-                                        {/* Oxidação */}
-                                        <div className="bg-[#1A1B26] p-6 rounded-2xl border border-white/5 md:col-span-2">
-                                            <h3 className="text-lg font-bold text-white mb-2">Oxidação de Álcoois (O Bafômetro)</h3>
-                                            <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                                                <div className="bg-white/5 p-2 rounded">
-                                                    <strong className="block text-emerald-400">Primário</strong>
-                                                    Aldeído → Ácido
-                                                </div>
-                                                <div className="bg-white/5 p-2 rounded">
-                                                    <strong className="block text-yellow-400">Secundário</strong>
-                                                    Vira Cetona
-                                                </div>
-                                                <div className="bg-white/5 p-2 rounded">
-                                                    <strong className="block text-red-400">Terciário</strong>
-                                                    NÃO REAGE
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Esterification & Polymers */}
-                                <div className="space-y-4">
-                                    <h2 className="text-2xl font-bold text-emerald-400">3. Polímeros e Ésteres</h2>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                        <div className="bg-zinc-900/50 p-4 rounded-xl border-t-2 border-pink-500">
-                                            <strong className="text-pink-400 block mb-1">Esterificação</strong>
-                                            <span className="text-xs text-zinc-400">Ácido + Álcool = Éster + Água. (Aromas).</span>
-                                        </div>
-                                        <div className="bg-zinc-900/50 p-4 rounded-xl border-t-2 border-orange-500">
-                                            <strong className="text-orange-400 block mb-1">Saponificação</strong>
-                                            <span className="text-xs text-zinc-400">Gordura + Base = Sabão + Glicerina.</span>
-                                        </div>
-                                        <div className="bg-zinc-900/50 p-4 rounded-xl border-t-2 border-purple-500">
-                                            <strong className="text-purple-400 block mb-1">Polímeros</strong>
-                                            <span className="text-xs text-zinc-400">Adição (Plásticos) vs Condensação (Nylon/PET).</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Case Study */}
-                                <div className="bg-green-900/10 p-6 rounded-2xl border border-green-500/20">
-                                    <div className="flex items-center gap-4 mb-4">
-                                        <div className="text-4xl">🌱</div>
-                                        <div>
-                                            <h2 className="text-xl font-bold text-green-400">Estudo de Caso: Biodiesel</h2>
-                                            <p className="text-xs text-green-300">Economia Verde</p>
-                                        </div>
-                                    </div>
-                                    <p className="text-zinc-300 text-sm leading-relaxed mb-4">
-                                        Reação de <strong>Transesterificação</strong>. Pegamos óleo de soja (Triglicerídeo) e reagimos com Álcool.
-                                        <br />Resultado: Biodiesel (Ésteres Metílicos) + Glicerina.
-                                        <br />Menos poluente (sem enxofre) e renovável.
-                                    </p>
-                                </div>
-                            </div>
-                        )
+                        contentId: 'chemistry_organica_reacoes'
                     }
                 ]
             }
@@ -1793,68 +905,7 @@ export const COURSES_DATA: Course[] = [
                         title: 'Sequências e Juros',
                         duration: '1h 50m',
                         status: 'Locked',
-                        content: (
-                            <div className="space-y-8">
-                                {/* Intro */}
-                                <div className="prose prose-invert max-w-none">
-                                    <h2 className="text-2xl font-bold text-indigo-400">1. O Poder dos Padrões</h2>
-                                    <p className="text-zinc-400 leading-relaxed">
-                                        Sequências são listas que seguem uma regra.
-                                        <br />• <strong className="text-white">PA (Aritmética):</strong> Soma constante. (Linear).
-                                        <br />• <strong className="text-white">PG (Geométrica):</strong> Multiplicação constante. (Exponencial).
-                                        <br />Isso é a base do dinheiro (Juros Simples vs Compostos).
-                                    </p>
-                                </div>
-
-                                {/* PA vs PG Grid */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5 border-l-4 border-blue-500">
-                                        <h3 className="text-lg font-bold text-white mb-2">Progressão Aritmética (PA)</h3>
-                                        <p className="text-xs text-zinc-500 mb-3">Escada (Soma r)</p>
-                                        <div className="space-y-2 font-mono text-sm">
-                                            <div className="flex justify-between"><span className="text-zinc-400">Geral:</span> <span className="text-blue-400">aₙ = a₁ + (n-1)r</span></div>
-                                            <div className="flex justify-between"><span className="text-zinc-400">Soma:</span> <span className="text-blue-400">(a₁ + aₙ)n / 2</span></div>
-                                        </div>
-                                    </div>
-
-                                    <div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5 border-l-4 border-orange-500">
-                                        <h3 className="text-lg font-bold text-white mb-2">Progressão Geométrica (PG)</h3>
-                                        <p className="text-xs text-zinc-500 mb-3">Multiplicativa (Vezes q)</p>
-                                        <div className="space-y-2 font-mono text-sm">
-                                            <div className="flex justify-between"><span className="text-zinc-400">Geral:</span> <span className="text-orange-400">aₙ = a₁ . qⁿ⁻¹</span></div>
-                                            <div className="flex justify-between"><span className="text-zinc-400">Soma Inf:</span> <span className="text-orange-400">a₁ / (1-q)</span></div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Linear vs Compound Interest */}
-                                <div className="space-y-4">
-                                    <h2 className="text-xl font-bold text-indigo-400">2. Matemática Financeira</h2>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="bg-[#1A1B26] p-4 rounded-xl border border-white/5">
-                                            <strong className="text-blue-300 block mb-1">Juros Simples (PA)</strong>
-                                            <p className="text-xs text-zinc-400 mb-2">Juro incide só no capital inicial. Crescimento linear.</p>
-                                            <div className="text-center font-mono text-indigo-400 font-bold bg-black/20 rounded p-1">J = C.i.t</div>
-                                        </div>
-                                        <div className="bg-[#1A1B26] p-4 rounded-xl border border-white/5">
-                                            <strong className="text-orange-300 block mb-1">Juros Compostos (PG)</strong>
-                                            <p className="text-xs text-zinc-400 mb-2">Juro sobre juro. Crescimento Exponencial. Regra do mercado.</p>
-                                            <div className="text-center font-mono text-indigo-400 font-bold bg-black/20 rounded p-1">M = C(1+i)ᵗ</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Case Study */}
-                                <div className="bg-red-900/10 p-6 rounded-2xl border border-red-500/20">
-                                    <h2 className="text-xl font-bold text-red-400 mb-2">Alerta: Cartão de Crédito</h2>
-                                    <p className="text-zinc-300 text-sm leading-relaxed">
-                                        Por que as dívidas explodem? Porque são calculadas em <strong className="text-white">Juros Compostos (PG)</strong>.
-                                        Uma dívida de 1.000 a 10% a.m. não vira 2.200 em um ano (Simples), vira mais de 3.100.
-                                        O tempo joga contra quem deve e a favor de quem investe.
-                                    </p>
-                                </div>
-                            </div>
-                        )
+                        contentId: 'mathematics_sequences_finance'
                     }
                 ]
             },
@@ -1871,93 +922,7 @@ export const COURSES_DATA: Course[] = [
                         title: 'O Ciclo Trigonométrico',
                         duration: '2h 15m',
                         status: 'Locked',
-                        content: (
-                            <div className="space-y-8">
-                                {/* Intro */}
-                                <div className="prose prose-invert max-w-none">
-                                    <h2 className="text-2xl font-bold text-indigo-400">1. Introdução e Definição</h2>
-                                    <p className="text-zinc-400 leading-relaxed">
-                                        Para descrever o que se repete (ondas, marés, som), o triângulo não basta. Precisamos do <strong className="text-white">Ciclo Trigonométrico</strong>.
-                                        É a máquina de transformar rotação em ondas {'($y = \\text{sen}(x)$)'}.
-                                    </p>
-                                </div>
-
-                                {/* Cycle Anatomy */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                                    <div className="bg-[#1A1B26] p-6 rounded-full aspect-square border-2 border-indigo-500/30 relative flex items-center justify-center">
-                                        {/* Axes */}
-                                        <div className="absolute w-full h-px bg-white/20"></div>
-                                        <div className="absolute h-full w-px bg-white/20"></div>
-                                        {/* Labels */}
-                                        <div className="absolute top-4 text-xs text-indigo-300 font-bold">SEN (Sem sono)</div>
-                                        <div className="absolute right-4 text-xs text-indigo-300 font-bold">COS (Com sono)</div>
-                                        {/* Quadrants */}
-                                        <div className="absolute top-1/4 right-1/4 text-zinc-600 text-xs">1º (+,+)</div>
-                                        <div className="absolute top-1/4 left-1/4 text-zinc-600 text-xs">2º (-,+)</div>
-                                        <div className="absolute bottom-1/4 left-1/4 text-zinc-600 text-xs">3º (-,-)</div>
-                                        <div className="absolute bottom-1/4 right-1/4 text-zinc-600 text-xs">4º (+,-)</div>
-                                    </div>
-
-                                    <div className="space-y-4">
-                                        <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-indigo-500">
-                                            <strong className="text-indigo-400 block mb-1">Relação Fundamental</strong>
-                                            <div className="text-xl font-mono text-white">sen²x + cos²x = 1</div>
-                                            <p className="text-xs text-zinc-500 mt-2">O Pitágoras do Ciclo (Raio = 1).</p>
-                                        </div>
-                                        <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-emerald-500">
-                                            <strong className="text-emerald-400 block mb-1">Sinais (SE TA CO)</strong>
-                                            <p className="text-xs text-zinc-400">
-                                                1º Q: Todos. <br />
-                                                2º Q: <strong className="text-white">SE</strong>no +.<br />
-                                                3º Q: <strong className="text-white">TA</strong>ngente +.<br />
-                                                4º Q: <strong className="text-white">CO</strong>sseno +.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Graph Function */}
-                                <div className="space-y-4">
-                                    <h2 className="text-2xl font-bold text-indigo-400">2. Funções Trigonométricas</h2>
-                                    <div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5">
-                                        <div className="font-mono text-center text-lg text-white mb-4 bg-black/20 p-2 rounded">
-                                            f(x) = a + b . sen(cx + d)
-                                        </div>
-                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center text-sm">
-                                            <div>
-                                                <strong className="text-indigo-300 block">a</strong>
-                                                <span className="text-zinc-500 text-xs">Eixo Médio (Sobe/Desce)</span>
-                                            </div>
-                                            <div>
-                                                <strong className="text-indigo-300 block">b</strong>
-                                                <span className="text-zinc-500 text-xs">Amplitude (Estica Y)</span>
-                                            </div>
-                                            <div>
-                                                <strong className="text-indigo-300 block">c</strong>
-                                                <span className="text-zinc-500 text-xs">Período (P = 2π/c)</span>
-                                            </div>
-                                            <div>
-                                                <strong className="text-indigo-300 block">d</strong>
-                                                <span className="text-zinc-500 text-xs">Fase (Esquerda/Direita)</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Case Study */}
-                                <div className="bg-amber-900/10 p-6 rounded-2xl border border-amber-500/20">
-                                    <h2 className="text-xl font-bold text-amber-400 mb-2">Estudo de Caso: Cancelamento de Ruído</h2>
-                                    <p className="text-zinc-300 text-sm leading-relaxed mb-4">
-                                        Como o fone isola o som? Criando uma <strong className="text-white">onda trigonométrica inversa</strong>.
-                                        Ao somar $sen(x)$ (ruído) com $-sen(x)$ (anti-ruído), o resultado é Zero. Silêncio matemático.
-                                    </p>
-                                    <div className="h-12 w-full bg-black/30 rounded flex items-center justify-center overflow-hidden relative">
-                                        <div className="absolute w-full h-px bg-amber-500/50"></div>
-                                        <span className="text-xs text-amber-500/50 z-10">Onda + Anti-Onda = 0</span>
-                                    </div>
-                                </div>
-                            </div>
-                        )
+                        contentId: 'mathematics_trig_circle'
                     }
                 ]
             },
@@ -1974,74 +939,7 @@ export const COURSES_DATA: Course[] = [
                         title: 'Triângulos Quaisquer',
                         duration: '2h',
                         status: 'Locked',
-                        content: (
-                            <div className="space-y-8">
-                                {/* Intro */}
-                                <div className="prose prose-invert max-w-none">
-                                    <h2 className="text-2xl font-bold text-indigo-400">1. Medindo o Impossível</h2>
-                                    <p className="text-zinc-400 leading-relaxed">
-                                        Como medir a largura de um rio sem atravessar? Usando <strong className="text-white">Triângulos</strong>.
-                                        Se tem 90°, usamos SOHCAHTOA. Se não tem, usamos as Leis (Senos e Cossenos).
-                                    </p>
-                                </div>
-
-                                {/* Rights vs Any Triangle */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {/* Right Triangle */}
-                                    <div className="space-y-4">
-                                        <h3 className="text-lg font-bold text-white border-b border-white/10 pb-2">Triângulo Retângulo (90°)</h3>
-                                        <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5 space-y-2">
-                                            <div className="flex justify-center gap-2 mb-2">
-                                                <span className="bg-indigo-900/30 text-indigo-300 px-2 rounded text-xs">SOH</span>
-                                                <span className="bg-indigo-900/30 text-indigo-300 px-2 rounded text-xs">CAH</span>
-                                                <span className="bg-indigo-900/30 text-indigo-300 px-2 rounded text-xs">TOA</span>
-                                            </div>
-                                            <ul className="text-xs text-zinc-400 space-y-1">
-                                                <li>• Sen = Oposto / Hipotenusa</li>
-                                                <li>• Cos = Adjacente / Hipotenusa</li>
-                                                <li>• Tan = Oposto / Adjacente</li>
-                                            </ul>
-                                        </div>
-                                        <div className="bg-zinc-800 p-3 rounded text-center text-xs text-yellow-200">
-                                            Decorar: 30°, 45°, 60° (1,2,3... 3,2,1)
-                                        </div>
-                                    </div>
-
-                                    {/* Any Triangle */}
-                                    <div className="space-y-4">
-                                        <h3 className="text-lg font-bold text-white border-b border-white/10 pb-2">Triângulo Qualquer</h3>
-
-                                        <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-blue-500">
-                                            <strong className="text-blue-400 block text-sm">Lei dos Senos (Pares)</strong>
-                                            <div className="font-mono text-center text-white my-2 text-xs">
-                                                a/senA = b/senB = 2R
-                                            </div>
-                                            <p className="text-[10px] text-zinc-500">Use quando tiver pares (Lado X e Ângulo X).</p>
-                                        </div>
-
-                                        <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-purple-500">
-                                            <strong className="text-purple-400 block text-sm">Lei dos Cossenos (LAL)</strong>
-                                            <div className="font-mono text-center text-white my-2 text-xs">
-                                                a² = b² + c² - 2bc.cosA
-                                            </div>
-                                            <p className="text-[10px] text-zinc-500">Use com 3 lados ou Lado-Ângulo-Lado. (Pitágoras Turbinado).</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Case Study */}
-                                <div className="bg-indigo-900/10 p-6 rounded-2xl border border-indigo-500/20">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <span className="text-2xl">🛰️</span>
-                                        <h2 className="text-xl font-bold text-indigo-300">Estudo de Caso: GPS</h2>
-                                    </div>
-                                    <p className="text-zinc-400 text-sm leading-relaxed">
-                                        O GPS não mede distâncias com régua. Ele usa geometria.
-                                        Seu celular calcula a distância até 3 ou 4 satélites e usa a intersecção de esferas (baseada na <strong className="text-white">Lei dos Cossenos 3D</strong>) para te localizar.
-                                    </p>
-                                </div>
-                            </div>
-                        )
+                        contentId: 'mathematics_trig_triangle'
                     }
                 ]
             },
@@ -2058,79 +956,7 @@ export const COURSES_DATA: Course[] = [
                         title: 'Princípios de Contagem',
                         duration: '2h',
                         status: 'Locked',
-                        content: (
-                            <div className="space-y-8">
-                                {/* Intro */}
-                                <div className="prose prose-invert max-w-none">
-                                    <h2 className="text-2xl font-bold text-indigo-400">1. Introdução: A Arte de Contar</h2>
-                                    <p className="text-zinc-400 leading-relaxed">
-                                        Se perguntarem "quantas senhas de 4 dígitos existem?", você não escreve todas. Você usa a <strong className="text-white">Combinatória</strong>.
-                                        O grande divisor de águas é: <strong className="text-white">A ORDEM IMPORTA?</strong>
-                                        <br />Se sim (Senha 123 ≠ 321), é Arranjo/Permutação.
-                                        <br />Se não (Salada Maçã+Banana = Banana+Maçã), é Combinação.
-                                    </p>
-                                </div>
-
-                                {/* Methods Grid */}
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    {/* Permutation */}
-                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-emerald-500">
-                                        <strong className="text-emerald-400 block mb-1">Permutação (Pn)</strong>
-                                        <p className="text-xs text-zinc-400 mb-2">Usa <strong className="text-white">TODOS</strong>. Troca lugar.</p>
-                                        <div className="font-mono text-center text-white text-xs bg-black/20 p-1 rounded">
-                                            {'Pn = n!'}
-                                        </div>
-                                        <p className="text-[10px] text-zinc-500 mt-2">Ex: Anagramas (AMOR).</p>
-                                    </div>
-
-                                    {/* Arrangement */}
-                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-blue-500">
-                                        <strong className="text-blue-400 block mb-1">Arranjo (An,p)</strong>
-                                        <p className="text-xs text-zinc-400 mb-2">Escolhe ALGUNS. <strong className="text-white">Ordem IMPORTA</strong>.</p>
-                                        <div className="font-mono text-center text-white text-xs bg-black/20 p-1 rounded">
-                                            {'An,p = n! / (n-p)!'}
-                                        </div>
-                                        <p className="text-[10px] text-zinc-500 mt-2">Ex: Pódio (Ouro/Prata).</p>
-                                    </div>
-
-                                    {/* Combination */}
-                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-purple-500">
-                                        <strong className="text-purple-400 block mb-1">Combinação (Cn,p)</strong>
-                                        <p className="text-xs text-zinc-400 mb-2">Escolhe ALGUNS. <strong className="text-white">NÃO Importa</strong>.</p>
-                                        <div className="font-mono text-center text-white text-xs bg-black/20 p-1 rounded">
-                                            {'Cn,p = n! / p!(n-p)!'}
-                                        </div>
-                                        <p className="text-[10px] text-zinc-500 mt-2">Ex: Equipes, Mega-Sena.</p>
-                                    </div>
-                                </div>
-
-                                {/* Factorial Info */}
-                                <div className="bg-[#1A1B26] p-4 rounded-xl border border-white/5 flex items-center gap-4">
-                                    <div className="text-2xl">❗</div>
-                                    <div>
-                                        <strong className="text-white block">Fatorial (n!)</strong>
-                                        <p className="text-xs text-zinc-400">
-                                            Multiplica descendo até 1. O crescimento é explosivo.
-                                            <br />5! = 120. 10! = 3.6 milhões.
-                                        </p>
-                                    </div>
-                                </div>
-
-                                {/* Case Study */}
-                                <div className="bg-green-900/10 p-6 rounded-2xl border border-green-500/20">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <span className="text-2xl">🤑</span>
-                                        <h2 className="text-xl font-bold text-green-400">Estudo de Caso: Mega-Sena</h2>
-                                    </div>
-                                    <p className="text-zinc-400 text-sm leading-relaxed mb-4">
-                                        Por que é difícil ganhar? É uma <strong className="text-white">Combinação</strong> de 60 números, escolhendo 6.
-                                        A ordem do sorteio não importa.
-                                        <br />Resultado: {'50.063.860'} possibilidades.
-                                        <br />Sua chance: 1 em 50 milhões. (Mais fácil cair um raio: 1 em 1 milhão).
-                                    </p>
-                                </div>
-                            </div>
-                        )
+                        contentId: 'mathematics_combinatoria'
                     }
                 ]
             },
@@ -2147,73 +973,7 @@ export const COURSES_DATA: Course[] = [
                         title: 'Teoria das Probabilidades',
                         duration: '2h 10m',
                         status: 'Locked',
-                        content: (
-                            <div className="space-y-8">
-                                {/* Intro */}
-                                <div className="prose prose-invert max-w-none">
-                                    <h2 className="text-2xl font-bold text-indigo-400">1. A Matemática da Incerteza</h2>
-                                    <p className="text-zinc-400 leading-relaxed">
-                                        Probabilidade calcula a chance de algo acontecer. Nascida dos jogos de azar (Pascal & Fermat), hoje domina a economia e a física quântica.
-                                    </p>
-                                    <div className="bg-zinc-800 p-4 rounded mt-4 text-center font-mono text-white">
-                                        {'P(A) = Favoráveis / Totais'}
-                                    </div>
-                                </div>
-
-                                {/* Venn Diagram Logic */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {/* Union (OR) */}
-                                    <div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5 relative overflow-hidden">
-                                        <div className="absolute top-0 right-0 p-2 opacity-10 text-6xl font-bold text-indigo-500">∪</div>
-                                        <h3 className="text-lg font-bold text-white mb-2">União (OU)</h3>
-                                        <p className="text-xs text-zinc-400 mb-3">Soma as chances. Cuidado para não contar a interseção 2x.</p>
-                                        <div className="font-mono text-indigo-400 text-sm bg-black/20 p-2 rounded break-all">
-                                            {'P(AUB) = P(A) + P(B) - P(A∩B)'}
-                                        </div>
-                                    </div>
-
-                                    {/* Intersection (AND) */}
-                                    <div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5 relative overflow-hidden">
-                                        <div className="absolute top-0 right-0 p-2 opacity-10 text-6xl font-bold text-pink-500">∩</div>
-                                        <h3 className="text-lg font-bold text-white mb-2">Interseção (E)</h3>
-                                        <p className="text-xs text-zinc-400 mb-3">Multiplica. Acontecer um E o outro.</p>
-                                        <div className="font-mono text-pink-400 text-sm bg-black/20 p-2 rounded break-all">
-                                            {'P(A∩B) = P(A) . P(B)'}
-                                            <span className="text-[10px] text-zinc-500 block text-center mt-1">(Se independentes)</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Conditional Probability */}
-                                <div className="bg-[#1A1B26] p-6 rounded-2xl border border-white/5 border-l-4 border-yellow-500">
-                                    <h3 className="text-xl font-bold text-white mb-2">Probabilidade Condicional</h3>
-                                    <p className="text-sm text-zinc-400 mb-4">
-                                        "Qual a chance de A, <strong className="text-white">dado que B aconteceu?</strong>"
-                                        <br />O evento B reduz o seu Espaço Amostral. O denominador muda.
-                                    </p>
-                                    <div className="flex justify-center">
-                                        <div className="font-mono text-yellow-400 text-lg bg-black/30 px-4 py-2 rounded">
-                                            {'P(A|B) = P(A∩B) / P(B)'}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Case Study: False Positive */}
-                                <div className="bg-red-900/10 p-6 rounded-2xl border border-red-500/20">
-                                    <h2 className="text-xl font-bold text-red-400 mb-2">O Paradoxo do Falso Positivo</h2>
-                                    <p className="text-zinc-300 text-sm leading-relaxed mb-4">
-                                        Doença rara (1%). Teste 99% preciso. Deu Positivo. Você está doente?
-                                        <br /><strong className="text-white">Provavelmente NÃO.</strong> (A chance é ~50%).
-                                        <br />Por quê? Em 1000 pessoas, ha 10 doentes (quase todos positivos) e 990 saudáveis (onde 1% falha = 10 falsos positivos).
-                                        <br />Total de positivos: 20. Você é um deles. Só 10 são reais.
-                                    </p>
-                                    <div className="flex gap-2 text-xs">
-                                        <span className="px-2 py-1 bg-red-500/10 rounded text-red-200">Bayes</span>
-                                        <span className="px-2 py-1 bg-red-500/10 rounded text-red-200">Contra-intuitivo</span>
-                                    </div>
-                                </div>
-                            </div>
-                        )
+                        contentId: 'mathematics_probabilidade'
                     }
                 ]
             },
@@ -2230,99 +990,7 @@ export const COURSES_DATA: Course[] = [
                         title: 'Áreas e Polígonos',
                         duration: '2h 15m',
                         status: 'Locked',
-                        content: (
-                            <div className="space-y-8">
-                                {/* Intro */}
-                                <div className="prose prose-invert max-w-none">
-                                    <h2 className="text-2xl font-bold text-indigo-400">1. O Medidor de Terras</h2>
-                                    <p className="text-zinc-400 leading-relaxed">
-                                        Geometria (Geo=Terra, Metron=Medida) nasceu no Egito.
-                                        O conceito central é <strong className="text-white">Área</strong>: quanto "papel" preciso para cobrir uma forma 2D.
-                                    </p>
-                                </div>
-
-                                {/* Area Formulas Grid */}
-                                <h3 className="text-lg font-bold text-white mt-4">Kit de Sobrevivência (Áreas)</h3>
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-blue-500">
-                                        <div className="text-2xl mb-2">🟦</div>
-                                        <strong className="text-blue-400 block mb-1">Retângulo</strong>
-                                        <div className="font-mono text-center text-white text-xs bg-black/20 p-1 rounded">
-                                            {'b . h'}
-                                        </div>
-                                    </div>
-                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-yellow-500">
-                                        <div className="text-2xl mb-2">🔺</div>
-                                        <strong className="text-yellow-400 block mb-1">Triângulo</strong>
-                                        <div className="font-mono text-center text-white text-xs bg-black/20 p-1 rounded">
-                                            {'(b . h) / 2'}
-                                        </div>
-                                    </div>
-                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-emerald-500">
-                                        <div className="text-2xl mb-2">🔼</div>
-                                        <strong className="text-emerald-400 block mb-1">T. Equilátero</strong>
-                                        <div className="font-mono text-center text-white text-xs bg-black/20 p-1 rounded">
-                                            {'l²√3 / 4'}
-                                        </div>
-                                        <span className="text-[10px] text-zinc-500 block text-center mt-1">Decore!</span>
-                                    </div>
-                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-purple-500">
-                                        <div className="text-2xl mb-2">🏗️</div>
-                                        <strong className="text-purple-400 block mb-1">Trapézio</strong>
-                                        <div className="font-mono text-center text-white text-xs bg-black/20 p-1 rounded">
-                                            {'(B + b).h / 2'}
-                                        </div>
-                                    </div>
-                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-orange-500 col-span-2 md:col-span-1">
-                                        <div className="text-2xl mb-2">⚪</div>
-                                        <strong className="text-orange-400 block mb-1">Círculo</strong>
-                                        <div className="font-mono text-center text-white text-xs bg-black/20 p-1 rounded mb-1">
-                                            {'A = πR²'}
-                                        </div>
-                                        <div className="font-mono text-center text-zinc-400 text-[10px]">
-                                            {'C = 2πR'}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Polygons & Angles */}
-                                <div className="bg-[#1A1B26] p-6 rounded-2xl border border-white/5 flex flex-col md:flex-row gap-6 items-center">
-                                    <div className="flex-1">
-                                        <h3 className="text-lg font-bold text-white mb-2">Soma dos Ângulos Internos</h3>
-                                        <p className="text-sm text-zinc-400 mb-2">
-                                            Qualquer polígono vira triângulos. Um quadrado são 2 triângulos (360°).
-                                        </p>
-                                        <div className="font-mono text-indigo-400 font-bold">
-                                            {'Si = (n - 2) . 180°'}
-                                        </div>
-                                    </div>
-                                    <div className="w-px h-16 bg-white/10 hidden md:block"></div>
-                                    <div className="flex-1">
-                                        <h3 className="text-lg font-bold text-white mb-2">Semelhança (Escala)</h3>
-                                        <p className="text-sm text-zinc-400 mb-2">
-                                            Cuidado! Se dobrar o lado (x2), a área <strong className="text-red-400">QUADRUPLICA</strong> (x4).
-                                        </p>
-                                        <div className="font-mono text-red-400 font-bold">
-                                            {'k²'}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Case Study */}
-                                <div className="bg-orange-900/10 p-6 rounded-2xl border border-orange-500/20">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <span className="text-2xl">🍕</span>
-                                        <h2 className="text-xl font-bold text-orange-400">Estudo de Caso: A Economia da Pizza</h2>
-                                    </div>
-                                    <p className="text-zinc-400 text-sm leading-relaxed">
-                                        Uma pizza gigante (40cm) vale mais que duas médias (20cm).
-                                        <br />Raio 10cm → {'Área 100π'}.
-                                        <br />Raio 20cm → {'Área 400π'}. (4x maior, não 2x).
-                                        <br />As pizzarias lucram na geometria quadrática.
-                                    </p>
-                                </div>
-                            </div>
-                        )
+                        contentId: 'mathematics_geo_plana'
                     }
                 ]
             },
@@ -2339,84 +1007,7 @@ export const COURSES_DATA: Course[] = [
                         title: 'Sólidos e Volumes',
                         duration: '2h 30m',
                         status: 'Locked',
-                        content: (
-                            <div className="space-y-8">
-                                {/* Intro */}
-                                <div className="prose prose-invert max-w-none">
-                                    <h2 className="text-2xl font-bold text-indigo-400">1. O Mundo 3D</h2>
-                                    <p className="text-zinc-400 leading-relaxed">
-                                        Aqui ganhamos profundidade. Calculamos <strong className="text-white">Área Total</strong> (casca) e <strong className="text-white">Volume</strong> (recheio).
-                                        O segredo é ver se o sólido tem "ponta" ou não.
-                                    </p>
-                                </div>
-
-                                {/* Solids Type Grid */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {/* Prism/Cylinder */}
-                                    <div className="bg-zinc-900/50 p-6 rounded-2xl border-t-4 border-blue-500">
-                                        <h3 className="text-lg font-bold text-white mb-2">Corpo Reto (Prisma/Cilindro)</h3>
-                                        <p className="text-xs text-zinc-500 mb-4">Teto igual ao chão.</p>
-                                        <div className="flex items-center justify-between bg-black/20 p-3 rounded">
-                                            <span className="text-zinc-300 text-sm">Volume</span>
-                                            <span className="font-mono text-blue-400 font-bold">{'Ab . h'}</span>
-                                        </div>
-                                    </div>
-
-                                    {/* Pyramid/Cone */}
-                                    <div className="bg-zinc-900/50 p-6 rounded-2xl border-t-4 border-red-500">
-                                        <h3 className="text-lg font-bold text-white mb-2">Com Ponta (Pirâmide/Cone)</h3>
-                                        <p className="text-xs text-zinc-500 mb-4">Afunila num vértice.</p>
-                                        <div className="flex items-center justify-between bg-black/20 p-3 rounded">
-                                            <span className="text-zinc-300 text-sm">Volume</span>
-                                            <span className="font-mono text-red-400 font-bold">{'Ab . h / 3'}</span>
-                                        </div>
-                                        <p className="text-[10px] text-zinc-500 mt-2 text-center">Cabem 3 cones no cilindro.</p>
-                                    </div>
-                                </div>
-
-                                {/* Sphere */}
-                                <div className="bg-[#1A1B26] p-6 rounded-2xl border border-white/5 flex items-center gap-6">
-                                    <div className="text-4xl animate-pulse">🔮</div>
-                                    <div className="flex-1">
-                                        <h3 className="text-lg font-bold text-white mb-2">A Esfera (Perfeição)</h3>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <span className="text-xs text-zinc-500 block">Volume</span>
-                                                <span className="font-mono text-purple-400 font-bold">{'4/3 πR³'}</span>
-                                            </div>
-                                            <div>
-                                                <span className="text-xs text-zinc-500 block">Área</span>
-                                                <span className="font-mono text-purple-400 font-bold">{'4πR²'}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Scaling 3D */}
-                                <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5">
-                                    <strong className="text-white block mb-1">Escala 3D (O Perigo)</strong>
-                                    <p className="text-xs text-zinc-400">
-                                        Se dobrar a aresta de uma caixa (x2):
-                                        <br />• A Área quadruplica (x4).
-                                        <br />• O Volume <strong className="text-red-400">OCTUPLICA</strong> (2³ = 8).
-                                    </p>
-                                </div>
-
-                                {/* Case Study */}
-                                <div className="bg-cyan-900/10 p-6 rounded-2xl border border-cyan-500/20">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <span className="text-2xl">🐻‍❄️</span>
-                                        <h2 className="text-xl font-bold text-cyan-400">Estudo de Caso: Biologia</h2>
-                                    </div>
-                                    <p className="text-zinc-400 text-sm leading-relaxed">
-                                        Por que ursos polares são grandes? (Regra de Bergmann).
-                                        <br />O calor sai pela pele (Área). O calor é gerado pela carne (Volume).
-                                        <br />Animais grandes têm muito mais volume do que área. Seguram o calor.
-                                        Um rato morreria congelado no Ártico em minutos.
-                                    </p>
-                                </div>
-                            </div>
-                        )
+                        contentId: 'mathematics_geo_espacial'
                     }
                 ]
             },
@@ -2433,77 +1024,7 @@ export const COURSES_DATA: Course[] = [
                         title: 'O Casamento Álgebra + Geometria',
                         duration: '2h',
                         status: 'Locked',
-                        content: (
-                            <div className="space-y-8">
-                                {/* Intro */}
-                                <div className="prose prose-invert max-w-none">
-                                    <h2 className="text-2xl font-bold text-indigo-400">1. O Sonho de Descartes</h2>
-                                    <p className="text-zinc-400 leading-relaxed">
-                                        Antes, Geometria era desenho. Descartes transformou formas em números $(x, y)$.
-                                        Agora, uma reta é uma equação $y = mx + n$. Isso permitiu que computadores (que só veem números) desenhassem o mundo.
-                                    </p>
-                                </div>
-
-                                {/* Point, Line, Circle Grid */}
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    {/* Point */}
-                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-emerald-500">
-                                        <strong className="text-emerald-400 block mb-1">Ponto (x,y)</strong>
-                                        <p className="text-xs text-zinc-400 mb-2">A unidade básica.</p>
-                                        <div className="font-mono text-center text-white text-[10px] bg-black/20 p-1 rounded mb-1">
-                                            {'d² = Δx² + Δy²'}
-                                        </div>
-                                        <span className="text-[10px] text-zinc-500 block text-center">Distância (=Pitágoras)</span>
-                                    </div>
-
-                                    {/* Line */}
-                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-blue-500">
-                                        <strong className="text-blue-400 block mb-1">Reta</strong>
-                                        <p className="text-xs text-zinc-400 mb-2">Linearidade.</p>
-                                        <div className="font-mono text-center text-white text-[10px] bg-black/20 p-1 rounded mb-1">
-                                            {'y = mx + n'}
-                                        </div>
-                                        <span className="text-[10px] text-zinc-500 block text-center">m = inclinação</span>
-                                    </div>
-
-                                    {/* Circle */}
-                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-purple-500">
-                                        <strong className="text-purple-400 block mb-1">Circunferência</strong>
-                                        <p className="text-xs text-zinc-400 mb-2">Equidistância.</p>
-                                        <div className="font-mono text-center text-white text-[10px] bg-black/20 p-1 rounded mb-1">
-                                            {'(x-a)² + (y-b)² = R²'}
-                                        </div>
-                                        <span className="text-[10px] text-zinc-500 block text-center">Centro (a,b)</span>
-                                    </div>
-                                </div>
-
-                                {/* Relative Positions */}
-                                <div className="bg-[#1A1B26] p-4 rounded-xl border border-white/5 space-y-2">
-                                    <h3 className="text-sm font-bold text-white">Posições Relativas das Retas</h3>
-                                    <div className="flex justify-between items-center text-xs">
-                                        <span className="text-zinc-400">Paralelas (Nunca tocam)</span>
-                                        <span className="font-mono text-indigo-400 bg-indigo-500/10 px-2 py-1 rounded">{'m1 = m2'}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center text-xs">
-                                        <span className="text-zinc-400">Perpendiculares (90°)</span>
-                                        <span className="font-mono text-pink-400 bg-pink-500/10 px-2 py-1 rounded">{'m1 . m2 = -1'}</span>
-                                    </div>
-                                </div>
-
-                                {/* Case Study */}
-                                <div className="bg-indigo-900/10 p-6 rounded-2xl border border-indigo-500/20">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <span className="text-2xl">🛰️</span>
-                                        <h2 className="text-xl font-bold text-indigo-400">Estudo de Caso: GPS (3D)</h2>
-                                    </div>
-                                    <p className="text-zinc-400 text-sm leading-relaxed">
-                                        O GPS é Geometria Analítica pura.
-                                        Cada satélite gera uma esfera: {'(x-xs)² + (y-ys)² + (z-zs)² = d²'}.
-                                        Seu celular resolve um sistema de equações para achar a interseção (seu ponto x, y, z).
-                                    </p>
-                                </div>
-                            </div>
-                        )
+                        contentId: 'mathematics_geo_analitica'
                     }
                 ]
             },
@@ -2520,72 +1041,7 @@ export const COURSES_DATA: Course[] = [
                         title: 'A Ciência dos Dados',
                         duration: '2h 10m',
                         status: 'Locked',
-                        content: (
-                            <div className="space-y-8">
-                                {/* Intro */}
-                                <div className="prose prose-invert max-w-none">
-                                    <h2 className="text-2xl font-bold text-indigo-400">1. Ordem no Caos</h2>
-                                    <p className="text-zinc-400 leading-relaxed">
-                                        Vivemos na era do Big Data. A <strong className="text-white">Estatística</strong> resume milhões de dados em decisões.
-                                        As <strong className="text-white">Matrizes</strong> são a linguagem como os computadores organizam esses dados.
-                                    </p>
-                                </div>
-
-                                {/* Stats Grid */}
-                                <div className="space-y-4">
-                                    <h3 className="text-lg font-bold text-white">Estatística Descritiva</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                        <div className="bg-zinc-900/50 p-4 rounded-xl border-t-2 border-blue-500">
-                                            <strong className="text-blue-400 block mb-1">Média</strong>
-                                            <p className="text-xs text-zinc-500">Soma / Total. Sensível a extremos.</p>
-                                        </div>
-                                        <div className="bg-zinc-900/50 p-4 rounded-xl border-t-2 border-green-500">
-                                            <strong className="text-green-400 block mb-1">Mediana</strong>
-                                            <p className="text-xs text-zinc-500">O valor do meio. A verdade social (salários).</p>
-                                        </div>
-                                        <div className="bg-zinc-900/50 p-4 rounded-xl border-t-2 border-red-500">
-                                            <strong className="text-red-400 block mb-1">Desvio Padrão</strong>
-                                            <p className="text-xs text-zinc-500">Confiabilidade. Dados espalhados = Alto DP.</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Matrices & Systems */}
-                                <div className="bg-[#1A1B26] p-6 rounded-2xl border border-white/5 space-y-4">
-                                    <div className="flex items-center gap-3">
-                                        <span className="text-2xl">🔢</span>
-                                        <h3 className="text-xl font-bold text-white">Matrizes e Sistemas</h3>
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-                                        <div>
-                                            <strong className="text-indigo-300 block mb-1">Determinante (Det)</strong>
-                                            <p className="text-zinc-400 text-xs">
-                                                Se {'Det ≠ 0'}, o sistema tem solução única (Retas cruzam).
-                                                <br />Se {'Det = 0'}, é Impossível ou Indeterminado (Paralelas).
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <strong className="text-purple-300 block mb-1">Aplicações Reais</strong>
-                                            <p className="text-zinc-400 text-xs">
-                                                Computação Gráfica (Rotação 3D), Google PageRank, Redes Neurais.
-                                                Tudo são multiplicações de matrizes.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Case Study */}
-                                <div className="bg-yellow-900/10 p-6 rounded-2xl border border-yellow-500/20">
-                                    <h2 className="text-xl font-bold text-yellow-400 mb-2">A Falácia da Média (Bill Gates)</h2>
-                                    <p className="text-zinc-400 text-sm leading-relaxed">
-                                        Um bar tem 10 desempregados (Renda R$ 0). Bill Gates entra.
-                                        <br />Média de Renda: <strong className="text-white">Milionária</strong>.
-                                        <br />Mediana: <strong className="text-white">R$ 0</strong> (Continua igual).
-                                        <br />Lição: Em países desiguais, a Média mente. Olhe sempre para a Mediana.
-                                    </p>
-                                </div>
-                            </div>
-                        )
+                        contentId: 'mathematics_estatistica'
                     }
                 ]
             }
@@ -2615,81 +1071,7 @@ export const COURSES_DATA: Course[] = [
                         title: 'O Estudo do Movimento',
                         duration: '2h 30m',
                         status: 'Locked',
-                        content: (
-                            <div className="space-y-8">
-                                {/* Intro */}
-                                <div className="prose prose-invert max-w-none">
-                                    <h2 className="text-2xl font-bold text-violet-400">1. O Palco do Universo</h2>
-                                    <p className="text-zinc-400 leading-relaxed">
-                                        Cinemática é descrever o movimento "sem se preocupar com a causa".
-                                        O maior erro dos alunos: confundir <strong className="text-white">Escalar</strong> (só número) com <strong className="text-white">Vetorial</strong> (direção/sentido).
-                                        <br />Se você der uma volta ao mundo e voltar ao mesmo lugar: Distância = 40.000km. Deslocamento = 0.
-                                    </p>
-                                </div>
-
-                                {/* Formulas Grid */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {/* MRU */}
-                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-blue-500">
-                                        <div className="flex justify-between items-center mb-2">
-                                            <strong className="text-blue-400">MRU (Vel. Constante)</strong>
-                                            <span className="text-xs text-zinc-500">a = 0</span>
-                                        </div>
-                                        <div className="bg-black/20 p-2 rounded text-center mb-1">
-                                            <code className="text-white text-sm">{'S = S0 + v.t'}</code>
-                                        </div>
-                                        <p className="text-xs text-zinc-400 text-center">"Sorvete"</p>
-                                    </div>
-
-                                    {/* MRUV */}
-                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-red-500">
-                                        <div className="flex justify-between items-center mb-2">
-                                            <strong className="text-red-400">MRUV (Aceleração)</strong>
-                                            <span className="text-xs text-zinc-500">a ≠ 0</span>
-                                        </div>
-                                        <div className="space-y-1">
-                                            <div className="bg-black/20 p-2 rounded text-center">
-                                                <code className="text-white text-sm">{'V = V0 + a.t'}</code>
-                                            </div>
-                                            <div className="bg-black/20 p-2 rounded text-center">
-                                                <code className="text-white text-sm">{'S = S0 + V0t + at²/2'}</code>
-                                            </div>
-                                            <div className="bg-black/20 p-2 rounded text-center border border-red-500/30">
-                                                <code className="text-red-200 text-sm">{'V² = V0² + 2aΔS'}</code>
-                                            </div>
-                                            <p className="text-[10px] text-zinc-500 text-center">Torricelli: "Sem tempo a perder"</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Vectors Section */}
-                                <div className="bg-[#1A1B26] p-6 rounded-2xl border border-white/5">
-                                    <div className="flex items-center gap-3 mb-4">
-                                        <span className="text-2xl">🏹</span>
-                                        <h3 className="text-xl font-bold text-white">Cinemática Vetorial (Balística)</h3>
-                                    </div>
-                                    <p className="text-sm text-zinc-400 mb-4">
-                                        Jogar uma pedra gera uma Parábola. Por quê? São 2 movimentos juntos:
-                                        <br />• <strong className="text-blue-400">Eixo X (Horizontal)</strong>: MRU (inércia).
-                                        <br />• <strong className="text-red-400">Eixo Y (Vertical)</strong>: MRUV (gravidade).
-                                    </p>
-                                    <div className="bg-black/30 p-3 rounded border border-white/10 text-center">
-                                        <span className="text-violet-300 font-mono text-sm">{'Vox = V.cos(θ)  |  Voy = V.sen(θ)'}</span>
-                                    </div>
-                                </div>
-
-                                {/* Case Study */}
-                                <div className="bg-red-900/10 p-6 rounded-2xl border border-red-500/20">
-                                    <h2 className="text-xl font-bold text-red-400 mb-2">Estudo de Caso: A Morte na Estrada</h2>
-                                    <p className="text-zinc-300 text-sm leading-relaxed">
-                                        Por que correr é fatal? A distância de frenagem é <strong className="text-white">QUADRÁTICA</strong>.
-                                        <br />{'ΔS = (V² - V0²) / 2a'}
-                                        <br />Se você dobra a velocidade (50 → 100km/h), você precisa de <strong className="text-red-300">4x mais pista</strong> para parar.
-                                        A intuição é linear, mas a física é exponencial.
-                                    </p>
-                                </div>
-                            </div>
-                        )
+                        contentId: 'physics_cinematica_intro'
                     }
                 ]
             },
@@ -2706,72 +1088,7 @@ export const COURSES_DATA: Course[] = [
                         title: 'As Leis do Universo',
                         duration: '2h 45m',
                         status: 'Locked',
-                        content: (
-                            <div className="space-y-8">
-                                {/* Intro */}
-                                <div className="prose prose-invert max-w-none">
-                                    <h2 className="text-2xl font-bold text-violet-400">1. Newton Explica Tudo</h2>
-                                    <p className="text-zinc-400 leading-relaxed">
-                                        Cinemática vê o movimento. Dinâmica explica a <strong className="text-white">CAUSA</strong> (Força).
-                                        Newton (1687) disse: "O estado natural não é parado. É andar para sempre. A força serve para mudar isso."
-                                    </p>
-                                </div>
-
-                                {/* 3 Laws Grid */}
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-t-2 border-zinc-500">
-                                        <strong className="text-white block mb-1">1ª Lei: Inércia</strong>
-                                        <p className="text-xs text-zinc-500">Matéria é preguiçosa. Resiste a mudar de velocidade.</p>
-                                    </div>
-                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-t-2 border-violet-500">
-                                        <strong className="text-violet-400 block mb-1">2ª Lei: Princípio</strong>
-                                        <div className="bg-black/20 p-1 rounded text-center my-2">
-                                            <code className="text-white font-bold">{'Fr = m.a'}</code>
-                                        </div>
-                                        <p className="text-xs text-zinc-500">Força gera Aceleração.</p>
-                                    </div>
-                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-t-2 border-pink-500">
-                                        <strong className="text-pink-400 block mb-1">3ª Lei: Ação/Reação</strong>
-                                        <p className="text-xs text-zinc-500">Pares nunca se anulam (corpos diferentes).</p>
-                                    </div>
-                                </div>
-
-                                {/* Special Forces */}
-                                <div className="bg-[#1A1B26] p-6 rounded-2xl border border-white/5 space-y-4">
-                                    <h3 className="text-lg font-bold text-white">Forças Especiais</h3>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-xl">⚖️</span>
-                                            <div>
-                                                <strong className="block text-zinc-300">Peso vs Normal</strong>
-                                                <span className="text-xs text-zinc-500">Peso é gravidade mg. Normal é contato (não é o peso!).</span>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-xl">🛑</span>
-                                            <div>
-                                                <strong className="block text-zinc-300">Atrito (Fat)</strong>
-                                                <span className="text-xs text-zinc-500">{'Fat = μ . N'}. Estático (segura) {'>'} Cinético (desliza).</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Case Study */}
-                                <div className="bg-violet-900/10 p-6 rounded-2xl border border-violet-500/20">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <span className="text-2xl">🛗</span>
-                                        <h2 className="text-xl font-bold text-violet-400">Estudo de Caso: O Elevador</h2>
-                                    </div>
-                                    <p className="text-zinc-400 text-sm leading-relaxed">
-                                        A balança marca a <strong className="text-white">Normal</strong>, não seu peso.
-                                        <br />• Subindo Acelerado: Você sente "pesado" ($N = P + ma$).
-                                        <br />• Descendo Acelerado: Chão foge ($N = P - ma$).
-                                        <br />• Cabo Cortado: Você flutua ($N=0$).
-                                    </p>
-                                </div>
-                            </div>
-                        )
+                        contentId: 'physics_dinamica_intro'
                     }
                 ]
             },
@@ -2788,87 +1105,7 @@ export const COURSES_DATA: Course[] = [
                         title: 'A Moeda do Universo',
                         duration: '2h',
                         status: 'Locked',
-                        content: (
-                            <div className="space-y-8">
-                                {/* Intro */}
-                                <div className="prose prose-invert max-w-none">
-                                    <h2 className="text-2xl font-bold text-violet-400">1. Energia e Trabalho</h2>
-                                    <p className="text-zinc-400 leading-relaxed">
-                                        Energia é a capacidade de realizar <strong className="text-white">Trabalho</strong>.
-                                        Trabalho não é cansaço. É deslocar algo com força.
-                                        <br />Se a parede não mexe, Trabalho = 0 (mesmo que você sue).
-                                    </p>
-                                </div>
-
-                                {/* Concepts Grid */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {/* Work */}
-                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-yellow-500">
-                                        <strong className="text-yellow-400 block mb-1">Trabalho (τ)</strong>
-                                        <div className="bg-black/20 p-2 rounded text-center mb-1">
-                                            <code className="text-white text-sm">{'τ = F . d . cos(θ)'}</code>
-                                        </div>
-                                        <p className="text-xs text-zinc-500">Se θ=90° (pendicular), não trabalha.</p>
-                                    </div>
-
-                                    {/* Power */}
-                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-l-4 border-orange-500">
-                                        <div className="flex justify-between">
-                                            <strong className="text-orange-400 block mb-1">Potência (W)</strong>
-                                            <span className="text-xs text-zinc-500">Rapidez</span>
-                                        </div>
-                                        <div className="bg-black/20 p-2 rounded text-center mb-1">
-                                            <code className="text-white text-sm">{'Pot = Trabalho / Tempo'}</code>
-                                        </div>
-                                        <p className="text-xs text-zinc-500">Fusca vs Ferrari: Mesmo trabalho, tempos diferentes.</p>
-                                    </div>
-                                </div>
-
-                                {/* Mechanical Energy Types */}
-                                <div className="bg-[#1A1B26] p-6 rounded-2xl border border-white/5 space-y-4">
-                                    <h3 className="text-lg font-bold text-white">Energia Mecânica (Soma)</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                                        <div className="p-3 bg-black/20 rounded-xl">
-                                            <span className="text-2xl block mb-1">🏃</span>
-                                            <strong className="text-blue-400 text-sm">Cinética</strong>
-                                            <div className="mt-1 text-xs text-zinc-400">{'mV² / 2'}</div>
-                                            <span className="text-[10px] text-red-400 block mt-1">Velocidade ²</span>
-                                        </div>
-                                        <div className="p-3 bg-black/20 rounded-xl">
-                                            <span className="text-2xl block mb-1">🏔️</span>
-                                            <strong className="text-emerald-400 text-sm">Pot. Gravitacional</strong>
-                                            <div className="mt-1 text-xs text-zinc-400">{'m.g.h'}</div>
-                                            <span className="text-[10px] text-zinc-500 block mt-1">Depende da Altura</span>
-                                        </div>
-                                        <div className="p-3 bg-black/20 rounded-xl">
-                                            <span className="text-2xl block mb-1">🌀</span>
-                                            <strong className="text-purple-400 text-sm">Pot. Elástica</strong>
-                                            <div className="mt-1 text-xs text-zinc-400">{'kx² / 2'}</div>
-                                            <span className="text-[10px] text-zinc-500 block mt-1">Molas</span>
-                                        </div>
-                                    </div>
-                                    <div className="bg-indigo-500/10 p-3 rounded text-center border border-indigo-500/30">
-                                        <strong className="text-indigo-300 text-sm block mb-1">Conservação da Energia</strong>
-                                        <code className="text-white text-xs">{'Em(antes) = Em(depois)'}</code>
-                                        <p className="text-[10px] text-zinc-400 mt-1">(Sem atrito, a energia só se transforma)</p>
-                                    </div>
-                                </div>
-
-                                {/* Case Study */}
-                                <div className="bg-blue-900/10 p-6 rounded-2xl border border-blue-500/20">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <span className="text-2xl">🎢</span>
-                                        <h2 className="text-xl font-bold text-blue-400">Estudo de Caso: O Looping</h2>
-                                    </div>
-                                    <p className="text-zinc-400 text-sm leading-relaxed">
-                                        Qual a altura mínima para não cair no loop?
-                                        <br />Pela conservação da energia e força centrípeta:
-                                        <br /><code className="text-white">{'h = 2,5 . R'}</code>
-                                        <br />Tem que ser 2,5 vezes o raio. Menos que isso, a gravidade vence no topo.
-                                    </p>
-                                </div>
-                            </div>
-                        )
+                        contentId: 'physics_energia_intro'
                     }
                 ]
             },
@@ -4432,102 +2669,2137 @@ export const COURSES_DATA: Course[] = [
         ]
     },
     {
-        id: 'history',
-        title: 'História',
-        description: 'História antiga, medieval, moderna e contemporânea.',
-        category: 'HUMANAS',
-        duration: '100h',
-        progress: 0,
-        icon: Hourglass,
-        color: 'bg-amber-600',
-        tags: ['humanas']
-    },
-    {
-        id: 'geography',
-        title: 'Geografia',
-        description: 'Geografia física, política, econômica e humana.',
-        category: 'HUMANAS',
-        duration: '80h',
-        progress: 0,
-        icon: Globe,
-        color: 'bg-cyan-600',
-        tags: ['humanas']
-    },
-    {
-        id: 'philosophy',
-        title: 'Filosofia',
-        description: 'Ética, lógica, metafísica e história da filosofia.',
-        category: 'HUMANAS',
-        duration: '60h',
-        progress: 0,
-        icon: Brain,
-        color: 'bg-fuchsia-600',
-        tags: ['humanas']
-    },
-    {
         id: 'sociology',
         title: 'Sociologia',
-        description: 'Estudo da sociedade, cultura e relações humanas.',
+        description: 'Compreensão da sociedade, instituições e relações humanas.',
         category: 'HUMANAS',
         duration: '50h',
         progress: 0,
         icon: Users,
         color: 'bg-orange-600',
-        tags: ['humanas']
+        tags: ['humanas', 'enem', 'ufrgs'],
+        objectives: [
+            "Analisar as relações entre indivíduo e sociedade",
+            "Compreender os clássicos: Marx, Durkheim e Weber",
+            "Discutir temas contemporâneos: Cultura, Trabalho e Desigualdade",
+            "Desenvolver o olhar estranhamento e desnaturalização"
+        ],
+        modules: [
+            {
+                id: 'm_soc_intro',
+                title: 'Módulo 1: Introdução à Sociologia',
+                description: 'O surgimento da ciência da sociedade.',
+                locked: false,
+                duration: '6h',
+                status: 'In Progress',
+                lessons: [
+                    {
+                        id: 'l_soc_surgimento',
+                        title: 'O Surgimento da Sociologia e o Positivismo',
+                        duration: '1h 30m',
+                        status: 'In Progress',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-orange-400">1. Por que a Sociologia nasceu?</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        A Sociologia é uma ciência jovem ("filha do século XIX"). Ela nasceu de uma necessidade urgente: explicar o <strong>CAOS</strong>. A Europa passava pela <strong>Dupla Revolução</strong> (Industrial e Francesa), que destruiu o antigo modo de vida feudal e rural, jogando multidões nas cidades insalubres, criando novas classes sociais (burguesia e proletariado) e novas formas de pensar.
+                                    </p>
+                                    <div className="bg-orange-900/20 p-4 rounded-xl border border-orange-500/30 my-4">
+                                        <p className="text-orange-200 text-sm italic">
+                                            "A Sociologia é a ciência da crise." — Ela surge para tentar colocar ordem na bagunça social criada pela modernidade.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5">
+                                        <h3 className="text-lg font-bold text-white mb-2">Revolução Industrial (Econômica)</h3>
+                                        <ul className="text-xs text-zinc-400 list-disc list-inside space-y-1">
+                                            <li>Fim do artesão, início da maquinofatura.</li>
+                                            <li>Êxodo Rural: Inchaço urbano desordenado.</li>
+                                            <li>Surgimento do Proletariado (trabalhadores sem terra, donos apenas da prole).</li>
+                                            <li><strong className="text-orange-400">Problema:</strong> Miséria, exploração, doenças.</li>
+                                        </ul>
+                                    </div>
+                                    <div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5">
+                                        <h3 className="text-lg font-bold text-white mb-2">Revolução Francesa (Política)</h3>
+                                        <ul className="text-xs text-zinc-400 list-disc list-inside space-y-1">
+                                            <li>Queda do Antigo Regime (Rei/Igreja).</li>
+                                            <li>Ascensão da Burguesia ao poder.</li>
+                                            <li>Ideais de Liberdade, Igualdade e Fraternidade.</li>
+                                            <li><strong className="text-orange-400">Problema:</strong> Instabilidade política, guilhotina, medo.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div className="bg-[#1A1B26] p-6 rounded-2xl border border-white/5 space-y-4">
+                                    <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                                        <span className="text-2xl">🧪</span> Augusto Comte e o Positivismo
+                                    </h3>
+                                    <p className="text-zinc-400 text-sm">
+                                        Comte é considerado o "Pai da Sociologia" (ele cunhou o termo, inicialmente chamando de <em>Física Social</em>). Sua filosofia, o <strong>Positivismo</strong>, acreditava que a ciência era a única forma de conhecimento verdadeiro e que a sociedade deveria ser estudada com o mesmo rigor das ciências naturais (como a Biologia ou a Astronomia).
+                                    </p>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                                        <div className="bg-black/20 p-3 rounded text-center">
+                                            <strong className="block text-orange-300 text-sm">Ordem e Progresso</strong>
+                                            <span className="text-[10px] text-zinc-500">Lema do Positivismo (e da bandeira do Brasil!). O progresso só vem se houver ordem social.</span>
+                                        </div>
+                                        <div className="bg-black/20 p-3 rounded text-center">
+                                            <strong className="block text-orange-300 text-sm">Lei dos 3 Estados</strong>
+                                            <span className="text-[10px] text-zinc-500">Evolução humana: Teológico (Deus) → Metafísico (Filosofia) → Positivo (Ciência).</span>
+                                        </div>
+                                        <div className="bg-black/20 p-3 rounded text-center">
+                                            <strong className="block text-orange-300 text-sm">Religião da Humanidade</strong>
+                                            <span className="text-[10px] text-zinc-500">Substituir Deus pela Humanidade/Ciência. Cientistas seriam os novos sacerdotes.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    },
+                    { id: 'l_soc_durkheim', title: 'Émile Durkheim: O Fato Social', duration: '2h', status: 'Locked' },
+                    { id: 'l_soc_weber', title: 'Max Weber: Ação Social e Burocracia', duration: '2h', status: 'Locked' },
+                    { id: 'l_soc_marx_soc', title: 'Karl Marx: Luta de Classes e Mais-Valia', duration: '2h', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_soc_cultura',
+                title: 'Módulo 2: Cultura e Ideologia',
+                description: 'Identidade, diversidade e indústria cultural.',
+                locked: true,
+                duration: '8h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_soc_cult_conc', title: 'Conceito Antropológico de Cultura', duration: '2h', status: 'Locked' },
+                    { id: 'l_soc_etno', title: 'Etnocentrismo e Relativismo Cultural', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_soc_ind_cult', title: 'Indústria Cultural (Adorno e Horkheimer)', duration: '2h', status: 'Locked' },
+                    { id: 'l_soc_ideologia', title: 'Ideologia e Alienação', duration: '1h 30m', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_soc_brasil',
+                title: 'Módulo 3: Sociologia Brasileira',
+                description: 'Os intérpretes do Brasil.',
+                locked: true,
+                duration: '10h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_soc_gilberto', title: 'Gilberto Freyre: Casa-Grande & Senzala', duration: '2h', status: 'Locked' },
+                    { id: 'l_soc_sergio', title: 'Sérgio Buarque: O Homem Cordial', duration: '2h', status: 'Locked' },
+                    { id: 'l_soc_caio', title: 'Caio Prado Jr: Formação do Brasil Contemporâneo', duration: '2h', status: 'Locked' },
+                    { id: 'l_soc_florestan', title: 'Florestan Fernandes: O Mito da Democracia Racial', duration: '2h', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_soc_politica',
+                title: 'Módulo 4: Poder e Política',
+                description: 'Estado, democracia e movimentos sociais.',
+                locked: true,
+                duration: '8h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_soc_estado', title: 'Conceitos de Estado e Governo', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_soc_cidadania', title: 'Cidadania: Civil, Política e Social (Marshall)', duration: '2h', status: 'Locked' },
+                    { id: 'l_soc_movimentos', title: 'Novos Movimentos Sociais', duration: '2h', status: 'Locked' },
+                    { id: 'l_soc_desigualdade', title: 'Estratificação e Desigualdade Social', duration: '2h', status: 'Locked' }
+                ]
+            }
+        ]
     },
     {
         id: 'portuguese',
         title: 'Português',
-        description: 'Gramática, interpretação de texto e redação.',
+        description: 'Domínio da norma culta, gramática e interpretação.',
         category: 'LINGUAGENS',
         duration: '110h',
         progress: 0,
         icon: BookA,
         color: 'bg-blue-600',
-        tags: ['linguagens']
-    },
-    {
-        id: 'english',
-        title: 'Inglês',
-        description: 'Gramática, vocabulário e compreensão auditiva.',
-        category: 'LINGUAGENS',
-        duration: '100h',
-        progress: 0,
-        icon: Languages,
-        color: 'bg-red-600',
-        tags: ['linguagens']
-    },
-    {
-        id: 'spanish',
-        title: 'Espanhol',
-        description: 'Língua espanhola para comunicação e leitura.',
-        category: 'LINGUAGENS',
-        duration: '70h',
-        progress: 0,
-        icon: Languages,
-        color: 'bg-yellow-600',
-        tags: ['linguagens']
+        tags: ['linguagens', 'enem', 'ufrgs'],
+        objectives: [
+            "Dominar a ortografia, morfologia e sintaxe",
+            "Desenvolver estratégias avançadas de leitura",
+            "Compreender a variação linguística",
+            "Preparação completa para redação e questões objetivas"
+        ],
+        modules: [
+            {
+                id: 'm_port_fonologia',
+                title: 'Módulo 1: Fonologia e Ortografia',
+                description: 'Sons, letras e acentuação.',
+                locked: false,
+                duration: '8h',
+                status: 'In Progress',
+                lessons: [
+                    {
+                        id: 'l_port_fonemas',
+                        title: 'Fonemas, Letras e Sílabas',
+                        duration: '2h',
+                        status: 'In Progress',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-blue-400">1. O Som e o Símbolo</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        Para começar a gramática, precisamos diferenciar o que ouvimos do que escrevemos.
+                                        <br />
+                                        <strong className="text-white">Fonema:</strong> É a menor unidade sonora. (O som /k/ em "Casa").
+                                        <br />
+                                        <strong className="text-white">Letra:</strong> É a representação gráfica do fonema. (A letra "C" em "Casa").
+                                    </p>
+                                    <div className="bg-blue-900/20 p-4 rounded-xl border border-blue-500/30 my-4">
+                                        <p className="text-blue-200 text-sm">
+                                            <strong>Dica do ENEM:</strong> Nem sempre o número de letras é igual ao número de fonemas!
+                                            <br />Ex: TÁXI (4 letras, 5 fonemas - /t/ /a/ /k/ /s/ /i/).
+                                            <br />Ex: HOJE (4 letras, 3 fonemas - o H é mudo).
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5">
+                                        <h3 className="text-lg font-bold text-white mb-2">Dígrafo (2 letras = 1 som)</h3>
+                                        <ul className="text-xs text-zinc-400 list-disc list-inside space-y-2">
+                                            <li><strong className="text-blue-300">Vocálicos:</strong> AM, AN, EM, EN, IM... (falam pelo nariz). Ex: C<span className="text-white">am</span>po (/k/ /ã/ /p/ /o/).</li>
+                                            <li><strong className="text-blue-300">Consonantais:</strong> CH, LH, NH, RR, SS, QU, GU, SC, XC. Ex: C<span className="text-white">h</span>ave (/x/ /a/ /v/ /e/).</li>
+                                        </ul>
+                                    </div>
+                                    <div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5">
+                                        <h3 className="text-lg font-bold text-white mb-2">Dífono (1 letra = 2 sons)</h3>
+                                        <p className="text-xs text-zinc-400 mb-2">Ocorre apenas com a letra <strong>X</strong> com som de /KS/.</p>
+                                        <ul className="text-xs text-zinc-400 list-disc list-inside space-y-2">
+                                            <li>Tó<span className="text-white">x</span>ico (/ks/).</li>
+                                            <li>Fi<span className="text-white">x</span>o (/ks/).</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div className="bg-[#1A1B26] p-6 rounded-2xl border border-white/5 space-y-4">
+                                    <h3 className="text-xl font-bold text-white">Encontros Vocálicos</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                                        <div className="bg-black/20 p-3 rounded">
+                                            <strong className="block text-red-300">Ditongo</strong>
+                                            <span className="text-xs text-zinc-500">Vogal + Semivogal na mesma sílaba. (Ex: P<strong className="text-white">ai</strong>). Não separa!</span>
+                                        </div>
+                                        <div className="bg-black/20 p-3 rounded">
+                                            <strong className="block text-green-300">Tritongo</strong>
+                                            <span className="text-xs text-zinc-500">SV + V + SV na mesma sílaba. (Ex: Parag<strong className="text-white">uai</strong>). Não separa!</span>
+                                        </div>
+                                        <div className="bg-black/20 p-3 rounded">
+                                            <strong className="block text-yellow-300">Hiato</strong>
+                                            <span className="text-xs text-zinc-500">Vogal + Vogal. Elas se odeiam e ficam separadas. (Ex: S<strong className="text-white">a-í</strong>-da).</span>
+                                        </div>
+                                    </div>
+                                    <p className="text-xs text-zinc-400 italic mt-2">
+                                        *Lembre-se: Não existe sílaba sem vogal, e nunca há duas vogais verdadeiras (fortes) na mesma sílaba. Uma delas vira semivogal ou separa (hiato).
+                                    </p>
+                                </div>
+                            </div>
+                        )
+                    },
+                    { id: 'l_port_acentuacao', title: 'Regras de Acentuação e Crase', duration: '2h', status: 'Locked' },
+                    { id: 'l_port_hifens', title: 'Uso do Hífen e Novo Acordo', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_port_morfologia1', title: 'Estrutura e Formação das Palavras', duration: '2h', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_port_morfologia',
+                title: 'Módulo 2: Morfologia (Classes de Palavras)',
+                description: 'Substantivos, Verbos, Pronomes e Conectivos.',
+                locked: true,
+                duration: '15h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_port_subs_adj', title: 'Substantivos e Adjetivos', duration: '2h', status: 'Locked' },
+                    { id: 'l_port_verbos', title: 'Verbos: Tempos e Modos', duration: '3h', status: 'Locked' },
+                    { id: 'l_port_pronomes', title: 'Pronomes e Colocação Pronominal', duration: '2h 30m', status: 'Locked' },
+                    { id: 'l_port_conjuncoes', title: 'Preposições e Conjunções (Conectivos)', duration: '2h', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_port_sintaxe',
+                title: 'Módulo 3: Sintaxe',
+                description: 'Análise da frase e relação entre termos.',
+                locked: true,
+                duration: '15h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_port_sujeito', title: 'Tipos de Sujeito e Predicado', duration: '2h', status: 'Locked' },
+                    { id: 'l_port_trans', title: 'Transitividade Verbal e Complementos', duration: '2h 30m', status: 'Locked' },
+                    { id: 'l_port_concordancia', title: 'Concordância Nominal e Verbal', duration: '3h', status: 'Locked' },
+                    { id: 'l_port_regencia', title: 'Regência Nominal e Verbal', duration: '2h', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_port_interp',
+                title: 'Módulo 4: Interpretação de Texto',
+                description: 'Estratégias de leitura e gêneros textuais.',
+                locked: true,
+                duration: '10h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_port_generos', title: 'Gêneros e Tipologias Textuais', duration: '2h', status: 'Locked' },
+                    { id: 'l_port_funcoes', title: 'Funções da Linguagem', duration: '2h', status: 'Locked' },
+                    { id: 'l_port_figuras', title: 'Figuras de Linguagem', duration: '2h', status: 'Locked' },
+                    { id: 'l_port_intertext', title: 'Intertextualidade e Coesão/Coerência', duration: '2h', status: 'Locked' }
+                ]
+            }
+        ]
     },
     {
         id: 'literature',
         title: 'Literatura',
-        description: 'Movimentos literários, análise de obras e autores.',
+        description: 'Movimentos literários, escolas e obras obrigatórias.',
         category: 'LINGUAGENS',
         duration: '90h',
         progress: 0,
         icon: BookOpen,
         color: 'bg-rose-600',
-        tags: ['linguagens']
+        tags: ['linguagens', 'enem', 'ufrgs'],
+        objectives: [
+            "Analisar o contexto histórico e características das escolas literárias",
+            "Ler e interpretar obras clássicas portuguesas e brasileiras",
+            "Relacionar literatura com outras artes",
+            "Desenvolver senso crítico estético"
+        ],
+        modules: [
+            {
+                id: 'm_lit_era_colonial',
+                title: 'Módulo 1: Era Medieval e Colonial',
+                description: 'Trovadorismo, Humanismo, Classicismo e Quinhentismo.',
+                locked: false,
+                duration: '8h',
+                status: 'In Progress',
+                lessons: [
+                    {
+                        id: 'l_lit_trovadorismo',
+                        title: 'Trovadorismo: O Início de Tudo',
+                        duration: '2h',
+                        status: 'In Progress',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-rose-400">1. A Idade das Trevas?</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        No século XII, Portugal estava nascendo. A literatura não era escrita para ser lida silenciosamente, mas para ser <strong>CANTADA</strong> (acompanhada de alaúdes, liras). O Trovadorismo reflete a sociedade feudal, com sua vassalagem e teocentrismo.
+                                    </p>
+                                </div>
+
+                                <div className="bg-rose-900/10 p-6 rounded-2xl border border-rose-500/20">
+                                    <h3 className="text-xl font-bold text-rose-300 mb-4">Cantigas Líricas (Sentimento)</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <strong className="text-white block mb-1">Cantiga de AMOR</strong>
+                                            <ul className="text-xs text-zinc-400 list-disc list-inside">
+                                                <li>Eu-lírico: <span className="text-blue-400">Masculino</span>.</li>
+                                                <li>Tema: Vassalagem Amorosa (o homem serve à mulher como serve ao suserano).</li>
+                                                <li>Mulher: Inatingível, "Senhor".</li>
+                                                <li>Ambiente: Palaciano (nobreza).</li>
+                                                <li>Sofrimento: "Coita de amor" (dor de amar sem ser correspondido).</li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <strong className="text-white block mb-1">Cantiga de AMIGO</strong>
+                                            <ul className="text-xs text-zinc-400 list-disc list-inside">
+                                                <li>Eu-lírico: <span className="text-pink-400">Feminino</span> (mas escrito por homens).</li>
+                                                <li>Tema: Saudade do namorado (amigo) que foi pra guerra ou pro mar.</li>
+                                                <li>Mulher: Camponesa simples.</li>
+                                                <li>Ambiente: Rural/Natural (fala com as ondas, com as flores).</li>
+                                                <li>Estrutura: Paralelismo (repetições).</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5">
+                                    <h3 className="text-xl font-bold text-white mb-4">Cantigas Satíricas (Zoeira)</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <strong className="text-white block mb-1">Escárnio</strong>
+                                            <p className="text-xs text-zinc-400">Crítica indireta, sem citar nomes. Ironia fina, duplo sentido. "Quem carapuça serviu...".</p>
+                                        </div>
+                                        <div>
+                                            <strong className="text-white block mb-1">Maldizer</strong>
+                                            <p className="text-xs text-zinc-400">Crítica direta, cita o nome (fulano de tal). Palavrões, baixaria, agressão verbal explícita.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="bg-[#1A1B26] p-4 rounded-xl border border-white/10 flex gap-4 items-center">
+                                    <span className="text-3xl">📜</span>
+                                    <div>
+                                        <strong className="text-white">Cancioneiros</strong>
+                                        <p className="text-xs text-zinc-500">
+                                            As cantigas foram compiladas séculos depois em livros chamados Cancioneiros (da Ajuda, da Vaticana, da Biblioteca Nacional).
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    },
+                    { id: 'l_lit_humanismo', title: 'Humanismo e Gil Vicente', duration: '2h', status: 'Locked' },
+                    { id: 'l_lit_classicismo', title: 'Classicismo: Camões e Os Lusíadas', duration: '2h 30m', status: 'Locked' },
+                    { id: 'l_lit_quinhentismo', title: 'Quinhentismo: Carta de Caminha e Anchieta', duration: '1h 30m', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_lit_era_classica',
+                title: 'Módulo 2: Barroco e Arcadismo',
+                description: 'O conflito e o equilíbrio.',
+                locked: true,
+                duration: '10h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_lit_barroco_br', title: 'Barroco no Brasil: Gregório de Matos', duration: '2h', status: 'Locked' },
+                    { id: 'l_lit_vieira', title: 'Padre Antônio Vieira e os Sermões', duration: '2h', status: 'Locked' },
+                    { id: 'l_lit_arcadismo', title: 'Arcadismo e Inconfidência Mineira', duration: '2h', status: 'Locked' },
+                    { id: 'l_lit_bocage', title: 'O Arcadismo em Portugal: Bocage', duration: '1h 30m', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_lit_era_romantica',
+                title: 'Módulo 3: Romantismo',
+                description: 'O século XIX e a construção da identidade nacional.',
+                locked: true,
+                duration: '12h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_lit_rom_ind', title: '1ª Geração: Indianismo (Gonçalves Dias e Alencar)', duration: '2h 30m', status: 'Locked' },
+                    { id: 'l_lit_rom_mal', title: '2ª Geração: Mal do Século (Álvares de Azevedo)', duration: '2h', status: 'Locked' },
+                    { id: 'l_lit_rom_cond', title: '3ª Geração: Condoreirismo (Castro Alves)', duration: '2h', status: 'Locked' },
+                    { id: 'l_lit_rom_prosa', title: 'Romance Romântico: O Guarani, A Moreninha', duration: '2h', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_lit_era_realista',
+                title: 'Módulo 4: Realismo, Naturalismo e Parnasianismo',
+                description: 'A crítica social e a objetividade.',
+                locked: true,
+                duration: '12h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_lit_machado', title: 'Machado de Assis e o Realismo', duration: '3h', status: 'Locked' },
+                    { id: 'l_lit_naturalismo', title: 'O Cortiço e o Naturalismo', duration: '2h', status: 'Locked' },
+                    { id: 'l_lit_parnasianismo', title: 'Parnasianismo: Arte pela Arte', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_lit_simbolismo', title: 'Simbolismo: Cruz e Sousa (O Cisne Negro)', duration: '2h', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_lit_modernismo',
+                title: 'Módulo 5: Pré-Modernismo e Modernismo',
+                description: 'A Semana de 22 e suas fases.',
+                locked: true,
+                duration: '15h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_lit_pre_mod', title: 'Pré-Modernismo: Euclides da Cunha e Lima Barreto', duration: '2h', status: 'Locked' },
+                    { id: 'l_lit_sem_22', title: 'Semana de Arte Moderna de 1922', duration: '2h', status: 'Locked' },
+                    { id: 'l_lit_mod_1', title: '1ª Fase (Heroica): Andrade e Bandeira', duration: '2h 30m', status: 'Locked' },
+                    { id: 'l_lit_mod_2_poesia', title: '2ª Fase (Poesia): Drummond e Cecília', duration: '2h 30m', status: 'Locked' },
+                    { id: 'l_lit_mod_2_prosa', title: '2ª Fase (Prosa): Graciliano e Jorge Amado', duration: '3h', status: 'Locked' },
+                    { id: 'l_lit_mod_3', title: '3ª Fase (45): Clarice Lispector e Guimarães Rosa', duration: '3h', status: 'Locked' }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'english',
+        title: 'Inglês',
+        description: 'Reading comprehension and Grammar for exams.',
+        category: 'LINGUAGENS',
+        duration: '100h',
+        progress: 0,
+        icon: Languages,
+        color: 'bg-red-600',
+        tags: ['linguagens', 'enem'],
+        objectives: [
+            "Develop reading strategies (Skimming & Scanning)",
+            "Master essential grammar points",
+            "Expand vocabulary with focus on academic texts",
+            "Interpret diverse text genres (cartoons, news, lyrics)"
+        ],
+        modules: [
+            {
+                id: 'm_eng_basico',
+                title: 'Módulo 1: Foundations',
+                description: 'Grammar basics to build sentences.',
+                locked: false,
+                duration: '8h',
+                status: 'In Progress',
+                lessons: [
+                    {
+                        id: 'l_eng_tobe',
+                        title: 'Verb To Be & Pronouns: The Pillars',
+                        duration: '2h',
+                        status: 'In Progress',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-red-500">1. O Verbo Mais Importante</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        Em inglês, você não "tem" 18 anos, você "é" 18 anos. Você não "está" com fome, você "é" faminto. O <strong>Verb To Be</strong> significa SER ou ESTAR. Ele é a base de tudo.
+                                    </p>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                                    <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5">
+                                        <strong className="block text-white mb-2 text-xl">AM</strong>
+                                        <p className="text-sm text-zinc-400">Usado APENAS com <strong>I</strong> (Eu).</p>
+                                        <p className="text-xs text-red-400 mt-2">I am happy.</p>
+                                    </div>
+                                    <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5">
+                                        <strong className="block text-white mb-2 text-xl">IS</strong>
+                                        <p className="text-sm text-zinc-400">Usado com <strong>He, She, It</strong> (Singular).</p>
+                                        <p className="text-xs text-red-400 mt-2">It is a dog.</p>
+                                    </div>
+                                    <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5">
+                                        <strong className="block text-white mb-2 text-xl">ARE</strong>
+                                        <p className="text-sm text-zinc-400">Usado com <strong>You, We, They</strong> (Plural/Você).</p>
+                                        <p className="text-xs text-red-400 mt-2">We are students.</p>
+                                    </div>
+                                </div>
+
+                                <div className="bg-red-900/10 p-6 rounded-2xl border border-red-500/20 space-y-4">
+                                    <h3 className="text-lg font-bold text-red-400">Pronouns Overview</h3>
+                                    <div className="grid grid-cols-2 gap-4 text-sm">
+                                        <div>
+                                            <strong className="block text-white mb-1">Subject (Faz a ação)</strong>
+                                            <ul className="text-zinc-400 space-y-1">
+                                                <li>I (Eu)</li>
+                                                <li>You (Você)</li>
+                                                <li>He/She/It (Ele/Ela/Coisa)</li>
+                                                <li>We (Nós)</li>
+                                                <li>They (Eles)</li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <strong className="block text-white mb-1">Object (Recebe a ação)</strong>
+                                            <ul className="text-zinc-400 space-y-1">
+                                                <li>Me (Me)</li>
+                                                <li>You (Te/Você)</li>
+                                                <li>Him/Her/It (O/A/Lhe)</li>
+                                                <li>Us (Nos)</li>
+                                                <li>Them (Os/As/Lhes)</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div className="bg-black/20 p-3 rounded mt-2">
+                                        <p className="text-xs text-zinc-300">
+                                            Exemplo: <strong className="text-white">I</strong> love <strong className="text-white">her</strong>. (Eu a amo).
+                                            <br />NUNCA diga "I love she".
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    },
+                    { id: 'l_eng_present', title: 'Simple Present vs Present Continuous', duration: '2h', status: 'Locked' },
+                    { id: 'l_eng_past', title: 'Simple Past (Regular & Irregular)', duration: '2h', status: 'Locked' },
+                    { id: 'l_eng_future', title: 'Future: Will vs Going To', duration: '2h', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_eng_reading',
+                title: 'Módulo 2: Reading Strategies',
+                description: 'Como ler sem traduzir tudo.',
+                locked: true,
+                duration: '10h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_eng_skim_scan', title: 'Skimming & Scanning', duration: '2h', status: 'Locked' },
+                    { id: 'l_eng_cognates', title: 'Cognates & False Friends', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_eng_connector', title: 'Linking Words (Connectors)', duration: '2h', status: 'Locked' },
+                    { id: 'l_eng_genres', title: 'Text Genres Practice', duration: '2h', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_eng_grammar',
+                title: 'Módulo 3: Advanced Grammar',
+                description: 'Estruturas complexas para textos difíceis.',
+                locked: true,
+                duration: '12h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_eng_present_perf', title: 'Present Perfect (Have you ever?)', duration: '2h 30m', status: 'Locked' },
+                    { id: 'l_eng_passive', title: 'Passive Voice', duration: '2h', status: 'Locked' },
+                    { id: 'l_eng_modals', title: 'Modal Verbs (Can, Should, Must)', duration: '2h', status: 'Locked' },
+                    { id: 'l_eng_if_clauses', title: 'Conditionals (If Clusters)', duration: '2h', status: 'Locked' }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'spanish',
+        title: 'Espanhol',
+        description: 'Comprensión lectora y gramática para el examen.',
+        category: 'LINGUAGENS',
+        duration: '70h',
+        progress: 0,
+        icon: Languages,
+        color: 'bg-yellow-600',
+        tags: ['linguagens', 'enem'],
+        objectives: [
+            "Compreender textos jornalísticos e literários em espanhol",
+            "Identificar 'falsos amigos' (heterosemânticos)",
+            "Dominar as diferenças gramaticais chave entre Port/Esp",
+            "Interpretar charges e tirinhas (Matfalda, Gaturro)"
+        ],
+        modules: [
+            {
+                id: 'm_esp_intro',
+                title: 'Módulo 1: Introducción y Falsos Amigos',
+                description: 'O básico que engana.',
+                locked: false,
+                duration: '8h',
+                status: 'In Progress',
+                lessons: [
+                    {
+                        id: 'l_esp_heteroseman',
+                        title: 'Heterosemânticos (Falsos Amigos)',
+                        duration: '2h',
+                        status: 'In Progress',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-yellow-500">1. Cuidado! Parece, mas não é.</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        O português e o espanhol são irmãos (filhos do Latim), mas às vezes eles brigam. A maior armadilha do ENEM são os <strong>Heterosemânticos</strong>: palavras que escrevem igual (ou quase) mas têm significado totalmente diferente.
+                                    </p>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="bg-red-900/10 p-6 rounded-xl border border-red-500/20">
+                                        <h3 className="text-lg font-bold text-red-400 mb-3">Os Clássicos do "Erro"</h3>
+                                        <ul className="text-sm space-y-3">
+                                            <li className="flex justify-between border-b border-red-500/10 pb-2">
+                                                <span className="text-yellow-200">Embarazada</span>
+                                                <span className="text-zinc-400">Grávida (e não confusa!)</span>
+                                            </li>
+                                            <li className="flex justify-between border-b border-red-500/10 pb-2">
+                                                <span className="text-yellow-200">Exquisito</span>
+                                                <span className="text-zinc-400">Delicioso (e não estranho!)</span>
+                                            </li>
+                                            <li className="flex justify-between border-b border-red-500/10 pb-2">
+                                                <span className="text-yellow-200">Pelado</span>
+                                                <span className="text-zinc-400">Careca (e não nu!)</span>
+                                            </li>
+                                            <li className="flex justify-between border-b border-red-500/10 pb-2">
+                                                <span className="text-yellow-200">Borracha</span>
+                                                <span className="text-zinc-400">Bêbada (e não de apagar!)</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div className="bg-zinc-900/50 p-6 rounded-xl border border-white/5">
+                                        <h3 className="text-lg font-bold text-white mb-3">Dicas de Leitura</h3>
+                                        <p className="text-sm text-zinc-400 mb-2">
+                                            No texto, o contexto salva. Se diz "Comí un pastel exquisito", você sabe que comeu um bolo gostoso, não um bolo estranho.
+                                        </p>
+                                        <div className="bg-black/20 p-3 rounded mt-2">
+                                            <strong className="text-yellow-400 block text-xs mb-1">Outros Perigos:</strong>
+                                            <span className="text-[10px] text-zinc-500">
+                                                Vaso (Copo), Copa (Taça), Taza (Xícara), Oficina (Escritório), Polvo (Pó), Cachorro (Filhote).
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    },
+                    { id: 'l_esp_articulos', title: 'Artículos y Contracciones', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_esp_heterogen', title: 'Heterogenéricos (El vs La)', duration: '2h', status: 'Locked' },
+                    { id: 'l_esp_pronombres', title: 'Pronombres y Tratamiento (Tú vs Usted)', duration: '2h', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_esp_grammar',
+                title: 'Módulo 2: Gramática Contextualizada',
+                description: 'Verbos e conectivos essenciais.',
+                locked: true,
+                duration: '10h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_esp_verbos', title: 'Verbos: Presente y Pasados (Pretéritos)', duration: '2h 30m', status: 'Locked' },
+                    { id: 'l_esp_gustar', title: 'Verbo Gustar (A mí me gusta)', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_esp_conjunciones', title: 'Conjunciones (Pero, Sino, Sin Embargo)', duration: '2h', status: 'Locked' },
+                    { id: 'l_esp_apocope', title: 'Apócope (Muy vs Mucho)', duration: '2h', status: 'Locked' }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'history',
+        title: 'História',
+        description: 'História Geral, do Brasil e do Rio Grande do Sul (Foco UFRGS/ENEM).',
+        category: 'HUMANAS',
+        duration: '120h',
+        progress: 0,
+        icon: Hourglass,
+        color: 'bg-amber-600',
+        tags: ['humanas', 'enem', 'ufrgs'],
+        objectives: [
+            "Compreender os processos históricos globais e locais",
+            "Analisar a formação social e política do Brasil",
+            "Dominar tópicos específicos da história do RS para UFRGS",
+            "Desenvolver senso crítico sobre passado e presente"
+        ],
+        modules: [
+            {
+                id: 'm_hist_antiguidade',
+                title: 'Módulo 1: Introdução e Antiguidade',
+                description: 'Dos primeiros humanos à queda de Roma.',
+                locked: false,
+                duration: '10h',
+                status: 'In Progress',
+                lessons: [
+                    {
+                        id: 'l_hist_intro',
+                        title: 'Teoria da História e Pré-História',
+                        duration: '1h',
+                        status: 'In Progress',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-amber-400">1. O Que é História?</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        História não é apenas o estudo do passado, mas a ciência que estuda o ser humano e suas ações no tempo e no espaço. Para o ENEM e UFRGS, é fundamental entender a história como processo de mudança e permanência.
+                                    </p>
+                                    <div className="bg-amber-900/20 p-4 rounded-xl border border-amber-500/30 my-4">
+                                        <p className="text-amber-200 text-sm italic">
+                                            "A história é filha de seu tempo." - Todo historiador escreve influenciado pela época em que vive. Fontes históricas podem ser escritas, orais, arqueológicas ou iconográficas.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h2 className="text-2xl font-bold text-amber-400 mb-4">2. Periodização Clássica</h2>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5">
+                                            <strong className="text-white block mb-1">Pré-História</strong>
+                                            <span className="text-zinc-400 text-sm">Do surgimento do homem à invenção da escrita (aprox. 4000 a.C.). Paleolítico (Pedra Lascada) e Neolítico (Pedra Polida/Agricultura).</span>
+                                        </div>
+                                        <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5">
+                                            <strong className="text-white block mb-1">Idade Antiga</strong>
+                                            <span className="text-zinc-400 text-sm">Da escrita até a Queda de Roma (476 d.C.). Antiguidade Oriental (Egito, Mesopotâmia) e Clássica (Grécia, Roma).</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    },
+                    {
+                        id: 'l_hist_oriental',
+                        title: 'Antiguidade Oriental: Egito e Mesopotâmia',
+                        duration: '1h 30m',
+                        status: 'Locked',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-amber-400">1. Civilizações Hidráulicas</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        O berço da civilização ocorreu onde havia água. No deserto árido do Oriente Médio, os grandes rios (Nilo, Tigre e Eufrates) permitiram a agricultura em larga escala, levando à sedentarização e ao surgimento do Estado.
+                                    </p>
+                                    <div className="bg-amber-900/10 p-4 rounded-xl border border-amber-500/20 my-4">
+                                        <p className="text-amber-200 text-sm italic">
+                                            "O Egito é uma dádiva do Nilo." - Heródoto. Sem as cheias regulares do rio, a civilização egípcia não existiria.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5 space-y-4">
+                                        <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                                            <span className="text-2xl">🏺</span> Egito Antigo
+                                        </h3>
+                                        <ul className="space-y-2 text-zinc-400 text-sm">
+                                            <li><strong className="text-amber-400">Política:</strong> Teocracia (Faraó é um deus vivo).</li>
+                                            <li><strong className="text-amber-400">Sociedade:</strong> Estamental (imóvel). Sacerdotes e Escribas no topo, camponeses (felás) na base.</li>
+                                            <li><strong className="text-amber-400">Religião:</strong> Politeísta e Antropozoomórfica. Crença na vida após a morte (mumificação).</li>
+                                            <li><strong className="text-amber-400">Economia:</strong> Modo de Produção Asiático (Servidão Coletiva). O Estado é dono das terras.</li>
+                                        </ul>
+                                    </div>
+
+                                    <div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5 space-y-4">
+                                        <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                                            <span className="text-2xl">🦁</span> Mesopotâmia
+                                        </h3>
+                                        <p className="text-xs text-zinc-500 mb-2">Terra "entre rios" (Tigre e Eufrates). Atual Iraque.</p>
+                                        <ul className="space-y-2 text-zinc-400 text-sm">
+                                            <li><strong className="text-amber-400">Política:</strong> Cidades-Estado rivais (Ur, Uruk, Babilônia). Instabilidade política.</li>
+                                            <li><strong className="text-amber-400">Legado:</strong> Código de Hamurábi ("Olho por olho"). Primeira lei escrita.</li>
+                                            <li><strong className="text-amber-400">Arquitetura:</strong> Zigurat (Templos/Observatórios).</li>
+                                            <li><strong className="text-amber-400">Escrita:</strong> Cuneiforme (em argila).</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div className="bg-zinc-800/50 p-6 rounded-2xl border border-white/5">
+                                    <h3 className="text-lg font-bold text-white mb-2">Estudo de Caso: A Lei de Talião</h3>
+                                    <p className="text-zinc-400 text-sm">
+                                        O Código de Hamurábi não era igualitário. Se um nobre furasse o olho de um escravo, pagava uma multa. Se furasse o olho de outro nobre, perdia o olho. A lei refletia a hierarquia social. Para o ENEM: a escrita da lei servia para consolidar o poder do Estado sobre a vingança privada.
+                                    </p>
+                                </div>
+                            </div>
+                        )
+                    },
+                    {
+                        id: 'l_hist_grecia',
+                        title: 'Grécia Antiga: Democracia e Cultura',
+                        duration: '2h',
+                        status: 'Locked',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-blue-400">1. O Berço do Ocidente</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        A Grécia não era um país unificado, mas um conjunto de <strong className="text-white">Cidades-Estado (Polis)</strong> independentes que compartilhavam língua e religião. A geografia montanhosa favoreceu o isolamento e a autonomia política.
+                                    </p>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="bg-blue-900/20 p-6 rounded-2xl border border-blue-500/20">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <h3 className="text-xl font-bold text-blue-300">Atenas</h3>
+                                            <span className="text-xs bg-blue-500/20 px-2 py-1 rounded text-blue-200">Democracia</span>
+                                        </div>
+                                        <ul className="space-y-2 text-zinc-400 text-sm">
+                                            <li>• Foco intelectual e comercial (marítimo).</li>
+                                            <li>• <strong className="text-white">Democracia Direta:</strong> Cidadãos votavam na Ágora.</li>
+                                            <li>• <strong className="text-red-400">Exclusão:</strong> Mulheres, estrangeiros (metecos) e escravos NÃO eram cidadãos.</li>
+                                            <li>• Século de Péricles: Apogeu cultural.</li>
+                                        </ul>
+                                    </div>
+
+                                    <div className="bg-red-900/20 p-6 rounded-2xl border border-red-500/20">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <h3 className="text-xl font-bold text-red-300">Esparta</h3>
+                                            <span className="text-xs bg-red-500/20 px-2 py-1 rounded text-red-200">Oligarquia</span>
+                                        </div>
+                                        <ul className="space-y-2 text-zinc-400 text-sm">
+                                            <li>• Foco militar e agrário (terrestre).</li>
+                                            <li>• <strong className="text-white">Laconismo:</strong> Falar pouco e agir muito.</li>
+                                            <li>• Sociedade estamental rígida (Espartiatas &gt; Periecos &gt; Hilotas).</li>
+                                            <li>• Mulheres tinham mais liberdade física (para gerar guerreiros fortes).</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <h2 className="text-2xl font-bold text-blue-400">2. Legado Cultural</h2>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div className="bg-zinc-900/50 p-4 rounded-xl text-center border border-white/5">
+                                            <div className="text-2xl mb-2">🎭</div>
+                                            <strong className="block text-white">Teatro</strong>
+                                            <span className="text-xs text-zinc-400">Tragédia e Comédia como função pedagógica e cívica.</span>
+                                        </div>
+                                        <div className="bg-zinc-900/50 p-4 rounded-xl text-center border border-white/5">
+                                            <div className="text-2xl mb-2">🧠</div>
+                                            <strong className="block text-white">Filosofia</strong>
+                                            <span className="text-xs text-zinc-400">Sócrates, Platão e Aristóteles: o uso da razão (Logos) sobre o mito.</span>
+                                        </div>
+                                        <div className="bg-zinc-900/50 p-4 rounded-xl text-center border border-white/5">
+                                            <div className="text-2xl mb-2">🏛️</div>
+                                            <strong className="block text-white">Arquitetura</strong>
+                                            <span className="text-xs text-zinc-400">Busca pela harmonia, proporção e beleza ideal.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    },
+                    {
+                        id: 'l_hist_roma',
+                        title: 'Roma Antiga: Da Monarquia ao Império',
+                        duration: '2h',
+                        status: 'Locked',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-red-500">1. O Grande Império</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        Roma começou como uma vila de pastores e se tornou o maior império da Antiguidade, chamando o Mediterrâneo de <strong className="text-white italic">"Mare Nostrum"</strong> (Nosso Mar). Seu maior legado não foram as conquistas, mas o <strong className="text-amber-400">Direito Romano</strong>, base das leis ocidentais modernas.
+                                    </p>
+                                </div>
+
+                                <div className="relative border-l-4 border-red-500 pl-6 py-2 space-y-4">
+                                    <div className="space-y-2">
+                                        <h3 className="text-lg font-bold text-white">A. República (509 a.C. - 27 a.C.)</h3>
+                                        <p className="text-sm text-zinc-400">
+                                            O poder estava no <strong className="text-white">Senado</strong> (aristocracia/patrícios). Foi a época da expansão territorial.
+                                            <br />
+                                            <span className="text-red-400">Conflito Social:</span> Patrícios vs Plebeus (que conquistaram direitos como o Tribuno da Plebe).
+                                        </p>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <h3 className="text-lg font-bold text-white">B. Império (27 a.C. - 476 d.C.)</h3>
+                                        <p className="text-sm text-zinc-400">
+                                            Centralização no Imperador (Augusto, César).
+                                            <br />
+                                            <span className="text-red-400">Política:</span> Pão e Circo (distração da plebe). Pax Romana.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="bg-zinc-800/50 p-6 rounded-2xl border border-white/5 space-y-4">
+                                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                                        <span className="text-2xl">✝️</span> A Ascensão do Cristianismo
+                                    </h3>
+                                    <p className="text-zinc-400 text-sm">
+                                        Inicialmente perseguidos (pois negavam a divindade do imperador), os cristãos cresceram na crise do Império.
+                                    </p>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono text-zinc-500 mt-2">
+                                        <div className="bg-black/30 p-2 rounded">Edito de Milão (313): Liberdade de culto.</div>
+                                        <div className="bg-black/30 p-2 rounded">Edito de Tessalônica (380): Religião Oficial.</div>
+                                    </div>
+                                    <p className="text-zinc-400 text-sm">
+                                        Quando Roma caiu, a Igreja Católica foi a única instituição que permaneceu em pé, inaugurando a Idade Média.
+                                    </p>
+                                </div>
+
+                                <div className="bg-red-900/10 p-4 rounded-xl border border-red-500/20">
+                                    <strong className="text-red-300 block mb-1">Queda de Roma (476 d.C.)</strong>
+                                    <ul className="text-sm text-zinc-400 list-disc list-inside">
+                                        <li>Crise do Escravismo (falta de conquistas = falta de mão de obra).</li>
+                                        <li>Corrupção e vastidão ingovernável.</li>
+                                        <li>Invasões Bárbaras (Germânicas).</li>
+                                        <li>Ruralização da economia (início do Feudalismo).</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        )
+                    },
+                ]
+            },
+            {
+                id: 'm_hist_media',
+                title: 'Módulo 2: Idade Média',
+                description: 'Do Feudalismo ao nascimento da Burguesia.',
+                locked: true,
+                duration: '8h',
+                status: 'Locked',
+                lessons: [
+                    {
+                        id: 'l_hist_feudalismo',
+                        title: 'Alta Idade Média e Feudalismo',
+                        duration: '1h 30m',
+                        status: 'Locked',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-indigo-400">1. O Sistema Feudal</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        Com a queda de Roma e as invasões bárbaras, as cidades esvaziaram. A Europa se ruralizou. O poder, antes centralizado no Imperador, fragmentou-se nas mãos dos senhores de terra. Terra era poder, não dinheiro.
+                                    </p>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-t-4 border-indigo-500">
+                                        <strong className="block text-white mb-2">Politica</strong>
+                                        <span className="text-sm text-zinc-400">Descentralizada. O Rei tinha pouco poder real ("Primus inter pares"). Quem manda no feudo é o Senhor Feudal.</span>
+                                    </div>
+                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-t-4 border-indigo-500">
+                                        <strong className="block text-white mb-2">Economia</strong>
+                                        <span className="text-sm text-zinc-400">Agrária e de Subsistência. Pouco comércio, pouca moeda. Sistema de trocas naturais.</span>
+                                    </div>
+                                    <div className="bg-zinc-900/50 p-4 rounded-xl border-t-4 border-indigo-500">
+                                        <strong className="block text-white mb-2">Sociedade</strong>
+                                        <span className="text-sm text-zinc-400">Estamental e Imóvel. A posição social é definida pelo nascimento e função divina.</span>
+                                    </div>
+                                </div>
+
+                                <div className="bg-[#1A1B26] p-6 rounded-2xl border border-white/5 space-y-4">
+                                    <h3 className="text-lg font-bold text-white">As Três Ordens Medievais</h3>
+                                    <div className="space-y-3">
+                                        <div className="flex items-center gap-4 bg-white/5 p-3 rounded-lg">
+                                            <span className="text-2xl">🙏</span>
+                                            <div>
+                                                <strong className="block text-indigo-300">Clero (Oratores)</strong>
+                                                <span className="text-xs text-zinc-500">Os que rezam. Detinham o saber e a salvação.</span>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-4 bg-white/5 p-3 rounded-lg">
+                                            <span className="text-2xl">⚔️</span>
+                                            <div>
+                                                <strong className="block text-red-300">Nobreza (Bellatores)</strong>
+                                                <span className="text-xs text-zinc-500">Os que lutam. Detinham a terra e as armas.</span>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-4 bg-white/5 p-3 rounded-lg">
+                                            <span className="text-2xl">🌾</span>
+                                            <div>
+                                                <strong className="block text-green-300">Camponeses/Servos (Laboratores)</strong>
+                                                <span className="text-xs text-zinc-500">Os que trabalham. Sustentam todos. Presos à terra.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="bg-indigo-900/20 p-6 rounded-2xl border border-indigo-500/20">
+                                    <h3 className="text-lg font-bold text-indigo-300 mb-2">Conceito Chave: Suserania e Vassalagem</h3>
+                                    <p className="text-sm text-zinc-300 leading-relaxed">
+                                        Relação exclusiva entre <strong>NOBRES</strong>. O Suserano doa a terra (beneficium), o Vassalo jura fidelidade militar (auxilium et consilium). Esta rede de lealdades mantinha a Europa unida culturalmente, apesar da fragmentação política.
+                                    </p>
+                                </div>
+                            </div>
+                        )
+                    },
+                    {
+                        id: 'l_hist_igreja',
+                        title: 'O Poder da Igreja e Cultura Medieval',
+                        duration: '1h',
+                        status: 'Locked',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-yellow-500">1. A Grande Senhora Feudal</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        A Igreja Católica Apostólica Romana era a maior instituição da Idade Média. Era a maior proprietária de terras (1/3 da Europa) e detinha o monopólio da cultura e da ideologia.
+                                    </p>
+                                    <div className="bg-yellow-900/10 p-4 rounded-xl border border-yellow-500/20 my-4 text-center">
+                                        <p className="text-yellow-200 font-serif italic text-lg">"Fora da Igreja não há salvação."</p>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-4">
+                                        <h3 className="text-lg font-bold text-white">Clero Regular vs Secular</h3>
+                                        <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5">
+                                            <strong className="text-white block">Secular (No Mundo)</strong>
+                                            <span className="text-sm text-zinc-400">Padres, Bispos, Papa. Vivem entre os fiéis.</span>
+                                        </div>
+                                        <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5">
+                                            <strong className="text-white block">Regular (Na Regra)</strong>
+                                            <span className="text-sm text-zinc-400">Monges, Beneditinos, Franciscanos. Vivem em mosteiros, isolados para rezar e copiar livros.</span>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-4">
+                                        <h3 className="text-lg font-bold text-white">Mecanismos de Controle</h3>
+                                        <ul className="space-y-2 text-sm text-zinc-400">
+                                            <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-red-500" />Excomunhão: Morte espiritual e exclusão social.</li>
+                                            <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-red-500" />Inquisição: Tribunal do Santo Ofício para julgar hereges.</li>
+                                            <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-red-500" />Index: Lista de livros proibidos.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div className="bg-zinc-800/50 p-6 rounded-2xl border border-white/5 mt-4">
+                                    <h3 className="text-lg font-bold text-white mb-2">Cultura e Universidade</h3>
+                                    <p className="text-sm text-zinc-400 mb-4">
+                                        A Igreja criou as primeiras Universidades (Paris, Bolonha, Oxford). O pensamento dominante era a <strong className="text-white">Escolástica</strong> (São Tomás de Aquino), tentando conciliar Fé (Bíblia/Cristianismo) com a Razão (Aristóteles).
+                                    </p>
+                                    <div className="text-xs text-zinc-500 bg-black/30 p-3 rounded-lg">
+                                        Estilo Gótico: Catedrais verticais com vitrais, buscando a luz (Deus) e a altura, ensinando a bíblia aos analfabetos através das imagens.
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    },
+                    {
+                        id: 'l_hist_isla',
+                        title: 'Islã e Império Bizantino',
+                        duration: '1h',
+                        status: 'Locked',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-emerald-400">1. O Outro Lado do Mundo</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        Enquanto a Europa Ocidental vivia o feudalismo e a ruralização, o Oriente preservava o brilho urbano e comercial.
+                                    </p>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    {/* Islã */}
+                                    <div className="border border-emerald-500/20 bg-emerald-900/10 rounded-2xl p-6">
+                                        <h3 className="text-xl font-bold text-emerald-400 mb-3 flex items-center gap-2">☪️ O Islã</h3>
+                                        <p className="text-sm text-zinc-300 mb-4">
+                                            Fundado por <strong>Maomé (622 d.C. - Hégira)</strong>. Uma religião monoteísta que unificou as tribos árabes.
+                                        </p>
+                                        <div className="space-y-2 text-sm text-zinc-400">
+                                            <p><strong>Corão:</strong> Livro sagrado.</p>
+                                            <p><strong>Jihad:</strong> Esforço pela fé (ou Guerra Santa).</p>
+                                            <p><strong>Legado:</strong> Álgebra, Algarismos "Arábicos", Medicina (Avicena), preservação de Aristóteles.</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Bizantino */}
+                                    <div className="border border-purple-500/20 bg-purple-900/10 rounded-2xl p-6">
+                                        <h3 className="text-xl font-bold text-purple-400 mb-3 flex items-center gap-2">👑 Império Bizantino</h3>
+                                        <p className="text-sm text-zinc-300 mb-4">
+                                            O antigo Império Romano do Oriente. Capital: <strong>Constantinopla</strong>. Durou 1000 anos a mais que Roma.
+                                        </p>
+                                        <div className="space-y-2 text-sm text-zinc-400">
+                                            <p><strong>Cesaropapismo:</strong> O Imperador chefe da Igreja.</p>
+                                            <p><strong>Cisma do Oriente (1054):</strong> Criação da Igreja Ortodoxa.</p>
+                                            <p><strong>Importância:</strong> Barreira contra o Islã na Europa e guardião da cultura grega.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    },
+                    {
+                        id: 'l_hist_baixa_media',
+                        title: 'Baixa Idade Média: Renascimento Comercial',
+                        duration: '1h 30m',
+                        status: 'Locked',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-orange-400">1. O Despertar da Europa</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        A partir do século XI, o feudo ficou pequeno. Inovações agrícolas aumentaram a população. As <strong className="text-white">Cruzadas</strong> (guerras santas para retomar Jerusalém) reabriram o Mar Mediterrâneo, reativando o comércio com o Oriente.
+                                    </p>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5">
+                                        <strong className="block text-white mb-2">Burgos</strong>
+                                        <span className="text-sm text-zinc-400">Cidades muradas nascidas nas feiras medievais. Origem da "Burguesia" (comerciantes).</span>
+                                    </div>
+                                    <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5">
+                                        <strong className="block text-white mb-2">Corporações de Ofício</strong>
+                                        <span className="text-sm text-zinc-400">Sindicatos medievais de artesãos para controlar preços e a qualidade. Monopólio.</span>
+                                    </div>
+                                    <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5">
+                                        <strong className="block text-white mb-2">Rotação de Culturas</strong>
+                                        <span className="text-sm text-zinc-400">Técnica agrícola que permitiu o excedente de produção (para vender).</span>
+                                    </div>
+                                </div>
+
+                                <div className="bg-red-900/10 p-6 rounded-2xl border border-red-500/20 space-y-4">
+                                    <h3 className="text-lg font-bold text-red-400 flex items-center gap-2">
+                                        <span className="text-2xl">💀</span> A Crise do Século XIV
+                                    </h3>
+                                    <p className="text-sm text-zinc-300">
+                                        O fim da Idade Média foi catastrófico, marcado pela "Tríade da Morte":
+                                    </p>
+                                    <ul className="space-y-2 text-sm text-zinc-400">
+                                        <li>1. <strong>Fome:</strong> Mudanças climáticas e esgotamento do solo.</li>
+                                        <li>2. <strong>Peste Negra:</strong> Matou 1/3 da Europa. Falta de mão de obra valorizou o trabalho livre.</li>
+                                        <li>3. <strong>Guerra:</strong> Guerra dos Cem Anos (França vs Inglaterra). Enfraqueceu a nobreza e fortaleceu os Reis.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        )
+                    }
+                ]
+            },
+            {
+                id: 'm_hist_moderna',
+                title: 'Módulo 3: Idade Moderna',
+                description: 'Grandes Navegações, Renascimento e Absolutismo.',
+                locked: true,
+                duration: '10h',
+                status: 'Locked',
+                lessons: [
+                    {
+                        id: 'l_hist_renascimento',
+                        title: 'Renascimento Cultural e Científico',
+                        duration: '1h 30m',
+                        status: 'Locked',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-purple-400">1. O Homem no Centro</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        O Renascimento não foi uma negação de Deus, mas uma valorização do Homem como sua maior criação. Iniciado na Itália (devido ao comércio e mecenato), marcou a transição da Idade Média para a Moderna.
+                                    </p>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="border border-purple-500/30 bg-purple-900/10 rounded-2xl p-6">
+                                        <h3 className="text-lg font-bold text-purple-300 mb-4">Valores Renascentistas</h3>
+                                        <ul className="space-y-3 text-sm text-zinc-300">
+                                            <li><strong className="text-white">Antropocentrismo:</strong> Homem no centro vs Teocentrismo Medieval.</li>
+                                            <li><strong className="text-white">Racionalismo:</strong> Verdade pela razão e experiência, não só pela fé.</li>
+                                            <li><strong className="text-white">Classicismo:</strong> Inspiração na Grécia e Roma antigas.</li>
+                                            <li><strong className="text-white">Hedonismo:</strong> Busca pelo prazer carnal e material.</li>
+                                        </ul>
+                                    </div>
+                                    <div className="space-y-4">
+                                        <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5">
+                                            <strong className="block text-white mb-1">Mecenato</strong>
+                                            <span className="text-xs text-zinc-400">Burgueses ricos e Papas patrocinavam artistas para ganhar prestígio (estátus social em troca de arte).</span>
+                                        </div>
+                                        <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5">
+                                            <strong className="block text-white mb-1">Ciência</strong>
+                                            <span className="text-xs text-zinc-400">Heliocentrismo (Copérnico e Galileu): A Terra gira em torno do Sol. Quebra de paradigma total.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="bg-[#1A1B26] p-4 rounded-xl border border-white/10 flex items-center gap-4">
+                                    <div className="text-3xl">🎨</div>
+                                    <div>
+                                        <h4 className="text-white font-bold">Tartarugas Ninja?</h4>
+                                        <p className="text-xs text-zinc-500">
+                                            Leonardo (Da Vinci), Michelangelo, Donatello e Rafael. Os quatro grandes mestres do Renascimento. Da Vinci é o arquétipo do polímata: pintor, engenheiro, anatomista.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    },
+                    {
+                        id: 'l_hist_reformas',
+                        title: 'Reformas Religiosas (Protestante e Contrarreforma)',
+                        duration: '1h 30m',
+                        status: 'Locked',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-red-400">1. A Cristandade se Divide</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        No século XVI, a autoridade inquestionável da Igreja Católica foi quebrada. O contexto era de corrupção (venda de indulgências), luxo do clero e desejo dos Reis de confiscar as terras da Igreja.
+                                    </p>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="bg-blue-900/10 p-4 rounded-xl border border-blue-500/20">
+                                        <h3 className="text-lg font-bold text-blue-300 mb-2">Luteranismo</h3>
+                                        <p className="text-xs text-zinc-400 mb-2">Martinho Lutero (Alemanha, 1517).</p>
+                                        <ul className="text-xs text-zinc-300 list-disc list-inside">
+                                            <li>Salvação pela Fé.</li>
+                                            <li>Livre interpretação da Bíblia.</li>
+                                            <li>Fim do celibato e imagens.</li>
+                                            <li>Apoio dos Príncipes Alemães.</li>
+                                        </ul>
+                                    </div>
+                                    <div className="bg-orange-900/10 p-4 rounded-xl border border-orange-500/20">
+                                        <h3 className="text-lg font-bold text-orange-300 mb-2">Calvinismo</h3>
+                                        <p className="text-xs text-zinc-400 mb-2">João Calvino (Suíça).</p>
+                                        <ul className="text-xs text-zinc-300 list-disc list-inside">
+                                            <li><strong className="text-white">Predestinação Absoluta:</strong> Deus já escolheu quem será salvo.</li>
+                                            <li>Sinal de salvação = Trabalho e Riqueza.</li>
+                                            <li>Apoio da Burguesia (capitalismo).</li>
+                                        </ul>
+                                    </div>
+                                    <div className="bg-red-900/10 p-4 rounded-xl border border-red-500/20">
+                                        <h3 className="text-lg font-bold text-red-300 mb-2">Anglicanismo</h3>
+                                        <p className="text-xs text-zinc-400 mb-2">Henrique VIII (Inglaterra).</p>
+                                        <ul className="text-xs text-zinc-300 list-disc list-inside">
+                                            <li>Política &gt; Fé.</li>
+                                            <li>O Rei queria se divorciar e tomar as terras da Igreja.</li>
+                                            <li>O Rei vira chefe da Igreja Inglesa.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div className="bg-zinc-800/50 p-6 rounded-2xl border border-white/5 space-y-4">
+                                    <h3 className="text-lg font-bold text-white">Contrarreforma Católica</h3>
+                                    <p className="text-sm text-zinc-400">
+                                        A resposta da Igreja no <strong>Concílio de Trento (1545)</strong>:
+                                    </p>
+                                    <ul className="list-disc list-inside text-sm text-zinc-300 columns-1 md:columns-2">
+                                        <li>Proibição da venda de indulgências (moralização).</li>
+                                        <li>Reafirmação dos dogmas (Papa infalível, 7 sacramentos).</li>
+                                        <li>Criação dos <strong>Jesuítas (Companhia de Jesus)</strong>: Soldados de Cristo para catequizar o Novo Mundo (Brasil!).</li>
+                                        <li>Retorno da Inquisição e Index.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        )
+                    },
+                    {
+                        id: 'l_hist_absolutismo',
+                        title: 'Absolutismo e Mercantilismo',
+                        duration: '1h 30m',
+                        status: 'Locked',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-amber-400">1. O Estado Sou Eu</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        Na Idade Moderna, o Rei deixou de ser uma figura decorativa (medieval) para concentrar TODO o poder. O Absolutismo é a centralização política, apoiada pela Burguesia (que queria unificação de moedas/pesos) e justificada por teóricos.
+                                    </p>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5">
+                                        <h3 className="text-lg font-bold text-white mb-3">Teóricos do Absolutismo</h3>
+                                        <ul className="space-y-3 text-sm text-zinc-400">
+                                            <li><strong className="text-amber-200">Maquiavel (O Príncipe):</strong> "Os fins justificam os meios". O Rei deve ser amado e temido (se tiver que escolher, temido).</li>
+                                            <li><strong className="text-amber-200">Hobbes (O Leviatã):</strong> O homem é o lobo do homem. O Rei garante a ordem contra o caos.</li>
+                                            <li><strong className="text-amber-200">Bossuet:</strong> Teoria do Direito Divino. O Rei é representante de Deus na Terra. Rebelar-se contra o Rei é rebelar-se contra Deus.</li>
+                                        </ul>
+                                    </div>
+                                    <div className="bg-amber-900/10 p-6 rounded-2xl border border-amber-500/20">
+                                        <h3 className="text-lg font-bold text-amber-300 mb-3">Mercantilismo: O Motor Econômico</h3>
+                                        <p className="text-sm text-zinc-300 mb-3">Conjunto de práticas para fortalecer o Estado. Não é uma teoria econômica (como o capitalismo), mas uma política.</p>
+                                        <ul className="text-sm text-zinc-400 list-disc list-inside space-y-1">
+                                            <li><strong className="text-white">Metalismo:</strong> Riqueza = quanto ouro tem no cofre.</li>
+                                            <li><strong className="text-white">Balança Comercial Favorável:</strong> Exportar mais que importar.</li>
+                                            <li><strong className="text-white">Protecionismo:</strong> Taxar produtos estrangeiros.</li>
+                                            <li><strong className="text-white">Colonialismo:</strong> Ter colônias para explorar (Exclusivo Colonial).</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    },
+                    {
+                        id: 'l_hist_navegacoes',
+                        title: 'Expansão Marítima Europeia',
+                        duration: '1h 30m',
+                        status: 'Locked',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-cyan-400">1. O Mundo Fica Maior</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        A Expansão Marítima foi a primeira globalização. Portugal e Espanha, pioneiros, contornaram a África e cruzaram o Atlântico buscando quebrar o monopólio italiano das especiarias. O resultado foi o encontro (choque) com a América.
+                                    </p>
+                                </div>
+
+                                <div className="bg-cyan-900/10 p-6 rounded-2xl border border-cyan-500/20 flex flex-col md:flex-row items-center gap-6">
+                                    <div className="flex-1">
+                                        <h3 className="text-xl font-bold text-cyan-300 mb-2">Por que Portugal foi o primeiro?</h3>
+                                        <ul className="space-y-2 text-sm text-zinc-300">
+                                            <li className="flex items-center gap-2">✅ <strong>Centralização Precoce:</strong> Revolução de Avis (1385).</li>
+                                            <li className="flex items-center gap-2">✅ <strong>Geografia:</strong> "Cara para o mar".</li>
+                                            <li className="flex items-center gap-2">✅ <strong>Escola de Sagres:</strong> Centro de estudos náuticos (bússola, astrolábio, caravela).</li>
+                                        </ul>
+                                    </div>
+                                    <div className="text-6xl opacity-50">⛵</div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5">
+                                        <strong className="text-white block">Périplo Africano (Portugal)</strong>
+                                        <span className="text-sm text-zinc-400">Contornar a África para chegar às Índias. Bartolomeu Dias (Cabo das Tormentas), Vasco da Gama (Chegada à Índia), Cabral (Brasil pelo caminho).</span>
+                                    </div>
+                                    <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5">
+                                        <strong className="text-white block">Circunavegação (Espanha)</strong>
+                                        <span className="text-sm text-zinc-400">Colombo tentou dar a volta ao mundo e achou a América (1492). Fernão de Magalhães provou que a Terra era redonda.</span>
+                                    </div>
+                                </div>
+
+                                <div className="bg-zinc-800/50 p-6 rounded-2xl border border-white/5">
+                                    <h3 className="text-lg font-bold text-white mb-2">Consequências Globais</h3>
+                                    <p className="text-sm text-zinc-400">
+                                        O eixo econômico saiu do Mediterrâneo para o <strong className="text-white">Atlântico</strong>. Começou o genocídio ameríndio e o tráfico negreiro transatlântico, bases da acumulação primitiva de capital europeu.
+                                    </p>
+                                </div>
+                            </div>
+                        )
+                    }
+                ]
+            },
+            {
+                id: 'm_hist_br_colonia',
+                title: 'Módulo 4: Brasil Colônia',
+                description: 'A construção do Brasil português.',
+                locked: true,
+                duration: '12h',
+                status: 'Locked',
+                lessons: [
+                    {
+                        id: 'l_hist_br_pre',
+                        title: 'Período Pré-Colonial e Indígenas',
+                        duration: '1h',
+                        status: 'Locked',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-green-500">1. Os Donos da Terra</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        Antes de Cabral, milhões de pessoas viviam aqui. Não existia "o índio" (genérico), mas milhares de etnias (Tupi, Jê, Guarani, etc.) com línguas e culturas distintas. A história do Brasil não começa em 1500, começa milênios antes.
+                                    </p>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="bg-green-900/10 p-6 rounded-2xl border border-green-500/20">
+                                        <h3 className="text-lg font-bold text-green-300 mb-3">Antropofagia Ritual</h3>
+                                        <p className="text-sm text-zinc-300">
+                                            Para os Tupinambás, comer a carne do inimigo valente não era fome, era honra. Era incorporar a coragem do guerreiro derrotado. Os europeus usaram isso para justificar a "Guerra Justa" e escravidão.
+                                        </p>
+                                    </div>
+                                    <div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5">
+                                        <h3 className="text-lg font-bold text-white mb-3">Período Pré-Colonial (1500-1530)</h3>
+                                        <p className="text-sm text-zinc-400 mb-2">
+                                            Portugal não colonizou de imediato (lucrava mais nas Índias). Fez apenas feitorias para exploração.
+                                        </p>
+                                        <ul className="text-xs text-zinc-400 list-disc list-inside">
+                                            <li><strong className="text-white">Pau-Brasil:</strong> Extração predatória (tinta vermelha).</li>
+                                            <li><strong className="text-white">Escambo:</strong> Troca de trabalho indígena por bugigangas (machados, espelhos). Sem moeda.</li>
+                                            <li><strong className="text-white">Estanco:</strong> Monopólio régio sobre o pau-brasil.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    },
+                    {
+                        id: 'l_hist_br_admin',
+                        title: 'Administração Colonial (Capitanias e Gov. Geral)',
+                        duration: '1h 30m',
+                        status: 'Locked',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-green-400">1. A Ocupação Efetiva</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        Após 1530, o comércio com as Índias decaiu e piratas (franceses) ameaçavam tomar o Brasil. Portugal decidiu colonizar: "Povoar para não perder".
+                                    </p>
+                                </div>
+
+                                <div className="space-y-6">
+                                    <div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5 relative">
+                                        <div className="absolute top-0 right-0 p-4 opacity-20 text-4xl">failed</div>
+                                        <h3 className="text-xl font-bold text-white mb-2">A. Capitanias Hereditárias (1534)</h3>
+                                        <p className="text-sm text-zinc-400 mb-4">
+                                            Tentativa de privatizar a colonização. O Rei dividiu o Brasil em 15 faixas e deu a donatários (Cartas de Doação e Forais).
+                                        </p>
+                                        <div className="bg-red-500/10 p-3 rounded-lg border border-red-500/20 text-red-200 text-sm">
+                                            <strong>Por que fracassou?</strong> Falta de recursos, ataques indígenas, tamanho imenso, distância da metrópole. Só Pernambuco e São Vicente prosperaram (graças ao açúcar).
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-green-900/10 p-6 rounded-2xl border border-green-500/20">
+                                        <h3 className="text-xl font-bold text-green-300 mb-2">B. Governo Geral (1548)</h3>
+                                        <p className="text-sm text-zinc-300 mb-4">
+                                            Centralização administrativa para salvar as capitanias. Capital: Salvador.
+                                        </p>
+                                        <ul className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-zinc-400">
+                                            <li className="bg-black/20 p-2 rounded">
+                                                <strong className="block text-white mb-1">Tomé de Sousa</strong>
+                                                Chegada dos Jesuítas, fundação de Salvador.
+                                            </li>
+                                            <li className="bg-black/20 p-2 rounded">
+                                                <strong className="block text-white mb-1">Duarte da Costa</strong>
+                                                Invasão Francesa no RJ, conflitos com índios.
+                                            </li>
+                                            <li className="bg-black/20 p-2 rounded">
+                                                <strong className="block text-white mb-1">Mem de Sá</strong>
+                                                Expulsão dos franceses, "paz" armada.
+                                            </li>
+                                        </ul>
+                                        <p className="text-xs text-zinc-500 mt-4 italic">
+                                            Nota: As Câmaras Municipais (Homens Bons) eram o poder local, muitas vezes batendo de frente com o Governador.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    },
+                    {
+                        id: 'l_hist_br_acucar',
+                        title: 'Economia Açucareira e Sociedade Escravocrata',
+                        duration: '2h',
+                        status: 'Locked',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-white">1. O Ouro Branco</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        O Açúcar foi escolhido pois Portugal já tinha experiência (ilhas atlânticas), o solo era bom (massapê no Nordeste) e o produto tinha alto valor na Europa. A Holanda financiou e refinou.
+                                    </p>
+                                </div>
+
+                                <div className="bg-[#1A1B26] p-6 rounded-2xl border border-white/5 flex flex-col items-center text-center">
+                                    <h3 className="text-2xl font-black text-white mb-4">O Plantation</h3>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full">
+                                        <div className="bg-white/5 p-3 rounded-xl border border-white/10">
+                                            <div className="text-xl mb-1">🚜</div>
+                                            <div className="font-bold text-sm text-zinc-300">Latifúndio</div>
+                                            <div className="text-[10px] text-zinc-500">Grandes terras</div>
+                                        </div>
+                                        <div className="bg-white/5 p-3 rounded-xl border border-white/10">
+                                            <div className="text-xl mb-1">🌾</div>
+                                            <div className="font-bold text-sm text-zinc-300">Monocultura</div>
+                                            <div className="text-[10px] text-zinc-500">Só açúcar</div>
+                                        </div>
+                                        <div className="bg-white/5 p-3 rounded-xl border border-white/10">
+                                            <div className="text-xl mb-1">🚢</div>
+                                            <div className="font-bold text-sm text-zinc-300">Exportação</div>
+                                            <div className="text-[10px] text-zinc-500">Para fora</div>
+                                        </div>
+                                        <div className="bg-red-500/10 p-3 rounded-xl border border-red-500/20">
+                                            <div className="text-xl mb-1">⛓️</div>
+                                            <div className="font-bold text-sm text-red-300">Escravidão</div>
+                                            <div className="text-[10px] text-red-400">Mão de obra</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <h2 className="text-xl font-bold text-white">Sociedade Açucareira</h2>
+                                    <div className="flex flex-col gap-2">
+                                        <div className="w-full bg-white/10 p-4 rounded-t-xl text-center border-b border-white/5">
+                                            <strong className="text-white">Senhores de Engenho</strong>
+                                            <span className="block text-xs text-zinc-400">A elite branca. Poder patriarcal absoluto.</span>
+                                        </div>
+                                        <div className="w-full bg-white/5 p-3 text-center border-b border-white/5 opacity-80">
+                                            <strong className="text-zinc-300">Homens Livres</strong>
+                                            <span className="block text-xs text-zinc-500">Padres, feitores, comerciantes. Camada fina e dependente.</span>
+                                        </div>
+                                        <div className="w-full bg-black/40 p-6 rounded-b-xl text-center border-t border-white/5">
+                                            <strong className="text-red-400">Escravizados (Mãos e Pés)</strong>
+                                            <span className="block text-xs text-zinc-500">A base da pirâmide. Coisificação do ser humano. Resistência (Quilombos).</span>
+                                        </div>
+                                    </div>
+                                    <p className="text-xs text-zinc-500 italic mt-2">
+                                        "O Brasil é o inferno dos negros, o purgatório dos brancos e o paraíso dos mulatos." (Ditado colonial, refletindo a mestiçagem e violência).
+                                    </p>
+                                </div>
+                            </div>
+                        )
+                    },
+                    {
+                        id: 'l_hist_br_interior',
+                        title: 'Expansão Territorial e Bandeiras',
+                        duration: '1h 30m',
+                        status: 'Locked',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-amber-600">1. Rompendo Tordesilhas</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        O Brasil desenhado em Tordesilhas era uma tira de terra no litoral. O Brasil gigante de hoje foi construído pela interiorização, muitas vezes violenta e ignorando a lei internacional.
+                                    </p>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5">
+                                        <h3 className="text-lg font-bold text-white mb-4">Fatores da Interiorização</h3>
+                                        <ul className="space-y-3 text-sm text-zinc-400">
+                                            <li><strong className="text-white">Pecuária:</strong> O gado foi expulso do litoral (que era para açúcar) e foi para o Sertão (São Francisco: Rio dos Currais).</li>
+                                            <li><strong className="text-white">Drogas do Sertão:</strong> Jesuítas e exploração na Amazônia (cacau, guaraná).</li>
+                                            <li><strong className="text-white">União Ibérica (1580-1640):</strong> Como Portugal e Espanha viraram um só país, a linha de Tordesilhas perdeu o sentido prático temporariamente.</li>
+                                        </ul>
+                                    </div>
+
+                                    <div className="bg-amber-900/10 p-6 rounded-2xl border border-amber-500/20">
+                                        <h3 className="text-lg font-bold text-amber-500 mb-2">Os Bandeirantes</h3>
+                                        <p className="text-sm text-zinc-300 mb-4">
+                                            Paulistas pobres, mamelucos, que entravam no mato para sobreviver. Heróis ou Vilões?
+                                        </p>
+                                        <div className="space-y-2 text-xs text-zinc-400">
+                                            <p><strong className="text-amber-300">Caça ao Índio:</strong> Para escravizar (mão de obra barata para SP).</p>
+                                            <p><strong className="text-amber-300">Sertanismo de Contrato:</strong> Contratados para destruir Quilombos (Ex: Domingos Jorge Velho destruiu Palmares).</p>
+                                            <p><strong className="text-amber-300">Busca por Ouro:</strong> Fernão Dias e Borba Gato. Encontraram Minas Gerais.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    },
+                    {
+                        id: 'l_hist_br_ouro',
+                        title: 'O Ciclo do Ouro e a Sociedade Mineira',
+                        duration: '2h',
+                        status: 'Locked',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-yellow-400">1. O Século do Ouro (XVIII)</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        A descoberta de ouro em Minas Gerais mudou o Brasil. O eixo econômico e político desceu do Nordeste (Salvador) para o Sudeste (Rio de Janeiro virou capital em 1763 para escoar o ouro).
+                                    </p>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5">
+                                        <h3 className="text-lg font-bold text-white mb-3">Impostos e Controle</h3>
+                                        <p className="text-sm text-zinc-400 mb-2">Portugal apertou o cerco ("Derrama") para evitar contrabando (Santo do Pau Oco).</p>
+                                        <ul className="text-xs text-zinc-400 list-disc list-inside">
+                                            <li><strong className="text-yellow-300">Quinto:</strong> 20% de tudo para o Rei.</li>
+                                            <li><strong className="text-yellow-300">Casas de Fundição:</strong> Só ouro em barra selada circulava.</li>
+                                            <li><strong className="text-yellow-300">Capitação:</strong> Imposto por cabeça de escravo.</li>
+                                        </ul>
+                                    </div>
+                                    <div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5">
+                                        <h3 className="text-lg font-bold text-white mb-3">Sociedade Mineradora</h3>
+                                        <p className="text-sm text-zinc-400 mb-2">Diferente da açucareira, era <strong className="text-white">Urbana</strong> e mais flexível.</p>
+                                        <ul className="text-xs text-zinc-400 list-disc list-inside">
+                                            <li>Surgimento de uma <strong className="text-white">Classe Média</strong> (artesãos, intelectuais).</li>
+                                            <li>Possibilidade de alforria (escravo de ganho).</li>
+                                            <li>Vida cultural intensa (Arcadismo).</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div className="bg-[#1A1B26] p-6 rounded-2xl border border-white/5 flex items-center gap-6">
+                                    <div className="text-4xl">⛪</div>
+                                    <div>
+                                        <h3 className="text-lg font-bold text-white">Barroco Mineiro</h3>
+                                        <p className="text-sm text-zinc-400">
+                                            A expressão artística do ouro. Aleijadinho. Igrejas simples por fora, mas cobertas de ouro por dentro (alma pura, corpo simples). Uma arte feita por mestiços para uma sociedade em transformação.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    }
+                ]
+            },
+            {
+                id: 'm_hist_revolucoes',
+                title: 'Módulo 5: Era das Revoluções',
+                description: 'O fim do Antigo Regime e o mundo burguês.',
+                locked: true,
+                duration: '10h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_hist_iluminismo', title: 'Iluminismo e Liberalismo', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_hist_rev_ind', title: 'Revolução Industrial', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_hist_rev_fr', title: 'Revolução Francesa', duration: '2h', status: 'Locked' },
+                    { id: 'l_hist_napoleao', title: 'Era Napoleônica e Congresso de Viena', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_hist_indep_ame', title: 'Independência da América Espanhola e EUA', duration: '1h 30m', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_hist_br_imperio',
+                title: 'Módulo 6: Brasil Império',
+                description: 'A consolidação do Estado Nacional Brasileiro.',
+                locked: true,
+                duration: '12h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_hist_br_indep', title: 'Processo de Independência e 1º Reinado', duration: '2h', status: 'Locked' },
+                    { id: 'l_hist_br_regencia', title: 'Período Regencial e Revoltas', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_hist_br_2reinado', title: '2º Reinado: Café e Estabilidade', duration: '2h', status: 'Locked' },
+                    { id: 'l_hist_br_escravidao', title: 'A Escravidão e o Abolicionismo', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_hist_br_crise_imp', title: 'Guerra do Paraguai e Crise do Império', duration: '1h 30m', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_hist_contemp',
+                title: 'Módulo 7: Mundo Contemporâneo (Séc. XX)',
+                description: 'Guerras, ideologias e o mundo atual.',
+                locked: true,
+                duration: '15h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_hist_imperialismo', title: 'Imperialismo e Neocolonialismo', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_hist_ww1', title: 'Primeira Guerra Mundial e Revolução Russa', duration: '2h', status: 'Locked' },
+                    { id: 'l_hist_crise29', title: 'Crise de 29 e Totalitarismos (Nazifascismo)', duration: '2h', status: 'Locked' },
+                    { id: 'l_hist_ww2', title: 'Segunda Guerra Mundial', duration: '2h', status: 'Locked' },
+                    { id: 'l_hist_guerra_fria', title: 'Guerra Fria e Nova Ordem Mundial', duration: '2h', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_hist_br_rep',
+                title: 'Módulo 8: Brasil República',
+                description: 'Do Marechal Deodoro aos dias atuais.',
+                locked: true,
+                duration: '14h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_hist_br_rep_velha', title: 'República Velha (Oligárquica)', duration: '2h', status: 'Locked' },
+                    { id: 'l_hist_br_vargas', title: 'Era Vargas (1930-1945)', duration: '2h 30m', status: 'Locked' },
+                    { id: 'l_hist_br_populismo', title: 'República Populista (1946-1964)', duration: '2h', status: 'Locked' },
+                    { id: 'l_hist_br_ditadura', title: 'Regime Militar (1964-1985)', duration: '2h 30m', status: 'Locked' },
+                    { id: 'l_hist_br_nova_rep', title: 'Redemocratização e Nova República', duration: '2h', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_hist_rs',
+                title: 'Módulo 9: História do RS (UFRGS)',
+                description: 'Conteúdo específico para o vestibular da UFRGS.',
+                locked: true,
+                duration: '8h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_hist_rs_indigenas', title: 'Povos Indígenas e Missões Jesuíticas', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_hist_rs_formacao', title: 'Formação do Território e Tropeirismo', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_hist_rs_guerras', title: 'Guerra dos Farrapos e Conflitos Platinos', duration: '2h', status: 'Locked' },
+                    { id: 'l_hist_rs_rep', title: 'O RS na República: Castilhismo e Borgismo', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_hist_rs_contemp', title: 'Economia e Sociedade Gaúcha Contemporânea', duration: '1h', status: 'Locked' }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'philosophy',
+        title: 'Filosofia',
+        description: 'Da Grécia Antiga aos dilemas contemporâneos: Ética, Política e Metafísica.',
+        category: 'HUMANAS',
+        duration: '60h',
+        progress: 0,
+        icon: BookA,
+        color: 'bg-fuchsia-600',
+        tags: ['humanas', 'enem', 'ufrgs'],
+        objectives: [
+            "Compreender a evolução do pensamento ocidental",
+            "Relacionar conceitos filosóficos e atualidades",
+            "Analisar textos clássicos de Platão a Foucault",
+            "Desenvolver argumentação crítica e lógica"
+        ],
+        modules: [
+            {
+                id: 'm_filo_intro',
+                title: 'Módulo 1: O Surgimento da Filosofia',
+                description: 'A passagem do Mito ao Logos e os Pré-Socráticos.',
+                locked: false,
+                duration: '6h',
+                status: 'In Progress',
+                lessons: [
+                    {
+                        id: 'l_filo_intro',
+                        title: 'Mito vs. Logos: O Nascimento da Razão',
+                        duration: '1h',
+                        status: 'In Progress',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-fuchsia-400">1. O Despertar da Consciência</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        A Filosofia nasce na Grécia (séc. VI a.C.) quando o ser humano deixa de se contentar com explicações sobrenaturais (<strong className="text-white">Mito</strong>) para os fenômenos da natureza e passa a buscar respostas racionais e causais (<strong className="text-white">Logos</strong>).
+                                    </p>
+                                    <div className="bg-fuchsia-900/20 p-4 rounded-xl border border-fuchsia-500/30 my-4">
+                                        <p className="text-fuchsia-200 text-sm italic">
+                                            "A filosofia começa com a admiração." — Aristóteles. É o espanto diante do mundo que nos faz perguntar os "porquês".
+                                        </p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h2 className="text-2xl font-bold text-fuchsia-400 mb-4">2. Comparativo Fundamental</h2>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="bg-zinc-900/50 p-6 rounded-xl border border-white/5 relative overflow-hidden">
+                                            <div className="absolute top-0 right-0 p-2 opacity-10 text-4xl">⚡</div>
+                                            <strong className="text-white text-lg block mb-2">Consciência Mítica</strong>
+                                            <ul className="text-zinc-400 text-sm space-y-2">
+                                                <li>• Explicações sobrenaturais/divinas.</li>
+                                                <li>• Verdade revelada e inquestionável.</li>
+                                                <li>• Narrativas fantásticas e poéticas.</li>
+                                                <li>• Ex: "Chove porque Zeus está triste."</li>
+                                            </ul>
+                                        </div>
+                                        <div className="bg-zinc-900/50 p-6 rounded-xl border border-white/5 relative overflow-hidden">
+                                            <div className="absolute top-0 right-0 p-2 opacity-10 text-4xl">📐</div>
+                                            <strong className="text-white text-lg block mb-2">Consciência Filosófica</strong>
+                                            <ul className="text-zinc-400 text-sm space-y-2">
+                                                <li>• Explicações racionais e lógicas (Logos).</li>
+                                                <li>• Verdade buscada e debatida.</li>
+                                                <li>• Argumentação crítica e coerente.</li>
+                                                <li>• Ex: "Chove devido ao ciclo da água."</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="bg-zinc-800/50 p-4 rounded-xl border-l-4 border-fuchsia-500">
+                                    <strong className="text-white">Condições Históricas:</strong> Navegações, invenção da moeda, da escrita alfabética e da política (pólis) criaram o ambiente propício para a troca de ideias e o surgimento do pensamento crítico.
+                                </div>
+                            </div>
+                        )
+                    },
+                    {
+                        id: 'l_filo_pre',
+                        title: 'Os Pré-Socráticos e a Arché',
+                        duration: '1h 30m',
+                        status: 'Locked'
+                    }
+                ]
+            },
+            {
+                id: 'm_filo_classica',
+                title: 'Módulo 2: Filosofia Clássica (Socrática)',
+                description: 'Sócrates, Platão e Aristóteles: Os pilares do ocidente.',
+                locked: true,
+                duration: '12h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_filo_socrates', title: 'Sócrates e os Sofistas: A busca pela verdade', duration: '2h', status: 'Locked' },
+                    { id: 'l_filo_platao', title: 'Platão: O Mundo das Ideias e A República', duration: '2h 30m', status: 'Locked' },
+                    { id: 'l_filo_aristoteles', title: 'Aristóteles: Metafísica, Ética e Política', duration: '2h 30m', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_filo_helen_med',
+                title: 'Módulo 3: Helenismo e Idade Média',
+                description: 'A busca pela felicidade e o encontro da Fé com a Razão.',
+                locked: true,
+                duration: '10h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_filo_helenismo', title: 'Escolas Helenísticas: Estoicismo e Epicurismo', duration: '2h', status: 'Locked' },
+                    { id: 'l_filo_agostinho', title: 'Patrística: Santo Agostinho e o Tempo', duration: '2h', status: 'Locked' },
+                    { id: 'l_filo_tomas', title: 'Escolástica: São Tomás de Aquino', duration: '2h', status: 'Locked' },
+                    { id: 'l_filo_maquiavel', title: 'Renascimento: O Realismo de Maquiavel', duration: '2h', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_filo_moderna',
+                title: 'Módulo 4: Filosofia Moderna (Epistemologia)',
+                description: 'Racionalismo, Empirismo e a Teoria do Conhecimento.',
+                locked: true,
+                duration: '10h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_filo_descartes', title: 'Racionalismo: Descartes e a Dúvida Metódica', duration: '2h', status: 'Locked' },
+                    { id: 'l_filo_empirismo', title: 'Empirismo: Locke e Hume', duration: '2h', status: 'Locked' },
+                    { id: 'l_filo_kant', title: 'Kant: A Revolução Copernicana na Filosofia', duration: '2h 30m', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_filo_politica',
+                title: 'Módulo 5: Filosofia Política Moderna',
+                description: 'A origem do Estado e o Contratualismo.',
+                locked: true,
+                duration: '8h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_filo_hobbes', title: 'Thomas Hobbes: O Leviatã', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_filo_locke_pol', title: 'John Locke: Liberalismo Político', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_filo_rousseau', title: 'Rousseau: O Contrato Social', duration: '1h 30m', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_filo_contemp1',
+                title: 'Módulo 6: O Século XIX e a Crise da Razão',
+                description: 'Idealismo, Materialismo e Vitalismo.',
+                locked: true,
+                duration: '10h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_filo_hegel', title: 'Hegel e a Dialética', duration: '2h', status: 'Locked' },
+                    { id: 'l_filo_marx', title: 'Karl Marx: Materialismo Histórico', duration: '2h', status: 'Locked' },
+                    { id: 'l_filo_nietzsche', title: 'Nietzsche: A Morte de Deus', duration: '2h', status: 'Locked' },
+                    { id: 'l_filo_schopenhauer', title: 'Schopenhauer: O Mundo como Vontade', duration: '1h 30m', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_filo_contemp2',
+                title: 'Módulo 7: Filosofia Contemporânea',
+                description: 'Existencialismo, Escola de Frankfurt e Pós-Modernidade.',
+                locked: true,
+                duration: '12h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_filo_existencialismo', title: 'Sartre e o Existencialismo', duration: '2h', status: 'Locked' },
+                    { id: 'l_filo_foucault', title: 'Michel Foucault: Poder e Disciplina', duration: '2h', status: 'Locked' },
+                    { id: 'l_filo_frankfurt', title: 'Escola de Frankfurt e Indústria Cultural', duration: '2h', status: 'Locked' },
+                    { id: 'l_filo_bauman', title: 'Bauman e a Modernidade Líquida', duration: '1h 30m', status: 'Locked' }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'geography',
+        title: 'Geografia',
+        description: 'Geografia Física, Humana, Geopolítica e Regional (Brasil e RS).',
+        category: 'HUMANAS',
+        duration: '90h',
+        progress: 0,
+        icon: Globe,
+        color: 'bg-indigo-500',
+        tags: ['humanas', 'enem', 'ufrgs'],
+        objectives: [
+            "Dominar a leitura e interpretação de mapas e escalas",
+            "Compreender as dinâmicas climáticas e ambientais",
+            "Analisar a organização do espaço geográfico mundial e brasileiro",
+            "Entender os processos de globalização e geopolítica"
+        ],
+        modules: [
+            {
+                id: 'm_cartografia',
+                title: 'Módulo 1: Cartografia e Geologia',
+                description: 'A base da geografia: mapas, escalas e a estrutura da Terra.',
+                locked: false,
+                duration: '6h',
+                status: 'In Progress',
+                lessons: [
+                    {
+                        id: 'l_coord_fuso',
+                        title: 'Coordenadas Geográficas e Fusos Horários',
+                        duration: '1h 30m',
+                        status: 'In Progress',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-indigo-400">1. O Sistema de Endereçamento da Terra</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        Para navegar no mundo, precisamos de um sistema de referência universal. A <strong>Cartografia</strong> criou uma malha imaginária que envolve o planeta, permitindo localizar qualquer ponto com precisão matemática.
+                                    </p>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
+                                        <div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5">
+                                            <h3 className="text-xl font-bold text-white mb-2">Latitude (Paralelos)</h3>
+                                            <p className="text-zinc-400 text-sm">
+                                                Distância em graus em relação à <strong className="text-indigo-400">Linha do Equador</strong> (0°). Varia de 0° a 90° para o Norte (N) ou Sul (S).
+                                            </p>
+                                            <p className="text-xs text-zinc-500 mt-2">Dita os climas (zonas térmicas).</p>
+                                        </div>
+                                        <div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5">
+                                            <h3 className="text-xl font-bold text-white mb-2">Longitude (Meridianos)</h3>
+                                            <p className="text-zinc-400 text-sm">
+                                                Distância em graus em relação ao <strong className="text-indigo-400">Meridiano de Greenwich</strong> (0°). Varia de 0° a 180° para o Leste (E) ou Oeste (W).
+                                            </p>
+                                            <p className="text-xs text-zinc-500 mt-2">Define os fusos horários.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h2 className="text-2xl font-bold text-indigo-400 mb-4">2. Fusos Horários</h2>
+                                    <div className="bg-indigo-900/20 p-6 rounded-2xl border border-indigo-500/30 space-y-4">
+                                        <p className="text-zinc-300 text-sm">
+                                            A Terra gira 360° em aproximadamente 24 horas. Portanto:
+                                            <br />
+                                            <span className="font-mono text-indigo-300 text-lg block mt-2">360° ÷ 24h = 15° por hora</span>
+                                        </p>
+                                        <ul className="list-disc list-inside text-zinc-400 text-sm space-y-1">
+                                            <li>Para Leste (→), as horas <strong>aumentam</strong> (o sol nasce antes).</li>
+                                            <li>Para Oeste (←), as horas <strong>diminuem</strong>.</li>
+                                        </ul>
+                                    </div>
+
+                                    <h3 className="text-xl font-bold text-white mt-6 mb-4">Fusos no Brasil</h3>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                                        <div className="p-3 bg-zinc-800 rounded-lg text-center">
+                                            <strong className="block text-indigo-300 mb-1">-2 GMT</strong>
+                                            Ilhas Oceânicas (Noronha)
+                                        </div>
+                                        <div className="p-3 bg-zinc-800 rounded-lg border border-indigo-500/50 text-center">
+                                            <strong className="block text-indigo-300 mb-1">-3 GMT</strong>
+                                            Brasília (Oficial)
+                                        </div>
+                                        <div className="p-3 bg-zinc-800 rounded-lg text-center">
+                                            <strong className="block text-indigo-300 mb-1">-4 GMT</strong>
+                                            AM, RO, RR, MS, MT
+                                        </div>
+                                        <div className="p-3 bg-zinc-800 rounded-lg text-center">
+                                            <strong className="block text-indigo-300 mb-1">-5 GMT</strong>
+                                            Acre e oeste do AM
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    },
+                    { id: 'l_proj_esc', title: 'Projeções Cartográficas e Escalas', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_tec_rochas', title: 'Tectônica de Placas e Tipos de Rochas', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_relevo', title: 'Agentes do Relevo (Internos e Externos)', duration: '1h', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_clima_veg',
+                title: 'Módulo 2: Climatologia e Biogeografia',
+                description: 'Dinâmicas atmosféricas e os grandes biomas.',
+                locked: true,
+                duration: '8h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_atm_clima', title: 'Camadas da Atmosfera e Fatores Climáticos', duration: '2h', status: 'Locked' },
+                    { id: 'l_fen_clim', title: 'Fenômenos Climáticos (El Niño, Monções)', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_biomas_mund', title: 'Biomas Mundiais', duration: '2h', status: 'Locked' },
+                    { id: 'l_biomas_br', title: 'Domínios Morfoclimáticos do Brasil', duration: '2h', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_hidro_amb',
+                title: 'Módulo 3: Hidrografia e Meio Ambiente',
+                description: 'Recursos hídricos e impactos ambientais.',
+                locked: true,
+                duration: '6h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_ciclo_agua', title: 'Ciclo da Água e Bacias Hidrográficas', duration: '2h', status: 'Locked' },
+                    { id: 'l_hidro_br', title: 'Bacias Hidrográficas do Brasil', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_impactos', title: 'Problemas Ambientais Urbanos e Rurais', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_conf_amb', title: 'Conferências Ambientais e Desenvolvimento Sustentável', duration: '1h', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_população',
+                title: 'Módulo 4: Demografia e Urbanização',
+                description: 'Dinâmicas populacionais e o espaço urbano.',
+                locked: true,
+                duration: '10h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_teorias_dem', title: 'Teorias Demográficas e Transição', duration: '2h', status: 'Locked' },
+                    { id: 'l_migracoes', title: 'Fluxos Migratórios Nacionais e Internacionais', duration: '2h', status: 'Locked' },
+                    { id: 'l_urb_proc', title: 'Processo de Urbanização e Conceitos', duration: '2h', status: 'Locked' },
+                    { id: 'l_urb_br', title: 'Rede Urbana Brasileira', duration: '2h', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_agraria',
+                title: 'Módulo 5: Geografia Agrária',
+                description: 'O espaço rural e a produção de alimentos.',
+                locked: true,
+                duration: '6h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_sist_agri', title: 'Sistemas Agrícolas (Intensivo vs Extensivo)', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_agri_br', title: 'Agropecuária no Brasil e Commodities', duration: '2h', status: 'Locked' },
+                    { id: 'l_estru_fund', title: 'Estrutura Fundiária e Reforma Agrária', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_tenc_campo', title: 'Conflitos no Campo Brasileiro', duration: '1h', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_ind_energia',
+                title: 'Módulo 6: Indústria e Energia',
+                description: 'Evolução industrial e fontes de energia.',
+                locked: true,
+                duration: '8h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_rev_ind', title: 'As Revoluções Industriais e Modelos (Fordismo, Toyotismo)', duration: '2h 30m', status: 'Locked' },
+                    { id: 'l_ind_br', title: 'Industrialização Brasileira', duration: '2h', status: 'Locked' },
+                    { id: 'l_energia_fossil', title: 'Fontes de Energia Não-Renováveis', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_energia_renov', title: 'Fontes Renováveis e Matriz Energética', duration: '2h', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_geopol',
+                title: 'Módulo 7: Geopolítica e Globalização',
+                description: 'A ordem mundial e os conflitos atuais.',
+                locked: true,
+                duration: '10h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_ordem_mundial', title: 'Guerra Fria e Nova Ordem Mundial', duration: '2h', status: 'Locked' },
+                    { id: 'l_glob_blocos', title: 'Globalização e Blocos Econômicos', duration: '2h 30m', status: 'Locked' },
+                    { id: 'l_conflitos_om', title: 'Conflitos no Oriente Médio', duration: '2h 30m', status: 'Locked' },
+                    { id: 'l_geopol_atual', title: 'Geopolítica Contemporânea (EUA, China, Rússia)', duration: '2h', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_geo_rs',
+                title: 'Módulo 8: Geografia do RS (UFRGS)',
+                description: 'Física e Humana do Rio Grande do Sul.',
+                locked: true,
+                duration: '5h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_rs_fisica', title: 'Relevo, Clima e Hidrografia do RS', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_rs_veg', title: 'Biomas do RS: Pampa e Mata Atlântica', duration: '1h', status: 'Locked' },
+                    { id: 'l_rs_humana', title: 'População e Economia Gaúcha', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_rs_regioes', title: 'Regionalização do RS (Coredes)', duration: '1h', status: 'Locked' }
+                ]
+            }
+        ]
     },
     {
         id: 'art_history',
         title: 'História da Arte',
-        description: 'Evolução das artes visuais e movimentos artísticos.',
+        description: 'Da Pré-História à Arte Contemporânea: Movimentos, Vanguardas e Arte Brasileira.',
         category: 'ARTES',
         duration: '45h',
         progress: 0,
         icon: Palette,
-        color: 'bg-pink-600',
-        tags: ['artes']
+        color: 'bg-rose-600',
+        tags: ['artes', 'enem', 'ufrgs', 'humanas'],
+        objectives: [
+            "Analisar a evolução estética e cultural da humanidade",
+            "Compreender as Vanguardas Europeias e o Modernismo Brasileiro",
+            "Interpretar obras de arte em seu contexto histórico",
+            "Identificar características dos principais movimentos artísticos"
+        ],
+        modules: [
+            {
+                id: 'm_arte_antiga',
+                title: 'Módulo 1: Das Cavernas à Antiguidade',
+                description: 'Pré-História, Egito, Grécia e Roma.',
+                locked: false,
+                duration: '6h',
+                status: 'In Progress',
+                lessons: [
+                    {
+                        id: 'l_arte_intro_pre',
+                        title: 'Introdução e Arte na Pré-História',
+                        duration: '1h',
+                        status: 'In Progress',
+                        content: (
+                            <div className="space-y-8">
+                                <div className="prose prose-invert max-w-none">
+                                    <h2 className="text-2xl font-bold text-rose-400">1. O Que é Arte?</h2>
+                                    <p className="text-zinc-400 leading-relaxed">
+                                        A arte é uma manifestação humana que busca comunicar emoções, ideias e visões de mundo através de formas estéticas. Desde o início, o ser humano sentiu necessidade de deixar sua marca.
+                                    </p>
+                                </div>
+                                <div className="bg-zinc-900/50 p-6 rounded-2xl border border-white/5">
+                                    <h3 className="text-lg font-bold text-white mb-3">Arte Rupestre</h3>
+                                    <p className="text-sm text-zinc-400 mb-2">
+                                        Pinturas em cavernas (Lascaux, Altamira, Serra da Capivara).
+                                    </p>
+                                    <ul className="text-xs text-zinc-400 list-disc list-inside">
+                                        <li><strong className="text-rose-300">Naturalismo:</strong> Representação fiel dos animais.</li>
+                                        <li><strong className="text-rose-300">Função Mágica (Simpatia):</strong> Acredita-se que pintar o animal facilitava a caça.</li>
+                                        <li><strong className="text-rose-300">Mão em Negativo:</strong> Primeira assinatura humana.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        )
+                    },
+                    { id: 'l_arte_egito', title: 'Arte Egípcia: A Lei da Frontalidade', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_arte_grecia', title: 'Arte Grega: A Busca pelo Ideal de Beleza', duration: '2h', status: 'Locked' },
+                    { id: 'l_arte_roma', title: 'Arte Romana: Engenharia e Realismo', duration: '1h 30m', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_arte_medieval_renasc',
+                title: 'Módulo 2: Do Sagrado ao Humano',
+                description: 'Arte Medieval, Gótica e o Renascimento.',
+                locked: true,
+                duration: '8h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_arte_bizantina', title: 'Arte Bizantina e Paleocristã', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_arte_gotica', title: 'O Estilo Gótico e as Catedrais', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_arte_renascimento', title: 'Renascimento: Perspectiva e Humanismo', duration: '2h 30m', status: 'Locked' },
+                    { id: 'l_arte_maneirismo', title: 'Maneirismo: A Ruptura da Harmonia', duration: '1h 30m', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_arte_moderna_1',
+                title: 'Módulo 3: Do Barroco ao Impressionismo',
+                description: 'A emoção, a luz e a ruptura com a academia.',
+                locked: true,
+                duration: '10h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_arte_barroco', title: 'Barroco: Luz, Sombra e Emoção', duration: '2h', status: 'Locked' },
+                    { id: 'l_arte_rococo_neo', title: 'Rococó e Neoclassicismo', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_arte_romantismo', title: 'Romantismo e Realismo', duration: '2h', status: 'Locked' },
+                    { id: 'l_arte_impressionismo', title: 'Impressionismo: A Captura do Instante', duration: '2h', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_arte_vanguardas',
+                title: 'Módulo 4: Vanguardas Europeias',
+                description: 'Os "Ismos" que mudaram a arte no século XX.',
+                locked: true,
+                duration: '8h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_arte_cubismo', title: 'Cubismo e Futurismo', duration: '2h', status: 'Locked' },
+                    { id: 'l_arte_expressionismo', title: 'Expressionismo e Fauvismo', duration: '2h', status: 'Locked' },
+                    { id: 'l_arte_dada_surreal', title: 'Dadaísmo e Surrealismo', duration: '2h', status: 'Locked' },
+                    { id: 'l_arte_abstra', title: 'Abstracionismo', duration: '1h 30m', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_arte_brasil',
+                title: 'Módulo 5: Arte no Brasil',
+                description: 'Da colônia à Semana de 22.',
+                locked: true,
+                duration: '10h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_arte_br_barroco', title: 'Barroco Mineiro e Aleijadinho', duration: '2h', status: 'Locked' },
+                    { id: 'l_arte_br_missao', title: 'Missão Artística Francesa e Academismo', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_arte_br_mod', title: 'Modernismo: A Semana de 22', duration: '2h 30m', status: 'Locked' },
+                    { id: 'l_arte_br_pos_mod', title: 'Portinari e o Modernismo Tardio', duration: '2h', status: 'Locked' }
+                ]
+            },
+            {
+                id: 'm_arte_contemp',
+                title: 'Módulo 6: Arte Contemporânea',
+                description: 'A arte pós-guerra e os novos meios.',
+                locked: true,
+                duration: '8h',
+                status: 'Locked',
+                lessons: [
+                    { id: 'l_arte_pop', title: 'Pop Art e Minimalismo', duration: '1h 30m', status: 'Locked' },
+                    { id: 'l_arte_conceitual', title: 'Arte Conceitual e Performance', duration: '2h', status: 'Locked' },
+                    { id: 'l_arte_br_contemp', title: 'Arte Contemporânea Brasileira (Hélio Oiticica)', duration: '2h', status: 'Locked' },
+                    { id: 'l_arte_urbana', title: 'Arte Urbana e Novas Mídias', duration: '1h 30m', status: 'Locked' }
+                ]
+            }
+        ]
     }
 ];

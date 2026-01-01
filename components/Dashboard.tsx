@@ -23,7 +23,8 @@ import NotesModule from './notes/NotesModule';
 import Library from './library/Library';
 
 import UpgradeModal from './UpgradeModal';
-import ContentModule from './content/ContentModuleNew';
+// Lazy load ContentModule to prevent large data bundle from blocking initial render
+const ContentModule = React.lazy(() => import('./content/ContentModuleNew'));
 import { DashboardSkeleton } from './SkeletonLoader';
 import FocusMode from './dashboard/FocusMode';
 import ExperienceBar from './gamification/ExperienceBar';
@@ -41,6 +42,11 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
+    useEffect(() => {
+        console.log("Dashboard: Component Mounted");
+        return () => console.log("Dashboard: Component Unmounted");
+    }, []);
+    // ... rest of component
     // Navigation State
     const allNavItems = [
         { id: "Dashboard", label: "Início", icon: <LayoutDashboard size={20} /> },
@@ -147,16 +153,22 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     // Load User
     useEffect(() => {
         const loadUser = async () => {
+            // Create a timeout promise that rejects after 5 seconds
+            const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Dashboard Auth Timeout')), 5000));
             try {
-                const user = await authService.getCurrentUser();
+                // Race the auth check against the timeout
+                const user = await Promise.race([authService.getCurrentUser(), timeout]) as any;
+
                 if (!user) {
                     onLogout();
                     return;
                 }
                 setCurrentUser(user);
             } catch (error) {
-                console.error("Erro ao carregar usuário", error);
-                toast.error("Sessão expirada. Faça login novamente.");
+                console.error("Erro ao carregar usuário no Dashboard", error);
+                // Instead of logging out immediately on timeout, maybe we can rely on cached data or retry?
+                // For now, let's force logout to be safe but with feedback
+                toast.error("Erro de conexão. Tentando reconectar...");
                 onLogout();
             } finally {
                 setIsLoadingUser(false);
@@ -616,7 +628,11 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                                     <ProLockOverlay onUpgrade={() => setShowUpgradeModal(true)} />
                                     <div className="blur-[8px] pointer-events-none select-none h-full w-full">
                                         {activeTab === "Notas" && <NotesModule />}
-                                        {activeTab === "Conteúdos" && <ContentModule />}
+                                        {activeTab === "Conteúdos" && (
+                                            <React.Suspense fallback={<div className="flex justify-center p-12"><Loader2 className="animate-spin text-blue-500" size={32} /></div>}>
+                                                <ContentModule />
+                                            </React.Suspense>
+                                        )}
                                         {activeTab === "Biblioteca" && <Library userId={currentUser.id} isAdmin={isUserAdmin} />}
                                         {activeTab === "Tutores" && <Tutors />}
                                         {activeTab === "Lista de Erros" && <ErrorList />}
@@ -662,7 +678,11 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                                         isUserAdmin ? <Planner isAdmin={true} /> : <TaskPlanner isAdmin={false} />
                                     )}
                                     {activeTab === "Notas" && <NotesModule />}
-                                    {activeTab === "Conteúdos" && <ContentModule />}
+                                    {activeTab === "Conteúdos" && (
+                                        <React.Suspense fallback={<div className="flex justify-center p-12"><Loader2 className="animate-spin text-blue-500" size={32} /></div>}>
+                                            <ContentModule />
+                                        </React.Suspense>
+                                    )}
                                     {activeTab === "Biblioteca" && <Library userId={currentUser.id} isAdmin={isUserAdmin} />}
                                     {activeTab === "Tutores" && <Tutors />}
                                     {activeTab === "Lista de Erros" && <ErrorList />}

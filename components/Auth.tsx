@@ -98,8 +98,16 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
     setIsLoading(true);
 
     try {
+      const timeoutPromise = new Promise<{ success: boolean; message: string }>((_, reject) =>
+        setTimeout(() => reject(new Error('Tempo limite de conexão excedido')), 8000)
+      );
+
       if (isRegister) {
-        const result = await authService.register(name, email, password);
+        const result = await Promise.race([
+          authService.register(name, email, password),
+          timeoutPromise
+        ]);
+
         if (result.success) {
           toast.success("Cadastro realizado!");
           onSuccess();
@@ -112,7 +120,11 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
           }
         }
       } else {
-        const result = await authService.login(email, password);
+        const result = await Promise.race([
+          authService.login(email, password),
+          timeoutPromise
+        ]);
+
         if (result.success) {
           toast.success("Login realizado com sucesso!");
           onSuccess();
@@ -123,8 +135,9 @@ const Auth: React.FC<AuthProps> = ({ onBack, onSuccess }) => {
           toast.error(result.message || "Erro ao entrar.");
         }
       }
-    } catch (err) {
-      toast.error("Erro inesperado. Tente novamente.");
+    } catch (err: any) {
+      console.error("Auth error:", err);
+      toast.error(err.message || "Erro inesperado. Tente novamente.");
     } finally {
       setIsLoading(false);
     }

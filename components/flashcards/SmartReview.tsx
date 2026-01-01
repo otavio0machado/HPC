@@ -36,17 +36,22 @@ export const SmartReview: React.FC<SmartReviewProps> = ({ initialQueue, onExit }
         setLoading(true);
         try {
             const q = await reviewService.fetchSmartQueue();
-            setQueue(q);
+            if (q && q.length > 0) {
+                setQueue(q);
+            } else {
+                setQueue([]);
+            }
         } catch (error) {
             console.error(error);
             toast.error("Falha ao carregar fila de revisão");
+            setQueue([]);
         } finally {
             setLoading(false);
         }
     };
 
     // Current Item
-    const currentItem = queue[currentIndex];
+    const currentItem = queue && queue.length > 0 && currentIndex < queue.length ? queue[currentIndex] : null;
     const progress = queue.length > 0 ? ((currentIndex) / queue.length) * 100 : 0;
 
     // Logic for "Next Interval" preview (Dry Run)
@@ -75,7 +80,7 @@ export const SmartReview: React.FC<SmartReviewProps> = ({ initialQueue, onExit }
         setDirection(1);
 
         // Process in background
-        reviewService.processReview(currentItem, quality).catch(err => {
+        const processingPromise = reviewService.processReview(currentItem, quality).catch(err => {
             console.error("Failed to process review", err);
             toast.error("Erro ao salvar progresso");
         });
@@ -86,15 +91,20 @@ export const SmartReview: React.FC<SmartReviewProps> = ({ initialQueue, onExit }
             total: prev.total + 1
         }));
 
-        // Move Next
-        setTimeout(() => {
+        // Wait for flip animation to start reversely or just move next
+        // We delay slightly to allow the user to see the feedback (or just snappy transition)
+        // But more importantly, we need to ensure the state only changes after the visual reset is accepted
+        setTimeout(async () => {
+            // Ensure the processing at least started
+            await processingPromise;
+
             if (currentIndex < queue.length - 1) {
                 setCurrentIndex(prev => prev + 1);
             } else {
                 // End of session
                 setCurrentIndex(prev => prev + 1); // move to "finished" state
             }
-        }, 200);
+        }, 300); // Slightly longer than 200 to allow flip reset visual
     };
 
     // Loading State
@@ -177,7 +187,7 @@ export const SmartReview: React.FC<SmartReviewProps> = ({ initialQueue, onExit }
                             <div
                                 key={idx}
                                 className={`h-1.5 w-8 rounded-full transition-all duration-300 ${idx < currentIndex ? 'bg-blue-500' :
-                                        idx === currentIndex ? 'bg-white blink' : 'bg-white/10'
+                                    idx === currentIndex ? 'bg-white blink' : 'bg-white/10'
                                     }`}
                             />
                         ))}
@@ -190,8 +200,8 @@ export const SmartReview: React.FC<SmartReviewProps> = ({ initialQueue, onExit }
 
                 <div className='flex items-center gap-3'>
                     <div className={`px-3 py-1.5 rounded-full border backdrop-blur-md flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest ${currentItem.type === 'error'
-                            ? 'bg-red-500/10 border-red-500/20 text-red-300'
-                            : 'bg-white/5 border-white/10 text-zinc-400'
+                        ? 'bg-red-500/10 border-red-500/20 text-red-300'
+                        : 'bg-white/5 border-white/10 text-zinc-400'
                         }`}>
                         {currentItem.type === 'error' ? <AlertTriangle size={12} /> : <BookOpen size={12} />}
                         <span className="max-w-[150px] truncate">{currentItem.content.context || 'Geral'}</span>
@@ -213,8 +223,8 @@ export const SmartReview: React.FC<SmartReviewProps> = ({ initialQueue, onExit }
                         <div
                             onClick={() => !isFlipped && setIsFlipped(true)}
                             className={`w-full h-full rounded-[40px] border relative overflow-hidden backdrop-blur-2xl shadow-2xl transition-all duration-500 flex flex-col ${isFlipped
-                                    ? 'bg-zinc-900/80 border-white/10'
-                                    : 'bg-white/5 hover:bg-white/10 border-white/10 cursor-pointer group'
+                                ? 'bg-zinc-900/80 border-white/10'
+                                : 'bg-white/5 hover:bg-white/10 border-white/10 cursor-pointer group'
                                 }`}
                         >
                             {/* Inner Glow */}
@@ -224,8 +234,8 @@ export const SmartReview: React.FC<SmartReviewProps> = ({ initialQueue, onExit }
                             <div className="flex-1 p-10 md:p-16 overflow-y-auto custom-scrollbar flex flex-col items-center justify-center text-center relative z-10">
 
                                 <span className={`text-[10px] font-bold uppercase tracking-[0.2em] mb-12 px-4 py-1.5 rounded-full border ${isFlipped
-                                        ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
-                                        : 'bg-white/5 border-white/10 text-zinc-500'
+                                    ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                                    : 'bg-white/5 border-white/10 text-zinc-500'
                                     }`}>
                                     {isFlipped ? 'Resposta' : 'Pergunta'}
                                 </span>

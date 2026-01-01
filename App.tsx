@@ -25,8 +25,19 @@ const App: React.FC = () => {
   // Check for active session on mount and listen for changes
   useEffect(() => {
     const checkSession = async () => {
+      console.log("App: Starting checkSession");
+
       try {
-        const user = await authService.getCurrentUser();
+        console.log("App: Calling authService.getCurrentUser()");
+
+        // Timeout wrapper for Auth - 5 seconds max
+        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Auth Timeout')), 5000));
+        const userPromise = authService.getCurrentUser();
+
+        // Race the auth check against the timeout
+        const user = await Promise.race([userPromise, timeout]) as any;
+
+        console.log("App: Got user:", user);
         if (user) {
           setIsLoggedIn(true);
           setView('dashboard');
@@ -35,11 +46,32 @@ const App: React.FC = () => {
           setView('landing');
         }
       } catch (error) {
-        console.error("Session check failed", error);
+        console.error("Session check failed or timed out", error);
+        setIsLoggedIn(false);
+        setView('landing');
       } finally {
+        console.log("App: checkSession finally block - setting isLoading false");
         setIsLoading(false);
       }
     };
+
+    checkSession();
+
+    // Safety fallback: Force loading to stop after 8 seconds no matter what
+    const safetyTimeout = setTimeout(() => {
+      console.log("App: Safety timeout triggered");
+      setIsLoading(prev => {
+        if (prev) {
+          console.warn("App: Force disabling loader due to timeout");
+          setIsLoggedIn(false);
+          setView('landing');
+          return false;
+        }
+        return prev;
+      });
+    }, 8000);
+
+    return () => clearTimeout(safetyTimeout);
 
     checkSession();
 
@@ -64,12 +96,20 @@ const App: React.FC = () => {
   }, []);
 
   const handleLoginClick = async () => {
-    // Check if valid session exists
-    const user = await authService.getCurrentUser();
-    if (user) {
-      setIsLoggedIn(true);
-      setView('dashboard');
-    } else {
+    // Check if valid session exists with timeout
+    try {
+      const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Auth Timeout')), 2000));
+      const userPromise = authService.getCurrentUser();
+      const user = await Promise.race([userPromise, timeout]) as any;
+
+      if (user) {
+        setIsLoggedIn(true);
+        setView('dashboard');
+      } else {
+        setView('auth');
+      }
+    } catch (e) {
+      console.warn("Login click check timed out, forcing auth view");
       setView('auth');
     }
   };

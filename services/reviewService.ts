@@ -25,7 +25,7 @@ export const reviewService = {
         // 1. Fetch Due Flashcards
         try {
             const cards = await flashcardService.fetchFlashcards();
-            const dueCards = cards.filter(c => c.nextReview <= now);
+            const dueCards = cards.filter(c => c.nextReview <= now && c.front !== '[[FOLDER_MARKER]]');
 
             dueCards.forEach(c => {
                 queue.push({
@@ -90,20 +90,29 @@ export const reviewService = {
             ease = ease + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
             if (ease < MIN_EASE) ease = MIN_EASE;
 
+            // Ensure valid numbers
+            if (isNaN(interval)) interval = 1;
+            if (isNaN(ease)) ease = 2.5;
+
             const nextReview = Date.now() + (interval * 24 * 60 * 60 * 1000);
 
-            await flashcardService.updateFlashcard({
-                ...card,
-                interval,
-                repetitions,
-                ease,
-                nextReview
-            });
+            try {
+                await flashcardService.updateFlashcard({
+                    ...card,
+                    interval,
+                    repetitions,
+                    ease,
+                    nextReview
+                });
+            } catch (err) {
+                console.error("Critical error updating flashcard inside review service", err);
+            }
         }
 
-        // Handle Error review logic (e.g. mark as reviewed today)
         if (item.type === 'error') {
             // Logic to update error review status
+            // For now, no-op or console log
+            console.log("Processed error review", item.id);
         }
     }
 };

@@ -16,20 +16,18 @@ try {
     console.log("Could not load .env file");
 }
 
+// Tenta pegar a chave do ambiente ou usa uma string vazia para forçar o erro de autenticação (ou use a chave se souber qual é segura)
 const key = process.env.GEMINI_API_KEY;
-console.log("Testing key:", key);
+console.log("Testing model: gemini-2.5-flash-lite");
 
 try {
     const ai = new GoogleGenAI({ apiKey: key });
     const response = await ai.models.generateContent({
         model: "gemini-2.5-flash-lite",
-        contents: "Hello, answer with 'OK'",
+        contents: "Hello, confirm you are Gemini 2.5 Flash",
     });
-    console.log("Response text:", response.text);
+    console.log("Success:", response.text);
 } catch (e) {
-    console.error("Error:", e.message);
-    if (e.response) {
-        console.error("Status:", e.response.status);
-        console.error("Body:", await e.response.text());
-    }
+    console.log("Error Status:", e.status || e.response?.status);
+    console.log("Error Message:", e.message);
 }

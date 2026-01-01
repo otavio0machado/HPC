@@ -12,6 +12,8 @@ import {
     MoreHorizontal
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
+import { CONTENT_REGISTRY } from './registry/ContentRegistry';
 
 interface Lesson {
     id: string;
@@ -19,6 +21,7 @@ interface Lesson {
     duration: string;
     status: 'Locked' | 'In Progress' | 'Completed';
     content?: React.ReactNode;
+    contentId?: string;
 }
 
 interface Module {
@@ -80,6 +83,17 @@ const LessonView: React.FC<LessonViewProps> = ({ course, lesson, onBack, onLesso
                         {lesson?.content ? (
                             <div className="text-zinc-300">
                                 {lesson.content}
+                            </div>
+                        ) : lesson?.contentId && CONTENT_REGISTRY[lesson.contentId] ? (
+                            <div className="text-zinc-300 fade-in slide-in-from-bottom-4 duration-500">
+                                <React.Suspense fallback={
+                                    <div className="flex flex-col items-center justify-center py-20 space-y-4">
+                                        <Loader2 className="animate-spin text-blue-500" size={32} />
+                                        <p className="text-zinc-500 text-sm font-mono">LOADING_MODULE_DATA...</p>
+                                    </div>
+                                }>
+                                    {React.createElement(CONTENT_REGISTRY[lesson.contentId])}
+                                </React.Suspense>
                             </div>
                         ) : (
                             // Fallback for demo or if no content is provided

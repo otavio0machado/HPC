@@ -88,7 +88,7 @@ serve(async (req) => {
             try {
                 const inputTokens = usageMetadata.promptTokenCount || 0;
                 const outputTokens = usageMetadata.candidatesTokenCount || 0;
-                // Cost estimation for Gemini 1.5 Flash (approximate)
+                // Cost estimation for Gemini 1.5 Flash (approximate) - Pending 2.5 pricing update
                 // Input: $0.075 / 1M => 0.000000075 per token
                 // Output: $0.30 / 1M => 0.0000003 per token
                 const cost = (inputTokens * 0.000000075) + (outputTokens * 0.0000003);
@@ -96,7 +96,7 @@ serve(async (req) => {
                 await supabase.from('ai_usage_logs').insert({
                     user_id: userId,
                     action: action,
-                    model: 'gemini-1.5-flash',
+                    model: 'gemini-2.5-flash',
                     input_tokens: inputTokens,
                     output_tokens: outputTokens,
                     cost_estimated: cost
@@ -122,7 +122,7 @@ serve(async (req) => {
 
 // --- Handlers ---
 
-const STUDY_MODEL = "gemini-2.5-flash"
+const STUDY_MODEL = "gemini-2.5-flash-lite"
 
 async function handleGenerateStudyPlan(ai: GoogleGenAI, { exam, subject, hoursPerDay }: any) {
     const prompt = `
@@ -265,15 +265,18 @@ async function handleAnalyzeNote(ai: GoogleGenAI, { content }: any) {
     }
 }
 
-async function handleGenerateFlashcards(ai: GoogleGenAI, { content }: any) {
+async function handleGenerateFlashcards(ai: GoogleGenAI, { content, topic, difficulty }: any) {
     const prompt = `
-        Crie 5 a 10 flashcards de alta qualidade baseados neste texto.
-        Foque em testar conceitos chave, fórmulas ou relações de causa e efeito.
+        Crie 5 a 10 flashcards de alta qualidade sobre o tópico: "${topic || 'Geral'}".
+        Nível de dificuldade: ${difficulty || 'Médio'}.
+        
+        Baseado (se fornecido) neste contexto:
+        ${content ? content.substring(0, 10000) : 'Gere c com base no tópico.'}
+
+        Foque em testar conceitos chave, fórmulas ou relações de causa e efeito adequados ao nível de dificuldade.
         Evite perguntas muito óbvias.
         
         Retorne JSON array: [{ "front": "Pergunta", "back": "Resposta" }]
-        
-        Texto: ${content.substring(0, 10000)}
     `
     const response = await ai.models.generateContent({
         model: STUDY_MODEL,
