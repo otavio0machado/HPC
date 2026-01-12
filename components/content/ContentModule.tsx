@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Sparkles, Search, Upload, RefreshCw, Loader2, Plus } from 'lucide-react';
 import { Subject, KnowledgePill as KnowledgePillType } from '../../data/contentData';
 import { contentService } from '../../services/contentService';
-import { extractTextFromPDF } from '../../utils/pdfUtils';
 import { generatePillsFromContent, generatePillsFromPromptAndContent } from '../../services/aiService';
 import SubjectCard from './SubjectCard';
 import KnowledgePill from './KnowledgePill';
@@ -185,57 +184,8 @@ const ContentModule: React.FC = () => {
     };
 
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (!file || !selectedSubject) return;
-
-        if (file.type !== 'application/pdf') {
-            toast.error("Por favor, selecione um arquivo PDF.");
-            return;
-        }
-
-        setIsGenerating(true);
-        const toastId = toast.loading("Lendo PDF e gerando pílulas...");
-
-        try {
-            // 1. Extract Text & Metadata
-            const { text, pageCount, images } = await extractTextFromPDF(file);
-
-            if (!text || text.length < 50) {
-                toast.error("O texto do PDF parece vazio. Se for um PDF escaneado (imagem), a IA não consegue ler ainda.", { id: toastId });
-                return;
-            }
-
-            // 2. Generate Content with smart pill count & images
-            const newPills = await generatePillsFromContent(text, pageCount, images);
-
-            if (newPills.length === 0) {
-                toast.error("Não foi possível gerar conteúdo deste PDF. Tente outro arquivo.", { id: toastId });
-                return;
-            }
-
-            // 3. Save to DB (Attach selected folder if any)
-            const pillsWithFolder = newPills.map(p => ({
-                ...p,
-                folder: selectedUploadFolder || p.folder
-            }));
-
-            const success = await contentService.savePills(selectedSubject.id, pillsWithFolder);
-
-            if (success) {
-                toast.success(`${newPills.length} pílulas geradas com sucesso!`, { id: toastId });
-                await loadSubjects();
-                setSelectedUploadFolder(''); // Reset
-            } else {
-                toast.error("Erro ao salvar pílulas.", { id: toastId });
-            }
-
-        } catch (error) {
-            console.error("Upload process failed", error);
-            toast.error("Ocorreu um erro durante o processamento.", { id: toastId });
-        } finally {
-            setIsGenerating(false);
-            if (fileInputRef.current) fileInputRef.current.value = '';
-        }
+        toast.error("O suporte a PDF foi removido. Por favor, insira o conteúdo manualmente.");
+        if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
     const handleCreateFolder = async (e: React.FormEvent) => {
@@ -396,87 +346,9 @@ const ContentModule: React.FC = () => {
     };
 
     const handleCustomGeneration = async () => {
-        if (!selectedSubject || selectedFiles.length === 0) {
-            toast.error("Selecione pelo menos um arquivo PDF.");
-            return;
-        }
-
-        setIsGenerating(true);
-        const toastId = toast.loading("Iniciando geração personalizada...");
-
-        try {
-            let fullText = '';
-            let totalPages = 0;
-            const allImages: string[] = [];
-
-            // 1. Sequential Extraction
-            for (let i = 0; i < selectedFiles.length; i++) {
-                const file = selectedFiles[i];
-                setExtractionProgress(`Lendo arquivo ${i + 1} de ${selectedFiles.length}: ${file.name}...`);
-                toast.loading(`Lendo arquivo ${i + 1}/${selectedFiles.length}: ${file.name}...`, { id: toastId });
-
-                try {
-                    const { text, pageCount, images } = await extractTextFromPDF(file);
-                    fullText += `\n\n--- Início do Arquivo: ${file.name} ---\n\n${text}`;
-                    totalPages += pageCount;
-                    allImages.push(...images);
-
-                    // Small delay to let UI breathe
-                    await new Promise(r => setTimeout(r, 100));
-                } catch (err) {
-                    console.error(`Error reading ${file.name}`, err);
-                    toast.error(`Erro ao ler ${file.name}, pulando...`, { id: toastId });
-                }
-            }
-
-            setExtractionProgress(''); // Clear progress
-
-            if (!fullText || fullText.length < 50) {
-                toast.error("Não foi possível extrair texto suficiente dos arquivos.", { id: toastId });
-                setIsGenerating(false);
-                return;
-            }
-
-            // 2. Generate Content
-            toast.loading("IA analisando e gerando pílulas...", { id: toastId });
-
-            const newPills = await generatePillsFromPromptAndContent(
-                customPrompt || "Gere pílulas de conhecimento relevantes.",
-                fullText,
-                totalPages,
-                allImages
-            );
-
-            if (newPills.length === 0) {
-                toast.error("A IA não gerou conteúdo. Tente simplificar o prompt ou usar outros arquivos.", { id: toastId });
-                return;
-            }
-
-            // 3. Save
-            const pillsWithFolder = newPills.map(p => ({
-                ...p,
-                folder: selectedUploadFolder || p.folder // Use selection from main screen if needed, or modal specific
-            }));
-
-            const success = await contentService.savePills(selectedSubject.id, pillsWithFolder);
-
-            if (success) {
-                toast.success(`${newPills.length} pílulas criadas com sucesso!`, { id: toastId });
-                setIsCustomGenModalOpen(false);
-                setCustomPrompt('');
-                setSelectedFiles([]);
-                await loadSubjects();
-            } else {
-                toast.error("Erro ao salvar pílulas.", { id: toastId });
-            }
-
-        } catch (error) {
-            console.error("Custom generation failed", error);
-            toast.error("Falha na geração personalizada.", { id: toastId });
-        } finally {
-            setIsGenerating(false);
-            setExtractionProgress('');
-        }
+        toast.error("O suporte a PDF foi removido. Por favor, insira o conteúdo manualmente.");
+        setIsCustomGenModalOpen(false);
+        setSelectedFiles([]);
     };
 
     // Selection Logic

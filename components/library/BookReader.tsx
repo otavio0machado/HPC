@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Settings, Type, Moon, Sun, Monitor } from 'lucide-react';
-import { PDFReader } from '../notes/PDFReader';
+import { ArrowLeft, Settings, Type, Moon, Sun, FileText } from 'lucide-react';
 import EpubReader from './EpubReader';
 import { Book, libraryService, ReaderSettings, ReaderTheme } from '../../services/libraryService';
 import { toast } from 'sonner';
@@ -27,9 +26,7 @@ const BookReader: React.FC<BookReaderProps> = ({ book, onClose, onUpdate }) => {
         }
     };
 
-    const handlePdfUpdate = (highlights: any) => {
-        // Logic to save highlights for PDF
-    };
+
 
     const toggleTheme = (t: ReaderTheme) => setSettings(s => ({ ...s, theme: t }));
     const adjustFontSize = (delta: number) => setSettings(s => ({ ...s, fontSize: Math.max(50, Math.min(200, s.fontSize + delta)) }));
@@ -107,20 +104,19 @@ const BookReader: React.FC<BookReaderProps> = ({ book, onClose, onUpdate }) => {
 
             {/* Reader Body */}
             <div className={`flex-1 overflow-hidden relative ${settings.theme === 'light' ? 'bg-zinc-100' : settings.theme === 'sepia' ? 'bg-[#f4ecd8]' : 'bg-transparent'}`}>
-                {book.format === 'pdf' ? (
-                    <PDFReader
-                        url={book.file_url}
-                        onUpdateAnnotations={handlePdfUpdate}
-                        settings={settings}
-                        onClose={undefined}
-                    />
-                ) : (
+                {book.format === 'epub' ? (
                     <EpubReader
                         url={book.file_url}
                         location={book.progress_location || undefined}
                         locationChanged={handleLocationChange}
                         settings={settings}
                     />
+                ) : (
+                    <div className="flex-1 flex flex-col items-center justify-center text-zinc-500">
+                        <FileText size={48} className="mb-4 opacity-50" />
+                        <h2 className="text-xl font-bold text-white mb-2">Formato não suportado</h2>
+                        <p className="text-sm text-zinc-400">O suporte a PDF foi removido. Por favor, use arquivos EPUB.</p>
+                    </div>
                 )}
             </div>
         </div>

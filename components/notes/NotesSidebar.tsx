@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Folder, FileText, ChevronRight, Settings, Trash2, Edit2, FolderPlus, FilePlus } from 'lucide-react';
 import { NoteFile } from '../../types';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -16,6 +16,8 @@ interface NotesSidebarProps {
     selectedTag: string | null;
     onSelectTag: (tag: string | null) => void;
     allNotes?: NoteFile[];
+    autoFocusId: string | null;
+    onAutoFocusHandled: () => void;
 }
 
 const FileTreeItem = ({
@@ -26,7 +28,10 @@ const FileTreeItem = ({
     onSelect,
     onMoveNote,
     onDelete,
-    onRename
+    onRename,
+    onCreateNote,
+    autoFocusId,
+    onAutoFocusHandled
 }: {
     note: NoteFile,
     level: number,
@@ -35,7 +40,10 @@ const FileTreeItem = ({
     onSelect: (n: NoteFile) => void,
     onMoveNote: (id: string, parentId: string | null) => void,
     onDelete: (id: string) => void,
-    onRename: (id: string, newName: string) => void
+    onRename: (id: string, newName: string) => void,
+    onCreateNote: (parentId: string | null, type: 'folder' | 'markdown') => void,
+    autoFocusId: string | null,
+    onAutoFocusHandled: () => void
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isDragOver, setIsDragOver] = useState(false);
@@ -43,6 +51,24 @@ const FileTreeItem = ({
     const [editName, setEditName] = useState(note.name);
 
     const hasChildren = notes.some(n => n.parentId === note.id);
+
+    // Auto-focus logic
+    useEffect(() => {
+        if (autoFocusId === note.id) {
+            setIsEditing(true);
+            onAutoFocusHandled();
+        }
+    }, [autoFocusId, note.id, onAutoFocusHandled]);
+
+    // Auto-expand if child matches autoFocusId or is selected
+    useEffect(() => {
+        const shouldExpand = notes.some(n =>
+            n.parentId === note.id && (n.id === autoFocusId || n.id === selectedNoteId)
+        );
+        if (shouldExpand) {
+            setIsOpen(true);
+        }
+    }, [autoFocusId, selectedNoteId, notes, note.id]);
 
     const handleRenameSubmit = () => {
         if (editName.trim() && editName !== note.name) {
@@ -101,10 +127,10 @@ const FileTreeItem = ({
                     if (note.type === 'folder') setIsOpen(!isOpen);
                     else onSelect(note);
                 }}
-                className={`flex items-center gap-2 py-1 px-2 mx-2 rounded-md cursor-pointer transition-colors duration-200 group relative border border-transparent 
+                className={`flex items-center gap-2 py-1.5 px-3 mx-2 rounded-xl cursor-pointer transition-all duration-200 group relative border border-transparent 
                 ${selectedNoteId === note.id
-                        ? 'bg-blue-600 text-white font-medium shadow-sm'
-                        : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-200'
+                        ? 'bg-blue-500/20 text-blue-200 ring-1 ring-blue-500/30 font-medium'
+                        : 'text-zinc-500 hover:text-zinc-200 hover:bg-white/5'
                     } 
                 ${isDragOver ? 'bg-blue-500/20 ring-1 ring-blue-500' : ''}`}
                 style={{ paddingLeft: `${level * 12 + 8}px` }}
@@ -119,11 +145,11 @@ const FileTreeItem = ({
                             >
                                 <ChevronRight size={12} className={hasChildren ? "opacity-100" : "opacity-0"} />
                             </motion.div>
-                            <Folder size={14} className={selectedNoteId === note.id ? 'fill-blue-400 text-blue-200' : 'fill-zinc-300 dark:fill-zinc-700 text-zinc-400 dark:text-zinc-600'} />
+                            <Folder size={14} className={selectedNoteId === note.id ? 'fill-blue-500/20 text-blue-300' : 'fill-white/5 text-zinc-500 group-hover:text-zinc-400'} />
                         </>
                     ) : (
                         <div className="flex items-center ml-4">
-                            <FileText size={14} className={selectedNoteId === note.id ? 'text-white' : 'text-zinc-400'} />
+                            <FileText size={14} className={selectedNoteId === note.id ? 'text-blue-300' : 'text-zinc-500 group-hover:text-zinc-400'} />
                         </div>
                     )}
                 </span>
@@ -146,7 +172,28 @@ const FileTreeItem = ({
                 )}
 
                 {/* Hover Actions */}
-                <div className={`flex items-center gap-1 scale-90 transition-all duration-200 absolute right-2 px-1 ${selectedNoteId === note.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 bg-zinc-100 dark:bg-zinc-800 rounded'}`}>
+                <div className={`flex items-center gap-0.5 scale-90 transition-all duration-200 absolute right-2 px-1 ${selectedNoteId === note.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 bg-zinc-100 dark:bg-zinc-800 rounded shadow-sm'}`}>
+
+                    {note.type === 'folder' && (
+                        <>
+                            <button
+                                onClick={(e) => { e.stopPropagation(); onCreateNote(note.id, 'markdown'); setIsOpen(true); }}
+                                className="p-1 rounded hover:bg-zinc-300 dark:hover:bg-zinc-600 text-zinc-500 hover:text-white transition-colors"
+                                title="Nova Nota na Pasta"
+                            >
+                                <FilePlus size={10} />
+                            </button>
+                            <button
+                                onClick={(e) => { e.stopPropagation(); onCreateNote(note.id, 'folder'); setIsOpen(true); }}
+                                className="p-1 rounded hover:bg-zinc-300 dark:hover:bg-zinc-600 text-zinc-500 hover:text-white transition-colors"
+                                title="Nova Pasta na Pasta"
+                            >
+                                <FolderPlus size={10} />
+                            </button>
+                            <div className="w-px h-3 bg-zinc-600/20 mx-0.5" />
+                        </>
+                    )}
+
                     <button
                         onClick={(e) => { e.stopPropagation(); setIsEditing(true); }}
                         className={`p-1 rounded ${selectedNoteId === note.id ? 'text-blue-200 hover:text-white hover:bg-white/20' : 'hover:bg-zinc-300 dark:hover:bg-zinc-600 text-zinc-500'}`}
@@ -186,6 +233,9 @@ const FileTreeItem = ({
                                     onMoveNote={onMoveNote}
                                     onDelete={onDelete}
                                     onRename={onRename}
+                                    onCreateNote={onCreateNote}
+                                    autoFocusId={autoFocusId}
+                                    onAutoFocusHandled={onAutoFocusHandled}
                                 />
                             ))}
                     </motion.div>
@@ -195,7 +245,7 @@ const FileTreeItem = ({
     );
 };
 
-const NotesSidebar: React.FC<NotesSidebarProps> = ({ notes, selectedNoteId, onSelectNote, onCreateNote, onDeleteNote, onMoveNote, onRenameNote, onOpenSettings, allTags, selectedTag, onSelectTag }) => {
+const NotesSidebar: React.FC<NotesSidebarProps> = ({ notes, selectedNoteId, onSelectNote, onCreateNote, onDeleteNote, onMoveNote, onRenameNote, onOpenSettings, allTags, selectedTag, onSelectTag, autoFocusId, onAutoFocusHandled }) => {
     const [searchTerm, setSearchTerm] = useState('');
 
     const handleDropRoot = (e: React.DragEvent) => {
@@ -208,77 +258,142 @@ const NotesSidebar: React.FC<NotesSidebarProps> = ({ notes, selectedNoteId, onSe
         ? notes.filter(n => n.name.toLowerCase().includes(searchTerm.toLowerCase()))
         : notes;
     const rootNotes = filteredNotes.filter(n => n.parentId === null);
+    const favoriteNotes = notes.filter(n => n.isFavorite);
 
     return (
         <div
-            className="w-full h-full flex flex-col flex-shrink-0 bg-zinc-50 dark:bg-zinc-950/50"
+            className="w-full h-full flex flex-col flex-shrink-0 bg-transparent"
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleDropRoot}
         >
             {/* Header */}
-            <div className="flex flex-col gap-2 p-3 border-b border-zinc-200 dark:border-zinc-800">
+            <div className="flex flex-col gap-4 p-4 pb-2">
                 <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest pl-2">Biblioteca</span>
+                    <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest pl-2">Biblioteca</span>
                     <div className="flex gap-1">
                         <button
                             onClick={() => onCreateNote(null, 'markdown')}
-                            className="p-1.5 rounded-md text-zinc-400 hover:text-zinc-800 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+                            className="p-1.5 rounded-lg text-zinc-500 hover:text-white hover:bg-white/10 transition-colors"
                             title="Nova Nota"
                         >
                             <FilePlus size={16} />
                         </button>
                         <button
                             onClick={() => onCreateNote(null, 'folder')}
-                            className="p-1.5 rounded-md text-zinc-400 hover:text-zinc-800 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+                            className="p-1.5 rounded-lg text-zinc-500 hover:text-white hover:bg-white/10 transition-colors"
                             title="Nova Pasta"
                         >
                             <FolderPlus size={16} />
                         </button>
-                        <button onClick={onOpenSettings} className="p-1.5 rounded-md text-zinc-400 hover:text-zinc-800 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors">
+                        <button onClick={onOpenSettings} className="p-1.5 rounded-lg text-zinc-500 hover:text-white hover:bg-white/10 transition-colors">
                             <Settings size={16} />
                         </button>
                     </div>
                 </div>
 
                 <div className="relative group px-1">
-                    <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-blue-500 transition-colors" />
+                    <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-blue-400 transition-colors" />
                     <input
                         type="text"
                         placeholder="Buscar notas..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 focus:border-blue-500 rounded-md py-1.5 pl-8 pr-2 text-xs text-zinc-800 dark:text-white focus:outline-none transition-all placeholder:text-zinc-400 shadow-sm"
+                        className="w-full bg-white/5 border border-white/5 focus:border-blue-500/50 focus:bg-white/10 focus:ring-1 focus:ring-blue-500/20 rounded-xl py-2 pl-9 pr-3 text-xs text-zinc-300 focus:text-white focus:outline-none transition-all placeholder:text-zinc-600"
                     />
                 </div>
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar p-1 pb-10">
-                {rootNotes.map(note => (
-                    <FileTreeItem
-                        key={note.id}
-                        note={note}
-                        level={0}
-                        notes={filteredNotes}
-                        selectedNoteId={selectedNoteId}
-                        onSelect={onSelectNote}
+            <div className="flex-1 overflow-y-auto custom-scrollbar p-1 pb-10 space-y-6">
 
-                        onMoveNote={onMoveNote}
-                        onDelete={onDeleteNote}
-                        onRename={onRenameNote}
-                    />
-                ))}
-
-                {rootNotes.length === 0 && (
-                    <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-                        <div className="w-12 h-12 bg-zinc-100 dark:bg-zinc-900 rounded-full flex items-center justify-center mb-3">
-                            <FolderPlus size={20} className="text-zinc-300 dark:text-zinc-700" />
+                {/* Favorites Section */}
+                {favoriteNotes.length > 0 && !searchTerm && (
+                    <div className="mb-4 px-2">
+                        <div className="px-3 py-2 text-[10px] font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-2">
+                            Favoritos
                         </div>
+                        {favoriteNotes.map(note => (
+                            <div
+                                key={note.id}
+                                onClick={() => onSelectNote(note)}
+                                className={`flex items-center gap-2 py-1.5 px-3 rounded-xl cursor-pointer transition-all duration-200 group border border-transparent
+                                    ${selectedNoteId === note.id
+                                        ? 'bg-blue-500/20 text-blue-200 ring-1 ring-blue-500/30 font-medium'
+                                        : 'text-zinc-500 hover:text-zinc-200 hover:bg-white/5'
+                                    }`}
+                            >
+                                <Star size={12} className="fill-yellow-400 text-yellow-400" />
+                                <span className="truncate text-xs flex-1">{note.name}</span>
+                            </div>
+                        ))}
+                        <div className="h-px bg-white/5 mx-3 mt-2" />
+                    </div>
+                )}
 
-                        <p className="text-zinc-500 dark:text-zinc-500 text-xs font-medium">Nenhum arquivo encontrado</p>
-                        <button onClick={() => onCreateNote(null, 'markdown')} className="mt-2 text-[10px] text-blue-500 hover:underline">
-                            Criar primeira nota
-                        </button>
+                {/* File Tree Section */}
+                <div>
+                    {rootNotes.map(note => (
+                        <FileTreeItem
+                            key={note.id}
+                            note={note}
+                            level={0}
+                            notes={filteredNotes}
+                            selectedNoteId={selectedNoteId}
+                            onSelect={onSelectNote}
+                            onMoveNote={onMoveNote}
+                            onDelete={onDeleteNote}
+                            onRename={onRenameNote}
+                            onCreateNote={onCreateNote}
+                            autoFocusId={autoFocusId}
+                            onAutoFocusHandled={onAutoFocusHandled}
+                        />
+                    ))}
+
+                    {rootNotes.length === 0 && (
+                        <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+                            <div className="w-12 h-12 bg-zinc-100 dark:bg-zinc-900 rounded-full flex items-center justify-center mb-3">
+                                <FolderPlus size={20} className="text-zinc-300 dark:text-zinc-700" />
+                            </div>
+
+                            <p className="text-zinc-500 dark:text-zinc-500 text-xs font-medium">Nenhum arquivo encontrado</p>
+                            <button onClick={() => onCreateNote(null, 'markdown')} className="mt-2 text-[10px] text-blue-500 hover:underline">
+                                Criar primeira nota
+                            </button>
+                        </div>
+                    )}
+                </div>
+
+                {/* Tags Section */}
+                {allTags.length > 0 && (
+                    <div className="px-4">
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Tags</span>
+                            {selectedTag && (
+                                <button
+                                    onClick={() => onSelectTag(null)}
+                                    className="text-[10px] text-zinc-500 hover:text-white transition-colors"
+                                >
+                                    Limpar
+                                </button>
+                            )}
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                            {allTags.map(tag => (
+                                <button
+                                    key={tag}
+                                    onClick={() => onSelectTag(selectedTag === tag ? null : tag)}
+                                    className={`
+                                        text-[10px] px-2 py-1 rounded-md border transition-all duration-200
+                                        ${selectedTag === tag
+                                            ? 'bg-blue-500/20 text-blue-300 border-blue-500/30'
+                                            : 'bg-white/5 text-zinc-400 border-white/5 hover:border-white/10 hover:text-zinc-200'
+                                        }
+                                    `}
+                                >
+                                    {tag.startsWith('#') ? tag : `#${tag}`}
+                                </button>
+                            ))}
+                        </div>
                     </div>
                 )}
             </div>

@@ -508,7 +508,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                                     />
                                 </div>
                             </motion.div>
-                        </div>      {/* Navigation Tabs */}
+                        </div>
+
                         {/* Navigation Tabs */}
                         <div className="flex-1 w-full flex flex-col items-center overflow-y-auto px-1 py-1 space-y-1 scrollbar-hide">
                             {tabs.map((item: any) => {
@@ -527,6 +528,15 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
                         {/* User Profile Section */}
                         <div className="p-1 mt-auto flex flex-col items-center gap-1.5 pb-3 shrink-0">
+
+                            {/* Collapse Sidebar Button */}
+                            <button
+                                onClick={() => setIsSidebarOpen(false)}
+                                className="p-1.5 rounded-full text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-white/10 transition-all"
+                                title="Recolher Menu"
+                            >
+                                <PanelLeftClose size={16} />
+                            </button>
 
                             {/* Profile Avatar */}
                             <div
@@ -568,8 +578,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             </AnimatePresence >
 
             {/* Main Content Area */}
-            < main className="flex-1 relative flex flex-col h-full overflow-hidden transition-all duration-300 md:ml-[100px]" >
-                <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 lg:p-8 scrollbar-hide relative bg-transparent">
+            <main className={`flex-1 relative flex flex-col h-full overflow-hidden transition-all duration-300 ${isSidebarOpen ? 'md:ml-[100px]' : ''}`} >
+                <div className={`flex-1 overflow-x-hidden scrollbar-hide relative bg-transparent ${activeTab === 'Notas' ? 'p-0 overflow-hidden' : 'overflow-y-auto p-4 md:p-6 lg:p-8'}`}>
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={activeTab}
@@ -577,7 +587,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                             exit={{ opacity: 0, y: -10, filter: 'blur(10px)' }}
                             transition={{ duration: 0.4, ease: [0.19, 1.0, 0.22, 1.0] }}
-                            className="max-w-7xl mx-auto space-y-6 pb-20"
+                            className={`mx-auto transition-all ${activeTab === 'Notas' ? 'h-full w-full max-w-none pb-0' : 'max-w-7xl space-y-6 pb-20'}`}
                         >
 
                             {((tabs.find(t => t.id === activeTab) as any)?.restricted || (tabs.find(t => t.id === activeTab) as any)?.adminOnly) && currentUser.subscription_tier !== 'pro' && !isUserAdmin ? (

@@ -22,13 +22,12 @@ interface NotesEditorProps {
     onUpdate: (content: string) => void;
     readOnly?: boolean;
     searchNotes?: (query: string) => Promise<any[]>;
-    onOpenPdf?: (url: string, title?: string) => void;
+    editorRef?: React.MutableRefObject<any>;
 }
 
 import { Editor } from '@tiptap/react';
 
 const MenuBar = ({ editor, onOpenAI }: { editor: Editor | null, onOpenAI: () => void }) => {
-    const fileInputRef = React.useRef<HTMLInputElement>(null);
     const [showMathTooltip, setShowMathTooltip] = React.useState(false);
     const mathButtonRef = React.useRef<HTMLDivElement>(null);
 
@@ -57,47 +56,12 @@ const MenuBar = ({ editor, onOpenAI }: { editor: Editor | null, onOpenAI: () => 
         setShowMathTooltip(false);
     };
 
-    const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
-
-        if (file.type !== 'application/pdf') {
-            toast.error('Apenas arquivos PDF são permitidos.');
-            return;
-        }
-
-        const toastId = toast.loading('Fazendo upload do PDF...');
-
-        try {
-            const publicUrl = await notesService.uploadAttachment(file);
-
-            if (publicUrl) {
-                editor.chain().focus().insertContent({
-                    type: 'pdf',
-                    attrs: {
-                        src: publicUrl,
-                        title: file.name
-                    }
-                }).run();
-                toast.success('PDF anexado!', { id: toastId });
-            } else {
-
-                toast.error('Falha no upload.', { id: toastId });
-            }
-        } catch (error) {
-            toast.error('Erro ao fazer upload.', { id: toastId });
-        } finally {
-            if (fileInputRef.current) {
-                fileInputRef.current.value = '';
-            }
-        }
-    };
 
     const Button = ({ onClick, isActive, disabled, children, title }: any) => (
         <button
             onClick={onClick}
             disabled={disabled}
-            className={`p-1.5 rounded-md transition-all text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800 ${isActive ? 'bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm' : ''} disabled:opacity-30 disabled:cursor-not-allowed`}
+            className={`p-1.5 rounded-lg transition-all text-zinc-400 hover:text-white hover:bg-white/10 ${isActive ? 'bg-white/20 text-white shadow-sm ring-1 ring-white/20' : ''} disabled:opacity-30 disabled:cursor-not-allowed`}
             title={title}
         >
             {children}
@@ -105,16 +69,7 @@ const MenuBar = ({ editor, onOpenAI }: { editor: Editor | null, onOpenAI: () => 
     );
 
     return (
-        <div className="flex flex-wrap gap-1 px-4 py-2 bg-white dark:bg-[#0c0c0e] border-b border-zinc-200 dark:border-white/10 items-center sticky top-0 z-20">
-            {/* Hidden Input */}
-            <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileUpload}
-                className="hidden"
-                accept="application/pdf"
-            />
-
+        <div className="flex flex-wrap gap-1 px-4 py-3 bg-transparent border-b border-white/5 items-center sticky top-0 z-20">
             <div className="flex items-center gap-0.5 border-r border-zinc-200 dark:border-zinc-800 pr-2 mr-2">
                 <Button onClick={() => editor.chain().focus().toggleBold().run()} isActive={editor.isActive('bold')} title="Negrito">
                     <Bold size={14} />
@@ -296,9 +251,6 @@ const MenuBar = ({ editor, onOpenAI }: { editor: Editor | null, onOpenAI: () => 
                 <Button onClick={() => editor.chain().focus().setDrawing().run()} isActive={editor.isActive('drawing')} title="Desenho">
                     <PenTool size={14} />
                 </Button>
-                <Button onClick={() => fileInputRef.current?.click()} title="Anexar PDF">
-                    <Paperclip size={14} />
-                </Button>
             </div>
 
             <div className="flex-1"></div>
@@ -309,19 +261,18 @@ const MenuBar = ({ editor, onOpenAI }: { editor: Editor | null, onOpenAI: () => 
             >
                 <Wand2 size={12} /> Ask AI
             </button>
-        </div>
+        </div >
     );
 };
 
 import { WikiLinkExtension } from './extensions/WikiLinkExtension';
 import DrawingExtension from './extensions/DrawingExtension';
-import PdfExtension from './extensions/PdfExtension';
 import { CollapsibleListItem } from './extensions/CollapsibleListItem';
 import { MarkdownMathExtension, MATH_TEMPLATES, preprocessMarkdownWithMath } from './extensions/MarkdownMathExtension';
 
 import Link from '@tiptap/extension-link';
 
-const NotesEditor: React.FC<NotesEditorProps> = ({ noteId, content, onUpdate, readOnly = false, searchNotes, onOpenPdf }) => {
+const NotesEditor: React.FC<NotesEditorProps> = ({ noteId, content, onUpdate, readOnly = false, searchNotes, editorRef }) => {
     const [showAIDialog, setShowAIDialog] = React.useState(false);
     const [aiPrompt, setAiPrompt] = React.useState('');
     const [isGenerating, setIsGenerating] = React.useState(false);
@@ -415,7 +366,6 @@ const NotesEditor: React.FC<NotesEditorProps> = ({ noteId, content, onUpdate, re
             return [];
         }),
         DrawingExtension,
-        PdfExtension,
         MathExtension.configure({
             evaluation: false,
             katexOptions: {
@@ -481,22 +431,6 @@ const NotesEditor: React.FC<NotesEditorProps> = ({ noteId, content, onUpdate, re
                 return false;
             },
             handleClick: (view, pos, event) => {
-                const target = event.target as HTMLElement;
-                const link = target.closest('a');
-                if (link && onOpenPdf) {
-                    const href = link.getAttribute('href');
-                    if (href && (href.includes('.pdf') || href.includes('#highlight-'))) {
-                        event.preventDefault();
-                        const url = href.split('#')[0];
-                        if (href.includes('#highlight-')) {
-                            const hash = href.split('#')[1];
-                            // Dispatch event for specialized readers if needed, or handle custom logic
-                            // For now, pass to handler
-                        }
-                        onOpenPdf(url, link.textContent || undefined);
-                        return true;
-                    }
-                }
                 return false;
             }
         },
@@ -514,21 +448,19 @@ const NotesEditor: React.FC<NotesEditorProps> = ({ noteId, content, onUpdate, re
         }
     }, [content, editor]);
 
-    // Update storage with onOpenPdf callback
+    // Expose editor via ref for parent components
     useEffect(() => {
-        if (editor && onOpenPdf) {
-            const storage = editor.storage as Record<string, any>;
-            storage.pdf = storage.pdf || {};
-            storage.pdf.openPdf = onOpenPdf;
+        if (editorRef && editor) {
+            editorRef.current = editor;
         }
-    }, [editor, onOpenPdf]);
+    }, [editor, editorRef]);
 
     if (!editor) {
         return null;
     }
 
     return (
-        <div className="flex flex-col h-full bg-white dark:bg-[#0c0c0e] relative group">
+        <div className="flex flex-col h-full bg-transparent relative group">
             <MenuBar editor={editor} onOpenAI={() => setShowAIDialog(true)} />
 
             {showAIDialog && (

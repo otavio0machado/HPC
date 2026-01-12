@@ -56,13 +56,16 @@ const TagInput: React.FC<TagInputProps> = ({ allTags, onAddTag }) => {
             {!isOpen ? (
                 <button
                     onClick={() => setIsOpen(true)}
-                    className="text-xs font-bold text-zinc-400 hover:text-white transition-all flex items-center gap-1 hover:bg-white/10 px-2.5 py-1.5 rounded-lg border border-transparent hover:border-white/10 active:scale-95"
+                    className="group"
                 >
-                    <Plus size={12} /> Add Tag
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 transition-all active:scale-95">
+                        <Plus size={12} className="text-zinc-400 group-hover:text-white transition-colors" />
+                        <span className="text-xs font-medium text-zinc-400 group-hover:text-white transition-colors">Adicionar Tag</span>
+                    </div>
                 </button>
             ) : (
-                <div className="absolute top-0 right-0 z-50 min-w-[220px] glass-spatial rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.5)] p-2 animate-in fade-in zoom-in-95 duration-200 border border-white/10">
-                    <div className="flex items-center gap-2 mb-2 p-1 border-b border-white/10">
+                <div className="absolute top-0 right-0 z-50 min-w-[240px] glass-spatial rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.6)] p-3 animate-in fade-in zoom-in-95 duration-200 border border-white/10">
+                    <div className="flex items-center gap-2 mb-3 p-1.5 bg-black/20 rounded-lg border border-white/5">
                         <Hash size={14} className="text-zinc-500" />
                         <input
                             type="text"
@@ -70,37 +73,45 @@ const TagInput: React.FC<TagInputProps> = ({ allTags, onAddTag }) => {
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={handleKeyDown}
                             className="bg-transparent text-sm w-full focus:outline-none text-white placeholder:text-zinc-600 font-medium"
-                            placeholder="Nome da tag..."
+                            placeholder="Buscar ou criar tag..."
                             autoFocus
                         />
-                        <button onClick={() => setIsOpen(false)} className="text-zinc-500 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-md">
+                        <button
+                            onClick={() => setIsOpen(false)}
+                            className="text-zinc-500 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-md"
+                        >
                             <X size={14} />
                         </button>
                     </div>
 
-                    <div className="space-y-1 max-h-[180px] overflow-y-auto custom-scrollbar">
+                    <div className="space-y-1 max-h-[200px] overflow-y-auto custom-scrollbar">
                         {input && !suggestions.includes(`#${input.replace('#', '')}`) && (
-                            <div
+                            <button
                                 onClick={() => handleSelectTag(input)}
-                                className="flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs font-bold text-blue-300 hover:text-white hover:bg-blue-500/20 cursor-pointer transition-colors"
+                                className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-blue-300 hover:text-white hover:bg-blue-500/20 transition-all text-left group"
                             >
-                                <Plus size={12} /> Criar "{input}"
-                            </div>
+                                <div className="p-1 rounded bg-blue-500/20 group-hover:bg-blue-500/30">
+                                    <Plus size={10} />
+                                </div>
+                                Criar tag <span className="text-white">"{input}"</span>
+                            </button>
                         )}
 
                         {suggestions.map(tag => (
-                            <div
+                            <button
                                 key={tag}
                                 onClick={() => handleSelectTag(tag)}
-                                className="flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs text-zinc-300 hover:text-white hover:bg-white/10 cursor-pointer transition-colors"
+                                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs text-zinc-300 hover:text-white hover:bg-white/10 transition-all text-left group"
                             >
-                                <Hash size={12} className="text-zinc-500 group-hover:text-zinc-300" /> {tag.replace('#', '')}
-                            </div>
+                                <Hash size={12} className="text-zinc-600 group-hover:text-zinc-400 transition-colors" />
+                                <span className="font-medium">{tag.replace('#', '')}</span>
+                            </button>
                         ))}
 
                         {suggestions.length === 0 && !input && (
-                            <div className="px-2 py-4 text-center text-xs text-zinc-600 italic">
-                                Sem tags recentes
+                            <div className="py-8 text-center">
+                                <Hash size={24} className="mx-auto text-zinc-700 mb-2" />
+                                <p className="text-xs text-zinc-600 font-medium">Digite para buscar</p>
                             </div>
                         )}
                     </div>
