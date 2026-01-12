@@ -12,7 +12,7 @@ export interface SmartReviewItem {
         back: string;  // Resposta ou Correção
         context?: string; // Tópico ou Matéria
     };
-    sourceRef: any; // Objeto original
+    sourceRef: Flashcard | ErrorEntry; // Objeto original
     priority: number; // 0-100 (Calculado por data e importância)
 }
 
@@ -41,7 +41,7 @@ export const reviewService = {
                 });
             });
         } catch (e) {
-            console.error("Error fetching cards for review", e);
+            // Fail silently or add telemetry later
         }
 
         // 2. Fetch Recent Errors (Fake for now, assuming local storage or separate table)
@@ -59,7 +59,7 @@ export const reviewService = {
                 // However, we can standardize the interface.
             }
         } catch (e) {
-            console.error(e);
+            // Fail silently
         }
 
         // Randomize slightly to mix types
@@ -105,14 +105,14 @@ export const reviewService = {
                     nextReview
                 });
             } catch (err) {
-                console.error("Critical error updating flashcard inside review service", err);
+                // Critical error handling explicitly ignored for now
             }
         }
 
         if (item.type === 'error') {
             // Logic to update error review status
             // For now, no-op or console log
-            console.log("Processed error review", item.id);
+            // Logic to be implemented
         }
     }
 };

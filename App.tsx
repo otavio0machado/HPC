@@ -24,6 +24,8 @@ const App: React.FC = () => {
 
   // Check for active session on mount and listen for changes
   useEffect(() => {
+    let isMounted = true;
+
     const checkSession = async () => {
       console.log("App: Starting checkSession");
 
@@ -38,20 +40,26 @@ const App: React.FC = () => {
         const user = await Promise.race([userPromise, timeout]) as any;
 
         console.log("App: Got user:", user);
-        if (user) {
-          setIsLoggedIn(true);
-          setView('dashboard');
-        } else {
-          setIsLoggedIn(false);
-          setView('landing');
+        if (isMounted) {
+          if (user) {
+            setIsLoggedIn(true);
+            setView('dashboard');
+          } else {
+            setIsLoggedIn(false);
+            setView('landing');
+          }
         }
       } catch (error) {
         console.error("Session check failed or timed out", error);
-        setIsLoggedIn(false);
-        setView('landing');
+        if (isMounted) {
+          setIsLoggedIn(false);
+          setView('landing');
+        }
       } finally {
         console.log("App: checkSession finally block - setting isLoading false");
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
@@ -60,23 +68,23 @@ const App: React.FC = () => {
     // Safety fallback: Force loading to stop after 8 seconds no matter what
     const safetyTimeout = setTimeout(() => {
       console.log("App: Safety timeout triggered");
-      setIsLoading(prev => {
-        if (prev) {
-          console.warn("App: Force disabling loader due to timeout");
-          setIsLoggedIn(false);
-          setView('landing');
-          return false;
-        }
-        return prev;
-      });
+      if (isMounted) {
+        setIsLoading(prev => {
+          if (prev) {
+            console.warn("App: Force disabling loader due to timeout");
+            setIsLoggedIn(false);
+            setView('landing');
+            return false;
+          }
+          return prev;
+        });
+      }
     }, 8000);
-
-    return () => clearTimeout(safetyTimeout);
-
-    checkSession();
 
     // Listen for auth state changes (login, logout, token refresh, etc.)
     const { data: { subscription } } = authService.onAuthStateChange(async (event, session) => {
+      if (!isMounted) return;
+
       if (event === 'SIGNED_IN' && session) {
         setIsLoggedIn(true);
         setView('dashboard');
@@ -86,11 +94,13 @@ const App: React.FC = () => {
       } else if (event === 'TOKEN_REFRESHED') {
         // Just refresh the state if needed
         const user = await authService.getCurrentUser();
-        if (user) setIsLoggedIn(true);
+        if (user && isMounted) setIsLoggedIn(true);
       }
     });
 
     return () => {
+      isMounted = false;
+      clearTimeout(safetyTimeout);
       subscription.unsubscribe();
     };
   }, []);

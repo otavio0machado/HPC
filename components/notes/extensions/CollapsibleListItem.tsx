@@ -11,58 +11,40 @@ const CollapsibleListItemComponent = ({ node, updateAttributes, extension }) => 
     };
 
     return (
-        <NodeViewWrapper as="li" className="relative group flex items-start">
-            {/* Bullet / Handle Area */}
-            {/* Absolute positioning to place it in the gutter or similar, but standard flow is safer for lists */}
-            <div
-                className="mr-2 mt-1.5 w-4 h-4 flex items-center justify-center cursor-pointer select-none rounded hover:bg-zinc-800 transition-colors group/handle relative"
-                contentEditable={false}
-                onClick={(e) => {
-                    // If ctrl/cmd click, zoom in
-                    if (e.ctrlKey || e.metaKey) {
-                        e.stopPropagation();
-                        // We dispatch a custom event that NotesEditor will listen to
-                        const event = new CustomEvent('zoom-block', { detail: { blockId: node.attrs.id } });
-                        window.dispatchEvent(event);
-                        return;
-                    }
-                    toggleCollapse();
-                }}
-                title="Click to toggle, Ctrl+Click to Zoom In"
-                data-collapse-handle=""
-            >
-                {isCollapsed ? (
-                    <ChevronRight size={14} className="text-zinc-400" />
-                ) : (
-                    <>
-                        <div className="group-hover:hidden">
-                            <Circle size={6} fill="currentColor" className="text-zinc-500" />
-                        </div>
-                        <div className="hidden group-hover:block">
-                            {/* Show Dot on hover, but maybe different style to indicate zoom potential */}
-                            <Circle size={6} className="text-zinc-300 hover:scale-125 transition-transform" />
-                        </div>
-                    </>
-                )}
-            </div>
+        <NodeViewWrapper
+            as="li"
+            className="relative list-none"
+            data-collapsed={isCollapsed}
+        >
+            <div className="flex items-start">
+                {/* Bullet / Handle Area */}
+                <div
+                    className="mr-2 mt-1 w-5 h-5 flex items-center justify-center cursor-pointer select-none rounded hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors shrink-0"
+                    contentEditable={false}
+                    onClick={(e) => {
+                        // If ctrl/cmd click, zoom in
+                        if (e.ctrlKey || e.metaKey) {
+                            e.stopPropagation();
+                            const event = new CustomEvent('zoom-block', { detail: { blockId: node.attrs.id } });
+                            window.dispatchEvent(event);
+                            return;
+                        }
+                        toggleCollapse();
+                    }}
+                    title="Clique para recolher/expandir, Ctrl+Clique para zoom"
+                >
+                    {isCollapsed ? (
+                        <ChevronRight size={14} className="text-zinc-400" />
+                    ) : (
+                        <Circle size={6} fill="currentColor" className="text-zinc-500 dark:text-zinc-400" />
+                    )}
+                </div>
 
-            {/* Content */}
-            <div className="flex-1 min-w-0">
-                <NodeViewContent />
+                {/* Content */}
+                <div className="flex-1 min-w-0 pt-0.5">
+                    <NodeViewContent />
+                </div>
             </div>
-
-            {/* CSS to hide children when collapsed
-          We depend on the structure: ListItem -> [Paragraph, List?]
-          If we use CSS modules or global styles it is better, but doing it inline is tricky for 'children'.
-          The nested list is INSIDE NodeViewContent. 
-          We can target it via CSS in the global stylesheet or use a simple style tag here.
-      */}
-            <style>{`
-        li[data-collapsed="true"] > div > div > ul,
-        li[data-collapsed="true"] > div > div > ol {
-             display: none;
-        }
-      `}</style>
         </NodeViewWrapper>
     );
 };

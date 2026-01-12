@@ -45,7 +45,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         { id: 'Planner', label: 'Planner', icon: CalendarDays },
         { id: 'Notas', label: 'Notas', icon: BookOpen },
         { id: 'Tutores', label: 'Tutores IA', icon: MessageSquare, restricted: true },
-        { id: 'Lista de Erros', label: 'Lista de Erros', icon: AlertTriangle, restricted: true },
+        { id: 'Lista de Erros', label: 'Erros', icon: AlertTriangle, restricted: true },
         { id: 'Flashcards', label: 'Flashcards', icon: Zap, restricted: true },
         { id: 'Simulados', label: 'Simulados', icon: Activity, restricted: true },
         { id: 'Whiteboard', label: 'Quadro', icon: BookOpen, restricted: true }, // Added Whiteboard if missing, but checking list
@@ -78,10 +78,10 @@ const Sidebar: React.FC<SidebarProps> = ({
             {/* Sidebar Container */}
             <aside
                 className={`
-          fixed top-4 left-4 bottom-4 z-50 glass-hydro rounded-[32px] transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)] 
+          fixed top-4 left-4 bottom-4 z-50 bg-white/60 dark:bg-black/30 rounded-[40px] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] 
           ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-[120%] md:translate-x-0'}
-          ${isCollapsed ? 'md:w-[88px]' : 'md:w-72'}
-          w-72 flex flex-col justify-between shadow-2xl shadow-black/20 dark:shadow-black/50 overflow-visible
+          ${isCollapsed ? 'md:w-[80px]' : 'md:w-[220px]'}
+          w-[220px] flex flex-col justify-between shadow-[0_20px_50px_rgba(0,0,0,0.2)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/40 dark:border-white/10 overflow-visible backdrop-blur-[60px] backdrop-saturate-150
         `}
             >
                 {/* Header / Logo */}
@@ -123,24 +123,24 @@ const Sidebar: React.FC<SidebarProps> = ({
                             <div key={item.id} className="relative group">
                                 <SpotlightButton
                                     className={`
-                                        w-full rounded-2xl transition-all duration-300 group
+                                        w-full rounded-[20px] transition-all duration-300 group
                                         ${isActive
-                                            ? 'glass-card active border-blue-500/30 bg-blue-500/5 dark:bg-white/10 shadow-lg shadow-blue-500/10'
-                                            : 'hover:bg-black/5 dark:hover:bg-white/5 border border-transparent'}
+                                            ? 'bg-blue-600/90 shadow-[0_0_20px_rgba(37,99,235,0.5)] ring-1 ring-white/20'
+                                            : 'hover:bg-black/5 dark:hover:bg-white/10 border border-transparent'}
                                     `}
                                     intensity={isActive ? "high" : "low"}
                                 >
                                     <button
                                         onClick={() => handleTabClick(item.id, item.restricted)}
                                         className={`
-                                            w-full flex items-center gap-3 px-3 py-3.5 transition-all duration-300 relative z-10
+                                            w-full flex items-center gap-3 px-3 py-3 transition-all duration-300 relative z-10
                                             ${isActive
-                                                ? 'text-blue-600 dark:text-white'
+                                                ? 'text-white'
                                                 : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200'}
                                             ${isCollapsed ? 'justify-center' : ''}
                                         `}
                                     >
-                                        <div className={`relative flex items-center justify-center p-1 rounded-lg transition-all duration-300 ${isActive ? 'bg-blue-500/10 text-blue-500 dark:text-blue-400' : ''}`}>
+                                        <div className={`relative flex items-center justify-center p-1 rounded-xl transition-all duration-300 ${isActive ? 'bg-transparent text-white' : ''}`}>
                                             <Icon size={20} className={`transition-all duration-300 ${isActive ? 'drop-shadow-[0_0_8px_rgba(59,130,246,0.6)]' : 'group-hover:scale-110'}`} />
                                         </div>
 

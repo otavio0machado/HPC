@@ -6,7 +6,7 @@ import NotesSettings from './NotesSettings';
 import { notesService } from '../../services/notesService';
 import { NoteFile } from '../../types';
 import { toast } from 'sonner';
-import { Loader2, Hash, Star, Layout, Maximize2, Minimize2, PanelRight, Calendar, Info, FileText, Check } from 'lucide-react';
+import { Loader2, Star, Maximize2, Minimize2, PanelRight, Info, FileText, X, ChevronRight, MoreHorizontal, Sidebar, Folder } from 'lucide-react';
 import TagInput from './TagInput';
 import { PDFReader } from './PDFReader';
 import type { IHighlight } from 'react-pdf-highlighter';
@@ -32,6 +32,10 @@ const NotesModule: React.FC = () => {
 
     // Zoom / Focus State
     const [focusedBlockId, setFocusedBlockId] = useState<string | null>(null);
+
+    // Stats for Footer
+    const [wordCount, setWordCount] = useState(0);
+    const [charCount, setCharCount] = useState(0);
 
     // Calculate unique tags
     const allTags = React.useMemo(() => {
@@ -74,6 +78,17 @@ const NotesModule: React.FC = () => {
         loadNotes();
     }, []);
 
+    useEffect(() => {
+        if (selectedNote?.content) {
+            const text = selectedNote.content.replace(/<[^>]*>/g, '');
+            setWordCount(text.split(/\s+/).filter(w => w.length > 0).length);
+            setCharCount(text.length);
+        } else {
+            setWordCount(0);
+            setCharCount(0);
+        }
+    }, [selectedNote?.content]);
+
     const loadNotes = async () => {
         try {
             const data = await notesService.fetchNotes();
@@ -88,7 +103,7 @@ const NotesModule: React.FC = () => {
     const handleCreateNote = async (parentId: string | null = null, type: 'folder' | 'markdown' = 'markdown') => {
         try {
             const { data: newNote, error } = await notesService.createNote({
-                name: type === 'folder' ? 'Nova Pasta' : 'Nova Nota Sem Título',
+                name: type === 'folder' ? 'Nova Pasta' : 'Sem Título',
                 type: type,
                 parentId: parentId,
                 content: ''
@@ -171,6 +186,7 @@ const NotesModule: React.FC = () => {
         }
     };
 
+    // Modified to handle content as markdown (strings)
     const handleUpdateContent = useCallback(async (content: string) => {
         if (!selectedNote) return;
 
@@ -202,17 +218,10 @@ const NotesModule: React.FC = () => {
 
     const handleAddTag = async (tag: string) => {
         if (!selectedNote) return;
-        const tagHtml = `<p>${tag} </p>`;
-        const newContent = selectedNote.content ? selectedNote.content + tagHtml : tagHtml;
+        const tagText = ` #${tag} `;
+        const newContent = selectedNote.content ? selectedNote.content + tagText : tagText;
         await handleUpdateContent(newContent);
-        setIsSaving(true);
-        await notesService.updateNote(selectedNote.id, {
-            content: newContent,
-            name: selectedNote.name,
-            parentId: selectedNote.parentId,
-            pdfData: selectedNote.pdfData
-        });
-        setIsSaving(false);
+        // Saving handled by debounce effect
         toast.success(`Tag ${tag} adicionada!`);
     };
 
@@ -230,7 +239,7 @@ const NotesModule: React.FC = () => {
             try {
                 await notesService.updateNote(selectedNote.id, { pdfAnnotations: allHighlights });
             } catch (error) {
-                console.error("Error saving annotations", error);
+                // Fail silently
             }
         }
     }, [selectedNote]);
@@ -259,8 +268,9 @@ const NotesModule: React.FC = () => {
     }, [selectedNote?.content, selectedNote?.name]);
 
     useEffect(() => {
-        const handleZoom = async (e: any) => {
-            const blockId = e.detail.blockId;
+        const handleZoom = async (e: Event) => {
+            const customEvent = e as CustomEvent;
+            const blockId = customEvent.detail.blockId;
             setFocusedBlockId(blockId);
             toast.info(`Foco no bloco ${blockId}`);
         };
@@ -280,6 +290,27 @@ const NotesModule: React.FC = () => {
             }));
     }, [notes, selectedNote]);
 
+    // BREADCRUMBS MAKER
+    const getBreadcrumbs = () => {
+        if (!selectedNote) return [];
+        const path: NoteFile[] = [];
+        let current = selectedNote;
+
+        // Prevent infinite loop with max depth
+        let i = 0;
+        while (current.parentId && i < 20) {
+            const parent = notes.find(n => n.id === current.parentId);
+            if (parent) {
+                path.unshift(parent);
+                current = parent;
+            } else {
+                break;
+            }
+            i++;
+        }
+        return path;
+    };
+
     if (isLoading) {
         return (
             <div className="flex items-center justify-center h-full text-zinc-500">
@@ -290,8 +321,8 @@ const NotesModule: React.FC = () => {
 
     return (
         <div className={`
-            flex overflow-hidden glass-hydro rounded-3xl shadow-2xl backdrop-blur-xl animate-in fade-in duration-500 relative
-            ${isExpandedMode ? 'fixed inset-4 z-50' : 'h-[calc(100vh-80px)]'}
+            flex overflow-hidden bg-white dark:bg-[#0c0c0e] animate-in fade-in duration-300 relative
+            ${isExpandedMode ? 'fixed inset-0 z-50' : 'h-[calc(100vh-64px)]'}
         `}>
             {/* --- MOBILE OVERLAY (Left) --- */}
             {isMobile && showLeftSidebar && (
@@ -304,10 +335,10 @@ const NotesModule: React.FC = () => {
             {/* --- LEFT SIDEBAR: File Tree --- */}
             <div className={`
                 ${isMobile ? 'absolute inset-y-0 left-0 z-40 shadow-2xl' : 'relative'} 
-                ${showLeftSidebar ? 'w-72' : 'w-0'} 
-                transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] border-r border-white/5 flex flex-col overflow-hidden bg-black/10 backdrop-blur-xl
+                ${showLeftSidebar ? 'w-64' : 'w-0'} 
+                transition-all duration-300 ease-in-out border-r border-zinc-200 dark:border-zinc-800 flex flex-col overflow-hidden bg-zinc-50 dark:bg-black/20
             `}>
-                <div className="w-72 h-full">
+                <div className="w-64 h-full">
                     <NotesSidebar
                         notes={filteredNotes}
                         selectedNoteId={selectedNote?.id || null}
@@ -320,54 +351,90 @@ const NotesModule: React.FC = () => {
                         allTags={allTags}
                         selectedTag={selectedTag}
                         onSelectTag={setSelectedTag}
-                        allNotes={notes}
                     />
                 </div>
             </div>
 
             {/* --- MAIN CONTENT: Editor --- */}
-            <div className="flex-1 flex flex-col min-w-0 bg-transparent relative">
+            <div className={`flex-1 flex flex-col min-w-0 bg-white dark:bg-[#0c0c0e] relative z-0 transition-all duration-300`}>
                 {selectedNote ? (
                     <>
-                        {/* Editor Toolbar / Header */}
-                        <div className="h-16 flex items-center justify-between px-6 border-b border-white/5 bg-white/5 backdrop-blur-md z-10">
-                            <div className="flex items-center gap-4">
-                                <button onClick={() => setShowLeftSidebar(!showLeftSidebar)} className="p-2 hover:bg-white/10 rounded-xl text-zinc-400 hover:text-white transition-colors bubble-hover">
-                                    <Layout size={20} className={showLeftSidebar ? "text-blue-400" : ""} />
+                        {/* --- HEADER --- */}
+                        <div className="flex flex-col border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0c0c0e]">
+                            {/* Tabs Area */}
+                            <div className="flex items-end px-3 pt-2 bg-zinc-100 dark:bg-black/40 border-b border-zinc-200 dark:border-zinc-800">
+                                <div className="group relative flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#0c0c0e] rounded-t-lg border-t border-x border-zinc-200 dark:border-zinc-800 -mb-px text-sm select-none z-10 w-fit max-w-[200px]">
+                                    <FileText size={14} className="text-blue-500 shrink-0" />
+                                    <span className="font-medium text-zinc-900 dark:text-white truncate">{selectedNote.name}</span>
+                                    <button onClick={() => setSelectedNote(null)} className="opacity-0 group-hover:opacity-100 p-0.5 hover:bg-zinc-200 dark:hover:bg-white/10 rounded ml-2 transition-opacity">
+                                        <X size={12} className="text-zinc-500 hover:text-red-500" />
+                                    </button>
+                                    <div className="absolute top-0 left-0 right-0 h-0.5 bg-blue-500 rounded-t-full" />
+                                </div>
+                                {/* New Tab + */}
+                                <button onClick={() => handleCreateNote(null, 'markdown')} className="p-2 mb-1 ml-1 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors">
+                                    <X size={14} className="rotate-45" />
                                 </button>
-                                <span className="text-zinc-600 text-lg font-light">/</span>
-                                <input
-                                    type="text"
-                                    value={selectedNote.name}
-                                    onChange={(e) => {
-                                        const newName = e.target.value;
-                                        setSelectedNote(prev => prev ? { ...prev, name: newName } : null);
-                                        setNotes(prev => prev.map(n => n.id === selectedNote.id ? { ...n, name: newName } : n));
-                                    }}
-                                    className="bg-transparent text-white font-bold text-xl focus:outline-none placeholder:text-zinc-600 min-w-[200px] tracking-tight"
-                                    placeholder="Sem Título"
-                                />
                             </div>
 
-                            <div className="flex items-center gap-2">
-                                <div className="hidden md:flex items-center gap-3 mr-4">
-                                    <div className={`flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-lg border ${isSaving ? 'text-yellow-500 border-yellow-500/20 bg-yellow-500/5' : 'text-emerald-500 border-emerald-500/20 bg-emerald-500/5'}`}>
-                                        {isSaving ? <Loader2 size={10} className="animate-spin" /> : <Check size={10} />}
-                                        {isSaving ? 'Salvando' : 'Salvo'}
-                                    </div>
-                                    <button onClick={() => setIsExpandedMode(!isExpandedMode)} className="p-2 hover:bg-white/10 rounded-xl text-zinc-400 hover:text-white transition-colors bubble-hover" title={isExpandedMode ? "Sair do modo foco" : "Modo foco"}>
-                                        {isExpandedMode ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
+                            {/* Breadcrumbs & Toolbar */}
+                            <div className="h-10 flex items-center justify-between px-4 bg-white dark:bg-[#0c0c0e]">
+                                <div className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400 overflow-hidden">
+                                    <button onClick={() => setShowLeftSidebar(!showLeftSidebar)} className="mr-3 text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors" title="Toggle Sidebar">
+                                        <Sidebar size={16} className={!showLeftSidebar ? "text-blue-500" : ""} />
+                                    </button>
+
+                                    <Folder size={12} className="opacity-50" />
+                                    <span className="hover:text-zinc-900 dark:hover:text-zinc-200 cursor-pointer transition-colors font-medium">Biblioteca</span>
+
+                                    {getBreadcrumbs().map(folder => (
+                                        <React.Fragment key={folder.id}>
+                                            <ChevronRight size={10} className="opacity-40" />
+                                            <span className="hover:text-zinc-900 dark:hover:text-zinc-200 cursor-pointer transition-colors">
+                                                {folder.name}
+                                            </span>
+                                        </React.Fragment>
+                                    ))}
+
+                                    <ChevronRight size={10} className="opacity-40" />
+                                    <span className="font-semibold text-zinc-900 dark:text-white flex items-center gap-1 truncate text-blue-600 dark:text-blue-400">
+                                        {selectedNote.name}
+                                    </span>
+                                </div>
+
+                                <div className="flex items-center gap-3 text-zinc-400">
+                                    {isSaving && <span className="text-[10px] text-zinc-400 animate-pulse">Salvando...</span>}
+                                    <button onClick={() => setIsExpandedMode(!isExpandedMode)} className="hover:text-zinc-900 dark:hover:text-white transition-colors" title="Expandir/Minimizar">
+                                        {isExpandedMode ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+                                    </button>
+
+                                    <button onClick={() => setShowRightSidebar(!showRightSidebar)} className="hover:text-zinc-900 dark:hover:text-white transition-colors">
+                                        <PanelRight size={16} className={!showRightSidebar ? "opacity-50" : "text-blue-500"} />
                                     </button>
                                 </div>
-                                <button onClick={() => setShowRightSidebar(!showRightSidebar)} className={`p-2 hover:bg-white/10 rounded-xl transition-colors bubble-hover ${showRightSidebar ? 'text-blue-400 bg-blue-500/10' : 'text-zinc-400'}`}>
-                                    <PanelRight size={20} />
-                                </button>
                             </div>
                         </div>
 
-                        {/* Editor & PDF Split */}
+                        {/* --- EDITOR AREA --- */}
                         <div className="flex-1 overflow-hidden flex bg-transparent">
-                            <div className={`flex flex-col transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] ${showPdfReader ? 'w-1/2 border-r border-white/5' : 'w-full'}`}>
+                            <div className={`flex flex-col transition-all duration-300 ease-in-out ${showPdfReader ? 'w-1/2 border-r border-zinc-200 dark:border-zinc-800' : 'w-full'}`}>
+
+                                {/* Title Input - Clean & Big */}
+                                <div className="px-8 lg:px-12 pt-10 pb-2">
+                                    <input
+                                        type="text"
+                                        value={selectedNote.name.replace('.md', '')}
+                                        onChange={(e) => {
+                                            const newName = e.target.value;
+                                            setSelectedNote(prev => prev ? { ...prev, name: newName } : null);
+                                            setNotes(prev => prev.map(n => n.id === selectedNote.id ? { ...n, name: newName } : n));
+                                            notesService.updateNote(selectedNote.id, { name: newName });
+                                        }}
+                                        className="w-full bg-transparent text-4xl font-bold text-zinc-900 dark:text-white placeholder:text-zinc-300/50 focus:outline-none tracking-tight leading-none"
+                                        placeholder="Sem Título"
+                                    />
+                                </div>
+
                                 <NotesEditor
                                     noteId={selectedNote.id}
                                     content={selectedNote.content || ''}
@@ -375,15 +442,29 @@ const NotesModule: React.FC = () => {
                                     searchNotes={searchNotes}
                                     onOpenPdf={handleOpenPdf}
                                 />
+
+                                {/* Status Bar */}
+                                <div className="h-8 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-[#0c0c0e] flex items-center justify-between px-4 text-[10px] text-zinc-500 dark:text-zinc-400 select-none font-medium">
+                                    <div className="flex items-center gap-4">
+                                        <span>{wordCount} palavras</span>
+                                        <span>{charCount} caracteres</span>
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        {selectedNote.updatedAt && (
+                                            <span>Atualizado: {new Date(selectedNote.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                        )}
+                                        <span className="flex items-center gap-1.5"><Info size={10} className="text-blue-500" /> Markdown Mode</span>
+                                    </div>
+                                </div>
                             </div>
 
-                            {/* PDF Reader */}
+                            {/* PDF Reader Panel */}
                             {showPdfReader && activePdfUrl && (
-                                <div className="w-1/2 flex flex-col bg-transparent border-l border-white/5 shadow-inner">
-                                    <div className="flex justify-between items-center bg-zinc-950 p-2 border-b border-white/5">
-                                        <span className="text-xs font-bold text-zinc-400 px-2 uppercase tracking-wider">Leitor PDF</span>
-                                        <button onClick={() => setShowPdfReader(false)} className="text-zinc-500 hover:text-white p-1 hover:bg-white/10 rounded">
-                                            <Minimize2 size={16} />
+                                <div className="w-1/2 flex flex-col bg-zinc-100 dark:bg-zinc-900/50 z-20 shadow-xl">
+                                    <div className="flex justify-between items-center px-4 py-2 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                                        <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Leitor PDF</span>
+                                        <button onClick={() => setShowPdfReader(false)} className="text-zinc-400 hover:text-zinc-900 dark:hover:text-white p-1 rounded transition-colors">
+                                            <Minimize2 size={14} />
                                         </button>
                                     </div>
                                     <PDFReader
@@ -397,17 +478,22 @@ const NotesModule: React.FC = () => {
                         </div>
                     </>
                 ) : (
-                    <div className="flex-1 flex flex-col items-center justify-center text-zinc-500 animate-in fade-in duration-700">
-                        <div className="w-32 h-32 rounded-full glass-spatial flex items-center justify-center mb-8 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10 relative group">
-                            <div className="absolute inset-0 bg-blue-500/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-                            <FileText size={48} className="text-zinc-600 group-hover:text-blue-400 transition-colors duration-500 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]" />
+                    <div className="flex-1 flex flex-col items-center justify-center text-zinc-500 bg-zinc-50/30 dark:bg-[#0c0c0e]">
+                        <div className="w-20 h-20 rounded-2xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 flex items-center justify-center mb-6 shadow-sm">
+                            <FileText size={40} className="text-zinc-300 dark:text-zinc-600" />
                         </div>
-                        <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 mb-2 tracking-tight">
-                            Nenhuma nota selecionada
+                        <h2 className="text-lg font-bold text-zinc-900 dark:text-white mb-1">
+                            Sem nota selecionada
                         </h2>
-                        <p className="font-medium text-zinc-500 max-w-xs text-center leading-relaxed">
-                            Selecione uma nota na barra lateral ou crie uma nova para começar a escrever.
+                        <p className="font-medium text-zinc-400 text-sm max-w-xs text-center">
+                            Selecione um arquivo da biblioteca ou crie uma nova nota.
                         </p>
+                        <button
+                            onClick={() => handleCreateNote(null, 'markdown')}
+                            className="mt-6 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-full transition-all shadow-lg shadow-blue-500/20"
+                        >
+                            Criar Nova Nota
+                        </button>
                     </div>
                 )}
             </div>
@@ -423,85 +509,63 @@ const NotesModule: React.FC = () => {
             {/* --- RIGHT SIDEBAR: Meta & Details --- */}
             <div className={`
                 ${isMobile ? 'absolute inset-y-0 right-0 z-40 shadow-2xl' : 'relative'}
-                ${showRightSidebar && selectedNote ? 'w-80' : 'w-0'} 
-                transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] flex flex-col overflow-hidden glass-hydro border-l border-white/5
+                ${showRightSidebar && selectedNote ? 'w-72' : 'w-0'} 
+                transition-all duration-300 ease-in-out flex flex-col overflow-hidden bg-zinc-50 dark:bg-black/20 border-l border-zinc-200 dark:border-zinc-800
             `}>
-                <div className="w-80 h-full overflow-y-auto custom-scrollbar p-5 space-y-6">
+                <div className="w-72 h-full overflow-y-auto custom-scrollbar p-6 space-y-8">
                     {selectedNote && (
                         <>
                             {/* Meta Header */}
                             <div>
-                                <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">Metadados</h3>
+                                <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4">Informações</h3>
                                 <div className="space-y-4">
-                                    <div className="flex items-center justify-between group">
-                                        <span className="text-sm text-zinc-400">Favorito</span>
+                                    <div className="flex items-center justify-between group p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors -mx-2">
+                                        <span className="text-sm text-zinc-600 dark:text-zinc-400 font-medium">Favorito</span>
                                         <button
                                             onClick={handleToggleFavorite}
-                                            className={`p-2 rounded-xl transition-all duration-300 ${selectedNote.isFavorite ? 'bg-yellow-500/10 text-yellow-500 ring-1 ring-yellow-500/30' : 'bg-white/5 text-zinc-500 hover:text-white hover:bg-white/10'}`}
+                                            className={`p-1.5 rounded-md transition-all ${selectedNote.isFavorite ? 'text-yellow-500 bg-yellow-500/10' : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200'}`}
                                         >
-                                            <Star size={16} className={`${selectedNote.isFavorite ? 'fill-yellow-500' : ''} transition-all duration-300`} />
+                                            <Star size={16} className={selectedNote.isFavorite ? 'fill-current' : ''} />
                                         </button>
                                     </div>
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm text-zinc-400">Criado em</span>
-                                        <div className="flex items-center gap-2 text-xs font-medium text-zinc-300 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-                                            <Calendar size={12} className="text-zinc-500" />
-                                            {selectedNote.createdAt ? new Date(selectedNote.createdAt).getFullYear() : 2024}
-                                        </div>
+                                    <div className="flex items-center justify-between p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors -mx-2">
+                                        <span className="text-sm text-zinc-600 dark:text-zinc-400 font-medium">Criado</span>
+                                        <span className="text-xs font-mono text-zinc-500">{new Date(selectedNote.createdAt).toLocaleDateString()}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors -mx-2">
+                                        <span className="text-sm text-zinc-600 dark:text-zinc-400 font-medium">Modificado</span>
+                                        <span className="text-xs font-mono text-zinc-500">
+                                            {selectedNote.updatedAt ? new Date(selectedNote.updatedAt).toLocaleDateString() : 'Hoje'}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="h-px bg-white/5 w-full" />
+                            <div className="h-px bg-zinc-200 dark:bg-zinc-800 w-full" />
 
                             {/* Tags */}
                             <div>
-                                <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-3">Tags & Assuntos</h3>
-                                <div className="flex flex-wrap gap-2 mb-3">
+                                <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4">Tags</h3>
+                                <div className="flex flex-wrap gap-2 mb-4">
                                     {selectedNote.tags && selectedNote.tags.length > 0 ? (
                                         selectedNote.tags.map(tag => (
-                                            <span key={tag} className="glass-card bg-emerald-500/5 text-emerald-400 border-white/5 hover:border-emerald-500/30 text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5 cursor-pointer hover:bg-emerald-500/10 transition-all shadow-sm" onClick={() => setSelectedTag(tag)}>
-                                                <Hash size={12} className="opacity-50" /> {tag.replace('#', '')}
+                                            <span key={tag} className="bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 text-blue-600 dark:text-blue-300 text-[10px] font-bold px-2.5 py-1 rounded-md cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-colors" onClick={() => setSelectedTag(tag)}>
+                                                {tag}
                                             </span>
                                         ))
                                     ) : (
-                                        <span className="text-xs text-zinc-600 italic px-2">Sem tags.</span>
+                                        <span className="text-xs text-zinc-400 italic">Sem tags</span>
                                     )}
                                 </div>
-                                <div className="p-1">
-                                    <TagInput allTags={allTags} onAddTag={handleAddTag} />
-                                </div>
+                                <TagInput allTags={allTags} onAddTag={handleAddTag} />
                             </div>
 
-                            <div className="h-px bg-white/5 w-full" />
-
-                            {/* Stats */}
-                            <div>
-                                <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-3">Estatísticas</h3>
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div className="glass-card rounded-2xl p-4 border border-white/5 relative overflow-hidden group hover:bg-blue-500/5 transition-colors">
-                                        <div className="absolute top-2 right-2 text-blue-500/20 group-hover:text-blue-500/40 transition-colors">
-                                            <FileText size={20} />
-                                        </div>
-                                        <span className="text-2xl font-black text-white block mb-1 tracking-tight">{selectedNote.content?.split(/\s+/).filter(w => w.length > 0).length || 0}</span>
-                                        <span className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider group-hover:text-blue-400/80 transition-colors">Palavras</span>
-                                    </div>
-                                    <div className="glass-card rounded-2xl p-4 border border-white/5 relative overflow-hidden group hover:bg-purple-500/5 transition-colors">
-                                        <div className="absolute top-2 right-2 text-purple-500/20 group-hover:text-purple-500/40 transition-colors">
-                                            <Layout size={20} />
-                                        </div>
-                                        <span className="text-2xl font-black text-white block mb-1 tracking-tight">{selectedNote.content?.length || 0}</span>
-                                        <span className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider group-hover:text-purple-400/80 transition-colors">Caracteres</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="h-px bg-white/5 w-full" />
+                            <div className="h-px bg-zinc-200 dark:bg-zinc-800 w-full" />
 
                             {/* AI Insights Stub */}
                             <div>
-                                <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-3 flex items-center gap-2">
-                                    <Info size={14} /> Insights
+                                <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                    <Info size={12} /> Insights
                                 </h3>
                                 <NotesInsights note={selectedNote} />
                             </div>

@@ -11,6 +11,17 @@ export interface Flashcard {
     repetitions: number;
 }
 
+interface FlashcardRow {
+    id: string;
+    front: string;
+    back: string;
+    folder_path: string[];
+    next_review: number;
+    interval: number;
+    ease: number;
+    repetitions: number;
+}
+
 export const flashcardService = {
     fetchFlashcards: async (): Promise<Flashcard[]> => {
         const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -22,11 +33,11 @@ export const flashcardService = {
             .eq('user_id', user.id); // Validating RLS explicitly
 
         if (error) {
-            console.error('Error fetching flashcards:', error);
+            // Fail silently
             return [];
         }
 
-        return data.map((card: any) => ({
+        return (data as unknown as FlashcardRow[]).map((card) => ({
             id: card.id,
             front: card.front,
             back: card.back,
@@ -58,7 +69,6 @@ export const flashcardService = {
             .single();
 
         if (error) {
-            console.error('Error creating flashcard:', error);
             return null;
         }
 
@@ -89,7 +99,6 @@ export const flashcardService = {
             .eq('id', card.id);
 
         if (error) {
-            console.error('Error updating flashcard:', error);
             return false;
         }
         return true;
@@ -97,19 +106,7 @@ export const flashcardService = {
 
     batchUpdateFlashcards: async (cards: Flashcard[]): Promise<boolean> => {
         // Supabase upsert is efficient for this
-        const upserts = cards.map(c => ({
-            id: c.id,
-            user_id: (supabase.auth.getSession() as any)?.user?.id, // This might fail if session logic isn't clean, but RLS handles standard inserts.
-            // Actually, for updates, we don't need user_id if RLS checks existing.
-            // But for upsert we might need all required fields.
-            front: c.front,
-            back: c.back,
-            folder_path: c.folderPath,
-            next_review: c.nextReview,
-            interval: c.interval,
-            ease: c.ease,
-            repetitions: c.repetitions
-        }));
+        // Batch update using simple loop for reliability
 
         // Removing user_id from map and relying on RLS context for updates or default for inserts is better?
         // Upsert requires user_id usually if it's a new row.
@@ -131,7 +128,6 @@ export const flashcardService = {
             .eq('id', id);
 
         if (error) {
-            console.error('Error deleting flashcard:', error);
             return false;
         }
         return true;

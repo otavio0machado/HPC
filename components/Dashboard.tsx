@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { AnimatePresence, motion, Reorder, useDragControls } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import AnalyticsDashboard from './analytics/AnalyticsDashboard';
 
 import Whiteboard from './whiteboard/Whiteboard';
@@ -49,18 +49,18 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     // ... rest of component
     // Navigation State
     const allNavItems = [
-        { id: "Dashboard", label: "Início", icon: <LayoutDashboard size={20} /> },
-        { id: "Planner", label: "Planner", icon: <Calendar size={20} /> },
-        { id: "Notas", label: "Notas", icon: <FileText size={20} />, restricted: true },
-        { id: "Nexus", label: "Nexus", icon: <Share2 size={20} />, adminOnly: true },
-        { id: "Analytics", label: "Analytics", icon: <TrendingUp size={20} />, adminOnly: true },
-        { id: "Whiteboard", label: "Quadro", icon: <BoxSelect size={20} />, adminOnly: true },
-        { id: "Conteúdos", label: "Conteúdos", icon: <Sparkles size={20} />, restricted: true },
-        { id: "Biblioteca", label: "Biblioteca", icon: <BookOpen size={20} />, restricted: true, adminOnly: true },
-        { id: "Tutores", label: "Tutores", icon: <GraduationCap size={20} />, restricted: true },
-        { id: "Lista de Erros", label: "Erros", icon: <AlertOctagon size={20} />, restricted: true },
-        { id: "Flashcards", label: "Cards", icon: <Zap size={20} />, restricted: true },
-        { id: "Simulados", label: "Simulados", icon: <Clock size={20} />, restricted: true }
+        { id: "Dashboard", label: "Início", icon: <LayoutDashboard size={18} /> },
+        { id: "Planner", label: "Planner", icon: <Calendar size={18} /> },
+        { id: "Notas", label: "Notas", icon: <FileText size={18} /> },
+        { id: "Nexus", label: "Nexus", icon: <Share2 size={18} />, adminOnly: true },
+        { id: "Analytics", label: "Analytics", icon: <TrendingUp size={18} />, adminOnly: true },
+        { id: "Whiteboard", label: "Quadro", icon: <BoxSelect size={18} />, adminOnly: true },
+        { id: "Conteúdos", label: "Conteúdos", icon: <Sparkles size={18} />, restricted: true },
+        { id: "Biblioteca", label: "Biblioteca", icon: <BookOpen size={18} />, restricted: true, adminOnly: true },
+        { id: "Tutores", label: "Tutores", icon: <GraduationCap size={18} />, restricted: true },
+        { id: "Lista de Erros", label: "Erros", icon: <AlertOctagon size={18} />, restricted: true },
+        { id: "Flashcards", label: "Cards", icon: <Zap size={18} />, restricted: true },
+        { id: "Simulados", label: "Simulados", icon: <Clock size={18} />, restricted: true }
     ];
 
     const [activeTab, setActiveTab] = useState('Dashboard');
@@ -346,8 +346,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         tap: { scale: 0.95 }
     };
 
-    const DraggableNavItem = ({ item, isActive, isLocked, changeTab }: any) => {
-        const controls = useDragControls();
+    const NavItem = ({ item, isActive, isLocked, changeTab }: any) => {
         const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
 
         const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -358,59 +357,50 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         };
 
         return (
-            <Reorder.Item key={item.id} value={item} style={{ position: 'relative' }} dragListener={false} dragControls={controls}>
+            <div
+                className={`
+                relative w-full py-1 flex flex-col items-center justify-center rounded-[14px] cursor-pointer transition-all duration-300 group
+                ${isActive
+                        ? 'scale-100 z-10'
+                        : 'hover:bg-white/5 active:scale-95'
+                    }
+                `}
+                onMouseMove={handleMouseMove}
+                onClick={() => changeTab(item.id)}
+            >
+                {/* Mouse Spotlight Effect */}
                 <div
-                    className={`
-                    relative w-full flex items-center gap-1.5 px-2.5 py-1.5 rounded-2xl text-[12px] font-medium transition-all duration-300 group
-                    ${isActive
-                            ? 'shadow-[0_4px_20px_rgba(59,130,246,0.15)]'
-                            : 'hover:bg-white/5'
-                        }
-                    `}
-                    onMouseMove={handleMouseMove}
-                >
-                    {/* Mouse Spotlight Effect */}
-                    <div
-                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"
-                        style={{
-                            background: `radial-gradient(circle 120px at ${mousePosition.x}% ${mousePosition.y}%, rgba(255, 255, 255, 0.1) 0%, transparent 70%)`
-                        }}
-                    />
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-[14px]"
+                    style={{
+                        background: `radial-gradient(circle 80px at ${mousePosition.x}% ${mousePosition.y}%, rgba(255, 255, 255, 0.1) 0%, transparent 70%)`
+                    }}
+                />
 
-                    {/* Active Background - Glass Pill */}
-                    {isActive && (
-                        <div className="absolute inset-0 bg-blue-500/10 dark:bg-blue-500/10 rounded-2xl backdrop-blur-md pointer-events-none transition-all duration-300 border border-blue-500/30" />
-                    )}
+                {/* Active Background - Glowing Rounded Square */}
+                {isActive && (
+                    <div className="absolute inset-0 bg-linear-to-b from-blue-500 to-indigo-600 rounded-[14px] shadow-[0_4px_12px_rgba(59,130,246,0.4)] pointer-events-none transition-all duration-300 border border-white/20" />
+                )}
 
-                    {/* Drag Handle */}
-                    <div
-                        onPointerDown={(e) => controls.start(e)}
-                        className={`cursor-grab active:cursor-grabbing p-1.5 rounded-md transition-all opacity-0 group-hover:opacity-100 z-20 
-                        ${isActive ? 'text-blue-400' : 'text-zinc-500 hover:text-zinc-300 hover:bg-white/10'}`}
-                    >
-                        <GripVertical size={12} />
-                    </div>
+                {/* Button Content Wrapper */}
+                <div className={`relative z-10 flex flex-col items-center justify-center gap-0.5 text-center w-full transition-colors duration-300 ${isActive ? 'text-white' : 'text-zinc-400 group-hover:text-zinc-200'}`}>
+                    <span className={`transition-all duration-300 ${isActive ? 'drop-shadow-sm' : 'group-hover:scale-105'}`}>
+                        {item.icon}
+                    </span>
+                    <span className={`text-[8.5px] font-semibold tracking-wide leading-none ${isActive ? 'text-blue-50' : 'text-zinc-500 group-hover:text-zinc-300'}`}>
+                        {item.label}
+                    </span>
 
-                    {/* Button Content Wrapper */}
-                    <button
-                        onClick={() => changeTab(item.id)}
-                        className={`flex-1 flex items-center gap-2 text-left w-full outline-none relative z-10 transition-colors duration-300 ${isActive ? 'text-blue-500 dark:text-blue-300 font-bold' : 'text-zinc-500 dark:text-zinc-400 group-hover:text-zinc-200'}`}
-                    >
-                        <span className={`transition-transform duration-300 ${isActive ? 'scale-110 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]' : 'group-hover:scale-105'}`}>{item.icon}</span>
-                        <span className="flex-1 truncate">{item.label}</span>
-
-                        {isLocked && <Lock size={12} className="ml-auto text-amber-500/70" />}
-                    </button>
-
-                    {/* Active Indicator Dot */}
-                    {isActive && (
-                        <motion.div
-                            layoutId="activeTabIndicator"
-                            className="absolute right-2 w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_currentColor]"
-                        />
-                    )}
+                    {isLocked && <Lock size={8} className="absolute top-0 right-1 text-amber-500/80" />}
                 </div>
-            </Reorder.Item>
+
+                {/* Active Indicator Dot */}
+                {isActive && (
+                    <motion.div
+                        layoutId="activeTabIndicator"
+                        className="absolute right-1 top-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-white/50 shadow-[0_0_8px_currentColor] hidden"
+                    />
+                )}
+            </div>
         );
     };
 
@@ -495,57 +485,36 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                         exit={{ x: -208, opacity: 0 }}
                         transition={{ duration: 0.4, ease: [0.19, 1.0, 0.22, 1.0] }}
                         className={`
-                            fixed md:relative z-50 h-full w-52 flex flex-col 
-                            glass-hydro border-r border-white/40 dark:border-white/5 
-                            shadow-2xl md:shadow-none
+                            fixed top-3 left-3 bottom-3 z-50 flex flex-col items-center
+                            w-[84px] min-w-[84px]
+                            glass-hydro
+                            rounded-[32px] border border-white/10
+                            shadow-2xl shadow-black/40 overflow-hidden
                         `}
                     >
                         {/* Header */}
-                        <div className="p-6 pb-4 flex flex-col gap-6">
+                        <div className="pt-3 pb-1 flex flex-col items-center justify-center w-full shrink-0">
                             <motion.div
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="flex items-center"
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="relative group cursor-pointer"
                             >
-                                <div className="flex items-center gap-3 group cursor-pointer">
-                                    <div className="relative group/logo">
-                                        {/* Dynamic Background Glow */}
-                                        <motion.div
-                                            animate={{
-                                                scale: [1, 1.2, 1],
-                                                opacity: [0.3, 0.6, 0.3],
-                                                rotate: [0, 90, 180, 270, 360]
-                                            }}
-                                            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                                            className="absolute -inset-4 bg-gradient-to-tr from-blue-600/30 via-indigo-600/20 to-violet-600/30 blur-2xl rounded-full"
-                                        />
-
-                                        {/* VisionOS Icon Container */}
-                                        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/30 overflow-hidden border border-white/20">
-                                            <img
-                                                src="/logo-hpc.png"
-                                                alt="HPC Logo"
-                                                className="w-full h-full object-contain mix-blend-screen brightness-110 contrast-125 scale-110"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h1 className="text-base font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 dark:from-blue-400 dark:via-indigo-400 dark:to-violet-400 leading-tight">
-                                            High Performance Club
-                                        </h1>
-                                    </div>
+                                {/* VisionOS Icon Container */}
+                                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/30 overflow-hidden ring-1 ring-white/20">
+                                    <img
+                                        src="/logo-hpc.png"
+                                        alt="HPC"
+                                        className="w-full h-full object-contain mix-blend-screen brightness-110 contrast-125 scale-110"
+                                    />
                                 </div>
                             </motion.div>
-
-
-                        </div>
-
+                        </div>      {/* Navigation Tabs */}
                         {/* Navigation Tabs */}
-                        <Reorder.Group axis="y" values={tabs} onReorder={setTabs} className="flex-1 overflow-y-auto px-3 space-y-1 scrollbar-hide py-1">
+                        <div className="flex-1 w-full flex flex-col items-center overflow-y-auto px-1 py-1 space-y-1 scrollbar-hide">
                             {tabs.map((item: any) => {
                                 const isLocked = item.restricted && currentUser.subscription_tier !== 'pro' && !isUserAdmin;
                                 return (
-                                    <DraggableNavItem
+                                    <NavItem
                                         key={item.id}
                                         item={item}
                                         isActive={activeTab === item.id}
@@ -554,64 +523,52 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                                     />
                                 );
                             })}
-                        </Reorder.Group>
+                        </div>
 
                         {/* User Profile Section */}
-                        <div className="p-4 border-t border-white/20 dark:border-white/5 mt-auto bg-white/40 dark:bg-white/5 backdrop-blur-md">
-                            <div className="flex items-center gap-2">
-                                <div
-                                    className="flex-1 flex items-center gap-3 p-2 rounded-2xl hover:bg-white/60 dark:hover:bg-white/10 transition-all cursor-pointer group min-w-0 active:scale-95 border border-transparent hover:border-white/20"
-                                    onClick={() => setActiveTab('Perfil')}
-                                >
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 p-0.5 shadow-lg flex-shrink-0 group-hover:ring-2 ring-blue-500/50 transition-all">
-                                        <img src={currentUser.photo_url || `https://ui-avatars.com/api/?name=${currentUser.name}&background=random`} alt="User" className="w-full h-full rounded-full object-cover border-2 border-white dark:border-black" />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-xs font-black text-zinc-500 dark:text-zinc-400 truncate flex items-center gap-1 uppercase tracking-wider">
-                                            {currentUser.subscription_tier === 'pro' ? <span className="text-amber-500 flex items-center gap-0.5"><Sparkles size={10} /> PRO</span> : "Free Plan"}
-                                        </p>
-                                    </div>
-                                    <ChevronRight size={14} className="text-zinc-400 transition-transform duration-300 group-hover:translate-x-1" />
+                        <div className="p-1 mt-auto flex flex-col items-center gap-1.5 pb-3 shrink-0">
+
+                            {/* Profile Avatar */}
+                            <div
+                                className="relative group cursor-pointer"
+                                onClick={() => setActiveTab('Perfil')}
+                            >
+                                <div className={`w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 p-0.5 shadow-lg transition-transform duration-300 ${activeTab === 'Perfil' ? 'ring-2 ring-white scale-110' : 'hover:scale-105'}`}>
+                                    <img src={currentUser.photo_url || `https://ui-avatars.com/api/?name=${currentUser.name}&background=random`} alt="User" className="w-full h-full rounded-full object-cover border-2 border-white dark:border-black" />
                                 </div>
-                                <div className="flex flex-col gap-1.5">
-                                    <button
-                                        onClick={() => setIsSidebarOpen(false)}
-                                        className="p-2 rounded-xl text-zinc-400 hover:text-zinc-800 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-all active:scale-90 border border-transparent hover:border-white/10"
-                                        title="Recolher"
-                                    >
-                                        <PanelLeftClose size={18} />
-                                    </button>
-                                    <button
-                                        onClick={onLogout}
-                                        className="p-2 rounded-xl text-zinc-400 hover:text-red-500 hover:bg-red-500/10 transition-all border border-transparent hover:border-red-500/20"
-                                        title="Sair"
-                                    >
-                                        <LogOut size={18} />
-                                    </button>
-                                </div>
+                                <div className="absolute bottom-0 right-0 w-2 h-2 bg-emerald-500 rounded-full border-2 border-[#0a0a0a]" />
                             </div>
 
-
+                            {/* Logout Button */}
+                            <button
+                                onClick={onLogout}
+                                className="p-1.5 rounded-full text-zinc-500 hover:text-red-500 hover:bg-red-500/10 transition-all"
+                                title="Sair"
+                            >
+                                <LogOut size={16} />
+                            </button>
                         </div>
-                    </motion.aside>
+                    </motion.aside >
                 )}
-            </AnimatePresence>
+            </AnimatePresence >
 
             {/* Mobile Overlay */}
             <AnimatePresence>
-                {isMobile && isSidebarOpen && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        onClick={() => setIsSidebarOpen(false)}
-                        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 md:hidden"
-                    />
-                )}
-            </AnimatePresence>
+                {
+                    isMobile && isSidebarOpen && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsSidebarOpen(false)}
+                            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 md:hidden"
+                        />
+                    )
+                }
+            </AnimatePresence >
 
             {/* Main Content Area */}
-            <main className="flex-1 relative flex flex-col h-full overflow-hidden transition-all duration-300">
+            < main className="flex-1 relative flex flex-col h-full overflow-hidden transition-all duration-300 md:ml-[100px]" >
                 <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 lg:p-8 scrollbar-hide relative bg-transparent">
                     <AnimatePresence mode="wait">
                         <motion.div

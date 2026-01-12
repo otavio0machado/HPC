@@ -1,12 +1,25 @@
 import { supabase } from '../lib/supabase';
 import { NoteFile } from '../types';
 
+export interface NoteRow {
+    id: string;
+    parent_id: string | null;
+    name: string;
+    type: 'folder' | 'markdown' | 'pdf';
+    content?: string;
+    tags?: string[];
+    pdf_data?: string;
+    created_at: string;
+    updated_at: string;
+    is_favorite: boolean;
+    pdf_annotations?: any[]; // Keep any for JSON/Complex object for now or strict it later
+}
+
 export const notesService = {
     // Fetch all notes for the current user
     async fetchNotes(): Promise<NoteFile[]> {
         const { data: { user }, error: authError } = await supabase.auth.getUser();
         if (authError || !user) {
-            console.error('Auth error in fetchNotes:', authError);
             throw new Error('Usuário não autenticado ou sessão expirada');
         }
 
@@ -18,29 +31,29 @@ export const notesService = {
             .order('name', { ascending: true });
 
         if (error) {
-            console.error('Error fetching notes:', error);
             throw error;
         }
 
-        return (data || []).map((n: any) => {
+        return (data || []).map((n) => {
+            const note = n as unknown as NoteRow;
             // Polyfill: If tags column doesn't exist or is empty, extract from content
-            let tags = n.tags || [];
-            if ((!tags || tags.length === 0) && n.content) {
-                tags = n.content.match(/#[\w\u00C0-\u00FF]+/g) || [];
+            let tags = note.tags || [];
+            if ((!tags || tags.length === 0) && note.content) {
+                tags = note.content.match(/#[\w\u00C0-\u00FF]+/g) || [];
             }
 
             return {
-                id: n.id,
-                parentId: n.parent_id,
-                name: n.name,
-                type: n.type,
-                content: n.content,
+                id: note.id,
+                parentId: note.parent_id,
+                name: note.name,
+                type: note.type,
+                content: note.content,
                 tags: tags,
-                pdfData: n.pdf_data,
-                createdAt: typeof n.created_at === 'string' ? new Date(n.created_at).getTime() : n.created_at,
-                updatedAt: typeof n.updated_at === 'string' ? new Date(n.updated_at).getTime() : n.updated_at,
-                isFavorite: n.is_favorite, // Map from DB
-                pdfAnnotations: n.pdf_annotations || []
+                pdfData: note.pdf_data,
+                createdAt: new Date(note.created_at).getTime(),
+                updatedAt: new Date(note.updated_at).getTime(),
+                isFavorite: note.is_favorite,
+                pdfAnnotations: note.pdf_annotations || []
             };
         });
     },
@@ -49,7 +62,6 @@ export const notesService = {
         const { data: { user }, error: authError } = await supabase.auth.getUser();
 
         if (authError || !user) {
-            console.error('Auth error in createNote:', authError);
             return { data: null, error: 'Usuário não autenticado ou sessão expirada. Por favor, faça login novamente.' };
         }
 
@@ -76,7 +88,6 @@ export const notesService = {
             .single();
 
         if (error) {
-            console.error('Error creating note:', error);
             return { data: null, error: error.message };
         }
 
@@ -97,17 +108,14 @@ export const notesService = {
     },
 
     async updateNote(id: string, updates: Partial<NoteFile>): Promise<boolean> {
-        const updatePayload: any = {
+        const updatePayload: Record<string, any> = {
             updated_at: new Date().toISOString()
         };
 
         if (updates.name !== undefined) updatePayload.name = updates.name;
         if (updates.content !== undefined) {
             updatePayload.content = updates.content;
-            // Tags are parsed from content, but we don't save to 'tags' column yet 
-            // to avoid errors if migration didn't run.
-            // const tags = updates.content.match(/#[\w\u00C0-\u00FF]+/g) || [];
-            // updatePayload.tags = tags;
+            // Tags extraction logic maintained in comments if needed later
         }
         if (updates.parentId !== undefined) updatePayload.parent_id = updates.parentId;
         if (updates.pdfData !== undefined) updatePayload.pdf_data = updates.pdfData;
@@ -120,7 +128,6 @@ export const notesService = {
             .eq('id', id);
 
         if (error) {
-            console.error('Error updating note:', error);
             return false;
         }
         return true;
@@ -133,7 +140,6 @@ export const notesService = {
             .eq('id', id);
 
         if (error) {
-            console.error('Error deleting note:', error);
             return false;
         }
         return true;
@@ -157,9 +163,7 @@ export const notesService = {
             });
 
         if (error) {
-            console.error('Error uploading file:', error);
-            // Try creating bucket if it doesn't exist? No, that requires higher privs.
-            // Just return null and let UI handle error.
+            // Fail silently
             return null;
         }
 

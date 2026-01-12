@@ -26,13 +26,22 @@ export default Node.create({
                 default: '100%',
             },
             height: {
-                default: '300px',
+                default: '600px',
             },
             paperType: {
                 default: 'blank',
             },
             paperColor: {
                 default: 'white',
+            },
+            canvasSize: {
+                default: { width: 800, height: 600 },
+            },
+            zoom: {
+                default: 1,
+            },
+            pan: {
+                default: { x: 0, y: 0 },
             },
         };
     },
